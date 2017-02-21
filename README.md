@@ -1,5 +1,5 @@
-# projetHeig
-# modifié par Lou
-# modifié par Jé
-## Camilo : les accents sont pas rendus correctement sur ma machin U_U
-#modifie wojtek
+# Projet HEIG-VD #
+
+Auteurs : Camilo Pineda Serna, Jérémie Zanone, Loan Lassalle, Luana Martelli, Tano Iannetta
+          et Wojciech Myszkorowski
+
