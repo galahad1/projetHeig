@@ -2,24 +2,25 @@
 
 ## Gestionaire de mots de passes ##
 
-Auteurs: Camilo Pineda Serna, Jérémie Zanone, Loan Lassalle, Luana Martelli, Tano Iannetta et Wojciech Myszkorowski
+Auteurs: Camilo Pineda Serna, Jérémie Zanone, Loan Lassalle, Luana Martelli, Tano Iannetta
+et Wojciech Myszkorowski
 
 
-Pour notre projet nous proposons de réaliser un gestionnaire de mot de passe.
+Pour notre projet nous proposons de réaliser un gestionnaire de mots de passes.
 
 Nous avons en tête plusieurs fonctionnalités:
 
-### Fonctionalité principales ###
-1. Stocker, organiser les mots de passes.
+### Fonctionalités principales ###
+1. Stocker, trier et organiser les mots de passes
 
 2. Génération de mots de passes suivant plusieurs modes
-	* l'utilisateur choisit les paramètres de la génération (nombre de chiffres, nombres de lettres, etc..)
+	* l'utilisateur choisit les paramètres de la génération (nombre de chiffres, nombres de lettres, etc.)
 	* l'utilisateur ne choisit pas de paramètres et un mot de passe fort est généré par notre algorithme
 	* l'utilisateur choisit une phrase de base. La phrase est ensuite découpée et convertie en mot de passe selon un algorithme prédéfinit.
 
-3. Chiffrer du texte. (style notes)
+3. Chiffrer du texte (style notes)
 
-4. Envoie d'email lors de plusieures saisies éronées du mot de passe maître.
+4. Envoie d'email lors de plusieures saisies érronées du mot de passe maître
 
 5. Date d'expiration des mots de passes
 

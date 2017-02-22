@@ -1,0 +1,18 @@
+/**
+* Titre
+* <br/><br/>
+* Les actions principales possibles sont :
+* <ul>
+*     <li></li>
+* </ul>
+* <br/>
+* Remarque(s) :
+* <ul>
+*     <li></li>
+* </ul>
+*
+* @author   J. Doe
+* @version  1.0
+* @since    dd.mm.yyyy
+* 
+*/
