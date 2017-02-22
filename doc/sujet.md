@@ -13,9 +13,9 @@ Nous avons en tête plusieurs fonctionnalités:
 1. Stocker, organiser les mots de passes.
 
 2. Génération de mots de passes suivant plusieurs modes
-..* l'utilisateur choisit les paramètres de la génération (nombre de chiffres, nombres de lettres, etc..)
-..* l'utilisateur ne choisit pas de paramètres et un mot de passe fort est généré par notre algorithme
-..* l'utilisateur choisit une phrase de base. La phrase est ensuite découpée et convertie en mot de passe selon un algorithme prédéfinit.
+	* l'utilisateur choisit les paramètres de la génération (nombre de chiffres, nombres de lettres, etc..)
+	* l'utilisateur ne choisit pas de paramètres et un mot de passe fort est généré par notre algorithme
+	* l'utilisateur choisit une phrase de base. La phrase est ensuite découpée et convertie en mot de passe selon un algorithme prédéfinit.
 
 3. Chiffrer du texte. (style notes)
 
@@ -33,6 +33,4 @@ Nous avons en tête plusieurs fonctionnalités:
 
 ### Fonctionnalité future ###
 
-9. Plugin navigateurs web 
-
- 
+9. Plugin navigateurs web
