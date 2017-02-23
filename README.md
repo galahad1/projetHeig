@@ -18,6 +18,4 @@ Pas de limites de colonnes
 
 Tabulation: 4 espaces
 
-accolades à la lignes pour fonction,classes et conditions
-
 Accolades: comme vous voulez, juste partout pareil dans le même fichier
