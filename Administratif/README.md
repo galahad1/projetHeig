@@ -1,10 +1,9 @@
 # Choix sujet #
 
-## Gestionaire de mots de passes ##
+## Gestionnaire de mots de passes ##
 
 Auteurs: Camilo Pineda Serna, Jérémie Zanone, Loan Lassalle, Luana Martelli, Tano Iannetta
 et Wojciech Myszkorowski
-
 
 Pour notre projet nous proposons de réaliser un gestionnaire de mots de passes.
 
@@ -20,7 +19,7 @@ Nous avons en tête plusieurs fonctionnalités:
 
 3. Chiffrer du texte (style notes)
 
-4. Envoie d'email lors de plusieures saisies érronées du mot de passe maître
+4. Envoie d'email lors de plusieures saisies erronées du mot de passe maître
 
 5. Date d'expiration des mots de passes
 
