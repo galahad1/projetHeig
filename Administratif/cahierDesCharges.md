@@ -1,56 +1,56 @@
-# Cahier des charges du Gestionnaire de mots de passe  
- > Le cahier des charges détaillé:
-•	Modèle conceptuel de données (MCD) – et ceci même si le projet ne comporte pas de base de données !
-•	Maquettes d’interface utilisateur. A ce stade il ne doit pas y avoir de détails ; il s’agit de montrer le nombre d’écrans/fenêtres différents, les informations qu’ils contiendront et leur organisation générale
-•	Cas d’utilisation et scénarios
-•	Une première liste d’objectifs SMART. Il est clair qu’à ce stade du projet il n’est pas possible d’avoir la liste complète des objectifs
+# __Cahier des charges__ du Gestionnaire de mots de passe  
 
-## 1	But du cahier des charges  
-
-> Point visé, cible du cahier des charges.
-Exemple : Ce cahier des charges décrit les objectifs à atteindre à l’aide de la solution visée ainsi que les exigences et les souhaits envers le déploiement de systèmes d’exploitation.
-
+## 1 But du cahier des charges  
 Ce cahier des charges décrit les objectifs à atteindre au terme de la réalisation de notre projet.
 
-## 2	Situation de départ
-
->Description du contexte de départ, de l’entreprise adjudicatrice, du sujet dans sa globalité. Description de l’entreprise qui lance ce projet.
-Exemple : Le Centre Professionnel du Nord Vaudois (CPNV) est l’un des 14 établissements d’enseignement professionnel que compte le canton de Vaud. Sa taille et sa structure lui permettent de couvrir une partie importante des besoins en formation professionnelle du Nord vaudois qui représente environ un dixième de la population cantonale.
-Le CPNV regroupe les écoles professionnelles et de métiers des sites d’Yverdon-les-Bains, de Sainte-Croix et de Payerne.  
-A ce jour, le CPNV ne possède aucune solution permettant le déploiement rapide de postes de travail au sein de leur parc informatique.  
-Il serait intéressé par l’acquisition d’un produit permettant d’automatiser la distribution du système d’exploitation utilisé. Il bénéficierait d’un gain de temps et de simplicité de gestion de son parc informatique.
-
+## 2 Situation de départ  
 Dans le cadre de l'unité « Projet de semestre », nous avons comme tâche de réaliser un projet par équipes. Nous avons décidé de mettre au point un gestionnaire de mots de passes.
 
-## 3	Objectifs du cahier des charges
+## 3	Objectifs du cahier des charges  
 
-> Objectifs SMART du cahier des charges  
-
-## 3.1	Modèle conceptuel de données (Schéma relationnel ??????)
+## 3.1	Modèle conceptuel de données  
+(Schéma relationnel ??????)
 
 > Modèle conceptuel de données (MCD) – et ceci même si le projet ne comporte pas de base de données !  
 Description des données traitées. Modèle conceptuel (MCD) de la base de données, description des « Entités » et des liens entre elles.
 
-## 3.2	Maquette fonctionnelles
+## 3.2	Maquette fonctionnelles  
 
 > Maquettes d’interface utilisateur. A ce stade il ne doit pas y avoir de détails ; il s’agit de montrer le nombre d’écrans/fenêtres différents, les informations qu’ils contiendront et leur organisation générale  
 Maquettes fonctionnelles (dessins et explications permettant de comprendre comment le logiciel fonctionnera).
 
-## 4	Fonctionnalités principales
+## 4 Fonctionnalités principales  
+Le but de notre logiciel est de permettre à l'utilisateur de stocker des mots de passe et leur contexte d'utilisation (le service où le mot de passe est utilisé). Ainsi, chaque _mot de passe_ correspondant à un ensemble d'informations.
 
-1.	Stocker, trier et organiser les mots de passes des utilisateurs
-2.	Génération de mots de passes suivant plusieurs modes :
+1.	Stocker et organiser les mots de passes de l'utilisateur  
+    L'utilisateur peut ajouter, supprimer, éditer ses mots de passe. Chaque mot de passe comprend :
+    * un __identificateur__, le nom du mot de passe  
+    * un __nom d'utilisateur__, le login  
+    * une __phrase de passe__, la chaine de caractères qui doit être protégée  
+    * une __url__, le site ou le nom de l'application où le mot de passe est utilisé  
+    * des __commentaires__, si l'utilisateur veut ajouter des précisions  
+    * une __date de création__
+    * une __date d'expiration__, grâce à laquelle le gestionnaire peut informer l'utilisateur de l'expiration du mot de passe  
 
-1.	L'utilisateur choisit les paramètres de la génération du mot de passe (nombre de chiffres, nombres de lettres, taille, etc.)
-2.	L'utilisateur ne choisit pas de paramètres et un mot de passe fort est généré par notre algorithme
-3.	L'utilisateur choisit une phrase de base. La phrase est ensuite découpée et convertie en mot de passe selon un algorithme prédéfinit.
+2.	Générer des phrases de passe, selon plusieurs modes :  
+    __mode 1__: L'utilisateur choisit des composants :
+        * nombre de caractères  
+        * nombre de chiffres  
+        * nombres de lettres minuscules  
+        * nombres de lettres majuscules  
+        * emploi de caractère spéciaux  
+
+    __mode 2__:	L'utilisateur ne choisit pas de paramètres et un mot de passe _fort_ est généré par notre algorithme  
+        * l'algorithme tire un nombre suffisant de caractères au hasard  
+         
+    3.	L'utilisateur choisit une phrase de base. La phrase est ensuite découpée et convertie en mot de passe selon un algorithme prédéfinit.
 3.	Chiffrer du texte
 4.	Envoie d’email lors de plusieurs saisies erronées du mot de passe maître
 5.	Notifications de la date d'expiration des mots de passes
 6.	Une interface graphique sera réalisée afin de permettre une utilisation simple et convivial de notre programme. Nous utiliserons la libraire swing pour réaliser cette tâche.
 7.	Timer qui verrouille l’application si l’utilisateur ne touches pas l’application après un certain temps.
 
-## 1.2	Fonctionnalités supplémentaires (suivant possibilité)
+## 1.2	Fonctionnalités supplémentaires (suivant possibilité)  
 
 1.	Chiffrement de pièces jointes
 2.	Analyse de résistance de mots de passes
@@ -59,10 +59,7 @@ Maquettes fonctionnelles (dessins et explications permettant de comprendre comme
 ## 1.3	Fonctionnalité future
 
 1.	Plugin pour navigateurs web.
-
-
-
-
+2.  possibilité de récupération des mots de passe (par mail, par clé usb, par exemple)  
 
 
 ## 1.4	Description de la fonctionnalité de gestion des mots de passes
