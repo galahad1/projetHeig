@@ -11,39 +11,55 @@ Nous voulons implémenter une application permettant à l'administration d'une r
 > Il est à noter que nous réalisons la partie _administrative_ de l'application; c'est-à-dire que notre projet sera utilisé par la ville et non pas par les citoyens de la ville. Nous gardons l'application mobile client comme fonctionnalité future, qui n'entre pas dans le cadre du cours PRO.
 
 
-### Fonctionalités principales  
-1. Utilisation d'une carte interactive. Nous générerons des coordonnées par catégorie et ainsi ajouterons des flags sur la carte.
+### Fonctionnalités principales  
+####  Implémentation d'une carte interactive  
+1. Affichage interactif de la carte (zoom, déplacement manuel, déplacement par recherche de coordonnées)  
+* génération de coordonnées de propositions    
+* ajout d'icones (flags) sur la carte  
+* gestion des secteurs sur la carte (quartiers, communes, zone gérée par le service de police de l'ouest lausannois, ...)
+* filtre des propositions par date  
+* coloriage de la carte selon des critères de secteurs  
 
-2. Gestion des comptes des utilisateurs
+#### Organisation des propositions  
+1. les propositions appartiendront à une catégorie (accident, demande de réparation, évènement, ...)  
+	* les catégories des citoyens ne sont pas forcément les mêmes que celles des utilisateurs de notre application (proposition en cours de traitement, wontfix, ...)  
+* Gestion des comptes des utilisateurs  
+	* avec une hiérarchie  
 
-3. Gestion des notifications faites par les utilisateurs
-	* Réparations/dégats
-	* Accidents
+* Gestion des notifications faites par les utilisateurs  
+	* Réparations/dégâts  
+	* Accidents  
+	* Information d'évènements  
 
-4. Recensement des propositions faites par les citoyens
- 	* Projets (exemple: garderie)
+* Recensement, statistiques des propositions faites par les citoyens
+ 	* Projets proposés (exemple: garderie)
+	* chantiers en cours  
 
-5. Ajout d’événements dans la ville
+1. Ajout d’événements dans la ville  
 
-6. Ajout de lieu dans la ville
+1. Ajout de lieu dans la ville
 
-7. Ajout de news
+1. Ajout de news
 
-8. Gestion d'un agenda
+1. Gestion d'un agenda
 
-9. Rubriques
+#### GUI  
+1. Rubriques sélectionnables
 	* Information
-	* Évenements  
+	* Évènements  
 	* Travaux
 	* Accidents
 	* Statistiques
 	* Services publiques
+* La carte avec les boutons d'interaction  
 
-### Fonctionnalités supplémentaires (suivant possibilité) ###
+### Fonctionnalités supplémentaires (suivant possibilité)  
 
-10. Conversion en PDF afin d'avoir un rapport sur un points précis
+1. génération de fichiers PDF afin d'avoir un rapport ou des statistiques sur une catégorie précise  
 
 
-### Fonctionnalité future ###
+### Fonctionnalité future  
 
-9. Application client sur mobiles
+ 1. Application client mobile  
+
+ 
