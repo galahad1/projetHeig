@@ -1,36 +1,50 @@
 # Choix sujet #
 
-## Gestionnaire de mots de passes ##
+## Gestionnaire administrative d'une ville ##
 
 Auteurs: Camilo Pineda Serna, Jérémie Zanone, Loan Lassalle, Luana Martelli, Tano Iannetta
 et Wojciech Myszkorowski
 
-Pour notre projet nous proposons de réaliser un gestionnaire de mots de passes.
+Notre projet à pour but de gérer les propositions des citoyens, la géstion d'évenements dans une ville.
+
+Il est à noter que nous réalisons la partie `administrative` de l'application; c'est-à-dire que notre projet sera utilisé par la ville et non pas par les citoyens de la ville. Nous gardons l'application mobile client comme fonctionnalité future, qui n'entre pas dans le cadre du cours `PRO`.
+
 
 Nous avons en tête plusieurs fonctionnalités:
 
 ### Fonctionalités principales ###
-1. Stocker, trier et organiser les mots de passes
+1. Utilisation d'une carte interactive. Nous générerons des coordonnées par catégorie et ainsi ajouterons des flags sur la carte.
 
-2. Génération de mots de passes suivant plusieurs modes
-	* l'utilisateur choisit les paramètres de la génération (nombre de chiffres, nombres de lettres, etc.)
-	* l'utilisateur ne choisit pas de paramètres et un mot de passe fort est généré par notre algorithme
-	* l'utilisateur choisit une phrase de base. La phrase est ensuite découpée et convertie en mot de passe selon un algorithme prédéfinit.
+2. Gestion des comptes des utilisateurs
 
-3. Chiffrer du texte (style notes)
+3. Gestion des notifications faites par les utilisateurs
+	* Réparations/dégats
+	* Accidents
 
-4. Envoie d'email lors de plusieures saisies erronées du mot de passe maître
+4. Recensement des propositions faites par les citoyens
+ 	* Projets (exemple: garderie)
 
-5. Date d'expiration des mots de passes
+5. Ajout d’événements dans la ville
+
+6. Ajout de lieu dans la ville
+
+7. Ajout de news
+
+8. Gestion d'un agenda
+
+9. Rubriques
+	* Information
+	* Évenements  
+	* Travaux
+	* Accidents
+	* Statistiques
+	* Services publiques
 
 ### Fonctionnalités supplémentaires (suivant possibilité) ###
 
-6. Chiffrement de pièces jointes
+10. Conversion en PDF afin d'avoir un rapport sur un points précis
 
-7. Analyse de résistance de mots de passes
-
-8. Double authentification (nonce ou fichier annexe)
 
 ### Fonctionnalité future ###
 
-9. Plugin navigateurs web
+9. Application client sur mobiles
