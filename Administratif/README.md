@@ -12,6 +12,24 @@ Nous voulons implémenter une application permettant à l'administration d'une r
 
 
 ### Fonctionnalités principales  
+#### Organisation des propositions  
+1. Gestion dans une base de données de toutes les propositions/notifications remontées par les citoyens    
+	* Les propositions appartiendront à une catégorie (accident, demande de réparation, évènement, ...)  
+	* L'utilisateur de notre application administrative pourra gérer les catégories. D'ailleurs, celles des citoyens ne sont pas forcément les mêmes que celles des utilisateurs de notre application (à traiter, proposition en cours de traitement, wontfix, ...)  
+* Recensement, statistiques des propositions faites par les citoyens  
+	* Projets proposés (exemple: garderie)  
+	* chantiers en cours  
+* Gestion d'un agenda  
+	* pour les chantiers par exemple  
+* Gestion des notifications faites par les utilisateurs  
+	* Réparations/dégâts  
+	* Accidents  
+	* Information d'évènements  
+* Ajout d’événements de la ville  
+* Ajout de lieu d'intérêts de la ville  
+* Ajout de news
+
+
 ####  Implémentation d'une carte interactive  
 1. Affichage interactif de la carte (zoom, déplacement manuel, déplacement par recherche de coordonnées)  
 * génération de coordonnées de propositions    
@@ -20,46 +38,23 @@ Nous voulons implémenter une application permettant à l'administration d'une r
 * filtre des propositions par date  
 * coloriage de la carte selon des critères de secteurs  
 
-#### Organisation des propositions  
-1. les propositions appartiendront à une catégorie (accident, demande de réparation, évènement, ...)  
-	* les catégories des citoyens ne sont pas forcément les mêmes que celles des utilisateurs de notre application (proposition en cours de traitement, wontfix, ...)  
-* Gestion des comptes des utilisateurs  
-	* avec une hiérarchie  
-
-* Gestion des notifications faites par les utilisateurs  
-	* Réparations/dégâts  
-	* Accidents  
-	* Information d'évènements  
-
-* Recensement, statistiques des propositions faites par les citoyens
- 	* Projets proposés (exemple: garderie)
-	* chantiers en cours  
-
-1. Ajout d’événements dans la ville  
-
-1. Ajout de lieu dans la ville
-
-1. Ajout de news
-
-1. Gestion d'un agenda
 
 #### GUI  
-1. Rubriques sélectionnables
-	* Information
+1. Filtres des éléments à afficher sur la carte  
+	* Information générales  
 	* Évènements  
 	* Travaux
 	* Accidents
 	* Statistiques
 	* Services publiques
 * La carte avec les boutons d'interaction  
+* Fenêtre de gestion des propositions (marquer en cours, fini, ...)
+* Option pour ajouter des lieux/icones  
+
 
 ### Fonctionnalités supplémentaires (suivant possibilité)  
-
 1. génération de fichiers PDF afin d'avoir un rapport ou des statistiques sur une catégorie précise  
-
+* Dessins sur la carte  (cercles, lignes, texte)  
 
 ### Fonctionnalité future  
-
  1. Application client mobile  
-
- 
