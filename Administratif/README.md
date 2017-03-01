@@ -20,13 +20,14 @@ Nous voulons implémenter une application permettant à l'administration d'une r
 	* Projets proposés (exemple: garderie)  
 	* chantiers en cours  
 * Gestion d'un agenda  
-	* pour les chantiers par exemple  
+	* pour toutes les proprositions/notifications chacune a une date de création et pour les travaux une date de fin estimé.
+	* organisation de la carte peut etre par date (jour principalement).
 * Gestion des notifications faites par les utilisateurs  
 	* Réparations/dégâts  
-	* Accidents  
+	* Accidents 
 	* Information d'évènements  
 * Ajout d’événements de la ville  
-* Ajout de lieu d'intérêts de la ville  
+* (Ajout de lieu d'intérêts de la ville  ) ... |pas sur que se soit vraiment notre but..à discuter ulterieurement je pense|
 * Ajout de news
 
 
