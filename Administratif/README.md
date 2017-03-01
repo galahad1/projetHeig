@@ -4,7 +4,7 @@
 
 Auteurs: Camilo __Pineda Serna__, Jérémie __Zanone__, Loan __Lassalle__, Luana __Martelli__, Tano __Iannetta__ et Wojciech __Myszkorowski__  
 
-Notre projet à pour but de gérer des propositions de citoyens, la gestion d'évènements officiels, la génération de rapports et de statistiques d'une ville, avec l'aide visuelle d'une carte interactive.  
+Notre projet a pour but de gérer des propositions de citoyens, la gestion d'évènements officiels, la génération de rapports et de statistiques d'une ville, avec l'aide visuelle d'une carte interactive.  
 
 Nous voulons implémenter une application permettant à l'administration d'une ville d'organiser les propositions (de réparations, d'évènements, ...) des citoyens et lui permettre d'avoir une vue spécifique sur une carte de la ville, afin de mieux prendre des décisions (de réaliser des chantiers, d'informer les divers départements, ...).  
 
@@ -20,11 +20,11 @@ Nous voulons implémenter une application permettant à l'administration d'une v
 	* Projets proposés (exemple: garderie)  
 	* Chantiers en cours  
 * Gestion d'un agenda  
-	* Pour toutes les proprositions/notifications chacune a une date de création et pour les travaux une date de fin estimé.
+	* Pour toutes les proprositions/notifications chacune a une date de création et pour les travaux une date de fin estimée.
 	* Organisation de la carte, peut être par date (jour principalement).
 * Gestion des notifications faites par les utilisateurs  
 	* Réparations/dégâts  
-	* Accidents 
+	* Accidents
 	* Information d'évènements
 * Filtrage des notifications
 * Ajout d’événements de la ville  
