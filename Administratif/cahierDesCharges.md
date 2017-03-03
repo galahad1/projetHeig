@@ -1,3 +1,25 @@
+# brouillon CC.
+> le vrai est dessous
+
+il se logue  
+il peut choisir les rubriques a afficher  
+on peut zoomer sur la carte  
+tout a des priorités : haute, dérangeant, faible  
+notifications en attente : comptes privilégiés (genre les notifs accident proposées par les TCS sont directement validés)  
+pdf : selon la vue active : résumé et un fichier par "event", si plus que 5 events à générer, demande confirmation ?  
+calendrier : tu cliques sur la date et cela t'affiche tout ce qui s'est passé à cette date.  
+pdf : détail des rubriques. une page par rubrique ? une page de résumé ?
+
+citoyen propose manifestation  
+elle est a modérée : acceptée ->
+
+
+filtre de grossiertées, max 2 par jour, coté client ??
+
+
+
+
+
 # __Cahier des charges__ du Gestionnaire de mots de passe  
 
 ## 1 But du cahier des charges  
@@ -42,7 +64,7 @@ Le but de notre logiciel est de permettre à l'utilisateur de stocker des mots d
 
     __mode 2__:	L'utilisateur ne choisit pas de paramètres et un mot de passe _fort_ est généré par notre algorithme  
         * l'algorithme tire un nombre suffisant de caractères au hasard  
-         
+
     3.	L'utilisateur choisit une phrase de base. La phrase est ensuite découpée et convertie en mot de passe selon un algorithme prédéfinit.
 3.	Chiffrer du texte
 4.	Envoie d’email lors de plusieurs saisies erronées du mot de passe maître
