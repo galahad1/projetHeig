@@ -101,11 +101,12 @@ Maquettes fonctionnelles (dessins et explications permettant de comprendre comme
 1. Gestion de plusieurs comptes utilisateurs  
 2. Dessins et coloriages sur la carte selon des critères de secteurs (cercles, lignes, texte)  
 3. Ajout d'un screenshot dans le PDF de l'état de la carte 
+4. calcul de chemin les plus court en évitant les zones accidenté ou en travaux.
 
 ## 1.3	Fonctionnalité future
 
  1. Application client mobile
- 	* Ajout d'un filtre à spam pour supprimer les messages non désiré 
+ 	* Ajout d'un filtre à spam pour supprimer les messages non désiré.
 
 
 
@@ -121,6 +122,7 @@ Mettre la GUI ici ?
 
 > Description des contraintes que l’outil réalisé subira.
 L'application produite doit être fonctionnelle sur les machines Windows.
+Il faudra avoir accès à une connexion internet avoir d'avoir accès au fichiers osm de la carte.
 
 ## 3.4	Situation actuelle
 
@@ -135,7 +137,7 @@ L'application produite doit être fonctionnelle sur les machines Windows.
 
 ## 3.6	Exigences envers le système
 
-> Description des exigences à validées envers l’outil, des standards techniques, physique et moral du système qui accueillera l’outil.
+> La machine devra etre doter d'au moins 4GB de ram ainsi que d'un processeur de 5 ème génération afin de garantir un fonctionnement fluide de l'application. 
 
 ## 3.7	Architecture centrale
 
