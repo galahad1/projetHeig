@@ -1,21 +1,11 @@
 # brouillon CC.
 > le vrai est dessous
 
-il se logue  
-il peut choisir les rubriques a afficher  
-on peut zoomer sur la carte  
-tout a des priorités : haute, dérangeant, faible  
-notifications en attente : comptes privilégiés (genre les notifs accident proposées par les TCS sont directement validés)  
+
 pdf : selon la vue active : résumé et un fichier par "event", si plus que 5 events à générer, demande confirmation ?  
 calendrier : tu cliques sur la date et cela t'affiche tout ce qui s'est passé à cette date.  
+
 pdf : détail des rubriques. une page par rubrique ? une page de résumé ?
-
-citoyen propose manifestation  
-elle est a modérée : acceptée ->
-
-
-filtre de grossiertées, max 2 par jour, coté client ??
-
 
 
 
@@ -23,7 +13,7 @@ filtre de grossiertées, max 2 par jour, coté client ??
 # __Cahier des charges__ du Gestionnaire administratif d'une ville - Smartcity
 
 
-# Auteurs: Camilo __Pineda Serna__, Jérémie __Zanone__, Loan __Lassalle__, Luana __Martelli__, Tano __Iannetta__ et Wojciech __Myszkorowski__  
+Auteurs: Camilo __Pineda Serna__, Jérémie __Zanone__, Loan __Lassalle__, Luana __Martelli__, Tano __Iannetta__ et Wojciech __Myszkorowski__ 
 
 ## 1 But du cahier des charges  
 Ce cahier des charges décrit les objectifs à atteindre au terme de la réalisation de notre projet.
@@ -33,7 +23,7 @@ Dans le cadre de l'unité « Projet de semestre », nous avons comme tâche de r
 
 
 ## 3 Description du projet 
-Nous voulons implémenter une application permettant à l'administration d'une ville d'organiser les propositions (de réparations, d'évènements, ...) de ses citoyens. Chaque requête doit être validée par un administrateur et ajoutée à une rubrique dédiée. Il est ensuite possible de consulter ces différentes rubriques et de visualiser au moyen d'une carte interactive les endroits concernés. Pour une meilleure visibilité, chaque rubrique est associée à un filtre, rendant ainsi plus aisé la lecture de la carte. Il est aussi possible pour l'adminitrateur de donner des priorités aux événements (haute ou à titre informative) afin de traiter plus efficacement les requêtes. L'utilisateur peut aussi consulter la carte selon une date précise. Finalement, l'administateur peut générer des PDF contenant des informations et statistiques relatives aux événements. 
+Nous voulons implémenter une application permettant à l'administration d'une ville (dans notre cas Lausanne) d'organiser les propositions (de réparations, d'évènements, ...) de ses citoyens. Chaque requête doit être validée par un administrateur et ajoutée à une rubrique dédiée. Il est ensuite possible de consulter ces différentes rubriques et de visualiser au moyen d'une carte interactive les endroits concernés. Pour une meilleure visibilité, chaque rubrique est associée à un filtre, rendant ainsi plus aisé la lecture de la carte. Il est aussi possible pour l'administrateur de donner des priorités aux événements (haute ou à titre informative) afin de traiter plus efficacement les requêtes. L'utilisateur peut aussi consulter la carte selon une date précise. Finalement, l'administrateur peut générer des PDF contenant des informations et statistiques relatives aux événements. 
 
 ## 3.1	Modèle conceptuel de données  
 (Schéma relationnel ??????)
@@ -50,50 +40,35 @@ Maquettes fonctionnelles (dessins et explications permettant de comprendre comme
 ## 4 Fonctionnalités principales  
 
 1. Gestion, dans une base de données, de toutes les propositions/notifications remontées par les citoyens    
-	* Les propositions appartiendront à une catégorie (accident, demande de réparation, évènement, ...)  
+	* Les propositions appartiendront à une catégorie (accidents, évènements, ...)  
 	* L'utilisateur de notre application administrative pourra gérer les catégories. D'ailleurs, celles des citoyens ne sont pas forcément les mêmes que celles des utilisateurs de notre application (à traiter, proposition en cours de traitement, wontfix, ...) 
-	* Un événement à une priorité (haute, dérangeant, faible)  
+	* Un événement a une priorité (haute, dérangeant, faible)  
 * Gestion d'un agenda  
-	* Pour toutes les proprositions/notifications chacune a une date de création et pour les travaux une date de fin estimée.
-	* Organisation de la carte, peut être par date (jour principalement).
+	* Pour toutes les propositions/notifications chacune a une date de création et pour les travaux une date de fin estimée.
+	* Organisation de la carte selon les filtres des rubriques et de la date (jour principalement).
 * Gestion des notifications faites par les utilisateurs  
 	* Réparations/dégâts  
 	* Accidents
 	* Information d'évènements
 * Filtrage des notifications
 	* Gestion des événements (acceptation de notifications, suppression...)
+  * Comptes privilégiés (par exemple les accidents proposés par les TCS sont directement validés) 
 * Ajout d’événements de la ville  
-* Ajout de lieu d'intérêts de la ville
-* Ajout de informations générales
+* Ajout d'informations générales
 
 
-2. Implémentation d'une carte interactive  
-* Affichage interactif de la carte (zoom, déplacement manuel, déplacement par recherche de coordonnées)  
-* Génération de coordonnées de propositions    
-* Ajout d'icones (flags) sur la carte  
-* Gestion des secteurs sur la carte (quartiers, communes, zone gérée par le service de police de l'ouest lausannois, ...)
-* Filtre des propositions par date  
+2. Implémentation d'une carte interactive
+* Affichage interactif de la carte (zoom, déplacement manuel)
+* Ajout d'icônes (pins) sur la carte pour localiser les événements 
+* Filtre des événements par date  
 
 
-3. GUI  
-* Filtres des éléments à afficher sur la carte selon les différentes catégories  
-	* Information générales  
-	* Évènements  
-	* Travaux
-	* Accidents
-	* Statistiques
-	* Services publiques
-* Ajout de ping sur la carte selon les événements
-* La carte avec les boutons d'interaction  
-* Fenêtre de gestion des propositions (marquer en cours, fini, ...)
-* Option pour ajouter des lieux/icones  
 
-
-4. Génération d'un PDF 
+3. Génération d'un PDF 
 * Génération d'un PDF selon un filtre choisi 
 * Contient le résumé des informations pratiques d'une catégorie (contexte, date, message...)
 * Statistiques basés sur les données archivées selon le filtre choisi
-* Si plusieurs filtres ont été selectionné, alors une option est de génération automatique de plusieurs PDF  
+* Si plusieurs filtres ont été sélectionné, alors une option est de génération automatique de plusieurs PDF  
 
 
 ## 1.2	Fonctionnalités supplémentaires (suivant possibilité)  
@@ -106,23 +81,40 @@ Maquettes fonctionnelles (dessins et explications permettant de comprendre comme
 ## 1.3	Fonctionnalité future
 
  1. Application client mobile
- 	* Ajout d'un filtre à spam pour supprimer les messages non désiré.
+ 	* Ajout d'un filtre à spam pour supprimer les messages non désirées et/ou restreindre le nombre de requêtes par citoyen sur une période de temps. Ainsi qu'un contrôle de grossiertées.
 
 
 
 
 
-## 1.7	Description de l'intrface graphique
-Mettre la GUI ici ? 
+## 1.7	Description de l'interface graphique
+
+La fenêtre principale sera composée:
+
+- En haut, un menu permettant d'ajouter des événements, apporter des modifications, générer un fichier PDF ainsi qu'une modération des événements (propositions) en attente de validation reçu des citoyens avec un compteur (notification). Chacune de ces fonctionnalités sera gérées dans une autre fenêtre.
+
+- Sur la gauche, les différentes rubriques (filtres) organisées de la manière suivante:
+    - Traffic
+        - Accidents
+        - Travaux
+    - Culture
+        - Manifestations
+    - Chantiers
+        - Rénovations
+        - Constructions
+    - Doléances
+  
+     Elles pourront être cochées afin de les visualiser au centre du programme, d'apparaitre sur la carte sous forme de pin ainsi que de déterminer les informations lors de la génération du PDF.
+
+- Sur la droite la carte composée de tuiles fournies par OpenStreetMap (OSM) liée à un calendrier pour le filtrage des événements sur le plan temporel.
 
 
 
 
 ## 3.3	Contraintes
 
-> Description des contraintes que l’outil réalisé subira.
 L'application produite doit être fonctionnelle sur les machines Windows.
-Il faudra avoir accès à une connexion internet avoir d'avoir accès au fichiers osm de la carte.
+Il faudra avoir accès à une connexion internet afin d'avoir accès aux tuiles OSM de la carte.
 
 ## 3.4	Situation actuelle
 
@@ -137,12 +129,13 @@ Il faudra avoir accès à une connexion internet avoir d'avoir accès au fichier
 
 ## 3.6	Exigences envers le système
 
-> La machine devra etre doter d'au moins 4GB de ram ainsi que d'un processeur de 5 ème génération afin de garantir un fonctionnement fluide de l'application. 
+La machine devra etre doter d'au moins 4GB de RAM ainsi que d'un processeur de 5 ème génération afin de garantir un fonctionnement fluide de l'application. 
 
 ## 3.7	Architecture centrale
 
-> Modèle conceptuel de données, schéma, dessin ou plan de l’architecture technique du système.
-![Alt text](/../Database/smartcity_diagram.png "Smartcity_diagram")
+>Modèle conceptuel de données, schéma, dessin ou plan de l’architecture technique du système.
+
+![Alt text](../Database/smartcity_diagram.png "Smartcity_diagram")
 
 
 ## 3.8	Planning prévisionnel

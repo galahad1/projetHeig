@@ -1,7 +1,6 @@
 # Projet HEIG-VD #
 
-Auteurs: Camilo Pineda�Serna, J�r�mie Zanone, Loan Lassalle, Luana Martelli, Tano Iannetta
-          et Wojciech Myszkorowski
+Auteurs: Camilo Pineda Serna, Jérémie Zanone, Loan Lassalle, Luana Martelli, Tano Iannetta et Wojciech Myszkorowski
 
 
 ## Consignes pour le nom des fichiers et la manière de coder ##
