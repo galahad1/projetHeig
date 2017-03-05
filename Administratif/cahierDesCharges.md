@@ -142,6 +142,8 @@ Il faudra avoir accès à une connexion internet avoir d'avoir accès au fichier
 ## 3.7	Architecture centrale
 
 > Modèle conceptuel de données, schéma, dessin ou plan de l’architecture technique du système.
+![Alt text](/../Database/smartcity_diagram.png "Smartcity_diagram")
+
 
 ## 3.8	Planning prévisionnel
 
