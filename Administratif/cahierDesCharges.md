@@ -57,10 +57,13 @@ Ils peuvent également être accompagnés de __Notes__ ou d'__Avis__.
 
 
 ### 4.8 Génération d'un PDF
-* Génération d'un PDF selon un filtre choisi
-* Contient le résumé des informations pratiques d'une catégorie (contexte, date, message...)
-* Statistiques basées sur les données archivées selon le filtre choisi
-* Si plusieurs filtres ont été sélectionnés, alors une option est de génération automatique de plusieurs PDF  
+* Génération d'un PDF selon une rubrique choisie
+* Ces PDF sont principalement destinés aux départements reliés aux rubriques, afin de garder des traces des événements. On peut imaginer qu'une fois générés, ils sont envoyés aux personnes concernées par l'administrateur.
+* Un PDF est organisé en deux parties 
+	* La première partie est commune à tous les types de rubriques et contient les informations principales (nom de la rubrique, nom de l'événement, lieu, date, priorité et texte détaillant l'événement)
+	* La deuxième partie est présentée sous la forme de statistiques. Elles sont personnalisées selon la rubrique. Par exemple, s'il s'agit d'un événement relatif à des travaux, on affiche le temps moyen de la durée des chantiers. S'il s'agit en revanche de doléances, on affiche plutôt le nombre de commentaires qui ont été postés à ce sujet, et ainsi de suite pour les autres rubriques.
+* Si plusieurs filtres ont été sélectionnés, alors une option est de générer automatiquement plusieurs PDF 
+
 
 
 ###	 Fonctionnalités supplémentaires (suivant possibilité)    
