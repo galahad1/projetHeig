@@ -83,9 +83,6 @@ Maquettes fonctionnelles (dessins et explications permettant de comprendre comme
  	* Ajout d'un filtre à spam pour supprimer les messages non désirées et/ou restreindre le nombre de requêtes par citoyen sur une période de temps. Ainsi qu'un contrôle de grossiertées.
 
 
-
-
-
 ## 1.7	Description de l'interface graphique
 
 La fenêtre principale sera composée:
@@ -112,8 +109,8 @@ La fenêtre principale sera composée:
 
 ## 3.3	Contraintes
 
-L'application produite doit être fonctionnelle sur les machines Windows.
-Il faudra avoir accès à une connexion internet afin d'avoir accès aux tuiles OSM de la carte.
+L'application produite doit être fonctionnelle sur les machines Windows. Elle devra etre exectuable depuis un cd/dvd.
+
 
 ## 3.4	Situation actuelle
 
@@ -124,11 +121,9 @@ Il faudra avoir accès à une connexion internet afin d'avoir accès aux tuiles 
 > Description de la situation future avec l’outil réalisé et mis en service.
 
 
-
-
 ## 3.6	Exigences envers le système
 
-La machine devra etre doter d'au moins 4GB de RAM ainsi que d'un processeur de 5 ème génération afin de garantir un fonctionnement fluide de l'application. 
+La machine devra etre doter d'au moins 4GB de RAM ainsi que d'un processeur de 5 ème génération afin de garantir un fonctionnement fluide de l'application. Il faudra avoir accès à une connexion internet afin d'avoir accès aux tuiles OSM de la carte.
 
 ## 3.7	Architecture centrale
 
@@ -142,17 +137,17 @@ Les dates de début, de fin et des étapes principales seront mises en évidence
 Ces éléments peuvent être repris de la fiche signalétique
 
 >Phase	Date début	Date fin  
-Administration		  
-Dossier de projet		
-Analyse		
-Conception		
-Réalisation		
-Test		
-Documentation		
-Rendu		
+* L'Administration s'est fait au début du projet avec l'attribution du chef de projet M.Iannetta ainsi que la formation du groupe.  
+* Le Dossier de projet se fera tout au long du projet afin de documenter et d'expliquer les differentes fonctionnalités et decisions prises tout au long du projet.	
+* L'Analyse	a été faite en meme temps que le cahier des charges et se fera encore lors au début de la conception lors de la prise en main des premieres difficultées qui apparaitront.
+* La Conception	sera une des grandes parties du projet qui va nous occuper environs 7 semaines.
+* La Réalisation		
+* Les test se feront le plus tot possible mais nous éspérons avoir 10 jours avant le rendu pour finaliser et tester notre projet.
+* La documentation sera faite pour tous le code faite par nos soins.
+* Le rendu ce fera le 30 mai 2017	
 
 ## 3.9	Organisation
 
-Description de l’organisation du projet, des référents et responsables
+Voir schéma de Gantt en annexe, Nous sommes repartis le travail en taches qui étaient le plus indépendant possible, cela dans un projet comme celui-ci il arrive vite que 2 taches se regroupent. Nous avons donc essayé d'ajouter des taches de liasions entre les differentes fonctionnalité afin de ne pas sous-estimer le travail de mise en commun entre 2 tâches différente.
 
 ## 7	Annexes
