@@ -1,93 +1,87 @@
-# brouillon CC.
-> le vrai est dessous
+# Cahier des charges - __Smartcity__
+
+Auteurs : Camilo __Pineda Serna__, Jérémie __Zanone__, Loan __Lassalle__, Luana __Martelli__, Tano __Iannetta__ et Wojciech __Myszkorowski__
+
+## 1 But du projet
+Notre projet a pour but de gérer des propositions/requêtes de citoyens, la gestion d'évènements officiels, la génération de rapports et de statistiques d'une ville, avec l'aide visuelle d'une carte interactive.  
 
 
-pdf : selon la vue active : résumé et un fichier par "event", si plus que 5 events à générer, demande confirmation ?  
-calendrier : tu cliques sur la date et cela t'affiche tout ce qui s'est passé à cette date.  
+## 2 Description du projet
+Nous voulons implémenter une application permettant à l'administration d'une ville (dans notre cas Lausanne) d'organiser les propositions / requêtes (de réparations, d'évènements, ...) de ses citoyens. Chaque requête doit être validée par un administrateur et ajoutée à une rubrique dédiée. Il est ensuite possible de consulter ces différentes rubriques et de visualiser au moyen d'une carte interactive les endroits concernés. Pour une meilleure visibilité, chaque rubrique est associée à un filtre, rendant ainsi plus aisée la lecture de la carte. Il est aussi possible pour l'administrateur de donner des priorités aux évènements (haute ou à titre informatf) afin de traiter plus efficacement les requêtes. L'utilisateur peut aussi consulter la carte selon une date précise. Finalement, l'administrateur peut générer des PDF contenant des informations et statistiques relatives aux événements et aux rubriques.
 
-pdf : détail des rubriques. une page par rubrique ? une page de résumé ?
+## 3	Modèle conceptuel de données
+![diagramme de Smartcity](../Database/smartcity_diagram_ea.png "Smartcity_diagram")
 
-
-
-
-# __Cahier des charges__ du Gestionnaire administratif d'une ville - Smartcity
-
-
-Auteurs: Camilo __Pineda Serna__, Jérémie __Zanone__, Loan __Lassalle__, Luana __Martelli__, Tano __Iannetta__ et Wojciech __Myszkorowski__ 
-
-## 1 But du cahier des charges  
-Ce cahier des charges décrit les objectifs à atteindre au terme de la réalisation de notre projet.
-
-## 2 Situation de départ  
-Dans le cadre de l'unité « Projet de semestre », nous avons comme tâche de réaliser un projet par équipes. Notre projet a pour but de gérer des propositions de citoyens, la gestion d'évènements officiels, la génération de rapports et de statistiques d'une ville, avec l'aide visuelle d'une carte interactive.
+Ce diagramme présente les entités de notre projet. Au centre, l'entité __Evenement__ représente les propositions / requête à administrer. Les évènements :
+* appartiennent à une __RubriqueEnfant__,
+	* ces dernières peuvent être regroupées en des __RubriqueParent__,  
+* concernent une __Adresse__, mais surtout deux coordonnées __DMS__ (degré-minute-seconde) pour la latitude et la longitude,
+	* ces coordonnées seront employées afin de visualiser l'évènement sur la carte interactive,   
+* disposent d'un __Status__,  
+* ont une __Priorité__,    
+* sont proposés par des __Utilisateur__.    
+Ils peuvent également être accompagnés de __Notes__ ou d'__Avis__.
 
 
-## 3 Description du projet 
-Nous voulons implémenter une application permettant à l'administration d'une ville (dans notre cas Lausanne) d'organiser les propositions (de réparations, d'évènements, ...) de ses citoyens. Chaque requête doit être validée par un administrateur et ajoutée à une rubrique dédiée. Il est ensuite possible de consulter ces différentes rubriques et de visualiser au moyen d'une carte interactive les endroits concernés. Pour une meilleure visibilité, chaque rubrique est associée à un filtre, rendant ainsi plus aisé la lecture de la carte. Il est aussi possible pour l'administrateur de donner des priorités aux événements (haute ou à titre informative) afin de traiter plus efficacement les requêtes. L'utilisateur peut aussi consulter la carte selon une date précise. Finalement, l'administrateur peut générer des PDF contenant des informations et statistiques relatives aux événements. 
 
-## 3.1	Modèle conceptuel de données 
-![Alt text](../Database/smartcity_diagram_ea.png "Smartcity_diagram")
+## 4 Fonctionnalités
+### Fonctionnalités principales  
 
-> Modèle conceptuel de données (MCD) – et ceci même si le projet ne comporte pas de base de données !  
-Description des données traitées. Modèle conceptuel (MCD) de la base de données, description des « Entités » et des liens entre elles.
+#### 4.1 Gestion, dans une base de données, de toutes les propositions/notifications remontées par les citoyens    
+* Les propositions appartiendront à une rubrique (accidents, évènements, ...)  
+* L'utilisateur de notre application administrative pourra gérer les rubriques. D'ailleurs, celles des citoyens ne sont pas forcément les mêmes que celles des utilisateurs de notre application (à traiter, proposition en cours de traitement, refusée, ...)
+* Un événement a une priorité  
 
-## 3.2	Maquette fonctionnelles  
+#### 4.2 Gestion d'un agenda  
+* Pour tous les évènements/propositions/requêtes, chacun a une date de création et pour les travaux une date de fin estimée.
+* Organisation de la carte selon les filtres des rubriques et de la date (granularité au jour principalement).
 
-> Maquettes d’interface utilisateur. A ce stade il ne doit pas y avoir de détails ; il s’agit de montrer le nombre d’écrans/fenêtres différents, les informations qu’ils contiendront et leur organisation générale  
-Maquettes fonctionnelles (dessins et explications permettant de comprendre comment le logiciel fonctionnera).
+#### 4.3 Gestion des notifications faites par les utilisateurs  
+* Réparations/dégâts  
+* Accidents
+* Information d'évènements
 
-## 4 Fonctionnalités principales  
+#### 4.4 Filtrage des notifications
+* Gestion des évènements (acceptation de notifications, suppression...)
+* Comptes privilégiés (par exemple, les accidents proposés par les TCS sont directement validés)
 
-1. Gestion, dans une base de données, de toutes les propositions/notifications remontées par les citoyens    
-	* Les propositions appartiendront à une catégorie (accidents, évènements, ...)  
-	* L'utilisateur de notre application administrative pourra gérer les catégories. D'ailleurs, celles des citoyens ne sont pas forcément les mêmes que celles des utilisateurs de notre application (à traiter, proposition en cours de traitement, wontfix, ...) 
-	* Un événement a une priorité (haute, dérangeant, faible)  
-* Gestion d'un agenda  
-	* Pour toutes les propositions/notifications chacune a une date de création et pour les travaux une date de fin estimée.
-	* Organisation de la carte selon les filtres des rubriques et de la date (jour principalement).
-* Gestion des notifications faites par les utilisateurs  
-	* Réparations/dégâts  
-	* Accidents
-	* Information d'évènements
-* Filtrage des notifications
-	* Gestion des événements (acceptation de notifications, suppression...)
-  * Comptes privilégiés (par exemple les accidents proposés par les TCS sont directement validés) 
-* Ajout d’événements de la ville  
-* Ajout d'informations générales
+#### 4.5 Ajout d’évènements de la ville  
+
+#### 4.6 Ajout d'informations générales
 
 
-2. Implémentation d'une carte interactive
+### 4.7 Implémentation d'une carte interactive
 * Affichage interactif de la carte (zoom, déplacement manuel)
-* Ajout d'icônes (pins) sur la carte pour localiser les événements 
+* Ajout d'icônes (pins) sur la carte pour localiser les événements
 * Filtre des événements par date  
 
 
-
-3. Génération d'un PDF 
-* Génération d'un PDF selon un filtre choisi 
+### 4.8 Génération d'un PDF
+* Génération d'un PDF selon un filtre choisi
 * Contient le résumé des informations pratiques d'une catégorie (contexte, date, message...)
-* Statistiques basés sur les données archivées selon le filtre choisi
-* Si plusieurs filtres ont été sélectionné, alors une option est de génération automatique de plusieurs PDF  
+* Statistiques basées sur les données archivées selon le filtre choisi
+* Si plusieurs filtres ont été sélectionnés, alors une option est de génération automatique de plusieurs PDF  
 
 
-## 1.2	Fonctionnalités supplémentaires (suivant possibilité)  
+###	 Fonctionnalités supplémentaires (suivant possibilité)    
 
-1. Gestion de plusieurs comptes utilisateurs  
-2. Dessins et coloriages sur la carte selon des critères de secteurs (cercles, lignes, texte)  
-3. Ajout d'un screenshot dans le PDF de l'état de la carte 
-4. calcul de chemin les plus court en évitant les zones accidenté ou en travaux.
-
-## 1.3	Fonctionnalité future
-
- 1. Application client mobile
- 	* Ajout d'un filtre à spam pour supprimer les messages non désirées et/ou restreindre le nombre de requêtes par citoyen sur une période de temps. Ainsi qu'un contrôle de grossiertées.
+* Gestion de plusieurs comptes utilisateurs  
+* Dessins et coloriages sur la carte selon des critères de secteurs (cercles, lignes, texte)  
+* Ajout d'une capture d'écran dans le PDF de l'état de la carte
+* calcul de chemin le plus court en évitant les zones accidentées ou en travaux.  
 
 
-## 1.7	Description de l'interface graphique
+###	 Fonctionnalité future  
+
+ * Application client mobile
+ 	* Ajout d'un filtre à spam pour supprimer les messages non désirés ou restreindre le nombre de requêtes par citoyen sur une période de temps. Ainsi qu'un contrôle de grossièretés.  
+
+
+## 5	Description de l'interface graphique
 
 La fenêtre principale sera composée:
 
-- En haut, un menu permettant d'ajouter des événements, apporter des modifications, générer un fichier PDF ainsi qu'une modération des événements (propositions) en attente de validation reçu des citoyens avec un compteur (notification). Chacune de ces fonctionnalités sera gérées dans une autre fenêtre.
+- En haut, un menu permettant d'ajouter des évènements, apporter des modifications, générer un fichier PDF ainsi qu'une modération des évènements (propositions) en attente de validation reçus des citoyens avec un compteur (notification). Chacune de ces fonctionnalités sera gérée dans une autre fenêtre.
 
 - Sur la gauche, les différentes rubriques (filtres) organisées de la manière suivante:
     - Traffic
@@ -99,55 +93,34 @@ La fenêtre principale sera composée:
         - Rénovations
         - Constructions
     - Doléances
-  
-     Elles pourront être cochées afin de les visualiser au centre du programme, d'apparaitre sur la carte sous forme de pin ainsi que de déterminer les informations lors de la génération du PDF.
 
-- Sur la droite la carte composée de tuiles fournies par OpenStreetMap (OSM) liée à un calendrier pour le filtrage des événements sur le plan temporel.
+     Elles pourront être cochées afin de les visualiser au centre du programme, d'apparaitre sur la carte sous forme de _pin_ ainsi que de déterminer les informations lors de la génération du PDF.
 
-
+- Sur la droite, la carte composée de tuiles fournies par OpenStreetMap (OSM) liée à un calendrier pour le filtrage des événements sur le plan temporel.
 
 
-## 3.3	Contraintes
-
-L'application produite doit être fonctionnelle sur les machines Windows. Elle devra etre exectuable depuis un cd/dvd.
 
 
-## 3.4	Situation actuelle
+## 6	Contraintes et exigences envers le système
+L'application produite doit être fonctionnelle sur les machines Windows. Elle devra être exécutable depuis un CD/DVD.  
 
-> Description de la situation actuelle de l’outil utilisé.
-
-## 3.5	Situation future
-
-> Description de la situation future avec l’outil réalisé et mis en service.
+La machine exécutant le programme devra être dotée d'au moins 4GB de RAM ainsi que d'un processeur de 5e génération afin de garantir un fonctionnement fluide de l'application. Il faudra avoir accès à une connexion internet afin d'avoir accès aux tuiles OSM de la carte.  
 
 
-## 3.6	Exigences envers le système
+## 7	Planning prévisionnel
 
-La machine devra etre doter d'au moins 4GB de RAM ainsi que d'un processeur de 5 ème génération afin de garantir un fonctionnement fluide de l'application. Il faudra avoir accès à une connexion internet afin d'avoir accès aux tuiles OSM de la carte.
-
-## 3.7	Architecture centrale
-
->Modèle conceptuel de données, schéma, dessin ou plan de l’architecture technique du système.
-
-
-## 3.8	Planning prévisionnel
-
-> Planning prévisionnel que le soumissionnaire devra respecter.
-Les dates de début, de fin et des étapes principales seront mises en évidence.
-Ces éléments peuvent être repris de la fiche signalétique
-
->Phase	Date début	Date fin  
-* L'Administration s'est fait au début du projet avec l'attribution du chef de projet M.Iannetta ainsi que la formation du groupe.  
-* Le Dossier de projet se fera tout au long du projet afin de documenter et d'expliquer les differentes fonctionnalités et decisions prises tout au long du projet.	
-* L'Analyse	a été faite en meme temps que le cahier des charges et se fera encore lors au début de la conception lors de la prise en main des premieres difficultées qui apparaitront.
-* La Conception	sera une des grandes parties du projet qui va nous occuper environs 7 semaines.
+* L'Administration s'est faite au début du projet avec l'attribution du chef de projet M. Iannetta ainsi que la formation du groupe.  
+* Le Dossier de projet se fera tout au long du projet afin de documenter et d'expliquer les différentes fonctionnalités et décisions prises tout au long du projet.
+* L'Analyse	a été faite en même temps que le cahier des charges et se fera encore lors au début de la conception lors de la prise en main des premières difficultés qui apparaitront.
+* La Conception	sera une des grandes parties du projet qui va nous occuper environ 7 semaines.
 * La Réalisation		
-* Les test se feront le plus tot possible mais nous éspérons avoir 10 jours avant le rendu pour finaliser et tester notre projet.
-* La documentation sera faite pour tous le code faite par nos soins.
-* Le rendu ce fera le 30 mai 2017	
+* Les tests se feront le plus tot possible, mais nous espérons avoir 10 jours avant le rendu pour finaliser et tester notre projet.
+* La documentation sera faite pour tout le code et faite par nos soins.
+* Le rendu se fera le 30 mai 2017
 
-## 3.9	Organisation
+## 8	Organisation
 
-Voir schéma de Gantt en annexe, Nous sommes repartis le travail en taches qui étaient le plus indépendant possible, cela dans un projet comme celui-ci il arrive vite que 2 taches se regroupent. Nous avons donc essayé d'ajouter des taches de liasions entre les differentes fonctionnalité afin de ne pas sous-estimer le travail de mise en commun entre 2 tâches différente.
+Voir schéma de Gantt en annexe. Nous nous sommes reparti le travail en tâches qui étaient les plus indépendantes possible, malgré le fait que dans un projet comme celui-ci, il arrive vite que deux tâches se regroupent. Nous avons donc ajouté des tâches de liaison entre les différentes fonctionnalités afin de ne pas sous-estimer le travail de mise en commun entre deux tâches différentes.
 
-## 7	Annexes
+## 9	Annexes
+- schéma de Gantt.  
