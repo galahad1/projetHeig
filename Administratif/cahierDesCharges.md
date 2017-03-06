@@ -25,9 +25,8 @@ Dans le cadre de l'unité « Projet de semestre », nous avons comme tâche de r
 ## 3 Description du projet 
 Nous voulons implémenter une application permettant à l'administration d'une ville (dans notre cas Lausanne) d'organiser les propositions (de réparations, d'évènements, ...) de ses citoyens. Chaque requête doit être validée par un administrateur et ajoutée à une rubrique dédiée. Il est ensuite possible de consulter ces différentes rubriques et de visualiser au moyen d'une carte interactive les endroits concernés. Pour une meilleure visibilité, chaque rubrique est associée à un filtre, rendant ainsi plus aisé la lecture de la carte. Il est aussi possible pour l'administrateur de donner des priorités aux événements (haute ou à titre informative) afin de traiter plus efficacement les requêtes. L'utilisateur peut aussi consulter la carte selon une date précise. Finalement, l'administrateur peut générer des PDF contenant des informations et statistiques relatives aux événements. 
 
-## 3.1	Modèle conceptuel de données  
-(Schéma relationnel ??????)
-Schéma EA 
+## 3.1	Modèle conceptuel de données 
+![Alt text](../Database/smartcity_diagram_ea.png "Smartcity_diagram")
 
 > Modèle conceptuel de données (MCD) – et ceci même si le projet ne comporte pas de base de données !  
 Description des données traitées. Modèle conceptuel (MCD) de la base de données, description des « Entités » et des liens entre elles.
@@ -134,8 +133,6 @@ La machine devra etre doter d'au moins 4GB de RAM ainsi que d'un processeur de 5
 ## 3.7	Architecture centrale
 
 >Modèle conceptuel de données, schéma, dessin ou plan de l’architecture technique du système.
-
-![Alt text](../Database/smartcity_diagram.png "Smartcity_diagram")
 
 
 ## 3.8	Planning prévisionnel
