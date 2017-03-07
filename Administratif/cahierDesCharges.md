@@ -7,7 +7,7 @@ Notre projet a pour but de gérer des propositions/requêtes de citoyens, la ges
 
 
 ## 2 Description du projet
-Nous voulons implémenter une application permettant à l'administration d'une ville (dans notre cas Lausanne) d'organiser les propositions / requêtes (de réparations, d'évènements, ...) de ses citoyens. Chaque requête doit être validée par un administrateur et ajoutée à une rubrique dédiée. Il est ensuite possible de consulter ces différentes rubriques et de visualiser au moyen d'une carte interactive les endroits concernés. Pour une meilleure visibilité, chaque rubrique est associée à un filtre, rendant ainsi plus aisée la lecture de la carte. Il est aussi possible pour l'administrateur de donner des priorités aux évènements (haute ou à titre informatif) afin de traiter plus efficacement les requêtes. L'utilisateur peut aussi consulter la carte selon une date précise. Finalement, l'administrateur peut générer des PDF contenant des informations et statistiques relatives aux événements et aux rubriques.
+Nous voulons implémenter une application permettant à l'administration d'une ville (dans notre cas Lausanne) d'organiser les propositions / requêtes (de réparations, d'évènements, ...) venant de ses citoyens mais également d'elle-même, tout ceci dans un but d'information. Chaque requête doit être validée par un administrateur et ajoutée à une rubrique dédiée. Il est ensuite possible de consulter ces différentes rubriques et de visualiser au moyen d'une carte interactive les endroits concernés. Pour une meilleure visibilité, chaque rubrique est associée à un filtre, rendant ainsi plus aisée la lecture de la carte. Il est aussi possible pour l'administrateur de donner des priorités aux évènements (haute ou à titre informatif) afin de traiter plus efficacement les requêtes. L'utilisateur peut aussi consulter la carte selon une date précise. Finalement, l'administrateur peut générer des PDF contenant des informations et statistiques relatives aux événements et aux rubriques qu'il aura précédemment choisis.
 
 ## 3 Modèle conceptuel de données
 ![diagramme de Smartcity](../Database/smartcity_diagram_ea.png "Smartcity_diagram")
@@ -17,7 +17,7 @@ Ce diagramme présente les entités de notre projet. Au centre, l'entité __Even
 	* ces dernières peuvent être regroupées en des __RubriqueParent__,  
 * concernent une __Adresse__, mais surtout deux coordonnées __DMS__ (degré-minute-seconde) pour la latitude et la longitude,
 	* ces coordonnées seront employées afin de visualiser l'évènement sur la carte interactive,   
-* disposent d'un __Status__,  
+* disposent d'un __Statut__,  
 * ont une __Priorité__,    
 * sont proposés par des __Utilisateur__.    
 Ils peuvent également être accompagnés de __Notes__ ou d'__Avis__.
@@ -50,7 +50,7 @@ Les utilisateurs de l'application pourront effectuer plusieurs types de notifica
 * Information d'évènements
 
 #### 4.4 Filtrage des notifications
-L'administrateur de la ville s'occupera de filtrer les notifications faites par les utilisateurs. Pour certains comptes privilégiés, il n'aura pas besoin de l'intérvension de l'administrateur.
+L'administrateur de la ville s'occupera de filtrer les notifications faites par les utilisateurs. Pour certains comptes privilégiés, il n'aura pas besoin de l'intervention de l'administrateur.
 
 * Gestion des évènements (acceptation de notifications, suppression...)
 * Comptes privilégiés (par exemple, les accidents proposés par les TCS sont directement validés)
@@ -63,11 +63,11 @@ Les utilisateurs pourront référencer une manifestation
 
 
 ### 4.7 Implémentation d'une carte interactive
-L'application comportera une carte interactive avec la quelle il sera possible d'intéragir. Cette carte référencera à l'aide de "tags" les événements ayant lieux dans la ville
+L'application comportera une carte interactive avec laquelle il sera possible d'interagir. Cette carte référencera à l'aide de "tags" les événements ayant lieux dans la ville
 
 * Affichage interactif de la carte (zoom, déplacement manuel)
 * Ajout d'icônes (pins) sur la carte pour localiser les événements
-* Filtre des événements par date  
+* Filtre des événements par date et par rubriques 
 
 
 ### 4.8 Génération d'un PDF
@@ -136,7 +136,7 @@ La machine exécutant le programme devra être dotée d'au moins 4GB de RAM ains
 
 ## 8	Organisation
 
-Voir schéma de Gantt en annexe. Nous nous sommes reparti le travail en tâches qui étaient les plus indépendantes possible, malgré le fait que dans un projet comme celui-ci, il arrive vite que deux tâches se regroupent. Nous avons donc ajouté des tâches de liaison entre les différentes fonctionnalités afin de ne pas sous-estimer le travail de mise en commun entre deux tâches différentes.
+Voir schéma de Gantt en annexe. Nous nous sommes réparties le travail en tâches qui étaient les plus indépendantes possible, malgré le fait que dans un projet comme celui-ci, il arrive vite que deux tâches se regroupent. Nous avons donc ajouté des tâches de liaison entre les différentes fonctionnalités afin de ne pas sous-estimer le travail de mise en commun entre deux tâches différentes.
 
 ## 9	Annexes
-- schéma de Gantt.  
+- Schéma de Gantt.  
