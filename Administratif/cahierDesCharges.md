@@ -5,26 +5,27 @@ Wojciech __Myszkorowski__
 
 
 ## 1 But du projet
-Notre projet a pour but de gérer des requêtes de citoyens, la gestion d'évènements officiels, la génération de rapports et de statistiques d'une ville, avec l'aide visuelle d'une carte interactive.
+Notre projet a pour but de faciliter la gestion d'événements officiels et de référencer des requêtes de citoyens au sein de la ville de Lausanne. Une carte interactive permettra d'avoir un aperçu claire des différentes localisations. L'application pourra générer un rapport au format pdf permettant un suivit des événements.
 
 
 ## 2 Description du projet
-Nous voulons implémenter une application permettant à l'administration d'une ville (dans notre cas Lausanne) d'organiser les requêtes (de réparations, d'évènements, de projet, etc.) venant de ses citoyens. Les administrateurs de l'application pourront ajouté des évènements officiels.
-Chaque requête doit être validée par un administrateur et ajoutée à une rubrique dédiée. Il est ensuite possible de consulter ces différentes rubriques et de visualiser au moyen d'une carte interactive les endroits concernés. Pour une meilleure visibilité, chaque rubrique est associée à un filtre, rendant ainsi plus aisée la lecture de la carte. Il est aussi possible pour l'administrateur de donner des priorités aux évènements (haute ou à titre informatif) afin de traiter plus efficacement les requêtes. L'administrateur peut aussi consulter la carte selon une date précise. Finalement, l'administrateur peut générer des PDF contenant des informations et statistiques relatives aux événements et aux rubriques qu'il aura précédemment choisis.
+Nous voulons implémenter une application permettant à l'administration d'une ville (dans notre cas Lausanne) d'organiser les requêtes (de réparations, d'évènements, de projet, etc.) venant de ses citoyens. Les administrateurs de l'application pourront ajouter des évènements officiels.
+Chaque requête devra être validée par un administrateur et ajoutée à une rubrique dédiée. Il sera ensuite possible de consulter ces différentes rubriques et de visualiser au moyen d'une carte interactive les endroits concernés. Pour une meilleure visibilité, chaque rubrique sera associée à un filtre, rendant ainsi plus aisée la lecture de la carte. Il sera aussi possible pour l'administrateur de donner des priorités aux évènements (haute ou à titre informatif) afin de traiter plus efficacement les requêtes. L'administrateur pourra aussi consulter la carte selon une date précise. Finalement, l'administrateur pourra générer des PDF contenant des informations relatives aux événements et aux rubriques qu'il aura précédemment choisis.
 
 
 ## 3 Modèle conceptuel de données
 ![diagramme de Smartcity](../Database/smartcity_diagram_ea.png "Smartcity_diagram")
 
-Ce diagramme présente les entités de notre projet. Au centre, l'entité __Evenement__ représente les propositions / requête à administrer. Les évènements :
-* appartiennent à une __RubriqueEnfant__,
-	* ces dernières peuvent être regroupées en des __RubriqueParent__,  
-* concernent une __Adresse__, mais surtout deux coordonnées __DMS__ (degré-minute-seconde) pour la latitude et la longitude,
-	* ces coordonnées seront employées afin de visualiser l'évènement sur la carte interactive,   
-* disposent d'un __Statut__,  
-* ont une __Priorité__,    
-* sont proposés par des __Utilisateur__.    
-Ils peuvent également être accompagnés de __Notes__ ou d'__Avis__.
+Ce diagramme présente les entités de notre projet. Au centre, l'entité __Evenement__ représente les requêtes à administrer. Les évènements :
+* appartiennent à une __RubriqueEnfant__.
+	* ces dernières peuvent être regroupées en des __RubriqueParent__.  
+* concernent une __Adresse__, mais surtout deux coordonnées __DMS__ (degré-minute-seconde) pour la latitude et la longitude.
+	* ces coordonnées seront employées afin de visualiser l'évènement sur la carte interactive.   
+* disposent d'un __Statut__.  
+* possèdent une __Priorité__.    
+* sont proposés par des __Utilisateurs__.    
+Ils peuvent également être accompagnés de __commentaires__.
+
 
 
 ## 4 Fonctionnalités
@@ -32,56 +33,57 @@ Ils peuvent également être accompagnés de __Notes__ ou d'__Avis__.
 
 #### 4.1 Gestion, dans une base de données, de toutes les requêtes remontées par les citoyens    
 * Les requêtes appartiendront à une rubrique (accidents, évènements, doléances, etc.)  
-* L'administateur de l'application pourra gérer les rubriques.
-* Un événement aura une priorité donnée par l'administrateur
+* L'administrateur de l'application pourra gérer les rubriques.
+* Un événement aura une priorité donnée par l'administrateur.
 
 #### 4.2 Gestion d'un agenda  
-* Pour toutes les requêtes, chacun aura une date de création et pour les travaux une date de fin estimée.
+* Pour toutes les requêtes, chacune aura une date de création et dans la mesure du possible une date de fin estimée.
 * Organisation de la carte selon les filtres des rubriques et de la date (granularité au jour principalement).
 
 #### 4.3 Gestion des requêtes faites par les utilisateurs  
-Les utilisateurs de l'application pourront effectuer plusieurs types de requêtes, classées selon les rubriques.
+Les utilisateurs de l'application pourront effectuer plusieurs types de requêtes, classées selon les rubriques suivantes:
+
+* Traffic
+	* Accidents
+	* Travaux
 * Chantier
 	* Constructions
 	* Rénovations
 * Culture
 	* Manifestations
 * Doléances
-* Traffic
-	* Accidents
-	* Travaux
 
 #### 4.4 Filtrage des requêtes
-L'administrateur s'occupera de filtrer les requêtes faites par les utilisateurs. Pour certains comptes privilégiés, il n'aura pas besoin de l'intervention de l'administrateur.
+L'administrateur s'occupera de filtrer les requêtes faites par les utilisateurs. Pour certains comptes privilégiés, il n'y aura pas besoin de l'intervention de l'administrateur.
 
 * Gestion des évènements (acceptation de requêtes, refus)
 * Comptes privilégiés (par exemple, les accidents proposés par les TCS sont directement validés)
 
 #### 4.5 Ajout d’évènements de la ville
 
-Les utilisateurs pourront émettre une location d'une nouvelle manifestation qui sera approuvée ou non par l'administateur.
+Les utilisateurs pourront émettre une localisation d'une nouvelle manifestation qui sera approuvée ou non par l’administrateur.
 
 ### 4.7 Implémentation d'une carte interactive
 L'application comportera une carte interactive avec laquelle il sera possible d'interagir. Cette carte référencera à l'aide de "tags" les événements ayant lieux dans la ville
 
 * Affichage interactif de la carte (zoom, déplacement manuel)
-* Ajout d'icônes (pins) sur la carte pour localiser les événements
+* Ajout de différents icônes (pins) sur la carte pour localiser les différents types d'événements
 * Filtre des événements par date et par rubriques
 
 ### 4.8 Génération d'un PDF
 * Génération d'un PDF selon une rubrique choisie
-* Ces PDF seront principalement destinés aux départements reliés aux rubriques, afin de garder des traces des événements. On peut imaginer qu'une fois générés, ils seront envoyés aux personnes concernées par l'administrateur.
+* Ces PDF seront principalement destinés aux départements reliés aux rubriques, afin de garder un historique des événements. On peut imaginer qu'une fois générés, ils seront envoyés aux personnes concernées.
 * Un PDF sera organisé en deux parties
-	* La première partie sera commune à tous les types de rubriques et contiendront les informations principales (nom de la rubrique, nom de l'événement, lieu, date, priorité et texte détaillant l'événement)
+	* La première partie sera commune à tous les types de rubriques et contiendra les informations principales (nom de la rubrique, nom de l'événement, lieu, date, priorité et texte détaillant l'événement)
 	* La deuxième partie sera présentée sous la forme de statistiques. Elles seront personnalisées selon la rubrique. Par exemple, s'il s'agit d'un événement relatif à des travaux, on affichera le temps moyen de la durée des chantiers. S'il s'agit en revanche de doléances, on affichera plutôt le nombre de commentaires qui ont été postés à ce sujet, et ainsi de suite pour les autres rubriques.
-* Si plusieurs filtres ont été sélectionnés, alors une option sera de générer automatiquement plusieurs PDF
+* Si plusieurs filtres ont été sélectionnés, alors une option sera de générer automatiquement plusieurs PDF.
 
 
 ###	 Fonctionnalités supplémentaires (suivant possibilité)    
 
 * Gestion de plusieurs comptes administrateurs
-* Dessins et coloriages sur la carte selon des critères de secteurs (cercles, lignes, texte)  
-* Ajout d'une capture d'écran dans le PDF de l'état de la carte
+* Dessins et coloriages sur la carte selon des critères de secteurs (cercles, lignes, texte).  
+* Ajout d'une capture d'écran dans le PDF de l'état de la carte.
 * Calcul de chemin le plus court en évitant les zones accidentées ou en travaux.  
 
 
@@ -95,7 +97,7 @@ L'application comportera une carte interactive avec laquelle il sera possible d'
 
 La fenêtre principale sera composée:
 
-- En haut, un menu permettant d'ajouter des évènements, apporter des modifications, générer un fichier PDF ainsi qu'une modération des évènements (propositions) en attente de validation reçus des citoyens avec un compteur (notification). Chacune de ces fonctionnalités sera gérée dans une autre fenêtre.
+- En haut, un menu permettant d'ajouter des évènements, apporter des modifications, générer un fichier PDF ainsi qu'une modération des évènements (requêtes) en attente de validation reçus des citoyens avec un compteur (notification). Chacune de ces fonctionnalités sera gérée dans une autre fenêtre.
 
 - Sur la gauche, les différentes rubriques (filtres) organisées de la manière suivante:
     - Traffic
@@ -135,4 +137,3 @@ La machine exécutant le programme devra être dotée d'au moins 4GB de RAM ains
 
 Nous nous sommes répartis le travail en tâches qui étaient les plus indépendantes possible, malgré le fait que dans un projet comme celui-ci, il arrive vite que deux tâches se regroupent. Nous avons donc ajouté des tâches de liaison entre les différentes fonctionnalités afin de ne pas sous-estimer le travail de mise en commun entre deux tâches différentes.
 ![diagramme de Gantt](Gantt.jpg "Gantt")
- 
