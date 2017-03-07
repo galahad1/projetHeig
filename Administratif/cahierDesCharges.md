@@ -7,9 +7,9 @@ Notre projet a pour but de gérer des propositions/requêtes de citoyens, la ges
 
 
 ## 2 Description du projet
-Nous voulons implémenter une application permettant à l'administration d'une ville (dans notre cas Lausanne) d'organiser les propositions / requêtes (de réparations, d'évènements, ...) de ses citoyens. Chaque requête doit être validée par un administrateur et ajoutée à une rubrique dédiée. Il est ensuite possible de consulter ces différentes rubriques et de visualiser au moyen d'une carte interactive les endroits concernés. Pour une meilleure visibilité, chaque rubrique est associée à un filtre, rendant ainsi plus aisée la lecture de la carte. Il est aussi possible pour l'administrateur de donner des priorités aux évènements (haute ou à titre informatf) afin de traiter plus efficacement les requêtes. L'utilisateur peut aussi consulter la carte selon une date précise. Finalement, l'administrateur peut générer des PDF contenant des informations et statistiques relatives aux événements et aux rubriques.
+Nous voulons implémenter une application permettant à l'administration d'une ville (dans notre cas Lausanne) d'organiser les propositions / requêtes (de réparations, d'évènements, ...) de ses citoyens. Chaque requête doit être validée par un administrateur et ajoutée à une rubrique dédiée. Il est ensuite possible de consulter ces différentes rubriques et de visualiser au moyen d'une carte interactive les endroits concernés. Pour une meilleure visibilité, chaque rubrique est associée à un filtre, rendant ainsi plus aisée la lecture de la carte. Il est aussi possible pour l'administrateur de donner des priorités aux évènements (haute ou à titre informatif) afin de traiter plus efficacement les requêtes. L'utilisateur peut aussi consulter la carte selon une date précise. Finalement, l'administrateur peut générer des PDF contenant des informations et statistiques relatives aux événements et aux rubriques.
 
-## 3	Modèle conceptuel de données
+## 3 Modèle conceptuel de données
 ![diagramme de Smartcity](../Database/smartcity_diagram_ea.png "Smartcity_diagram")
 
 Ce diagramme présente les entités de notre projet. Au centre, l'entité __Evenement__ représente les propositions / requête à administrer. Les évènements :
@@ -30,27 +30,41 @@ Ils peuvent également être accompagnés de __Notes__ ou d'__Avis__.
 #### 4.1 Gestion, dans une base de données, de toutes les propositions/notifications remontées par les citoyens    
 * Les propositions appartiendront à une rubrique (accidents, évènements, ...)  
 * L'utilisateur de notre application administrative pourra gérer les rubriques. D'ailleurs, celles des citoyens ne sont pas forcément les mêmes que celles des utilisateurs de notre application (à traiter, proposition en cours de traitement, refusée, ...)
-* Un événement a une priorité  
+* Un événement a une priorité donnée par l'administrateur
 
 #### 4.2 Gestion d'un agenda  
 * Pour tous les évènements/propositions/requêtes, chacun a une date de création et pour les travaux une date de fin estimée.
 * Organisation de la carte selon les filtres des rubriques et de la date (granularité au jour principalement).
 
 #### 4.3 Gestion des notifications faites par les utilisateurs  
-* Réparations/dégâts  
-* Accidents
+Les utilisateurs de l'application pourront effectuer plusieurs types de notifications différentes, classée donc en rubriques.
+* Culture
+	* Manifestations
+* Traffic
+	* Accidents
+	* Travaux
+* Chantier
+	* Rénovations
+	* Constructions
+* Doléances
 * Information d'évènements
 
 #### 4.4 Filtrage des notifications
+L'administrateur de la ville s'occupera de filtrer les notifications faites par les utilisateurs. Pour certains comptes privilégiés, il n'aura pas besoin de l'intérvension de l'administrateur.
+
 * Gestion des évènements (acceptation de notifications, suppression...)
 * Comptes privilégiés (par exemple, les accidents proposés par les TCS sont directement validés)
 
-#### 4.5 Ajout d’évènements de la ville  
+#### 4.5 Ajout d’évènements de la ville
+
+Les utilisateurs pourront référencer une manifestation
 
 #### 4.6 Ajout d'informations générales
 
 
 ### 4.7 Implémentation d'une carte interactive
+L'application comportera une carte interactive avec la quelle il sera possible d'intéragir. Cette carte référencera à l'aide de "tags" les événements ayant lieux dans la ville
+
 * Affichage interactif de la carte (zoom, déplacement manuel)
 * Ajout d'icônes (pins) sur la carte pour localiser les événements
 * Filtre des événements par date  
@@ -59,19 +73,18 @@ Ils peuvent également être accompagnés de __Notes__ ou d'__Avis__.
 ### 4.8 Génération d'un PDF
 * Génération d'un PDF selon une rubrique choisie
 * Ces PDF sont principalement destinés aux départements reliés aux rubriques, afin de garder des traces des événements. On peut imaginer qu'une fois générés, ils sont envoyés aux personnes concernées par l'administrateur.
-* Un PDF est organisé en deux parties 
+* Un PDF est organisé en deux parties
 	* La première partie est commune à tous les types de rubriques et contient les informations principales (nom de la rubrique, nom de l'événement, lieu, date, priorité et texte détaillant l'événement)
 	* La deuxième partie est présentée sous la forme de statistiques. Elles sont personnalisées selon la rubrique. Par exemple, s'il s'agit d'un événement relatif à des travaux, on affiche le temps moyen de la durée des chantiers. S'il s'agit en revanche de doléances, on affiche plutôt le nombre de commentaires qui ont été postés à ce sujet, et ainsi de suite pour les autres rubriques.
-* Si plusieurs filtres ont été sélectionnés, alors une option est de générer automatiquement plusieurs PDF 
-
+* Si plusieurs filtres ont été sélectionnés, alors une option est de générer automatiquement plusieurs PDF
 
 
 ###	 Fonctionnalités supplémentaires (suivant possibilité)    
 
-* Gestion de plusieurs comptes utilisateurs  
+* Gestion de plusieurs comptes administrateurs
 * Dessins et coloriages sur la carte selon des critères de secteurs (cercles, lignes, texte)  
 * Ajout d'une capture d'écran dans le PDF de l'état de la carte
-* calcul de chemin le plus court en évitant les zones accidentées ou en travaux.  
+* Calcul de chemin le plus court en évitant les zones accidentées ou en travaux.  
 
 
 ###	 Fonctionnalité future  
@@ -97,7 +110,7 @@ La fenêtre principale sera composée:
         - Constructions
     - Doléances
 
-     Elles pourront être cochées afin de les visualiser au centre du programme, d'apparaitre sur la carte sous forme de _pin_ ainsi que de déterminer les informations lors de la génération du PDF.
+     Elles pourront être cochées afin de visualiser les détails au centre de la fenêtre, d’apparaître sur la carte sous forme de _pin_ ainsi que de déterminer les informations lors de la génération du PDF.
 
 - Sur la droite, la carte composée de tuiles fournies par OpenStreetMap (OSM) liée à un calendrier pour le filtrage des événements sur le plan temporel.
 
@@ -114,10 +127,10 @@ La machine exécutant le programme devra être dotée d'au moins 4GB de RAM ains
 
 * L'Administration s'est faite au début du projet avec l'attribution du chef de projet M. Iannetta ainsi que la formation du groupe.  
 * Le Dossier de projet se fera tout au long du projet afin de documenter et d'expliquer les différentes fonctionnalités et décisions prises tout au long du projet.
-* L'Analyse	a été faite en même temps que le cahier des charges et se fera encore lors au début de la conception lors de la prise en main des premières difficultés qui apparaitront.
+* L'Analyse	a été faite en même temps que le cahier des charges et se fera encore lors du début de la conception et lors de la prise en main des premières difficultés qui apparaîtront.
 * La Conception	sera une des grandes parties du projet qui va nous occuper environ 7 semaines.
 * La Réalisation		
-* Les tests se feront le plus tot possible, mais nous espérons avoir 10 jours avant le rendu pour finaliser et tester notre projet.
+* Les tests se feront le plus tôt possible, mais nous espérons avoir 10 jours avant le rendu pour finaliser et tester notre projet.
 * La documentation sera faite pour tout le code et faite par nos soins.
 * Le rendu se fera le 30 mai 2017
 
