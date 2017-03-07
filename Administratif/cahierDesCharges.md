@@ -5,12 +5,12 @@ Wojciech __Myszkorowski__
 
 
 ## 1 But du projet
-Notre projet a pour but de faciliter la gestion d'événements officiels et de référencer des requêtes de citoyens au sein de la ville de Lausanne. Une carte interactive permettra d'avoir un aperçu claire des différentes localisations. L'application pourra générer un rapport au format pdf permettant un suivit des événements.
+Notre projet a pour but de faciliter la gestion d'évènements officiels et de référencer des requêtes de citoyens au sein de la ville de Lausanne. Une carte interactive permettra d'avoir un aperçu clair des différentes localisations se rapportant aux requêtes. L'application pourra générer un rapport au format PDF permettant un suivi des évènements.
 
 
 ## 2 Description du projet
 Nous voulons implémenter une application permettant à l'administration d'une ville (dans notre cas Lausanne) d'organiser les requêtes (de réparations, d'évènements, de projet, etc.) venant de ses citoyens. Les administrateurs de l'application pourront ajouter des évènements officiels.
-Chaque requête devra être validée par un administrateur et ajoutée à une rubrique dédiée. Il sera ensuite possible de consulter ces différentes rubriques et de visualiser au moyen d'une carte interactive les endroits concernés. Pour une meilleure visibilité, chaque rubrique sera associée à un filtre, rendant ainsi plus aisée la lecture de la carte. Il sera aussi possible pour l'administrateur de donner des priorités aux évènements (haute ou à titre informatif) afin de traiter plus efficacement les requêtes. L'administrateur pourra aussi consulter la carte selon une date précise. Finalement, l'administrateur pourra générer des PDF contenant des informations relatives aux événements et aux rubriques qu'il aura précédemment choisis.
+Chaque requête devra être validée par un administrateur et ajoutée à une rubrique dédiée. Il sera ensuite possible de consulter ces différentes rubriques et de visualiser, au moyen d'une carte interactive, les endroits concernés. Pour une meilleure visibilité, chaque rubrique sera associée à un filtre, rendant ainsi plus aisée la lecture de la carte. Il sera aussi possible pour l'administrateur de donner des priorités aux évènements (haute ou à titre informatif) afin de traiter plus efficacement les requêtes. L'administrateur pourra aussi consulter la carte selon une date précise. Finalement, l'administrateur pourra générer des PDF contenant des informations relatives aux évènements et aux rubriques qu'il aura précédemment choisies.
 
 
 ## 3 Modèle conceptuel de données
@@ -35,7 +35,7 @@ Ils peuvent également être accompagnés de __commentaires__.
 #### 4.1 Gestion, dans une base de données, de toutes les requêtes remontées par les citoyens    
 * Les requêtes appartiendront à une rubrique (accidents, évènements, doléances, etc.)  
 * L'administrateur de l'application pourra gérer les rubriques.
-* Un événement aura une priorité donnée par l'administrateur.
+* Un évènement aura une priorité donnée par l'administrateur.
 
 #### 4.2 Gestion d'un agenda  
 * Pour toutes les requêtes, chacune aura une date de création et dans la mesure du possible une date de fin estimée.
@@ -65,10 +65,10 @@ L'administrateur s'occupera de filtrer les requêtes faites par les utilisateurs
 Les utilisateurs pourront émettre une localisation d'une nouvelle manifestation qui sera approuvée ou non par l’administrateur.
 
 ### 4.7 Implémentation d'une carte interactive
-L'application comportera une carte interactive avec laquelle il sera possible d'interagir. Cette carte référencera à l'aide de "tags" les événements ayant lieux dans la ville
+L'application comportera une carte interactive avec laquelle il sera possible d'interagir. Cette carte référencera à l'aide de "tags" les événements ayant lieu dans la ville
 
 * Affichage interactif de la carte (zoom, déplacement manuel)
-* Ajout de différents icônes (pins) sur la carte pour localiser les différents types d'événements
+* Ajout de différentes icônes (pins) sur la carte pour localiser les différents types d'événements
 * Filtre des événements par date et par rubriques
 
 ### 4.8 Génération d'un PDF
@@ -76,7 +76,7 @@ L'application comportera une carte interactive avec laquelle il sera possible d'
 * Ces PDF seront principalement destinés aux départements reliés aux rubriques, afin de garder un historique des événements. On peut imaginer qu'une fois générés, ils seront envoyés aux personnes concernées.
 * Un PDF sera organisé en deux parties
 	* La première partie sera commune à tous les types de rubriques et contiendra les informations principales (nom de la rubrique, nom de l'événement, lieu, date, priorité et texte détaillant l'événement)
-	* La deuxième partie sera présentée sous la forme de statistiques. Elles seront personnalisées selon la rubrique. Par exemple, s'il s'agit d'un événement relatif à des travaux, on affichera le temps moyen de la durée des chantiers. S'il s'agit en revanche de doléances, on affichera plutôt le nombre de commentaires qui ont été postés à ce sujet, et ainsi de suite pour les autres rubriques.
+	* La deuxième partie sera présentée sous la forme de statistiques. Elles seront personnalisées selon la rubrique. Par exemple, s'il s'agit d'un événement relatif à des travaux, on affichera le temps moyen de la durée des chantiers. S'il s'agit en revanche de doléances, on affichera plutôt le nombre de commentaires qui ont été publiés à ce sujet, et ainsi de suite pour les autres rubriques.
 * Si plusieurs filtres ont été sélectionnés, alors une option sera de générer automatiquement plusieurs PDF.
 
 
@@ -119,7 +119,7 @@ La fenêtre principale sera composée:
 ## 6 Contraintes et exigences envers le système
 L'application produite doit être fonctionnelle sur les machines Windows. Si possible, elle devra être exécutable depuis un CD/DVD.  
 
-La machine exécutant le programme devra être dotée d'au moins 4GB de RAM ainsi que d'un processeur de 5e génération afin de garantir un fonctionnement fluide de l'application. Il sera nécessaire d'avoir un accès à Internet afin d'avoir accès aux tuiles OSM de la carte.  
+La machine exécutant le programme devra être dotée d'au moins 4GO de RAM ainsi que d'un processeur de 5e génération afin de garantir un fonctionnement fluide de l'application. Il sera nécessaire d'avoir un accès à Internet afin d'avoir accès aux tuiles OSM de la carte.  
 
 
 ## 7 Planning prévisionnel
@@ -136,7 +136,7 @@ La machine exécutant le programme devra être dotée d'au moins 4GB de RAM ains
 
 ## 8 Organisation
 
-Nous nous sommes répartis le travail en tâches qui étaient les plus indépendantes possible, malgré le fait que dans un projet comme celui-ci, il arrive vite que deux tâches se regroupent. Nous avons donc ajouté des tâches de liaison entre les différentes fonctionnalités afin de ne pas sous-estimer le travail de mise en commun entre deux tâches différentes.
+Nous nous sommes réparties le travail en tâches qui étaient les plus indépendantes possible, malgré le fait que dans un projet comme celui-ci, il arrive vite que deux tâches se regroupent. Nous avons donc ajouté des tâches de liaison entre les différentes fonctionnalités afin de ne pas sous-estimer le travail de mise en commun entre deux tâches différentes.
 
 ## 9 Annexe
 
