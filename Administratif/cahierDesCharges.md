@@ -15,6 +15,7 @@ Chaque requête devra être validée par un administrateur et ajoutée à une ru
 
 ## 3 Modèle conceptuel de données
 ![diagramme de Smartcity](../Database/smartcity_diagram_ea.png "Smartcity_diagram")
+*Figure 1 - Schéma EA de la base de donnée*
 
 Ce diagramme présente les entités de notre projet. Au centre, l'entité __Evenement__ représente les requêtes à administrer. Les évènements :
 * appartiennent à une __RubriqueEnfant__.
@@ -79,7 +80,7 @@ L'application comportera une carte interactive avec laquelle il sera possible d'
 * Si plusieurs filtres ont été sélectionnés, alors une option sera de générer automatiquement plusieurs PDF.
 
 
-###	 Fonctionnalités supplémentaires (suivant possibilité)    
+### Fonctionnalités supplémentaires (suivant possibilité)    
 
 * Gestion de plusieurs comptes administrateurs
 * Dessins et coloriages sur la carte selon des critères de secteurs (cercles, lignes, texte).  
@@ -87,13 +88,13 @@ L'application comportera une carte interactive avec laquelle il sera possible d'
 * Calcul de chemin le plus court en évitant les zones accidentées ou en travaux.  
 
 
-###	 Fonctionnalité future
+### Fonctionnalité future
 
  * Application client mobile
  	* Ajout d'un filtre à spam pour supprimer les messages non désirés ou restreindre le nombre de requêtes par citoyen sur une période de temps. Ainsi qu'un contrôle de grossièretés.  
 
 
-## 5	Description de l'interface graphique
+## 5 Description de l'interface graphique
 
 La fenêtre principale sera composée:
 
@@ -115,13 +116,13 @@ La fenêtre principale sera composée:
 - Sur la droite, la carte composée de tuiles fournies par OpenStreetMap (OSM) liée à un calendrier pour le filtrage des événements sur le plan temporel.
 
 
-## 6	Contraintes et exigences envers le système
+## 6 Contraintes et exigences envers le système
 L'application produite doit être fonctionnelle sur les machines Windows. Si possible, elle devra être exécutable depuis un CD/DVD.  
 
 La machine exécutant le programme devra être dotée d'au moins 4GB de RAM ainsi que d'un processeur de 5e génération afin de garantir un fonctionnement fluide de l'application. Il sera nécessaire d'avoir un accès à Internet afin d'avoir accès aux tuiles OSM de la carte.  
 
 
-## 7	Planning prévisionnel
+## 7 Planning prévisionnel
 
 * L'Administration s'est faite au début du projet avec l'attribution du chef de projet M. Iannetta ainsi que la formation du groupe.  
 * Le Dossier de projet se fera tout au long du projet afin de documenter et d'expliquer les différentes fonctionnalités et décisions prises tout au long du projet.
@@ -133,7 +134,10 @@ La machine exécutant le programme devra être dotée d'au moins 4GB de RAM ains
 * Le rendu se fera le 30 mai 2017
 
 
-## 8	Organisation
+## 8 Organisation
 
 Nous nous sommes répartis le travail en tâches qui étaient les plus indépendantes possible, malgré le fait que dans un projet comme celui-ci, il arrive vite que deux tâches se regroupent. Nous avons donc ajouté des tâches de liaison entre les différentes fonctionnalités afin de ne pas sous-estimer le travail de mise en commun entre deux tâches différentes.
-![diagramme de Gantt](Gantt.jpg "Gantt")
+
+## 9 Annexe
+
+* Schéma de Gantt
