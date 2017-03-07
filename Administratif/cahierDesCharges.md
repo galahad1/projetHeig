@@ -1,13 +1,17 @@
 # Cahier des charges - __Smartcity__
 
-Auteurs : Camilo __Pineda Serna__, Jérémie __Zanone__, Loan __Lassalle__, Luana __Martelli__, Tano __Iannetta__ et Wojciech __Myszkorowski__
+Auteurs : Camilo __Pineda Serna__, Jérémie __Zanone__, Loan __Lassalle__, Luana __Martelli__, Tano __Iannetta__ et
+Wojciech __Myszkorowski__
+
 
 ## 1 But du projet
-Notre projet a pour but de gérer des propositions/requêtes de citoyens, la gestion d'évènements officiels, la génération de rapports et de statistiques d'une ville, avec l'aide visuelle d'une carte interactive.  
+Notre projet a pour but de gérer des requêtes de citoyens, la gestion d'évènements officiels, la génération de rapports et de statistiques d'une ville, avec l'aide visuelle d'une carte interactive.
 
 
 ## 2 Description du projet
-Nous voulons implémenter une application permettant à l'administration d'une ville (dans notre cas Lausanne) d'organiser les propositions / requêtes (de réparations, d'évènements, ...) venant de ses citoyens mais également d'elle-même, tout ceci dans un but d'information. Chaque requête doit être validée par un administrateur et ajoutée à une rubrique dédiée. Il est ensuite possible de consulter ces différentes rubriques et de visualiser au moyen d'une carte interactive les endroits concernés. Pour une meilleure visibilité, chaque rubrique est associée à un filtre, rendant ainsi plus aisée la lecture de la carte. Il est aussi possible pour l'administrateur de donner des priorités aux évènements (haute ou à titre informatif) afin de traiter plus efficacement les requêtes. L'utilisateur peut aussi consulter la carte selon une date précise. Finalement, l'administrateur peut générer des PDF contenant des informations et statistiques relatives aux événements et aux rubriques qu'il aura précédemment choisis.
+Nous voulons implémenter une application permettant à l'administration d'une ville (dans notre cas Lausanne) d'organiser les requêtes (de réparations, d'évènements, de projet, etc.) venant de ses citoyens. Les administrateurs de l'application pourront ajouté des évènements officiels.
+Chaque requête doit être validée par un administrateur et ajoutée à une rubrique dédiée. Il est ensuite possible de consulter ces différentes rubriques et de visualiser au moyen d'une carte interactive les endroits concernés. Pour une meilleure visibilité, chaque rubrique est associée à un filtre, rendant ainsi plus aisée la lecture de la carte. Il est aussi possible pour l'administrateur de donner des priorités aux évènements (haute ou à titre informatif) afin de traiter plus efficacement les requêtes. L'administrateur peut aussi consulter la carte selon une date précise. Finalement, l'administrateur peut générer des PDF contenant des informations et statistiques relatives aux événements et aux rubriques qu'il aura précédemment choisis.
+
 
 ## 3 Modèle conceptuel de données
 ![diagramme de Smartcity](../Database/smartcity_diagram_ea.png "Smartcity_diagram")
@@ -23,60 +27,54 @@ Ce diagramme présente les entités de notre projet. Au centre, l'entité __Even
 Ils peuvent également être accompagnés de __Notes__ ou d'__Avis__.
 
 
-
 ## 4 Fonctionnalités
 ### Fonctionnalités principales  
 
-#### 4.1 Gestion, dans une base de données, de toutes les propositions/notifications remontées par les citoyens    
-* Les propositions appartiendront à une rubrique (accidents, évènements, ...)  
-* L'utilisateur de notre application administrative pourra gérer les rubriques. D'ailleurs, celles des citoyens ne sont pas forcément les mêmes que celles des utilisateurs de notre application (à traiter, proposition en cours de traitement, refusée, ...)
-* Un événement a une priorité donnée par l'administrateur
+#### 4.1 Gestion, dans une base de données, de toutes les requêtes remontées par les citoyens    
+* Les requêtes appartiendront à une rubrique (accidents, évènements, doléances, etc.)  
+* L'administateur de l'application pourra gérer les rubriques.
+* Un événement aura une priorité donnée par l'administrateur
 
 #### 4.2 Gestion d'un agenda  
-* Pour tous les évènements/propositions/requêtes, chacun a une date de création et pour les travaux une date de fin estimée.
+* Pour toutes les requêtes, chacun aura une date de création et pour les travaux une date de fin estimée.
 * Organisation de la carte selon les filtres des rubriques et de la date (granularité au jour principalement).
 
-#### 4.3 Gestion des notifications faites par les utilisateurs  
-Les utilisateurs de l'application pourront effectuer plusieurs types de notifications différentes, classée donc en rubriques.
+#### 4.3 Gestion des requêtes faites par les utilisateurs  
+Les utilisateurs de l'application pourront effectuer plusieurs types de requêtes, classées selon les rubriques.
+* Chantier
+	* Constructions
+	* Rénovations
 * Culture
 	* Manifestations
+* Doléances
 * Traffic
 	* Accidents
 	* Travaux
-* Chantier
-	* Rénovations
-	* Constructions
-* Doléances
-* Information d'évènements
 
-#### 4.4 Filtrage des notifications
-L'administrateur de la ville s'occupera de filtrer les notifications faites par les utilisateurs. Pour certains comptes privilégiés, il n'aura pas besoin de l'intervention de l'administrateur.
+#### 4.4 Filtrage des requêtes
+L'administrateur s'occupera de filtrer les requêtes faites par les utilisateurs. Pour certains comptes privilégiés, il n'aura pas besoin de l'intervention de l'administrateur.
 
-* Gestion des évènements (acceptation de notifications, suppression...)
+* Gestion des évènements (acceptation de requêtes, refus)
 * Comptes privilégiés (par exemple, les accidents proposés par les TCS sont directement validés)
 
 #### 4.5 Ajout d’évènements de la ville
 
-Les utilisateurs pourront référencer une manifestation
-
-#### 4.6 Ajout d'informations générales
-
+Les utilisateurs pourront émettre une location d'une nouvelle manifestation qui sera approuvée ou non par l'administateur.
 
 ### 4.7 Implémentation d'une carte interactive
 L'application comportera une carte interactive avec laquelle il sera possible d'interagir. Cette carte référencera à l'aide de "tags" les événements ayant lieux dans la ville
 
 * Affichage interactif de la carte (zoom, déplacement manuel)
 * Ajout d'icônes (pins) sur la carte pour localiser les événements
-* Filtre des événements par date et par rubriques 
-
+* Filtre des événements par date et par rubriques
 
 ### 4.8 Génération d'un PDF
 * Génération d'un PDF selon une rubrique choisie
-* Ces PDF sont principalement destinés aux départements reliés aux rubriques, afin de garder des traces des événements. On peut imaginer qu'une fois générés, ils sont envoyés aux personnes concernées par l'administrateur.
-* Un PDF est organisé en deux parties
-	* La première partie est commune à tous les types de rubriques et contient les informations principales (nom de la rubrique, nom de l'événement, lieu, date, priorité et texte détaillant l'événement)
-	* La deuxième partie est présentée sous la forme de statistiques. Elles sont personnalisées selon la rubrique. Par exemple, s'il s'agit d'un événement relatif à des travaux, on affiche le temps moyen de la durée des chantiers. S'il s'agit en revanche de doléances, on affiche plutôt le nombre de commentaires qui ont été postés à ce sujet, et ainsi de suite pour les autres rubriques.
-* Si plusieurs filtres ont été sélectionnés, alors une option est de générer automatiquement plusieurs PDF
+* Ces PDF seront principalement destinés aux départements reliés aux rubriques, afin de garder des traces des événements. On peut imaginer qu'une fois générés, ils seront envoyés aux personnes concernées par l'administrateur.
+* Un PDF sera organisé en deux parties
+	* La première partie sera commune à tous les types de rubriques et contiendront les informations principales (nom de la rubrique, nom de l'événement, lieu, date, priorité et texte détaillant l'événement)
+	* La deuxième partie sera présentée sous la forme de statistiques. Elles seront personnalisées selon la rubrique. Par exemple, s'il s'agit d'un événement relatif à des travaux, on affichera le temps moyen de la durée des chantiers. S'il s'agit en revanche de doléances, on affichera plutôt le nombre de commentaires qui ont été postés à ce sujet, et ainsi de suite pour les autres rubriques.
+* Si plusieurs filtres ont été sélectionnés, alors une option sera de générer automatiquement plusieurs PDF
 
 
 ###	 Fonctionnalités supplémentaires (suivant possibilité)    
@@ -87,7 +85,7 @@ L'application comportera une carte interactive avec laquelle il sera possible d'
 * Calcul de chemin le plus court en évitant les zones accidentées ou en travaux.  
 
 
-###	 Fonctionnalité future  
+###	 Fonctionnalité future
 
  * Application client mobile
  	* Ajout d'un filtre à spam pour supprimer les messages non désirés ou restreindre le nombre de requêtes par citoyen sur une période de temps. Ainsi qu'un contrôle de grossièretés.  
@@ -115,12 +113,10 @@ La fenêtre principale sera composée:
 - Sur la droite, la carte composée de tuiles fournies par OpenStreetMap (OSM) liée à un calendrier pour le filtrage des événements sur le plan temporel.
 
 
-
-
 ## 6	Contraintes et exigences envers le système
-L'application produite doit être fonctionnelle sur les machines Windows. Elle devra être exécutable depuis un CD/DVD.  
+L'application produite doit être fonctionnelle sur les machines Windows. Si possible, elle devra être exécutable depuis un CD/DVD.  
 
-La machine exécutant le programme devra être dotée d'au moins 4GB de RAM ainsi que d'un processeur de 5e génération afin de garantir un fonctionnement fluide de l'application. Il faudra avoir accès à une connexion internet afin d'avoir accès aux tuiles OSM de la carte.  
+La machine exécutant le programme devra être dotée d'au moins 4GB de RAM ainsi que d'un processeur de 5e génération afin de garantir un fonctionnement fluide de l'application. Il sera nécessaire d'avoir un accès à Internet afin d'avoir accès aux tuiles OSM de la carte.  
 
 
 ## 7	Planning prévisionnel
@@ -134,9 +130,9 @@ La machine exécutant le programme devra être dotée d'au moins 4GB de RAM ains
 * La documentation sera faite pour tout le code et faite par nos soins.
 * Le rendu se fera le 30 mai 2017
 
+
 ## 8	Organisation
 
-Voir schéma de Gantt en annexe. Nous nous sommes réparties le travail en tâches qui étaient les plus indépendantes possible, malgré le fait que dans un projet comme celui-ci, il arrive vite que deux tâches se regroupent. Nous avons donc ajouté des tâches de liaison entre les différentes fonctionnalités afin de ne pas sous-estimer le travail de mise en commun entre deux tâches différentes.
-
-## 9	Annexes
-- Schéma de Gantt.  
+Nous nous sommes répartis le travail en tâches qui étaient les plus indépendantes possible, malgré le fait que dans un projet comme celui-ci, il arrive vite que deux tâches se regroupent. Nous avons donc ajouté des tâches de liaison entre les différentes fonctionnalités afin de ne pas sous-estimer le travail de mise en commun entre deux tâches différentes.
+![diagramme de Gantt](Gantt.jpg "Gantt")
+ 
