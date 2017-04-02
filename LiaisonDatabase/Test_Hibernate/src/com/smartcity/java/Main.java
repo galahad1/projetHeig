@@ -7,6 +7,13 @@ import java.util.List;
 public class Main {
 
     public static void main(String[] args) {
+//        TODO: Tester la suppressioon d'élément
+//        TODO: Organiser ORMAcces en plusieurs parties
+//        TODO: Gérer les tables intermidiares (UtilisateurConfiaceEvenement,EvenemenntUtilisateur)
+//        TODO: Créer queryNamed
+//        TODO: Remplir la base de données
+//        TODO: Système de log
+//        TODO: Exceptions personnalisées
         try {
             ORMAccess ormAccess = new ORMAccess();
 
