@@ -1,27 +1,35 @@
 import controlers.ORMAccess;
 import models.Npa;
 
+import java.util.Calendar;
 import java.util.List;
 
 public class Main {
 
     public static void main(String[] args) {
-        ORMAccess ormAccess = new ORMAccess();
-
         try {
-            List<Npa> npaList = ormAccess.getNpaList();
-            System.out.println(npaList);
+            ORMAccess ormAccess = new ORMAccess();
 
             Npa npa = ormAccess.getNpa(1);
             System.out.println(npa);
 
-            npa = ormAccess.getNpa("1011");
-            System.out.println(npa);
+            List<Npa> npaList = ormAccess.getNpaList("1004");
+            System.out.println(npaList);
 
-            npa = ormAccess.getNpa("5000");
-            System.out.println(npa);
-        } catch (Exception e) {
-            e.printStackTrace();
+            ormAccess.saveNpa(new Npa(0, "1111", Calendar.getInstance()));
+
+            npaList = ormAccess.getNpaList();
+            System.out.println(npaList);
+
+            npaList.get(0).setNumeroNpa("6666");
+            ormAccess.updateNpaList(npaList);
+
+            npaList = ormAccess.getNpaList();
+            System.out.println(npaList);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        } finally {
+            ORMAccess.terminate();
         }
     }
 }

@@ -10,6 +10,10 @@ import java.util.Calendar;
 
 @Entity
 @Table(name = "Npa")
+@NamedQueries({
+        @NamedQuery(name = "Npa.findAll", query = "SELECT npa FROM Npa as npa "),
+        @NamedQuery(name = "Npa.findByNumeroNpa", query = "SELECT npa FROM Npa as npa WHERE npa.numeroNpa = :numeroNpa")
+})
 public class Npa {
 
     @Id
