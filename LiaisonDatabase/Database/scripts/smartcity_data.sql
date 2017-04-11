@@ -129,7 +129,7 @@ COMMIT;
 -- -----------------------------------------------------
 
 SET AUTOCOMMIT=0;
-INSERT INTO `smartcity`.`EvenementUtilisateur` (`idEvenement`,`idUtilisateur`,`commentaire`) VALUES (1,1,'Début approximatif'); -- ,(2,2,'C\'est pas forcément une bonne idée. Mais c\'est mon avis.'),(3,3,'J\'aime beaucoup ce groupe !'),(3,4,'Je ne trouve pas les mots');
+INSERT INTO `smartcity`.`EvenementUtilisateur` (`idEvenement`,`idUtilisateur`,`commentaire`) VALUES (1,1,'Début approximatif');
 COMMIT;
 
 -- -----------------------------------------------------
