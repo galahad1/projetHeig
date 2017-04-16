@@ -1,7 +1,10 @@
-package controlers;
+package controllers;
 
 import models.Npa;
-import org.hibernate.*;
+import org.hibernate.HibernateException;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
 
 import java.util.List;
@@ -10,13 +13,12 @@ import java.util.List;
  * @author Lassalle Loan
  * @since 02/04/2017
  */
-@SuppressWarnings("all")
-public class ORMAccess {
+public class DatabaseAccess {
 
     private static SessionFactory sessionFactory;
 
-    public ORMAccess() {
-        sessionFactory = new Configuration().configure("hibernate.cfg.xml").buildSessionFactory();
+    public DatabaseAccess() {
+        sessionFactory = new Configuration().configure("ressources/hibernate/hibernate.cfg.xml").buildSessionFactory();
     }
 
     public static void terminate() {
@@ -59,9 +61,8 @@ public class ORMAccess {
         try {
             tx = session.beginTransaction();
 
-            Query q = session.getNamedQuery("Npa.findByNumeroNpa");
-            q.setString("numeroNpa", numeroNpa);
-            npaList = q.list();
+            npaList = session.createNamedQuery("Npa.findByNumeroNpa", Npa.class)
+                    .setParameter("numeroNpa", numeroNpa).list();
 
             tx.commit();
         } catch (Exception e) {
@@ -83,8 +84,7 @@ public class ORMAccess {
 
             tx = session.beginTransaction();
 
-            Query q = session.getNamedQuery("Npa.findAll");
-            npaList = q.list();
+            npaList = session.createNamedQuery("Npa.findAll", Npa.class).list();
 
             tx.commit();
         } catch (Exception e) {
