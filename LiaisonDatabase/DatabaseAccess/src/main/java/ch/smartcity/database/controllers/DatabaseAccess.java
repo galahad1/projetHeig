@@ -7,6 +7,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
 
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -52,7 +53,7 @@ public class DatabaseAccess {
         return npa;
     }
 
-    public List<Npa> getNpaList(String numeroNpa) throws Exception {
+    public List<Npa> getNpa(String numeroNpa) throws Exception {
         Session session = sessionFactory.openSession();
 
         Transaction tx = null;
@@ -74,7 +75,7 @@ public class DatabaseAccess {
         return npaList;
     }
 
-    public List<Npa> getNpaList() throws Exception {
+    public List<Npa> getNpa() throws Exception {
         Session session = sessionFactory.openSession();
 
         Transaction tx = null;
@@ -96,40 +97,8 @@ public class DatabaseAccess {
         return npaList;
     }
 
-    public void updateNpa(Npa npa) throws Exception {
-        Session session = sessionFactory.openSession();
-        Transaction tx = null;
-
-        try {
-            tx = session.beginTransaction();
-
-            session.update(npa);
-
-            tx.commit();
-        } catch (Exception e) {
-            catchException(e, tx);
-        } finally {
-            closeSession(session);
-        }
-    }
-
-    public void updateNpaList(List<Npa> npaList) throws Exception {
-        Session session = sessionFactory.openSession();
-        Transaction tx = null;
-
-        try {
-            tx = session.beginTransaction();
-
-            for (Npa npa : npaList) {
-                session.update(npa);
-            }
-
-            tx.commit();
-        } catch (Exception e) {
-            catchException(e, tx);
-        } finally {
-            closeSession(session);
-        }
+    public void saveNpa(String numeroNpa, Calendar derniereMiseAJour) throws Exception {
+        saveNpa(new Npa(0, numeroNpa, derniereMiseAJour));
     }
 
     public void saveNpa(Npa npa) throws Exception {
@@ -158,6 +127,128 @@ public class DatabaseAccess {
 
             for (Npa npa : npaList) {
                 session.save(npa);
+            }
+
+            tx.commit();
+        } catch (Exception e) {
+            catchException(e, tx);
+        } finally {
+            closeSession(session);
+        }
+    }
+
+    public void updateNpa(int idNpa, String numeroNpa) throws Exception {
+        Session session = sessionFactory.openSession();
+        Transaction tx = null;
+        Npa npa = null;
+
+        try {
+            tx = session.beginTransaction();
+
+            npa = session.get(Npa.class, idNpa);
+            npa.setNumeroNpa(numeroNpa);
+            session.update(npa);
+
+            tx.commit();
+        } catch (Exception e) {
+            catchException(e, tx);
+        } finally {
+            closeSession(session);
+        }
+    }
+
+    public void updateNpa(String oldNumeroNpa, String newNumeroNpa) throws Exception {
+        Session session = sessionFactory.openSession();
+        Transaction tx = null;
+        List<Npa> npaList = null;
+
+        try {
+            tx = session.beginTransaction();
+
+            npaList = session.createNamedQuery("Npa.findByNumeroNpa", Npa.class)
+                    .setParameter("numeroNpa", oldNumeroNpa).list();
+
+            if (npaList.size() == 1) {
+                npaList.get(0).setNumeroNpa(newNumeroNpa);
+                session.update(npaList.get(0));
+            }
+
+            tx.commit();
+        } catch (Exception e) {
+            catchException(e, tx);
+        } finally {
+            closeSession(session);
+        }
+    }
+
+    public void updateNpa(Npa npa) throws Exception {
+        Session session = sessionFactory.openSession();
+        Transaction tx = null;
+
+        try {
+            tx = session.beginTransaction();
+
+            session.update(npa);
+
+            tx.commit();
+        } catch (Exception e) {
+            catchException(e, tx);
+        } finally {
+            closeSession(session);
+        }
+    }
+
+    public void updateNpa(List<Npa> npaList) throws Exception {
+        Session session = sessionFactory.openSession();
+        Transaction tx = null;
+
+        try {
+            tx = session.beginTransaction();
+
+            for (Npa npa : npaList) {
+                session.update(npa);
+            }
+
+            tx.commit();
+        } catch (Exception e) {
+            catchException(e, tx);
+        } finally {
+            closeSession(session);
+        }
+    }
+
+    public void deleteNpa(int idNpa) throws Exception {
+        Session session = sessionFactory.openSession();
+        Transaction tx = null;
+        Npa npa = null;
+
+        try {
+            tx = session.beginTransaction();
+
+            npa = session.get(Npa.class, idNpa);
+            session.delete(npa);
+
+            tx.commit();
+        } catch (Exception e) {
+            catchException(e, tx);
+        } finally {
+            closeSession(session);
+        }
+    }
+
+    public void deleteNpa(String numeroNpa) throws Exception {
+        Session session = sessionFactory.openSession();
+        Transaction tx = null;
+        List<Npa> npaList = null;
+
+        try {
+            tx = session.beginTransaction();
+
+            npaList = session.createNamedQuery("Npa.findByNumeroNpa", Npa.class)
+                    .setParameter("numeroNpa", numeroNpa).list();
+
+            for (Npa npa : npaList) {
+                session.delete(npa);
             }
 
             tx.commit();
