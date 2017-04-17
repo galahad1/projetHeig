@@ -2,10 +2,6 @@ package models;
 
 import java.util.Calendar;
 
-/**
- * @author Lassalle Loan
- * @since 8/03/2017
- */
 public class Npa {
     private int idNpa;
 

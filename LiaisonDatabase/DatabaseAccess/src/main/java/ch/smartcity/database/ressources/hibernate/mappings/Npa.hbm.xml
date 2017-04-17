@@ -2,23 +2,23 @@
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
         "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 
-<hibernate-mapping>
-    <class name="models.Npa" table="Npa" catalog="smartcity">
+<hibernate-mapping catalog="smartcity" package="models">
+    <class name="Npa" table="Npa" dynamic-update="true">
         <id name="idNpa" type="int">
-            <column name="idNpa" />
-            <generator class="identity" />
+            <column name="idNpa"/>
+            <generator class="identity"/>
         </id>
-        <property name="numeroNpa" type="string">
-            <column name="numeroNpa" />
+        <property name="numeroNpa" column="numeroNpa" type="string"
+                  not-null="true">
         </property>
-        <property name="derniereMiseAJour" type="calendar">
-            <column name="derniereMiseAJour" />
+        <property name="derniereMiseAJour" column="derniereMiseAJour"
+                  type="calendar" not-null="true" generated="always">
         </property>
     </class>
-    <query  name="Npa.findAll">
-        <![CDATA[from Npa as npa]]>
-    </query>
-    <query  name="Npa.findByNumeroNpa">
+    <query name="Npa.findByNumeroNpa">
         <![CDATA[from Npa as npa where npa.numeroNpa = :numeroNpa]]>
+    </query>
+    <query name="Npa.findAll">
+        <![CDATA[from Npa as npa]]>
     </query>
 </hibernate-mapping>

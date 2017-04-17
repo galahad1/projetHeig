@@ -1,14 +1,10 @@
 import controllers.DatabaseAccess;
-import models.Npa;
-
-import java.util.List;
 
 public class Main {
 
     public static void main(String[] args) {
-//        TODO: Définir en détails npa.hbm.xml
-
 //        TODO: Organiser DatabaseAccess en plusieurs parties
+//        TODO: Créer des fonctions avec templates dans DatabaseAccess
 //        TODO: Gérer les liaisons MANY-TO-MANY, MANY-TO-ONE, ONE-TO-MANY
 //        TODO: Orgaiser les valeurs en dur (string, int) dans des fichiers
 //        TODO: Remplir la base de données
@@ -26,14 +22,12 @@ public class Main {
 //        TODO: liste des évènements en fonction d'une rubrique et d'une date
 
         try {
-            DatabaseAccess databaseAccess = new DatabaseAccess();
-
-            List<Npa> npaListAll = databaseAccess.getNpa();
-            System.out.println(npaListAll);
+            System.out.println(DatabaseAccess.NPA_ACCESS.getNpa());
+            System.out.println(DatabaseAccess.NPA_ACCESS.getNpa(1));
         } catch (Exception ex) {
             ex.printStackTrace();
         } finally {
-            DatabaseAccess.terminate();
+            DatabaseAccess.close();
         }
     }
 }
