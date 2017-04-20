@@ -21,7 +21,7 @@ USE `smartcity` ;
 -- -----------------------------------------------------
 
 SET AUTOCOMMIT=0;
-INSERT INTO `smartcity`.`RubriqueParent` (`nomRubriqueParent`) VALUES ('TRAFIC'),('MANIFESTATION'),('CHANTIERS'),('DOLEANCES');
+INSERT INTO `smartcity`.`RubriqueParent` (`nomRubriqueParent`) VALUES ('trafic'),('manifestation'),('chantiers'),('doleances');
 COMMIT;
 
 -- -----------------------------------------------------
@@ -30,7 +30,7 @@ COMMIT;
 -- -----------------------------------------------------
 
 SET AUTOCOMMIT=0;
-INSERT INTO `smartcity`.`RubriqueEnfant` (`idRubriqueParent`,`nomRubriqueEnfant`) VALUES (1,'Accidents'),(1,'Travaux'),(2,'Manifestations'),(3,'Rénovations'),(3,'Constructions');
+INSERT INTO `smartcity`.`RubriqueEnfant` (`idRubriqueParent`,`nomRubriqueEnfant`) VALUES (1,'accidents'),(1,'travaux'),(2,'manifestations'),(3,'rénovations'),(3,'constructions');
 COMMIT;
 
 -- -----------------------------------------------------
@@ -39,7 +39,7 @@ COMMIT;
 -- -----------------------------------------------------
 
 SET AUTOCOMMIT=0;
-INSERT INTO `smartcity`.`Priorite` (`nomPriorite`,`niveau`) VALUES ('Mineur', 0),('Gênant', 1),('Préocupant', 2),('Important', 3),('Urgent', 4);
+INSERT INTO `smartcity`.`Priorite` (`nomPriorite`,`niveau`) VALUES ('mineur',0),('gênant',1),('préocupant',2),('important',3),('urgent',4);
 COMMIT;
 
 -- -----------------------------------------------------
@@ -48,7 +48,7 @@ COMMIT;
 -- -----------------------------------------------------
 
 SET AUTOCOMMIT=0;
-INSERT INTO `smartcity`.`Statut` (`nomStatut`) VALUES ('En attente'),('Traité'),('Refusé');
+INSERT INTO `smartcity`.`Statut` (`nomStatut`) VALUES ('en attente'),('traité'),('refusé');
 COMMIT;
 
 -- -----------------------------------------------------
@@ -57,7 +57,7 @@ COMMIT;
 -- -----------------------------------------------------
 
 SET AUTOCOMMIT=0;
-INSERT INTO `smartcity`.`Rue` (`nomRue`) VALUES ('Rue Adrien-Pichard'),('Rue Auguste-Piclou'),('Avenue des Acacias'),('Rue de l’Académie'),('Avenue Agassiz'),('Rue de l’Ale'),('Avenue des Alpes'),('Avenue André Schnetzler'),('Avenue André Schnetzler');
+INSERT INTO `smartcity`.`Rue` (`nomRue`) VALUES ('rue adrien-pichard'),('rue auguste-piclou'),('avenue des acacias'),('rue de l’académie'),('avenue agassiz'),('rue de l’ale'),('avenue des alpes'),('avenue andré schnetzler'),('avenue andré schnetzler');
 COMMIT;
 
 -- -----------------------------------------------------
@@ -84,7 +84,7 @@ COMMIT;
 -- -----------------------------------------------------
 
 SET AUTOCOMMIT=0;
-INSERT INTO `smartcity`.`TitreCivil` (`titre`,`abreviation`) VALUES ('Monsieur','M'),('Madame','Mme'),('Mademoiselle','Mlle'),('Docteur','Dr'),('Maître','Me'),('Professeur','Pr');
+INSERT INTO `smartcity`.`TitreCivil` (`titre`,`abreviation`) VALUES ('monsieur','m'),('madame','mme'),('mademoiselle','mlle'),('docteur','dr'),('maître','me'),('professeur','pr'),('entreprise','ent');
 COMMIT;
 
 -- -----------------------------------------------------
@@ -93,7 +93,7 @@ COMMIT;
 -- -----------------------------------------------------
 
 SET AUTOCOMMIT=0;
-INSERT INTO `smartcity`.`Nationalite` (`nomNationalite`) VALUES ('Afghan'),('Albanais'),('Belge'),('Britanique'),('Canadien'),('Espagnol'),('Français'),('Italien'),('Russe'),('Suisse'),('Turc'),('Vietnamien');
+INSERT INTO `smartcity`.`Nationalite` (`nomNationalite`) VALUES ('afghane'),('albanaise'),('belge'),('britanique'),('canadienne'),('espagnole'),('française'),('italienne'),('russe'),('suisse'),('turque'),('vietnamienne');
 COMMIT;
 
 -- -----------------------------------------------------
@@ -102,7 +102,7 @@ COMMIT;
 -- -----------------------------------------------------
 
 SET AUTOCOMMIT=0;
-INSERT INTO `smartcity`.`Sexe` (`nomSexe`) VALUES ('Homme'),('Femme');
+INSERT INTO `smartcity`.`Sexe` (`nomSexe`) VALUES ('homme'),('femme');
 COMMIT;
 
 -- -----------------------------------------------------
@@ -111,7 +111,7 @@ COMMIT;
 -- -----------------------------------------------------
 
 SET AUTOCOMMIT=0;
-INSERT INTO `smartcity`.`Utilisateur` (`personnePhysique`,`avs`,`idTitreCivil`,`nomUtilisateur`,`prenom`,`dateDeNaissance`,`idSexe`,`idNationalite`,`idAdresse`,`email`,`pseudo`,`motDePasse`,`sel`) VALUES (1,'TEST',1,'TEST','TEST',NOW(),1,1,1,'TEST','TEST','TEST','TEST');
+INSERT INTO `smartcity`.`Utilisateur` (`personnePhysique`,`avs`,`idTitreCivil`,`nomUtilisateur`,`prenom`,`dateDeNaissance`,`idSexe`,`idNationalite`,`idAdresse`,`email`,`pseudo`,`motDePasse`,`sel`) VALUES (0,NULL,7,'touring club suisse',NULL,NULL,NULL,NULL,1,'contact-tcs@tcs.ch','contact-tcs','contact-tcs','CG5bWHG0YxOvABUUaF8ra0HQvvJXr7'),(1,'756.1234.5678.97',1,'lassalle','loan',NOW(),1,7,1,'loan.lassalle@heig-vd.ch','loan.lassalle','_smartcity_','3EgLiQyssGvABUUaqFGUZgrDKGPOlA');
 COMMIT;
 
 -- -----------------------------------------------------
@@ -120,25 +120,25 @@ COMMIT;
 -- -----------------------------------------------------
 
 SET AUTOCOMMIT=0;
-INSERT INTO `smartcity`.`Evenement` (`idRubriqueEnfant`,`idUtilisateur`,`nomEvenement`,`idAdresse`,`latitude`,`longitude`,`debut`,`details`,`idPriorite`,`idStatut`) VALUES (1,1,'TEST',1,3.14,3.14,NOW(),'TEST',1,1);
+INSERT INTO `smartcity`.`Evenement` (`idRubriqueEnfant`,`idUtilisateur`,`nomEvenement`,`idAdresse`,`latitude`,`longitude`,`debut`,`details`,`idPriorite`,`idStatut`) VALUES (1,1,'acidents dans les deux sens sur l\'a1',1,3.14,3.14,NOW(),'plusieurs camions sont retournés, plusieurs voitures se sont encastrées dans la station service',4,1);
 COMMIT;
 
 -- -----------------------------------------------------
--- Table `smartcity`.`EvenementUtilisateur`
+-- Table `smartcity`.`Commentaire`
 -- Dumping data
 -- -----------------------------------------------------
 
 SET AUTOCOMMIT=0;
-INSERT INTO `smartcity`.`EvenementUtilisateur` (`idEvenement`,`idUtilisateur`,`commentaire`) VALUES (1,1,'Début approximatif');
+INSERT INTO `smartcity`.`Commentaire` (`idEvenement`,`idUtilisateur`,`commentaire`) VALUES (1,1,'début de l\'accident approximatif');
 COMMIT;
 
 -- -----------------------------------------------------
--- Table `smartcity`.`UtilisateurConfianceRubriqueEnfant`
+-- Table `smartcity`.`Confiance`
 -- Dumping data
 -- -----------------------------------------------------
 
 SET AUTOCOMMIT=0;
-INSERT INTO `smartcity`.`UtilisateurConfianceRubriqueEnfant` (`idUtilisateur`,`idRubriqueEnfant`) VALUES (1,1),(1,2);
+INSERT INTO `smartcity`.`Confiance` (`idUtilisateur`,`idRubriqueEnfant`) VALUES (1,1),(1,2);
 COMMIT;
 
 SET SQL_MODE=@OLD_SQL_MODE;

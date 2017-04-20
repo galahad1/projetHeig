@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping catalog="smartcity" package="database.models">
+    <class name="RubriqueEnfant" dynamic-update="true">
+        <id name="idRubriqueEnfant">
+            <generator class="native"/>
+        </id>
+        <many-to-one name="rubriqueParent"
+                     column="idRubriqueParent"
+                     class="RubriqueParent"
+                     cascade="persist,merge,save-update"
+                     not-null="true"/>
+        <property name="nomRubriqueEnfant" not-null="true"/>
+        <property name="derniereMiseAJour" not-null="true" generated="always"/>
+        <set name="evenementSet" table="Evenement" inverse="true" lazy="true">
+            <key column="idRubriqueEnfant" not-null="true"/>
+            <one-to-many class="Evenement"/>
+        </set>
+        <set name="confianceSet" table="Confiance" inverse="true" lazy="true">
+            <key column="idRubriqueEnfant" not-null="true"/>
+            <one-to-many class="Confiance"/>
+        </set>
+    </class>
+    <query name="rubriqueEnfant.findByNomRubriqueEnfant">
+        <![CDATA[from RubriqueEnfant as rbe where rbe.nomRubriqueEnfant = :nomRubriqueEnfant]]>
+    </query>
+</hibernate-mapping>

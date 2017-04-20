@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping catalog="smartcity" package="database.models">
+    <class name="Nationalite" dynamic-update="true">
+        <id name="idNationalite">
+            <generator class="native"/>
+        </id>
+        <property name="nomNationalite" not-null="true"/>
+        <property name="derniereMiseAJour" not-null="true" generated="always"/>
+        <set name="utilisateurSet" table="Utilisateur" inverse="true" lazy="true">
+            <key column="idNationalite"/>
+            <one-to-many class="Utilisateur"/>
+        </set>
+    </class>
+    <query name="nationalite.findByNomNationalite">
+        <![CDATA[from Nationalite as nat where nat.nomNationalite = :nomNationalite]]>
+    </query>
+</hibernate-mapping>
