@@ -9,7 +9,7 @@ import java.util.Set;
 
 public class Adresse implements Serializable {
 
-    private int idAdresse;
+    private Integer idAdresse;
     private Rue rue;
     private String numeroDeRue;
     private Npa npa;
@@ -26,11 +26,11 @@ public class Adresse implements Serializable {
         this.npa = npa;
     }
 
-    public int getIdAdresse() {
+    public Integer getIdAdresse() {
         return idAdresse;
     }
 
-    public void setIdAdresse(int idAdresse) {
+    public void setIdAdresse(Integer idAdresse) {
         this.idAdresse = idAdresse;
     }
 

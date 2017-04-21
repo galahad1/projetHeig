@@ -4,7 +4,7 @@
 
 <hibernate-mapping catalog="smartcity" package="database.models">
     <class name="Nationalite" dynamic-update="true">
-        <id name="idNationalite">
+        <id name="idNationalite" type="integer">
             <generator class="native"/>
         </id>
         <property name="nomNationalite" not-null="true"/>

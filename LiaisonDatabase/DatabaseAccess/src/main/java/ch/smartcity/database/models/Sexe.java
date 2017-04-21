@@ -9,7 +9,7 @@ import java.util.Set;
 
 public class Sexe implements Serializable {
 
-    private int idSexe;
+    private Integer idSexe;
     private String nomSexe;
     private Calendar derniereMiseAJour;
     private Set<Utilisateur> utilisateurSet;
@@ -21,11 +21,11 @@ public class Sexe implements Serializable {
         this.nomSexe = nomSexe.toLowerCase();
     }
 
-    public int getIdSexe() {
+    public Integer getIdSexe() {
         return idSexe;
     }
 
-    public void setIdSexe(int idSexe) {
+    public void setIdSexe(Integer idSexe) {
         this.idSexe = idSexe;
     }
 

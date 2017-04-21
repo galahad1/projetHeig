@@ -9,7 +9,7 @@ import java.util.Set;
 
 public class Rue implements Serializable {
 
-    private int idRue;
+    private Integer idRue;
     private String nomRue;
     private Calendar derniereMiseAJour;
     private Set<Adresse> adresseSet;
@@ -21,11 +21,11 @@ public class Rue implements Serializable {
         this.nomRue = nomRue.toLowerCase();
     }
 
-    public int getIdRue() {
+    public Integer getIdRue() {
         return idRue;
     }
 
-    public void setIdRue(int idRue) {
+    public void setIdRue(Integer idRue) {
         this.idRue = idRue;
     }
 

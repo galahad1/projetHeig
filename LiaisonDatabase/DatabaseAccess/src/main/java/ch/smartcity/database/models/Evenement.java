@@ -9,7 +9,7 @@ import java.util.Set;
 
 public class Evenement implements Serializable {
 
-    private int idEvenement;
+    private Integer idEvenement;
     private RubriqueEnfant rubriqueEnfant;
     private Utilisateur utilisateur;
     private String nomEvenement;
@@ -71,11 +71,11 @@ public class Evenement implements Serializable {
         this.statut = statut;
     }
 
-    public int getIdEvenement() {
+    public Integer getIdEvenement() {
         return idEvenement;
     }
 
-    public void setIdEvenement(int idEvenement) {
+    public void setIdEvenement(Integer idEvenement) {
         this.idEvenement = idEvenement;
     }
 

@@ -9,7 +9,7 @@ import java.util.Set;
 
 public class TitreCivil implements Serializable {
 
-    private int idTitreCivil;
+    private Integer idTitreCivil;
     private String titre;
     private String abreviation;
     private Calendar derniereMiseAJour;
@@ -23,11 +23,11 @@ public class TitreCivil implements Serializable {
         this.abreviation = abreviation.toLowerCase();
     }
 
-    public int getIdTitreCivil() {
+    public Integer getIdTitreCivil() {
         return idTitreCivil;
     }
 
-    public void setIdTitreCivil(int idTitreCivil) {
+    public void setIdTitreCivil(Integer idTitreCivil) {
         this.idTitreCivil = idTitreCivil;
     }
 

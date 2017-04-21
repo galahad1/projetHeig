@@ -1,12 +1,33 @@
 package database.controllers;
 
 import database.models.RubriqueEnfant;
+import database.models.RubriqueEnfant_;
 import database.models.RubriqueParent;
 import org.hibernate.Session;
+import org.hibernate.Transaction;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.LogManager;
+import java.util.logging.Logger;
 
 public class RubriqueEnfantAccess {
+
+    private final static Logger LOGGER;
+
+    static {
+        try {
+            LogManager.getLogManager().readConfiguration(DatabaseManager.class.getClassLoader()
+                    .getResourceAsStream(DatabaseManager.LOGGING_PROPERTIES_FILE));
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        LOGGER = Logger.getLogger(RubriqueEnfantAccess.class.getName());
+    }
 
     private final DatabaseManager databaseManager;
 
@@ -14,25 +35,55 @@ public class RubriqueEnfantAccess {
         this.databaseManager = databaseManager;
     }
 
+    private static void rollback(Exception ex, Transaction transaction) {
+        if (transaction != null) {
+            try {
+                transaction.rollback();
+                LOGGER.log(Level.SEVERE, ex.getMessage(), ex);
+            } catch (Exception _ex) {
+                LOGGER.log(Level.SEVERE, _ex.getMessage(), _ex);
+            }
+        }
+    }
+
+    private static void close(Session session) {
+        if (session != null) {
+            try {
+                session.close();
+            } catch (Exception ex) {
+                LOGGER.log(Level.SEVERE, ex.getMessage(), ex);
+            }
+        }
+    }
+
     public List<RubriqueEnfant> get(String nomRubriqueEnfant) {
         List<RubriqueEnfant> rubriqueEnfantList = null;
 
+        Session session = null;
+        Transaction transaction = null;
+
         try {
-            Session session = databaseManager.openSession();
+            session = databaseManager.openSession();
+            transaction = session.beginTransaction();
 
-            rubriqueEnfantList = session
-                    .createNamedQuery(
-                            databaseManager.getProperty("rubriqueEnfant.namedQuery.findByNomRubriqueEnfant"),
-                            RubriqueEnfant.class)
-                    .setParameter(
-                            databaseManager.getProperty("rubriqueEnfant.parameter.nomRubriqueEnfant"),
-                            nomRubriqueEnfant.toLowerCase()).list();
+            CriteriaBuilder criteriaBuilder = databaseManager.getCriteriaBuilder();
+            CriteriaQuery<RubriqueEnfant> criteriaQuery = criteriaBuilder
+                    .createQuery(RubriqueEnfant.class);
+            Root<RubriqueEnfant> rubriqueEnfantRoot = criteriaQuery.from(RubriqueEnfant.class);
 
-            databaseManager.commit();
+            if (nomRubriqueEnfant != null) {
+                criteriaQuery.where(criteriaBuilder.equal(rubriqueEnfantRoot.get(
+                        RubriqueEnfant_.nomRubriqueEnfant),
+                        nomRubriqueEnfant.toLowerCase()));
+            }
+
+            rubriqueEnfantList = databaseManager.createQuery(criteriaQuery).getResultList();
+
+            transaction.commit();
         } catch (Exception ex) {
-            databaseManager.rollback(ex);
+            rollback(ex, transaction);
         } finally {
-            databaseManager.close();
+            close(session);
         }
 
         return rubriqueEnfantList;

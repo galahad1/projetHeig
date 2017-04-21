@@ -9,7 +9,7 @@ import java.util.Set;
 
 public class RubriqueEnfant implements Serializable {
 
-    private int idRubriqueEnfant;
+    private Integer idRubriqueEnfant;
     private RubriqueParent rubriqueParent;
     private String nomRubriqueEnfant;
     private Calendar derniereMiseAJour;
@@ -24,11 +24,11 @@ public class RubriqueEnfant implements Serializable {
         this.nomRubriqueEnfant = nomRubriqueEnfant.toLowerCase();
     }
 
-    public int getIdRubriqueEnfant() {
+    public Integer getIdRubriqueEnfant() {
         return idRubriqueEnfant;
     }
 
-    public void setIdRubriqueEnfant(int idRubriqueEnfant) {
+    public void setIdRubriqueEnfant(Integer idRubriqueEnfant) {
         this.idRubriqueEnfant = idRubriqueEnfant;
     }
 

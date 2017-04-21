@@ -9,7 +9,7 @@ import java.util.Set;
 
 public class Statut implements Serializable {
 
-    private int idStatut;
+    private Integer idStatut;
     private String nomStatut;
     private Calendar derniereMiseAJour;
     private Set<Evenement> evenementSet;
@@ -21,11 +21,11 @@ public class Statut implements Serializable {
         this.nomStatut = nomStatut.toLowerCase();
     }
 
-    public int getIdStatut() {
+    public Integer getIdStatut() {
         return idStatut;
     }
 
-    public void setIdStatut(int idStatut) {
+    public void setIdStatut(Integer idStatut) {
         this.idStatut = idStatut;
     }
 

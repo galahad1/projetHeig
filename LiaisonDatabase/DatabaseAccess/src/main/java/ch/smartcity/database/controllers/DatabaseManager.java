@@ -2,10 +2,11 @@ package database.controllers;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
 
-import java.io.IOException;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
@@ -13,89 +14,107 @@ import java.util.logging.Logger;
 
 public class DatabaseManager {
 
-    private Logger logger;
+    public final static String LOGGING_PROPERTIES_FILE;
+    private final static Logger LOGGER;
+
+    static {
+        LOGGING_PROPERTIES_FILE = "database/resources/logging.properties";
+
+        try {
+            LogManager.getLogManager().readConfiguration(DatabaseManager.class.getClassLoader()
+                    .getResourceAsStream(LOGGING_PROPERTIES_FILE));
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        LOGGER = Logger.getLogger(DatabaseManager.class.getName());
+    }
+
     private SessionFactory sessionFactory;
     private Properties properties;
     private Session session;
-    private Transaction transaction;
 
     public DatabaseManager() {
         this("database/resources/hibernate/hibernate.cfg.xml",
-                "database/resources/logging.properties",
                 "database/resources/database.properties");
     }
 
-    public DatabaseManager(String hibernateConfigurationFile,
-                           String loggingPropertiesFile,
-                           String databasePropertiesFile) {
-        this(Logger.getLogger(DatabaseManager.class.getName()),
-                new Configuration()
-                        .configure(hibernateConfigurationFile)
-                        .buildSessionFactory(),
-                new Properties());
+    public DatabaseManager(String hibernateConfigurationFile, String databasePropertiesFile) {
+        loadHibernateConfiguration(hibernateConfigurationFile);
+        loadDatabaseProperties(databasePropertiesFile);
+    }
 
+    private void loadHibernateConfiguration(String hibernateConfigurationFile) {
         try {
-            LogManager.getLogManager()
-                    .readConfiguration(DatabaseManager.class.getClassLoader()
-                            .getResourceAsStream(loggingPropertiesFile));
-            properties.load(DatabaseManager.class.getClassLoader()
-                    .getResourceAsStream(databasePropertiesFile));
-        } catch (IOException ex) {
-            ex.printStackTrace();
+            sessionFactory = new Configuration()
+                    .configure(hibernateConfigurationFile)
+                    .buildSessionFactory();
+        } catch (Exception ex) {
+            LOGGER.log(Level.SEVERE, ex.getMessage(), ex);
         }
     }
 
-    public DatabaseManager(Logger logger, SessionFactory sessionFactory, Properties properties) {
-        this.logger = logger;
+    private void loadDatabaseProperties(String databasePropertiesFile) {
+        try {
+            properties = new Properties();
+            properties.load(DatabaseManager.class.getClassLoader()
+                    .getResourceAsStream(databasePropertiesFile));
+        } catch (Exception ex) {
+            LOGGER.log(Level.SEVERE, ex.getMessage(), ex);
+        }
+    }
+
+    public SessionFactory getSessionFactory() {
+        return sessionFactory;
+    }
+
+    public void setSessionFactory(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
+    }
+
+    public Properties getProperties() {
+        return properties;
+    }
+
+    public void setProperties(Properties properties) {
         this.properties = properties;
     }
 
+    public CriteriaBuilder getCriteriaBuilder() {
+        return sessionFactory.getCriteriaBuilder();
+    }
+
+    public <T> TypedQuery<T> createQuery(CriteriaQuery<T> tCriteriaQuery) {
+        return openSession().createQuery(tCriteriaQuery);
+    }
+
     public Session openSession() {
-        session = sessionFactory.openSession();
-        transaction = session.beginTransaction();
+        if (session == null || !session.isOpen()) {
+            session = sessionFactory.openSession();
+        }
 
         return session;
     }
 
+    public void close() {
+        if (session != null) {
+            try {
+                session.close();
+            } catch (Exception ex) {
+                LOGGER.log(Level.SEVERE, ex.getMessage(), ex);
+            }
+        }
+
+        if (sessionFactory != null) {
+            try {
+                sessionFactory.close();
+            } catch (Exception ex) {
+                LOGGER.log(Level.SEVERE, ex.getMessage(), ex);
+            }
+        }
+    }
+
     public String getProperty(String key) {
         return properties.getProperty(key);
-    }
-
-    public void commit() {
-        transaction.commit();
-    }
-
-    public void log(Level level, String msg) {
-        logger.log(Level.SEVERE, msg);
-    }
-
-    public void log(Level level, String msg, Throwable thrown) {
-        logger.log(Level.SEVERE, msg, thrown);
-    }
-
-    public void rollback(Exception ex) {
-        try {
-            transaction.rollback();
-            log(Level.SEVERE, ex.getMessage(), ex);
-        } catch (Exception _ex) {
-            log(Level.SEVERE, _ex.getMessage(), _ex);
-        }
-    }
-
-    public void close() {
-        try {
-            session.close();
-        } catch (Exception ex) {
-            log(Level.SEVERE, ex.getMessage(), ex);
-        }
-    }
-
-    public void terminate() {
-        try {
-            sessionFactory.close();
-        } catch (Exception ex) {
-            log(Level.SEVERE, ex.getMessage(), ex);
-        }
     }
 }

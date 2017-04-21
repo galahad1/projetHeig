@@ -4,7 +4,7 @@
 
 <hibernate-mapping catalog="smartcity" package="database.models">
     <class name="RubriqueParent" dynamic-update="true">
-        <id name="idRubriqueParent">
+        <id name="idRubriqueParent" type="integer">
             <generator class="native"/>
         </id>
         <property name="nomRubriqueParent" not-null="true"/>

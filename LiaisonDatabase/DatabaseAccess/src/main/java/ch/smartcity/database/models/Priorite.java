@@ -9,7 +9,7 @@ import java.util.Set;
 
 public class Priorite implements Serializable {
 
-    private int idPriorite;
+    private Integer idPriorite;
     private String nomPriorite;
     private int niveau;
     private Calendar derniereMiseAJour;
@@ -23,11 +23,11 @@ public class Priorite implements Serializable {
         this.niveau = niveau;
     }
 
-    public int getIdPriorite() {
+    public Integer getIdPriorite() {
         return idPriorite;
     }
 
-    public void setIdPriorite(int idPriorite) {
+    public void setIdPriorite(Integer idPriorite) {
         this.idPriorite = idPriorite;
     }
 

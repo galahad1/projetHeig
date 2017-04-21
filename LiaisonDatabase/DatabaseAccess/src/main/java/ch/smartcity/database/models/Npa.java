@@ -9,7 +9,7 @@ import java.util.Set;
 
 public class Npa implements Serializable {
 
-    private int idNpa;
+    private Integer idNpa;
     private String numeroNpa;
     private Calendar derniereMiseAJour;
     private Set<Adresse> adressesSet;
@@ -21,11 +21,11 @@ public class Npa implements Serializable {
         this.numeroNpa = numeroNpa.toLowerCase();
     }
 
-    public int getIdNpa() {
+    public Integer getIdNpa() {
         return idNpa;
     }
 
-    public void setIdNpa(int idNpa) {
+    public void setIdNpa(Integer idNpa) {
         this.idNpa = idNpa;
     }
 
