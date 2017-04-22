@@ -4,7 +4,7 @@
 
 <hibernate-mapping catalog="smartcity" package="database.models">
     <class name="TitreCivil" dynamic-update="true">
-        <id name="idTitreCivil" type="integer">
+        <id name="idTitreCivil">
             <generator class="native"/>
         </id>
         <property name="titre" not-null="true"/>
@@ -15,7 +15,4 @@
             <one-to-many class="Utilisateur"/>
         </set>
     </class>
-    <query name="titreCivil.findByAbreviation">
-        <![CDATA[from TitreCivil as tc where tc.abreviation = :abreviation]]>
-    </query>
 </hibernate-mapping>

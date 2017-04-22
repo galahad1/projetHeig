@@ -7,7 +7,9 @@ import org.hibernate.Transaction;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
@@ -30,11 +32,11 @@ public class PrioriteAccess {
 
     private final DatabaseManager databaseManager;
 
-    public PrioriteAccess(DatabaseManager databaseManager) {
+    PrioriteAccess(DatabaseManager databaseManager) {
         this.databaseManager = databaseManager;
     }
 
-    private static void rollback(Exception ex, Transaction transaction) {
+    private void rollback(Exception ex, Transaction transaction) {
         if (transaction != null) {
             try {
                 transaction.rollback();
@@ -45,7 +47,7 @@ public class PrioriteAccess {
         }
     }
 
-    private static void close(Session session) {
+    private void close(Session session) {
         if (session != null) {
             try {
                 session.close();
@@ -62,25 +64,27 @@ public class PrioriteAccess {
         Transaction transaction = null;
 
         try {
-            session = databaseManager.openSession();
+            session = databaseManager.getSession();
             transaction = session.beginTransaction();
 
             CriteriaBuilder criteriaBuilder = databaseManager.getCriteriaBuilder();
             CriteriaQuery<Priorite> criteriaQuery = criteriaBuilder.createQuery(Priorite.class);
             Root<Priorite> prioriteRoot = criteriaQuery.from(Priorite.class);
+            List<Predicate> predicateList = new ArrayList<>();
 
             if (nomPriorite != null) {
-                criteriaQuery.where(criteriaBuilder.equal(
+                predicateList.add(criteriaBuilder.equal(
                         prioriteRoot.get(Priorite_.nomPriorite),
                         nomPriorite.toLowerCase()));
             }
 
             if (niveau != null) {
-                criteriaQuery.where(criteriaBuilder.equal(
+                predicateList.add(criteriaBuilder.equal(
                         prioriteRoot.get(Priorite_.niveau),
                         niveau));
             }
 
+            criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
             prioriteList = databaseManager.createQuery(criteriaQuery).getResultList();
 
             transaction.commit();
@@ -90,6 +94,10 @@ public class PrioriteAccess {
             close(session);
         }
 
+        LOGGER.log(Level.INFO, prioriteList != null ?
+                prioriteList.size() + " " + databaseManager.getString("databaseAccess.results")
+                : databaseManager.getString("databaseAccess.noResults"));
+
         return prioriteList;
     }
 
@@ -97,18 +105,20 @@ public class PrioriteAccess {
         DatabaseAccess.save(new Priorite(nomPriorite, numero));
     }
 
-    public void update(int idPriorite, String nomPriorite, Integer niveau) {
+    public void update(Integer idPriorite, String nomPriorite, Integer niveau) {
         Priorite priorite = DatabaseAccess.get(Priorite.class, idPriorite);
 
-        if (nomPriorite != null) {
-            priorite.setNomPriorite(nomPriorite);
-        }
+        if (priorite != null) {
+            if (nomPriorite != null) {
+                priorite.setNomPriorite(nomPriorite);
+            }
 
-        if (niveau != null) {
-            priorite.setNiveau(niveau);
-        }
+            if (niveau != null) {
+                priorite.setNiveau(niveau);
+            }
 
-        DatabaseAccess.update(priorite);
+            DatabaseAccess.update(priorite);
+        }
     }
 
     public void update(String oldNomPriorite,
@@ -117,17 +127,19 @@ public class PrioriteAccess {
                        Integer newNiveau) {
         List<Priorite> prioriteList = get(oldNomPriorite, oldNiveau);
 
-        for (Priorite priorite : prioriteList) {
-            if (newNomPriorite != null) {
-                priorite.setNomPriorite(newNomPriorite);
+        if (prioriteList != null) {
+            for (Priorite priorite : prioriteList) {
+                if (newNomPriorite != null) {
+                    priorite.setNomPriorite(newNomPriorite);
+                }
+
+                if (newNiveau != null) {
+                    priorite.setNiveau(newNiveau);
+                }
             }
 
-            if (newNiveau != null) {
-                priorite.setNiveau(newNiveau);
-            }
+            DatabaseAccess.update(prioriteList);
         }
-
-        DatabaseAccess.update(prioriteList);
     }
 
     public void delete(String nomPriorite, Integer niveau) {

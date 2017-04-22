@@ -4,7 +4,7 @@
 
 <hibernate-mapping catalog="smartcity" package="database.models">
     <class name="Evenement" dynamic-update="true">
-        <id name="idEvenement" type="integer">
+        <id name="idEvenement">
             <generator class="native"/>
         </id>
         <many-to-one name="rubriqueEnfant"
@@ -44,7 +44,4 @@
             <one-to-many class="Commentaire"/>
         </set>
     </class>
-    <query name="evenement.findByNomEvenement">
-        <![CDATA[from Evenement as eve where eve.nomEvenement = :nomEvenement]]>
-    </query>
 </hibernate-mapping>

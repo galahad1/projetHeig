@@ -14,8 +14,8 @@ public class Evenement implements Serializable {
     private Utilisateur utilisateur;
     private String nomEvenement;
     private Adresse adresse;
-    private double latitude;
-    private double longitude;
+    private Double latitude;
+    private Double longitude;
     private Calendar debut;
     private Calendar fin;
     private String details;
@@ -38,8 +38,8 @@ public class Evenement implements Serializable {
                 utilisateur,
                 nomEvenement,
                 null,
-                0,
-                0,
+                null,
+                null,
                 debut,
                 null,
                 null,
@@ -51,8 +51,8 @@ public class Evenement implements Serializable {
                      Utilisateur utilisateur,
                      String nomEvenement,
                      Adresse adresse,
-                     double latitude,
-                     double longitude,
+                     Double latitude,
+                     Double longitude,
                      Calendar debut,
                      Calendar fin,
                      String details,
@@ -111,19 +111,19 @@ public class Evenement implements Serializable {
         this.adresse = adresse;
     }
 
-    public double getLatitude() {
+    public Double getLatitude() {
         return latitude;
     }
 
-    public void setLatitude(double latitude) {
+    public void setLatitude(Double latitude) {
         this.latitude = latitude;
     }
 
-    public double getLongitude() {
+    public Double getLongitude() {
         return longitude;
     }
 
-    public void setLongitude(double longitude) {
+    public void setLongitude(Double longitude) {
         this.longitude = longitude;
     }
 

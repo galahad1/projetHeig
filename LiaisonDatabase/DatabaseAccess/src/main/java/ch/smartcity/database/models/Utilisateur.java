@@ -10,7 +10,7 @@ import java.util.Set;
 public class Utilisateur implements Serializable {
 
     private Integer idUtilisateur;
-    private boolean personnePhysique;
+    private Boolean personnePhysique;
     private String avs;
     private TitreCivil titreCivil;
     private String nomUtilisateur;
@@ -81,7 +81,7 @@ public class Utilisateur implements Serializable {
                 sel);
     }
 
-    public Utilisateur(boolean personnePhysique,
+    public Utilisateur(Boolean personnePhysique,
                        String avs,
                        TitreCivil titreCivil,
                        String nomUtilisateur,
@@ -117,11 +117,11 @@ public class Utilisateur implements Serializable {
         this.idUtilisateur = idUtilisateur;
     }
 
-    public boolean isPersonnePhysique() {
+    public Boolean isPersonnePhysique() {
         return personnePhysique;
     }
 
-    public void setPersonnePhysique(boolean personnePhysique) {
+    public void setPersonnePhysique(Boolean personnePhysique) {
         this.personnePhysique = personnePhysique;
     }
 

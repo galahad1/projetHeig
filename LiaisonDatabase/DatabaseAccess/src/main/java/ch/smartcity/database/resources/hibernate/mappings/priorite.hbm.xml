@@ -4,7 +4,7 @@
 
 <hibernate-mapping catalog="smartcity" package="database.models">
     <class name="Priorite" dynamic-update="true">
-        <id name="idPriorite" type="integer">
+        <id name="idPriorite">
             <generator class="native"/>
         </id>
         <property name="nomPriorite" not-null="true"/>
@@ -15,7 +15,4 @@
             <one-to-many class="Evenement"/>
         </set>
     </class>
-    <query name="priorite.findByNomPriorite">
-        <![CDATA[from Priorite as pri where pri.nomPriorite = :nomPriorite]]>
-    </query>
 </hibernate-mapping>

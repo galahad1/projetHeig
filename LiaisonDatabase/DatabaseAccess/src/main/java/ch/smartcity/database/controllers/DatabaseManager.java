@@ -7,7 +7,9 @@ import org.hibernate.cfg.Configuration;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import java.util.Locale;
 import java.util.Properties;
+import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
@@ -32,16 +34,21 @@ public class DatabaseManager {
 
     private SessionFactory sessionFactory;
     private Properties properties;
+    private ResourceBundle resourceBundle;
     private Session session;
 
     public DatabaseManager() {
         this("database/resources/hibernate/hibernate.cfg.xml",
-                "database/resources/database.properties");
+                "database/resources/database.properties",
+                "database/resources/messagesBundles/messageBundle");
     }
 
-    public DatabaseManager(String hibernateConfigurationFile, String databasePropertiesFile) {
+    public DatabaseManager(String hibernateConfigurationFile,
+                           String databasePropertiesFile,
+                           String baseNameResourceBundle) {
         loadHibernateConfiguration(hibernateConfigurationFile);
         loadDatabaseProperties(databasePropertiesFile);
+        loadResourceBundle(baseNameResourceBundle);
     }
 
     private void loadHibernateConfiguration(String hibernateConfigurationFile) {
@@ -64,6 +71,10 @@ public class DatabaseManager {
         }
     }
 
+    private void loadResourceBundle(String baseNameResourceBundle) {
+        resourceBundle = ResourceBundle.getBundle(baseNameResourceBundle, Locale.getDefault());
+    }
+
     public SessionFactory getSessionFactory() {
         return sessionFactory;
     }
@@ -80,20 +91,32 @@ public class DatabaseManager {
         this.properties = properties;
     }
 
-    public CriteriaBuilder getCriteriaBuilder() {
-        return sessionFactory.getCriteriaBuilder();
+    public ResourceBundle getResourceBundle() {
+        return resourceBundle;
     }
 
-    public <T> TypedQuery<T> createQuery(CriteriaQuery<T> tCriteriaQuery) {
-        return openSession().createQuery(tCriteriaQuery);
+    public void setResourceBundle(ResourceBundle resourceBundle) {
+        this.resourceBundle = resourceBundle;
     }
 
-    public Session openSession() {
+    public Session getSession() {
         if (session == null || !session.isOpen()) {
             session = sessionFactory.openSession();
         }
 
         return session;
+    }
+
+    public void setSession(Session session) {
+        this.session = session;
+    }
+
+    public CriteriaBuilder getCriteriaBuilder() {
+        return sessionFactory.getCriteriaBuilder();
+    }
+
+    public <T> TypedQuery<T> createQuery(CriteriaQuery<T> tCriteriaQuery) {
+        return getSession().createQuery(tCriteriaQuery);
     }
 
     public void close() {
@@ -116,5 +139,9 @@ public class DatabaseManager {
 
     public String getProperty(String key) {
         return properties.getProperty(key);
+    }
+
+    public String getString(String key) {
+        return resourceBundle.getString(key);
     }
 }

@@ -4,7 +4,7 @@
 
 <hibernate-mapping catalog="smartcity" package="database.models">
     <class name="Utilisateur" dynamic-update="true">
-        <id name="idUtilisateur" type="integer">
+        <id name="idUtilisateur">
             <generator class="native"/>
         </id>
         <property name="personnePhysique" not-null="true"/>
@@ -49,7 +49,4 @@
             <one-to-many class="Confiance"/>
         </set>
     </class>
-    <query name="utilisateur.findByAvs">
-        <![CDATA[from Utilisateur as uti where uti.avs = :avs]]>
-    </query>
 </hibernate-mapping>

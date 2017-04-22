@@ -7,7 +7,9 @@ import org.hibernate.Transaction;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
@@ -30,11 +32,11 @@ public class StatutAccess {
 
     private final DatabaseManager databaseManager;
 
-    public StatutAccess(DatabaseManager databaseManager) {
+    StatutAccess(DatabaseManager databaseManager) {
         this.databaseManager = databaseManager;
     }
 
-    private static void rollback(Exception ex, Transaction transaction) {
+    private void rollback(Exception ex, Transaction transaction) {
         if (transaction != null) {
             try {
                 transaction.rollback();
@@ -45,7 +47,7 @@ public class StatutAccess {
         }
     }
 
-    private static void close(Session session) {
+    private void close(Session session) {
         if (session != null) {
             try {
                 session.close();
@@ -62,20 +64,22 @@ public class StatutAccess {
         Transaction transaction = null;
 
         try {
-            session = databaseManager.openSession();
+            session = databaseManager.getSession();
             transaction = session.beginTransaction();
 
             CriteriaBuilder criteriaBuilder = databaseManager.getCriteriaBuilder();
             CriteriaQuery<Statut> criteriaQuery = criteriaBuilder
                     .createQuery(Statut.class);
             Root<Statut> statutRoot = criteriaQuery.from(Statut.class);
+            List<Predicate> predicateList = new ArrayList<>();
 
             if (nomStatut != null) {
-                criteriaQuery.where(criteriaBuilder.equal(statutRoot.get(
+                predicateList.add(criteriaBuilder.equal(statutRoot.get(
                         Statut_.nomStatut),
                         nomStatut.toLowerCase()));
             }
 
+            criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
             statutList = databaseManager.createQuery(criteriaQuery).getResultList();
 
             transaction.commit();
@@ -85,6 +89,10 @@ public class StatutAccess {
             close(session);
         }
 
+        LOGGER.log(Level.INFO, statutList != null ?
+                statutList.size() + " " + databaseManager.getString("databaseAccess.results")
+                : databaseManager.getString("databaseAccess.noResults"));
+
         return statutList;
     }
 
@@ -92,20 +100,30 @@ public class StatutAccess {
         DatabaseAccess.save(new Statut(nomStatut));
     }
 
-    public void update(int idStatut, String nomStatut) {
+    public void update(Integer idStatut, String nomStatut) {
         Statut statut = DatabaseAccess.get(Statut.class, idStatut);
-        statut.setNomStatut(nomStatut);
-        DatabaseAccess.update(statut);
+
+        if (statut != null) {
+            if (nomStatut != null) {
+                statut.setNomStatut(nomStatut);
+            }
+
+            DatabaseAccess.update(statut);
+        }
     }
 
     public void update(String oldNomStatut, String newNomStatut) {
         List<Statut> statutList = get(oldNomStatut);
 
-        for (Statut statut : statutList) {
-            statut.setNomStatut(newNomStatut);
-        }
+        if (statutList != null) {
+            for (Statut statut : statutList) {
+                if (newNomStatut != null) {
+                    statut.setNomStatut(newNomStatut);
+                }
+            }
 
-        DatabaseAccess.update(statutList);
+            DatabaseAccess.update(statutList);
+        }
     }
 
     public void delete(String nomStatut) {

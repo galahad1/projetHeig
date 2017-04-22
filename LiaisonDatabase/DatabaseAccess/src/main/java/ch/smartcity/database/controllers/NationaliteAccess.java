@@ -7,7 +7,9 @@ import org.hibernate.Transaction;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
@@ -30,11 +32,11 @@ public class NationaliteAccess {
 
     private final DatabaseManager databaseManager;
 
-    public NationaliteAccess(DatabaseManager databaseManager) {
+    NationaliteAccess(DatabaseManager databaseManager) {
         this.databaseManager = databaseManager;
     }
 
-    private static void rollback(Exception ex, Transaction transaction) {
+    private void rollback(Exception ex, Transaction transaction) {
         if (transaction != null) {
             try {
                 transaction.rollback();
@@ -45,7 +47,7 @@ public class NationaliteAccess {
         }
     }
 
-    private static void close(Session session) {
+    private void close(Session session) {
         if (session != null) {
             try {
                 session.close();
@@ -62,20 +64,23 @@ public class NationaliteAccess {
         Transaction transaction = null;
 
         try {
-            session = databaseManager.openSession();
+            session = databaseManager.getSession();
             transaction = session.beginTransaction();
 
             CriteriaBuilder criteriaBuilder = databaseManager.getCriteriaBuilder();
             CriteriaQuery<Nationalite> criteriaQuery = criteriaBuilder
                     .createQuery(Nationalite.class);
+
             Root<Nationalite> nationaliteRoot = criteriaQuery.from(Nationalite.class);
+            List<Predicate> predicateList = new ArrayList<>();
 
             if (nomNationalite != null) {
-                criteriaQuery.where(criteriaBuilder.equal(
+                predicateList.add(criteriaBuilder.equal(
                         nationaliteRoot.get(Nationalite_.nomNationalite),
                         nomNationalite.toLowerCase()));
             }
 
+            criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
             nationaliteList = databaseManager.createQuery(criteriaQuery).getResultList();
 
             transaction.commit();
@@ -85,6 +90,11 @@ public class NationaliteAccess {
             close(session);
         }
 
+        LOGGER.log(Level.INFO, nationaliteList != null ?
+                nationaliteList.size() + " " +
+                        databaseManager.getString("databaseAccess.results")
+                : databaseManager.getString("databaseAccess.noResults"));
+
         return nationaliteList;
     }
 
@@ -92,20 +102,30 @@ public class NationaliteAccess {
         DatabaseAccess.save(new Nationalite(nomNationalite));
     }
 
-    public void update(int idNationalite, String nomNationalite) {
+    public void update(Integer idNationalite, String nomNationalite) {
         Nationalite nationalite = DatabaseAccess.get(Nationalite.class, idNationalite);
-        nationalite.setNomNationalite(nomNationalite);
-        DatabaseAccess.update(nationalite);
+
+        if (nationalite != null) {
+            if (nomNationalite != null) {
+                nationalite.setNomNationalite(nomNationalite);
+            }
+
+            DatabaseAccess.update(nationalite);
+        }
     }
 
     public void update(String oldNomNationalite, String newNomNationalite) {
         List<Nationalite> nationaliteList = get(oldNomNationalite);
 
-        for (Nationalite nationalite : nationaliteList) {
-            nationalite.setNomNationalite(newNomNationalite);
-        }
+        if (nationaliteList != null) {
+            for (Nationalite nationalite : nationaliteList) {
+                if (newNomNationalite != null) {
+                    nationalite.setNomNationalite(newNomNationalite);
+                }
+            }
 
-        DatabaseAccess.update(nationaliteList);
+            DatabaseAccess.update(nationaliteList);
+        }
     }
 
     public void delete(String nomNationalite) {

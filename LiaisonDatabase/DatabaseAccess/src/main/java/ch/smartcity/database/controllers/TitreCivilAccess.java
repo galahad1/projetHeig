@@ -7,7 +7,9 @@ import org.hibernate.Transaction;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
@@ -30,11 +32,11 @@ public class TitreCivilAccess {
 
     private final DatabaseManager databaseManager;
 
-    public TitreCivilAccess(DatabaseManager databaseManager) {
+    TitreCivilAccess(DatabaseManager databaseManager) {
         this.databaseManager = databaseManager;
     }
 
-    private static void rollback(Exception ex, Transaction transaction) {
+    private void rollback(Exception ex, Transaction transaction) {
         if (transaction != null) {
             try {
                 transaction.rollback();
@@ -45,7 +47,7 @@ public class TitreCivilAccess {
         }
     }
 
-    private static void close(Session session) {
+    private void close(Session session) {
         if (session != null) {
             try {
                 session.close();
@@ -62,26 +64,28 @@ public class TitreCivilAccess {
         Transaction transaction = null;
 
         try {
-            session = databaseManager.openSession();
+            session = databaseManager.getSession();
             transaction = session.beginTransaction();
 
             CriteriaBuilder criteriaBuilder = databaseManager.getCriteriaBuilder();
             CriteriaQuery<TitreCivil> criteriaQuery = criteriaBuilder
                     .createQuery(TitreCivil.class);
             Root<TitreCivil> titreCivilRoot = criteriaQuery.from(TitreCivil.class);
+            List<Predicate> predicateList = new ArrayList<>();
 
             if (titre != null) {
-                criteriaQuery.where(criteriaBuilder.equal(titreCivilRoot.get(
+                predicateList.add(criteriaBuilder.equal(titreCivilRoot.get(
                         TitreCivil_.titre),
                         titre.toLowerCase()));
             }
 
             if (abreviation != null) {
-                criteriaQuery.where(criteriaBuilder.equal(titreCivilRoot.get(
+                predicateList.add(criteriaBuilder.equal(titreCivilRoot.get(
                         TitreCivil_.abreviation),
                         abreviation.toLowerCase()));
             }
 
+            criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
             titreCivilList = databaseManager.createQuery(criteriaQuery).getResultList();
 
             transaction.commit();
@@ -91,6 +95,11 @@ public class TitreCivilAccess {
             close(session);
         }
 
+        LOGGER.log(Level.INFO, titreCivilList != null ?
+                titreCivilList.size() + " " +
+                        databaseManager.getString("databaseAccess.results")
+                : databaseManager.getString("databaseAccess.noResults"));
+
         return titreCivilList;
     }
 
@@ -98,11 +107,20 @@ public class TitreCivilAccess {
         DatabaseAccess.save(new TitreCivil(titre, abreviation));
     }
 
-    public void update(int idTitreCivil, String titre, String abreviation) {
+    public void update(Integer idTitreCivil, String titre, String abreviation) {
         TitreCivil titreCivil = DatabaseAccess.get(TitreCivil.class, idTitreCivil);
-        titreCivil.setTitre(titre);
-        titreCivil.setAbreviation(abreviation);
-        DatabaseAccess.update(titreCivil);
+
+        if (titreCivil != null) {
+            if (titre != null) {
+                titreCivil.setTitre(titre);
+            }
+
+            if (abreviation != null) {
+                titreCivil.setAbreviation(abreviation);
+            }
+
+            DatabaseAccess.update(titreCivil);
+        }
     }
 
     public void update(String oldTitre,
@@ -111,17 +129,19 @@ public class TitreCivilAccess {
                        String newAbreviation) {
         List<TitreCivil> titreCivilList = get(oldTitre, oldAbreviation);
 
-        for (TitreCivil titreCivil : titreCivilList) {
-            if (newTitre != null) {
-                titreCivil.setTitre(newTitre);
+        if (titreCivilList != null) {
+            for (TitreCivil titreCivil : titreCivilList) {
+                if (newTitre != null) {
+                    titreCivil.setTitre(newTitre);
+                }
+
+                if (newAbreviation != null) {
+                    titreCivil.setAbreviation(newAbreviation);
+                }
             }
 
-            if (newAbreviation != null) {
-                titreCivil.setAbreviation(newAbreviation);
-            }
+            DatabaseAccess.update(titreCivilList);
         }
-
-        DatabaseAccess.update(titreCivilList);
     }
 
     public void delete(String titre, String abreviation) {

@@ -60,7 +60,6 @@ public class IdCommentaire implements Serializable {
     public String toString() {
         return "IdCommentaire{" +
                 "evenement=" + evenement +
-                ", utilisateur=" + utilisateur +
                 '}';
     }
 }

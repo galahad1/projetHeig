@@ -3,12 +3,12 @@ package database.controllers;
 import database.models.RubriqueEnfant;
 import database.models.RubriqueEnfant_;
 import database.models.RubriqueParent;
+import database.models.RubriqueParent_;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
+import javax.persistence.criteria.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
@@ -31,11 +31,11 @@ public class RubriqueEnfantAccess {
 
     private final DatabaseManager databaseManager;
 
-    public RubriqueEnfantAccess(DatabaseManager databaseManager) {
+    RubriqueEnfantAccess(DatabaseManager databaseManager) {
         this.databaseManager = databaseManager;
     }
 
-    private static void rollback(Exception ex, Transaction transaction) {
+    private void rollback(Exception ex, Transaction transaction) {
         if (transaction != null) {
             try {
                 transaction.rollback();
@@ -46,7 +46,7 @@ public class RubriqueEnfantAccess {
         }
     }
 
-    private static void close(Session session) {
+    private void close(Session session) {
         if (session != null) {
             try {
                 session.close();
@@ -56,27 +56,44 @@ public class RubriqueEnfantAccess {
         }
     }
 
-    public List<RubriqueEnfant> get(String nomRubriqueEnfant) {
+    public List<RubriqueEnfant> get(RubriqueParent rubriqueParent, String nomRubriqueEnfant) {
+        String nomRubriqueParent = rubriqueParent != null ?
+                rubriqueParent.getNomRubriqueParent() : null;
+
+        return get(nomRubriqueParent, nomRubriqueEnfant);
+    }
+
+    public List<RubriqueEnfant> get(String nomRubriqueParent, String nomRubriqueEnfant) {
         List<RubriqueEnfant> rubriqueEnfantList = null;
 
         Session session = null;
         Transaction transaction = null;
 
         try {
-            session = databaseManager.openSession();
+            session = databaseManager.getSession();
             transaction = session.beginTransaction();
 
             CriteriaBuilder criteriaBuilder = databaseManager.getCriteriaBuilder();
             CriteriaQuery<RubriqueEnfant> criteriaQuery = criteriaBuilder
                     .createQuery(RubriqueEnfant.class);
             Root<RubriqueEnfant> rubriqueEnfantRoot = criteriaQuery.from(RubriqueEnfant.class);
+            Join<RubriqueEnfant, RubriqueParent> rubriqueEnfantRubriqueParentJoin =
+                    rubriqueEnfantRoot.join(RubriqueEnfant_.rubriqueParent);
+            List<Predicate> predicateList = new ArrayList<>();
+
+            if (nomRubriqueParent != null) {
+                predicateList.add(criteriaBuilder.equal(rubriqueEnfantRubriqueParentJoin.get(
+                        RubriqueParent_.nomRubriqueParent),
+                        nomRubriqueParent.toLowerCase()));
+            }
 
             if (nomRubriqueEnfant != null) {
-                criteriaQuery.where(criteriaBuilder.equal(rubriqueEnfantRoot.get(
+                predicateList.add(criteriaBuilder.equal(rubriqueEnfantRoot.get(
                         RubriqueEnfant_.nomRubriqueEnfant),
                         nomRubriqueEnfant.toLowerCase()));
             }
 
+            criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
             rubriqueEnfantList = databaseManager.createQuery(criteriaQuery).getResultList();
 
             transaction.commit();
@@ -86,30 +103,67 @@ public class RubriqueEnfantAccess {
             close(session);
         }
 
+        LOGGER.log(Level.INFO, rubriqueEnfantList != null ?
+                rubriqueEnfantList.size() + " " +
+                        databaseManager.getString("databaseAccess.results")
+                : databaseManager.getString("databaseAccess.noResults"));
+
         return rubriqueEnfantList;
     }
 
-    public void save(String nomRubriqueEnfant, RubriqueParent rubriqueParent) {
+    public void save(RubriqueParent rubriqueParent, String nomRubriqueEnfant) {
         DatabaseAccess.save(new RubriqueEnfant(rubriqueParent, nomRubriqueEnfant));
     }
 
-    public void update(int idRubriqueEnfant, String nomRubriqueEnfant) {
+    public void update(Integer idRubriqueEnfant,
+                       RubriqueParent rubriqueParent,
+                       String nomRubriqueEnfant) {
         RubriqueEnfant rubriqueEnfant = DatabaseAccess.get(RubriqueEnfant.class, idRubriqueEnfant);
-        rubriqueEnfant.setNomRubriqueEnfant(nomRubriqueEnfant);
-        DatabaseAccess.update(rubriqueEnfant);
-    }
 
-    public void update(String oldNomRubriqueEnfant, String newNomRubriqueEnfant) {
-        List<RubriqueEnfant> rubriqueEnfantList = get(oldNomRubriqueEnfant);
+        if (rubriqueEnfant != null) {
+            if (rubriqueParent != null) {
+                rubriqueEnfant.setRubriqueParent(rubriqueParent);
+            }
 
-        for (RubriqueEnfant rubriqueEnfant : rubriqueEnfantList) {
-            rubriqueEnfant.setNomRubriqueEnfant(newNomRubriqueEnfant);
+            if (nomRubriqueEnfant != null) {
+                rubriqueEnfant.setNomRubriqueEnfant(nomRubriqueEnfant);
+            }
+
+            DatabaseAccess.update(rubriqueEnfant);
         }
-
-        DatabaseAccess.update(rubriqueEnfantList);
     }
 
-    public void delete(String nomRubriqueEnfant) {
-        DatabaseAccess.delete(get(nomRubriqueEnfant));
+    public void update(RubriqueParent oldRubriqueEnfant,
+                       String oldNomRubriqueEnfant,
+                       RubriqueParent newRubriqueParent,
+                       String newNomRubriqueEnfant) {
+        List<RubriqueEnfant> rubriqueEnfantList = get(oldRubriqueEnfant, oldNomRubriqueEnfant);
+
+        if (rubriqueEnfantList != null) {
+            for (RubriqueEnfant rubriqueEnfant : rubriqueEnfantList) {
+                if (newRubriqueParent != null) {
+                    rubriqueEnfant.setRubriqueParent(newRubriqueParent);
+                }
+
+                if (newNomRubriqueEnfant != null) {
+                    rubriqueEnfant.setNomRubriqueEnfant(newNomRubriqueEnfant);
+                }
+            }
+
+            DatabaseAccess.update(rubriqueEnfantList);
+        }
+    }
+
+    public void delete(RubriqueParent rubriqueParent,
+                       String nomRubriqueEnfant) {
+        String nomRubriqueParent = rubriqueParent != null ?
+                rubriqueParent.getNomRubriqueParent() : null;
+
+        delete(nomRubriqueParent, nomRubriqueEnfant);
+    }
+
+    public void delete(String nomRubriqueParent,
+                       String nomRubriqueEnfant) {
+        DatabaseAccess.delete(get(nomRubriqueParent, nomRubriqueEnfant));
     }
 }

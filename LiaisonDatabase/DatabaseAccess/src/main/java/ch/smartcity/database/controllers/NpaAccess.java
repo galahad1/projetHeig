@@ -7,7 +7,9 @@ import org.hibernate.Transaction;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
@@ -30,11 +32,11 @@ public class NpaAccess {
 
     private final DatabaseManager databaseManager;
 
-    public NpaAccess(DatabaseManager databaseManager) {
+    NpaAccess(DatabaseManager databaseManager) {
         this.databaseManager = databaseManager;
     }
 
-    private static void rollback(Exception ex, Transaction transaction) {
+    private void rollback(Exception ex, Transaction transaction) {
         if (transaction != null) {
             try {
                 transaction.rollback();
@@ -45,7 +47,7 @@ public class NpaAccess {
         }
     }
 
-    private static void close(Session session) {
+    private void close(Session session) {
         if (session != null) {
             try {
                 session.close();
@@ -62,18 +64,20 @@ public class NpaAccess {
         Transaction transaction = null;
 
         try {
-            session = databaseManager.openSession();
+            session = databaseManager.getSession();
             transaction = session.beginTransaction();
 
             CriteriaBuilder criteriaBuilder = databaseManager.getCriteriaBuilder();
             CriteriaQuery<Npa> criteriaQuery = criteriaBuilder.createQuery(Npa.class);
             Root<Npa> npaRoot = criteriaQuery.from(Npa.class);
+            List<Predicate> predicateList = new ArrayList<>();
 
             if (numeroNpa != null) {
-                criteriaQuery.where(criteriaBuilder.equal(
+                predicateList.add(criteriaBuilder.equal(
                         npaRoot.get(Npa_.numeroNpa), numeroNpa.toLowerCase()));
             }
 
+            criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
             npaList = databaseManager.createQuery(criteriaQuery).getResultList();
 
             transaction.commit();
@@ -83,6 +87,10 @@ public class NpaAccess {
             close(session);
         }
 
+        LOGGER.log(Level.INFO, npaList != null ?
+                npaList.size() + " " + databaseManager.getString("databaseAccess.results")
+                : databaseManager.getString("databaseAccess.noResults"));
+
         return npaList;
     }
 
@@ -90,20 +98,30 @@ public class NpaAccess {
         DatabaseAccess.save(new Npa(numeroNpa));
     }
 
-    public void update(int idNpa, String numeroNpa) {
+    public void update(Integer idNpa, String numeroNpa) {
         Npa npa = DatabaseAccess.get(Npa.class, idNpa);
-        npa.setNumeroNpa(numeroNpa);
-        DatabaseAccess.update(npa);
+
+        if (npa != null) {
+            if (numeroNpa != null) {
+                npa.setNumeroNpa(numeroNpa);
+            }
+
+            DatabaseAccess.update(npa);
+        }
     }
 
     public void update(String oldNumeroNpa, String newNumeroNpa) {
         List<Npa> npaList = get(oldNumeroNpa);
 
-        for (Npa npa : npaList) {
-            npa.setNumeroNpa(newNumeroNpa);
-        }
+        if (npaList != null) {
+            for (Npa npa : npaList) {
+                if (newNumeroNpa != null) {
+                    npa.setNumeroNpa(newNumeroNpa);
+                }
+            }
 
-        DatabaseAccess.update(npaList);
+            DatabaseAccess.update(npaList);
+        }
     }
 
     public void delete(String numeroNpa) {

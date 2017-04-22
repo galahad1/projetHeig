@@ -2,7 +2,10 @@ package database.controllers;
 
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.resource.transaction.spi.TransactionStatus;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
@@ -11,6 +14,8 @@ import java.util.logging.Logger;
 public class DatabaseAccess {
 
     public final static AdresseAccess ADRESSE_ACCESS;
+    public final static CommentaireAccess COMMENTAIRE_ACCESS;
+    public final static ConfianceAccess CONFIANCE_ACCESS;
     public final static EvenementAccess EVENEMENT_ACCESS;
     public final static NationaliteAccess NATIONALITE_ACCESS;
     public final static NpaAccess NPA_ACCESS;
@@ -37,6 +42,8 @@ public class DatabaseAccess {
         DATABASE_MANAGER = new DatabaseManager();
 
         ADRESSE_ACCESS = new AdresseAccess(DATABASE_MANAGER);
+        COMMENTAIRE_ACCESS = new CommentaireAccess(DATABASE_MANAGER);
+        CONFIANCE_ACCESS = new ConfianceAccess(DATABASE_MANAGER);
         EVENEMENT_ACCESS = new EvenementAccess(DATABASE_MANAGER);
         NATIONALITE_ACCESS = new NationaliteAccess(DATABASE_MANAGER);
         NPA_ACCESS = new NpaAccess(DATABASE_MANAGER);
@@ -50,14 +57,14 @@ public class DatabaseAccess {
         UTILISATEUR_ACCESS = new UtilisateurAccess(DATABASE_MANAGER);
     }
 
-    public static <T> T get(Class<T> tClass, int id) {
+    public static <T> T get(Class<T> tClass, Integer id) {
         T t = null;
 
         Session session = null;
         Transaction transaction = null;
 
         try {
-            session = DATABASE_MANAGER.openSession();
+            session = DATABASE_MANAGER.getSession();
             transaction = session.beginTransaction();
 
             t = session.get(tClass, id);
@@ -69,6 +76,10 @@ public class DatabaseAccess {
             close(session);
         }
 
+        LOGGER.log(Level.INFO, t != null ?
+                DATABASE_MANAGER.getString("databaseAccess.oneResult")
+                : DATABASE_MANAGER.getString("databaseAccess.noResults"));
+
         return t;
     }
 
@@ -79,10 +90,13 @@ public class DatabaseAccess {
         Transaction transaction = null;
 
         try {
-            session = DATABASE_MANAGER.openSession();
+            session = DATABASE_MANAGER.getSession();
             transaction = session.beginTransaction();
 
-            tList = session.createQuery("from " + tClass.getSimpleName(), tClass).getResultList();
+            CriteriaBuilder criteriaBuilder = DATABASE_MANAGER.getCriteriaBuilder();
+            CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(tClass);
+            criteriaQuery.from(tClass);
+            tList = DATABASE_MANAGER.createQuery(criteriaQuery).getResultList();
 
             transaction.commit();
         } catch (Exception ex) {
@@ -90,6 +104,10 @@ public class DatabaseAccess {
         } finally {
             close(session);
         }
+
+        LOGGER.log(Level.INFO, tList != null ?
+                tList.size() + " " + DATABASE_MANAGER.getString("databaseAccess.results")
+                : DATABASE_MANAGER.getString("databaseAccess.noResults"));
 
         return tList;
     }
@@ -99,7 +117,7 @@ public class DatabaseAccess {
         Transaction transaction = null;
 
         try {
-            session = DATABASE_MANAGER.openSession();
+            session = DATABASE_MANAGER.getSession();
             transaction = session.beginTransaction();
 
             session.save(t);
@@ -110,6 +128,8 @@ public class DatabaseAccess {
         } finally {
             close(session);
         }
+
+        transactionMessage(transaction);
     }
 
     public static <T> void save(List<T> tList) {
@@ -117,7 +137,7 @@ public class DatabaseAccess {
         Transaction transaction = null;
 
         try {
-            session = DATABASE_MANAGER.openSession();
+            session = DATABASE_MANAGER.getSession();
             transaction = session.beginTransaction();
 
             for (T t : tList) {
@@ -130,6 +150,8 @@ public class DatabaseAccess {
         } finally {
             close(session);
         }
+
+        transactionMessage(transaction);
     }
 
     public static <T> void update(T t) {
@@ -137,7 +159,7 @@ public class DatabaseAccess {
         Transaction transaction = null;
 
         try {
-            session = DATABASE_MANAGER.openSession();
+            session = DATABASE_MANAGER.getSession();
             transaction = session.beginTransaction();
 
             session.update(t);
@@ -148,6 +170,8 @@ public class DatabaseAccess {
         } finally {
             close(session);
         }
+
+        transactionMessage(transaction);
     }
 
     public static <T> void update(List<T> tList) {
@@ -155,7 +179,7 @@ public class DatabaseAccess {
         Transaction transaction = null;
 
         try {
-            session = DATABASE_MANAGER.openSession();
+            session = DATABASE_MANAGER.getSession();
             transaction = session.beginTransaction();
 
             for (T t : tList) {
@@ -168,6 +192,8 @@ public class DatabaseAccess {
         } finally {
             close(session);
         }
+
+        transactionMessage(transaction);
     }
 
     public static <T> void delete(Class<T> tClass, int id) {
@@ -179,7 +205,7 @@ public class DatabaseAccess {
         Transaction transaction = null;
 
         try {
-            session = DATABASE_MANAGER.openSession();
+            session = DATABASE_MANAGER.getSession();
             transaction = session.beginTransaction();
 
             session.delete(t);
@@ -190,6 +216,8 @@ public class DatabaseAccess {
         } finally {
             close(session);
         }
+
+        transactionMessage(transaction);
     }
 
     public static <T> void delete(List<T> tList) {
@@ -197,7 +225,7 @@ public class DatabaseAccess {
         Transaction transaction = null;
 
         try {
-            session = DATABASE_MANAGER.openSession();
+            session = DATABASE_MANAGER.getSession();
             transaction = session.beginTransaction();
 
             for (T t : tList) {
@@ -210,10 +238,25 @@ public class DatabaseAccess {
         } finally {
             close(session);
         }
+
+        transactionMessage(transaction);
     }
 
     public static void close() {
         DATABASE_MANAGER.close();
+    }
+
+    private static void transactionMessage(Transaction transaction) {
+
+        String key;
+
+        if (transaction != null && transaction.getStatus().equals(TransactionStatus.COMMITTED)) {
+            key = "databaseAccess.transactionCommitted";
+        } else {
+            key = "databaseAccess.transactionRollbacked";
+        }
+
+        LOGGER.log(Level.INFO, DATABASE_MANAGER.getString(key));
     }
 
     private static void rollback(Exception ex, Transaction transaction) {
