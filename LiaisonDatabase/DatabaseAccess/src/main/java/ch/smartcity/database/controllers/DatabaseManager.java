@@ -16,7 +16,7 @@ import java.util.logging.Logger;
 
 public class DatabaseManager {
 
-    private final static String LOGGING_PROPERTIES_FILE;
+    public final static String LOGGING_PROPERTIES_FILE;
     private final static Logger LOGGER;
 
     static {
