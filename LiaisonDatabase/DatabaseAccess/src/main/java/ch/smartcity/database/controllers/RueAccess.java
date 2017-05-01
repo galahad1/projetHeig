@@ -12,27 +12,27 @@ import javax.persistence.criteria.Root;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
-import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
 public class RueAccess {
 
-    private final static Logger LOGGER;
+    private static final Logger LOGGER;
 
     static {
-        try {
-            LogManager.getLogManager().readConfiguration(DatabaseManager.class.getClassLoader()
-                    .getResourceAsStream(DatabaseManager.LOGGING_PROPERTIES_FILE));
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-
         LOGGER = Logger.getLogger(RueAccess.class.getName());
     }
 
-    private final DatabaseManager databaseManager;
+    private DatabaseManager databaseManager;
 
     RueAccess(DatabaseManager databaseManager) {
+        this.databaseManager = databaseManager;
+    }
+
+    public DatabaseManager getDatabaseManager() {
+        return databaseManager;
+    }
+
+    public void setDatabaseManager(DatabaseManager databaseManager) {
         this.databaseManager = databaseManager;
     }
 

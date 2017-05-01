@@ -8,36 +8,28 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import java.util.List;
 import java.util.logging.Level;
-import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
 public class DatabaseAccess {
 
-    public final static AdresseAccess ADRESSE_ACCESS;
-    public final static CommentaireAccess COMMENTAIRE_ACCESS;
-    public final static ConfianceAccess CONFIANCE_ACCESS;
-    public final static EvenementAccess EVENEMENT_ACCESS;
-    public final static NationaliteAccess NATIONALITE_ACCESS;
-    public final static NpaAccess NPA_ACCESS;
-    public final static PrioriteAccess PRIORITE_ACCESS;
-    public final static RubriqueEnfantAccess RUBRIQUE_ENFANT_ACCESS;
-    public final static RubriqueParentAccess RUBRIQUE_PARENT_ACCESS;
-    public final static RueAccess RUE_ACCESS;
-    public final static SexeAccess SEXE_ACCESS;
-    public final static StatutAccess STATUT_ACCESS;
-    public final static TitreCivilAccess TITRE_CIVIL_ACCESS;
-    public final static UtilisateurAccess UTILISATEUR_ACCESS;
-    private final static Logger LOGGER;
-    private final static DatabaseManager DATABASE_MANAGER;
+    public static final AdresseAccess ADRESSE_ACCESS;
+    public static final CommentaireAccess COMMENTAIRE_ACCESS;
+    public static final ConfianceAccess CONFIANCE_ACCESS;
+    public static final EvenementAccess EVENEMENT_ACCESS;
+    public static final NationaliteAccess NATIONALITE_ACCESS;
+    public static final NpaAccess NPA_ACCESS;
+    public static final PrioriteAccess PRIORITE_ACCESS;
+    public static final RubriqueEnfantAccess RUBRIQUE_ENFANT_ACCESS;
+    public static final RubriqueParentAccess RUBRIQUE_PARENT_ACCESS;
+    public static final RueAccess RUE_ACCESS;
+    public static final SexeAccess SEXE_ACCESS;
+    public static final StatutAccess STATUT_ACCESS;
+    public static final TitreCivilAccess TITRE_CIVIL_ACCESS;
+    public static final UtilisateurAccess UTILISATEUR_ACCESS;
+    private static final Logger LOGGER;
+    private static final DatabaseManager DATABASE_MANAGER;
 
     static {
-        try {
-            LogManager.getLogManager().readConfiguration(DatabaseManager.class.getClassLoader()
-                    .getResourceAsStream(DatabaseManager.LOGGING_PROPERTIES_FILE));
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-
         LOGGER = Logger.getLogger(DatabaseAccess.class.getName());
         DATABASE_MANAGER = new DatabaseManager();
 

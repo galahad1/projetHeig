@@ -16,15 +16,12 @@ import java.util.logging.Logger;
 
 public class DatabaseManager {
 
-    public final static String LOGGING_PROPERTIES_FILE;
-    private final static Logger LOGGER;
+    private static final Logger LOGGER;
 
     static {
-        LOGGING_PROPERTIES_FILE = "database/resources/logging.properties";
-
         try {
             LogManager.getLogManager().readConfiguration(DatabaseManager.class.getClassLoader()
-                    .getResourceAsStream(LOGGING_PROPERTIES_FILE));
+                    .getResourceAsStream("database/resources/logging.properties"));
         } catch (Exception ex) {
             ex.printStackTrace();
         }

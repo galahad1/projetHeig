@@ -8,27 +8,27 @@ import javax.persistence.criteria.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
-import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
 public class AdresseAccess {
 
-    private final static Logger LOGGER;
+    private static final Logger LOGGER;
 
     static {
-        try {
-            LogManager.getLogManager().readConfiguration(DatabaseManager.class.getClassLoader()
-                    .getResourceAsStream(DatabaseManager.LOGGING_PROPERTIES_FILE));
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-
         LOGGER = Logger.getLogger(AdresseAccess.class.getName());
     }
 
-    private final DatabaseManager databaseManager;
+    private DatabaseManager databaseManager;
 
     AdresseAccess(DatabaseManager databaseManager) {
+        this.databaseManager = databaseManager;
+    }
+
+    public DatabaseManager getDatabaseManager() {
+        return databaseManager;
+    }
+
+    public void setDatabaseManager(DatabaseManager databaseManager) {
         this.databaseManager = databaseManager;
     }
 
