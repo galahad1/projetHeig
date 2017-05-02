@@ -1,5 +1,7 @@
-package database.controllers;
+package database.controllers.access;
 
+import database.controllers.ConfigurationManager;
+import database.controllers.Hibernate;
 import database.models.Priorite;
 import database.models.Priorite_;
 import org.hibernate.Session;
@@ -14,7 +16,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class PrioriteAccess {
+class PrioriteAccess {
 
     private static final Logger LOGGER;
 
@@ -22,38 +24,13 @@ public class PrioriteAccess {
         LOGGER = Logger.getLogger(PrioriteAccess.class.getName());
     }
 
-    private DatabaseManager databaseManager;
-
-    PrioriteAccess(DatabaseManager databaseManager) {
-        this.databaseManager = databaseManager;
-    }
-
-    public DatabaseManager getDatabaseManager() {
-        return databaseManager;
-    }
-
-    public void setDatabaseManager(DatabaseManager databaseManager) {
-        this.databaseManager = databaseManager;
-    }
-
-    private void rollback(Exception ex, Transaction transaction) {
-        if (transaction != null) {
-            try {
-                transaction.rollback();
-                LOGGER.log(Level.SEVERE, ex.getMessage(), ex);
-            } catch (Exception _ex) {
-                LOGGER.log(Level.SEVERE, _ex.getMessage(), _ex);
-            }
+    private void setAll(Priorite priorite, String nomPriorite, Integer niveau) {
+        if (nomPriorite != null) {
+            priorite.setNomPriorite(nomPriorite);
         }
-    }
 
-    private void close(Session session) {
-        if (session != null) {
-            try {
-                session.close();
-            } catch (Exception ex) {
-                LOGGER.log(Level.SEVERE, ex.getMessage(), ex);
-            }
+        if (niveau != null) {
+            priorite.setNiveau(niveau);
         }
     }
 
@@ -64,10 +41,10 @@ public class PrioriteAccess {
         Transaction transaction = null;
 
         try {
-            session = databaseManager.getSession();
+            session = Hibernate.getSession();
             transaction = session.beginTransaction();
 
-            CriteriaBuilder criteriaBuilder = databaseManager.getCriteriaBuilder();
+            CriteriaBuilder criteriaBuilder = Hibernate.getCriteriaBuilder();
             CriteriaQuery<Priorite> criteriaQuery = criteriaBuilder.createQuery(Priorite.class);
             Root<Priorite> prioriteRoot = criteriaQuery.from(Priorite.class);
             List<Predicate> predicateList = new ArrayList<>();
@@ -85,18 +62,18 @@ public class PrioriteAccess {
             }
 
             criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
-            prioriteList = databaseManager.createQuery(criteriaQuery).getResultList();
+            prioriteList = Hibernate.createQuery(criteriaQuery).getResultList();
 
             transaction.commit();
-        } catch (Exception ex) {
-            rollback(ex, transaction);
+        } catch (Exception e) {
+            DatabaseAccess.rollback(e, transaction);
         } finally {
-            close(session);
+            DatabaseAccess.close(session);
         }
 
-        LOGGER.log(Level.INFO, prioriteList != null ?
-                prioriteList.size() + " " + databaseManager.getString("databaseAccess.results")
-                : databaseManager.getString("databaseAccess.noResults"));
+        LOGGER.log(Level.INFO,
+                ConfigurationManager.getString("databaseAccess.results"),
+                prioriteList != null ? prioriteList.size() : 0);
 
         return prioriteList;
     }
@@ -109,14 +86,7 @@ public class PrioriteAccess {
         Priorite priorite = DatabaseAccess.get(Priorite.class, idPriorite);
 
         if (priorite != null) {
-            if (nomPriorite != null) {
-                priorite.setNomPriorite(nomPriorite);
-            }
-
-            if (niveau != null) {
-                priorite.setNiveau(niveau);
-            }
-
+            setAll(priorite, nomPriorite, niveau);
             DatabaseAccess.update(priorite);
         }
     }
@@ -129,13 +99,7 @@ public class PrioriteAccess {
 
         if (prioriteList != null) {
             for (Priorite priorite : prioriteList) {
-                if (newNomPriorite != null) {
-                    priorite.setNomPriorite(newNomPriorite);
-                }
-
-                if (newNiveau != null) {
-                    priorite.setNiveau(newNiveau);
-                }
+                setAll(priorite, newNomPriorite, newNiveau);
             }
 
             DatabaseAccess.update(prioriteList);

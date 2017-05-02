@@ -1,5 +1,7 @@
-package database.controllers;
+package database.controllers.access;
 
+import database.controllers.ConfigurationManager;
+import database.controllers.Hibernate;
 import database.models.RubriqueParent;
 import database.models.RubriqueParent_;
 import org.hibernate.Session;
@@ -14,7 +16,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class RubriqueParentAccess {
+class RubriqueParentAccess {
 
     private static final Logger LOGGER;
 
@@ -22,38 +24,9 @@ public class RubriqueParentAccess {
         LOGGER = Logger.getLogger(RubriqueParentAccess.class.getName());
     }
 
-    private DatabaseManager databaseManager;
-
-    RubriqueParentAccess(DatabaseManager databaseManager) {
-        this.databaseManager = databaseManager;
-    }
-
-    public DatabaseManager getDatabaseManager() {
-        return databaseManager;
-    }
-
-    public void setDatabaseManager(DatabaseManager databaseManager) {
-        this.databaseManager = databaseManager;
-    }
-
-    private void rollback(Exception ex, Transaction transaction) {
-        if (transaction != null) {
-            try {
-                transaction.rollback();
-                LOGGER.log(Level.SEVERE, ex.getMessage(), ex);
-            } catch (Exception _ex) {
-                LOGGER.log(Level.SEVERE, _ex.getMessage(), _ex);
-            }
-        }
-    }
-
-    private void close(Session session) {
-        if (session != null) {
-            try {
-                session.close();
-            } catch (Exception ex) {
-                LOGGER.log(Level.SEVERE, ex.getMessage(), ex);
-            }
+    private void setAll(RubriqueParent rubriqueParent, String nomRubriqueParent) {
+        if (nomRubriqueParent != null) {
+            rubriqueParent.setNomRubriqueParent(nomRubriqueParent);
         }
     }
 
@@ -64,10 +37,10 @@ public class RubriqueParentAccess {
         Transaction transaction = null;
 
         try {
-            session = databaseManager.getSession();
+            session = Hibernate.getSession();
             transaction = session.beginTransaction();
 
-            CriteriaBuilder criteriaBuilder = databaseManager.getCriteriaBuilder();
+            CriteriaBuilder criteriaBuilder = Hibernate.getCriteriaBuilder();
             CriteriaQuery<RubriqueParent> criteriaQuery = criteriaBuilder
                     .createQuery(RubriqueParent.class);
             Root<RubriqueParent> rubriqueParentRoot = criteriaQuery.from(RubriqueParent.class);
@@ -80,19 +53,18 @@ public class RubriqueParentAccess {
             }
 
             criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
-            rubriqueParentList = databaseManager.createQuery(criteriaQuery).getResultList();
+            rubriqueParentList = Hibernate.createQuery(criteriaQuery).getResultList();
 
             transaction.commit();
-        } catch (Exception ex) {
-            rollback(ex, transaction);
+        } catch (Exception e) {
+            DatabaseAccess.rollback(e, transaction);
         } finally {
-            close(session);
+            DatabaseAccess.close(session);
         }
 
-        LOGGER.log(Level.INFO, rubriqueParentList != null ?
-                rubriqueParentList.size() + " " +
-                        databaseManager.getString("databaseAccess.results")
-                : databaseManager.getString("databaseAccess.noResults"));
+        LOGGER.log(Level.INFO,
+                ConfigurationManager.getString("databaseAccess.results"),
+                rubriqueParentList != null ? rubriqueParentList.size() : 0);
 
         return rubriqueParentList;
     }
@@ -105,10 +77,7 @@ public class RubriqueParentAccess {
         RubriqueParent rubriqueParent = DatabaseAccess.get(RubriqueParent.class, idRubriqueParent);
 
         if (rubriqueParent != null) {
-            if (nomRubriqueParent != null) {
-                rubriqueParent.setNomRubriqueParent(nomRubriqueParent);
-            }
-
+            setAll(rubriqueParent, nomRubriqueParent);
             DatabaseAccess.update(rubriqueParent);
         }
     }
@@ -118,9 +87,7 @@ public class RubriqueParentAccess {
 
         if (rubriqueParentList != null) {
             for (RubriqueParent rubriqueParent : rubriqueParentList) {
-                if (newNomRubriqueParent != null) {
-                    rubriqueParent.setNomRubriqueParent(newNomRubriqueParent);
-                }
+                setAll(rubriqueParent, newNomRubriqueParent);
             }
 
             DatabaseAccess.update(rubriqueParentList);

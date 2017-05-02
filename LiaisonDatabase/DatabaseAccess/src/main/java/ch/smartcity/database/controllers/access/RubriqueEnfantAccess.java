@@ -1,5 +1,7 @@
-package database.controllers;
+package database.controllers.access;
 
+import database.controllers.ConfigurationManager;
+import database.controllers.Hibernate;
 import database.models.RubriqueEnfant;
 import database.models.RubriqueEnfant_;
 import database.models.RubriqueParent;
@@ -13,7 +15,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class RubriqueEnfantAccess {
+class RubriqueEnfantAccess {
 
     private static final Logger LOGGER;
 
@@ -21,45 +23,26 @@ public class RubriqueEnfantAccess {
         LOGGER = Logger.getLogger(RubriqueEnfantAccess.class.getName());
     }
 
-    private DatabaseManager databaseManager;
+    private String nomRubriqueParent;
 
-    RubriqueEnfantAccess(DatabaseManager databaseManager) {
-        this.databaseManager = databaseManager;
-    }
+    private void setAll(RubriqueEnfant rubriqueEnfant,
+                        RubriqueParent rubriqueParent,
+                        String nomRubriqueEnfant) {
+        if (rubriqueParent != null) {
+            rubriqueEnfant.setRubriqueParent(rubriqueParent);
+        }
 
-    public DatabaseManager getDatabaseManager() {
-        return databaseManager;
-    }
-
-    public void setDatabaseManager(DatabaseManager databaseManager) {
-        this.databaseManager = databaseManager;
-    }
-
-    private void rollback(Exception ex, Transaction transaction) {
-        if (transaction != null) {
-            try {
-                transaction.rollback();
-                LOGGER.log(Level.SEVERE, ex.getMessage(), ex);
-            } catch (Exception _ex) {
-                LOGGER.log(Level.SEVERE, _ex.getMessage(), _ex);
-            }
+        if (nomRubriqueEnfant != null) {
+            rubriqueEnfant.setNomRubriqueEnfant(nomRubriqueEnfant);
         }
     }
 
-    private void close(Session session) {
-        if (session != null) {
-            try {
-                session.close();
-            } catch (Exception ex) {
-                LOGGER.log(Level.SEVERE, ex.getMessage(), ex);
-            }
-        }
+    private void checkNull(RubriqueParent rubriqueParent) {
+        nomRubriqueParent = rubriqueParent != null ? rubriqueParent.getNomRubriqueParent() : null;
     }
 
     public List<RubriqueEnfant> get(RubriqueParent rubriqueParent, String nomRubriqueEnfant) {
-        String nomRubriqueParent = rubriqueParent != null ?
-                rubriqueParent.getNomRubriqueParent() : null;
-
+        checkNull(rubriqueParent);
         return get(nomRubriqueParent, nomRubriqueEnfant);
     }
 
@@ -70,10 +53,10 @@ public class RubriqueEnfantAccess {
         Transaction transaction = null;
 
         try {
-            session = databaseManager.getSession();
+            session = Hibernate.getSession();
             transaction = session.beginTransaction();
 
-            CriteriaBuilder criteriaBuilder = databaseManager.getCriteriaBuilder();
+            CriteriaBuilder criteriaBuilder = Hibernate.getCriteriaBuilder();
             CriteriaQuery<RubriqueEnfant> criteriaQuery = criteriaBuilder
                     .createQuery(RubriqueEnfant.class);
             Root<RubriqueEnfant> rubriqueEnfantRoot = criteriaQuery.from(RubriqueEnfant.class);
@@ -94,19 +77,18 @@ public class RubriqueEnfantAccess {
             }
 
             criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
-            rubriqueEnfantList = databaseManager.createQuery(criteriaQuery).getResultList();
+            rubriqueEnfantList = Hibernate.createQuery(criteriaQuery).getResultList();
 
             transaction.commit();
-        } catch (Exception ex) {
-            rollback(ex, transaction);
+        } catch (Exception e) {
+            DatabaseAccess.rollback(e, transaction);
         } finally {
-            close(session);
+            DatabaseAccess.close(session);
         }
 
-        LOGGER.log(Level.INFO, rubriqueEnfantList != null ?
-                rubriqueEnfantList.size() + " " +
-                        databaseManager.getString("databaseAccess.results")
-                : databaseManager.getString("databaseAccess.noResults"));
+        LOGGER.log(Level.INFO,
+                ConfigurationManager.getString("databaseAccess.results"),
+                rubriqueEnfantList != null ? rubriqueEnfantList.size() : 0);
 
         return rubriqueEnfantList;
     }
@@ -121,14 +103,7 @@ public class RubriqueEnfantAccess {
         RubriqueEnfant rubriqueEnfant = DatabaseAccess.get(RubriqueEnfant.class, idRubriqueEnfant);
 
         if (rubriqueEnfant != null) {
-            if (rubriqueParent != null) {
-                rubriqueEnfant.setRubriqueParent(rubriqueParent);
-            }
-
-            if (nomRubriqueEnfant != null) {
-                rubriqueEnfant.setNomRubriqueEnfant(nomRubriqueEnfant);
-            }
-
+            setAll(rubriqueEnfant, rubriqueParent, nomRubriqueEnfant);
             DatabaseAccess.update(rubriqueEnfant);
         }
     }
@@ -141,13 +116,7 @@ public class RubriqueEnfantAccess {
 
         if (rubriqueEnfantList != null) {
             for (RubriqueEnfant rubriqueEnfant : rubriqueEnfantList) {
-                if (newRubriqueParent != null) {
-                    rubriqueEnfant.setRubriqueParent(newRubriqueParent);
-                }
-
-                if (newNomRubriqueEnfant != null) {
-                    rubriqueEnfant.setNomRubriqueEnfant(newNomRubriqueEnfant);
-                }
+                setAll(rubriqueEnfant, newRubriqueParent, newNomRubriqueEnfant);
             }
 
             DatabaseAccess.update(rubriqueEnfantList);
@@ -156,9 +125,7 @@ public class RubriqueEnfantAccess {
 
     public void delete(RubriqueParent rubriqueParent,
                        String nomRubriqueEnfant) {
-        String nomRubriqueParent = rubriqueParent != null ?
-                rubriqueParent.getNomRubriqueParent() : null;
-
+        checkNull(rubriqueParent);
         delete(nomRubriqueParent, nomRubriqueEnfant);
     }
 

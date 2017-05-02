@@ -1,5 +1,7 @@
-package database.controllers;
+package database.controllers.access;
 
+import database.controllers.ConfigurationManager;
+import database.controllers.Hibernate;
 import database.models.*;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -11,7 +13,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class ConfianceAccess {
+class ConfianceAccess {
 
     private static final Logger LOGGER;
 
@@ -19,50 +21,30 @@ public class ConfianceAccess {
         LOGGER = Logger.getLogger(ConfianceAccess.class.getName());
     }
 
-    private DatabaseManager databaseManager;
+    private String nomUtilisateur;
+    private String nomRubriqueEnfant;
 
-    ConfianceAccess(DatabaseManager databaseManager) {
-        this.databaseManager = databaseManager;
-    }
+    private void setAll(Confiance confiance,
+                        Utilisateur utilisateur,
+                        RubriqueEnfant rubriqueEnfant) {
+        if (utilisateur != null) {
+            confiance.setUtilisateur(utilisateur);
+        }
 
-    public DatabaseManager getDatabaseManager() {
-        return databaseManager;
-    }
-
-    public void setDatabaseManager(DatabaseManager databaseManager) {
-        this.databaseManager = databaseManager;
-    }
-
-    private void rollback(Exception ex, Transaction transaction) {
-        if (transaction != null) {
-            try {
-                transaction.rollback();
-                LOGGER.log(Level.SEVERE, ex.getMessage(), ex);
-            } catch (Exception _ex) {
-                LOGGER.log(Level.SEVERE, _ex.getMessage(), _ex);
-            }
+        if (rubriqueEnfant != null) {
+            confiance.setRubriqueEnfant(rubriqueEnfant);
         }
     }
 
-    private void close(Session session) {
-        if (session != null) {
-            try {
-                session.close();
-            } catch (Exception ex) {
-                LOGGER.log(Level.SEVERE, ex.getMessage(), ex);
-            }
-        }
+    private void checkNull(Utilisateur utilisateur, RubriqueEnfant rubriqueEnfant) {
+        nomUtilisateur = utilisateur != null ? utilisateur.getNomUtilisateur() : null;
+        nomRubriqueEnfant = rubriqueEnfant != null ? rubriqueEnfant.getNomRubriqueEnfant() : null;
     }
 
     public List<Confiance> get(Utilisateur utilisateur,
                                RubriqueEnfant rubriqueEnfant,
                                Calendar creation) {
-        String nomUtilisateur = utilisateur != null ?
-                utilisateur.getNomUtilisateur() : null;
-
-        String nomRubriqueEnfant = rubriqueEnfant != null ?
-                rubriqueEnfant.getNomRubriqueEnfant() : null;
-
+        checkNull(utilisateur, rubriqueEnfant);
         return get(nomUtilisateur, nomRubriqueEnfant, creation);
     }
 
@@ -75,10 +57,10 @@ public class ConfianceAccess {
         Transaction transaction = null;
 
         try {
-            session = databaseManager.getSession();
+            session = Hibernate.getSession();
             transaction = session.beginTransaction();
 
-            CriteriaBuilder criteriaBuilder = databaseManager.getCriteriaBuilder();
+            CriteriaBuilder criteriaBuilder = Hibernate.getCriteriaBuilder();
             CriteriaQuery<Confiance> criteriaQuery = criteriaBuilder.createQuery(Confiance.class);
 
             Root<Confiance> confianceRoot = criteriaQuery.from(Confiance.class);
@@ -108,19 +90,18 @@ public class ConfianceAccess {
             }
 
             criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
-            confianceList = databaseManager.createQuery(criteriaQuery).getResultList();
+            confianceList = Hibernate.createQuery(criteriaQuery).getResultList();
 
             transaction.commit();
-        } catch (Exception ex) {
-            rollback(ex, transaction);
+        } catch (Exception e) {
+            DatabaseAccess.rollback(e, transaction);
         } finally {
-            close(session);
+            DatabaseAccess.close(session);
         }
 
-        LOGGER.log(Level.INFO, confianceList != null ?
-                confianceList.size() + " " +
-                        databaseManager.getString("databaseAccess.results")
-                : databaseManager.getString("databaseAccess.noResults"));
+        LOGGER.log(Level.INFO,
+                ConfigurationManager.getString("databaseAccess.results"),
+                confianceList != null ? confianceList.size() : 0);
 
         return confianceList;
     }
@@ -135,14 +116,7 @@ public class ConfianceAccess {
         Confiance confiance = DatabaseAccess.get(Confiance.class, idConfiance);
 
         if (confiance != null) {
-            if (utilisateur != null) {
-                confiance.setUtilisateur(utilisateur);
-            }
-
-            if (rubriqueEnfant != null) {
-                confiance.setRubriqueEnfant(rubriqueEnfant);
-            }
-
+            setAll(confiance, utilisateur, rubriqueEnfant);
             DatabaseAccess.update(confiance);
         }
     }
@@ -156,13 +130,7 @@ public class ConfianceAccess {
 
         if (confianceList != null) {
             for (Confiance confiance : confianceList) {
-                if (newUtilisateur != null) {
-                    confiance.setUtilisateur(newUtilisateur);
-                }
-
-                if (newRubriqueEnfant != null) {
-                    confiance.setRubriqueEnfant(newRubriqueEnfant);
-                }
+                setAll(confiance, newUtilisateur, newRubriqueEnfant);
             }
 
             DatabaseAccess.update(confianceList);
@@ -172,12 +140,7 @@ public class ConfianceAccess {
     public void delete(Utilisateur utilisateur,
                        RubriqueEnfant rubriqueEnfant,
                        Calendar creation) {
-        String nomUtilisateur = utilisateur != null ?
-                utilisateur.getNomUtilisateur() : null;
-
-        String nomRubriqueEnfant = rubriqueEnfant != null ?
-                rubriqueEnfant.getNomRubriqueEnfant() : null;
-
+        checkNull(utilisateur, rubriqueEnfant);
         delete(nomUtilisateur, nomRubriqueEnfant, creation);
     }
 

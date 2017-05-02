@@ -1,5 +1,7 @@
-package database.controllers;
+package database.controllers.access;
 
+import database.controllers.ConfigurationManager;
+import database.controllers.Hibernate;
 import database.models.*;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -11,7 +13,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class EvenementAccess {
+class EvenementAccess {
 
     private static final Logger LOGGER;
 
@@ -19,39 +21,83 @@ public class EvenementAccess {
         LOGGER = Logger.getLogger(EvenementAccess.class.getName());
     }
 
-    private DatabaseManager databaseManager;
+    private String nomRubriqueEnfant;
+    private String nomUtilisateur;
+    private String nomRue;
+    private String numeroDeRue;
+    private String numeroNpa;
+    private String nomPriorite;
+    private String nomStatut;
 
-    EvenementAccess(DatabaseManager databaseManager) {
-        this.databaseManager = databaseManager;
-    }
+    private void setAll(Evenement evenement,
+                        RubriqueEnfant rubriqueEnfant,
+                        Utilisateur utilisateur,
+                        String nomEvenement,
+                        Adresse adresse,
+                        Double latitude,
+                        Double longitude,
+                        Calendar debut,
+                        Calendar fin,
+                        String details,
+                        Priorite priorite,
+                        Statut statut) {
+        if (rubriqueEnfant != null) {
+            evenement.setRubriqueEnfant(rubriqueEnfant);
+        }
 
-    public DatabaseManager getDatabaseManager() {
-        return databaseManager;
-    }
+        if (utilisateur != null) {
+            evenement.setUtilisateur(utilisateur);
+        }
 
-    public void setDatabaseManager(DatabaseManager databaseManager) {
-        this.databaseManager = databaseManager;
-    }
+        if (nomEvenement != null) {
+            evenement.setNomEvenement(nomEvenement);
+        }
 
-    private void rollback(Exception ex, Transaction transaction) {
-        if (transaction != null) {
-            try {
-                transaction.rollback();
-                LOGGER.log(Level.SEVERE, ex.getMessage(), ex);
-            } catch (Exception _ex) {
-                LOGGER.log(Level.SEVERE, _ex.getMessage(), _ex);
-            }
+        if (adresse != null) {
+            evenement.setAdresse(adresse);
+        }
+
+        if (latitude != null) {
+            evenement.setLatitude(latitude);
+        }
+
+        if (longitude != null) {
+            evenement.setLongitude(longitude);
+        }
+
+        if (debut != null) {
+            evenement.setDebut(debut);
+        }
+
+        if (fin != null) {
+            evenement.setFin(fin);
+        }
+
+        if (details != null) {
+            evenement.setDetails(details);
+        }
+
+        if (priorite != null) {
+            evenement.setPriorite(priorite);
+        }
+
+        if (statut != null) {
+            evenement.setStatut(statut);
         }
     }
 
-    private void close(Session session) {
-        if (session != null) {
-            try {
-                session.close();
-            } catch (Exception ex) {
-                LOGGER.log(Level.SEVERE, ex.getMessage(), ex);
-            }
-        }
+    private void checkNull(RubriqueEnfant rubriqueEnfant,
+                           Utilisateur utilisateur,
+                           Adresse adresse,
+                           Priorite priorite,
+                           Statut statut) {
+        nomRubriqueEnfant = rubriqueEnfant != null ? rubriqueEnfant.getNomRubriqueEnfant() : null;
+        nomUtilisateur = utilisateur != null ? utilisateur.getNomUtilisateur() : null;
+        nomRue = adresse != null ? adresse.getRue().getNomRue() : null;
+        numeroDeRue = adresse != null ? adresse.getNumeroDeRue() : null;
+        numeroNpa = adresse != null ? adresse.getNpa().getNumeroNpa() : null;
+        nomPriorite = priorite != null ? priorite.getNomPriorite() : null;
+        nomStatut = statut != null ? statut.getNomStatut() : null;
     }
 
     public List<Evenement> get(RubriqueEnfant rubriqueEnfant,
@@ -66,28 +112,7 @@ public class EvenementAccess {
                                Priorite priorite,
                                Statut statut,
                                Calendar creation) {
-        String nomRubriqueEnfant = rubriqueEnfant != null ?
-                rubriqueEnfant.getNomRubriqueEnfant() : null;
-
-
-        String nomUtilisateur = utilisateur != null ?
-                utilisateur.getNomUtilisateur() : null;
-
-        String nomRue = null;
-        String numeroDeRue = null;
-        String numeroNpa = null;
-        if (adresse != null) {
-            nomRue = adresse.getRue().getNomRue();
-            numeroDeRue = adresse.getNumeroDeRue();
-            numeroNpa = adresse.getNpa().getNumeroNpa();
-        }
-
-        String nomPriorite = priorite != null ?
-                priorite.getNomPriorite() : null;
-
-        String nomStatut = statut != null ?
-                statut.getNomStatut() : null;
-
+        checkNull(rubriqueEnfant, utilisateur, adresse, priorite, statut);
         return get(nomRubriqueEnfant,
                 nomUtilisateur,
                 nomEvenement,
@@ -124,10 +149,10 @@ public class EvenementAccess {
         Transaction transaction = null;
 
         try {
-            session = databaseManager.getSession();
+            session = Hibernate.getSession();
             transaction = session.beginTransaction();
 
-            CriteriaBuilder criteriaBuilder = databaseManager.getCriteriaBuilder();
+            CriteriaBuilder criteriaBuilder = Hibernate.getCriteriaBuilder();
             CriteriaQuery<Evenement> criteriaQuery = criteriaBuilder.createQuery(Evenement.class);
 
             Root<Evenement> evenementRoot = criteriaQuery.from(Evenement.class);
@@ -231,18 +256,18 @@ public class EvenementAccess {
             }
 
             criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
-            evenementList = databaseManager.createQuery(criteriaQuery).getResultList();
+            evenementList = Hibernate.createQuery(criteriaQuery).getResultList();
 
             transaction.commit();
-        } catch (Exception ex) {
-            rollback(ex, transaction);
+        } catch (Exception e) {
+            DatabaseAccess.rollback(e, transaction);
         } finally {
-            close(session);
+            DatabaseAccess.close(session);
         }
 
-        LOGGER.log(Level.INFO, evenementList != null ?
-                evenementList.size() + " " + databaseManager.getString("databaseAccess.results")
-                : databaseManager.getString("databaseAccess.noResults"));
+        LOGGER.log(Level.INFO,
+                ConfigurationManager.getString("databaseAccess.results"),
+                evenementList != null ? evenementList.size() : 0);
 
         return evenementList;
     }
@@ -302,50 +327,18 @@ public class EvenementAccess {
         Evenement evenement = DatabaseAccess.get(Evenement.class, idEvenement);
 
         if (evenement != null) {
-            if (rubriqueEnfant != null) {
-                evenement.setRubriqueEnfant(rubriqueEnfant);
-            }
-
-            if (utilisateur != null) {
-                evenement.setUtilisateur(utilisateur);
-            }
-
-            if (nomEvenement != null) {
-                evenement.setNomEvenement(nomEvenement);
-            }
-
-            if (adresse != null) {
-                evenement.setAdresse(adresse);
-            }
-
-            if (latitude != null) {
-                evenement.setLatitude(latitude);
-            }
-
-            if (longitude != null) {
-                evenement.setLongitude(longitude);
-            }
-
-            if (debut != null) {
-                evenement.setDebut(debut);
-            }
-
-            if (fin != null) {
-                evenement.setFin(fin);
-            }
-
-            if (details != null) {
-                evenement.setDetails(details);
-            }
-
-            if (priorite != null) {
-                evenement.setPriorite(priorite);
-            }
-
-            if (statut != null) {
-                evenement.setStatut(statut);
-            }
-
+            setAll(evenement,
+                    rubriqueEnfant,
+                    utilisateur,
+                    nomEvenement,
+                    adresse,
+                    latitude,
+                    longitude,
+                    debut,
+                    fin,
+                    details,
+                    priorite,
+                    statut);
             DatabaseAccess.update(evenement);
         }
     }
@@ -389,49 +382,18 @@ public class EvenementAccess {
 
         if (evenementList != null) {
             for (Evenement evenement : evenementList) {
-                if (newRubriqueEnfant != null) {
-                    evenement.setRubriqueEnfant(newRubriqueEnfant);
-                }
-
-                if (newUtilisateur != null) {
-                    evenement.setUtilisateur(newUtilisateur);
-                }
-
-                if (newNomEvenement != null) {
-                    evenement.setNomEvenement(newNomEvenement);
-                }
-
-                if (newAdresse != null) {
-                    evenement.setAdresse(newAdresse);
-                }
-
-                if (newLatitude != null) {
-                    evenement.setLatitude(newLatitude);
-                }
-
-                if (newLongitude != null) {
-                    evenement.setLongitude(newLongitude);
-                }
-
-                if (newDebut != null) {
-                    evenement.setDebut(newDebut);
-                }
-
-                if (newFin != null) {
-                    evenement.setFin(newFin);
-                }
-
-                if (newDetails != null) {
-                    evenement.setDetails(newDetails);
-                }
-
-                if (newPriorite != null) {
-                    evenement.setPriorite(newPriorite);
-                }
-
-                if (newStatut != null) {
-                    evenement.setStatut(newStatut);
-                }
+                setAll(evenement,
+                        newRubriqueEnfant,
+                        newUtilisateur,
+                        newNomEvenement,
+                        newAdresse,
+                        newLatitude,
+                        newLongitude,
+                        newDebut,
+                        newFin,
+                        newDetails,
+                        newPriorite,
+                        newStatut);
             }
 
             DatabaseAccess.update(evenementList);
@@ -450,27 +412,7 @@ public class EvenementAccess {
                        Priorite priorite,
                        Statut statut,
                        Calendar creation) {
-        String nomRubriqueEnfant = rubriqueEnfant != null ?
-                rubriqueEnfant.getNomRubriqueEnfant() : null;
-
-        String nomUtilisateur = utilisateur != null ?
-                utilisateur.getNomUtilisateur() : null;
-
-        String nomRue = null;
-        String numeroDeRue = null;
-        String numeroNpa = null;
-        if (adresse != null) {
-            nomRue = adresse.getRue().getNomRue();
-            numeroDeRue = adresse.getNumeroDeRue();
-            numeroNpa = adresse.getNpa().getNumeroNpa();
-        }
-
-        String nomPriorite = utilisateur != null ?
-                priorite.getNomPriorite() : null;
-
-        String nomStatut = utilisateur != null ?
-                statut.getNomStatut() : null;
-
+        checkNull(rubriqueEnfant, utilisateur, adresse, priorite, statut);
         delete(nomRubriqueEnfant,
                 nomUtilisateur,
                 nomEvenement,
@@ -486,7 +428,6 @@ public class EvenementAccess {
                 nomStatut,
                 creation);
     }
-
 
     public void delete(String nomRubriqueEnfant,
                        String nomUtilisateur,

@@ -1,5 +1,7 @@
-package database.controllers;
+package database.controllers.access;
 
+import database.controllers.ConfigurationManager;
+import database.controllers.Hibernate;
 import database.models.*;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -10,7 +12,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class AdresseAccess {
+class AdresseAccess {
 
     private static final Logger LOGGER;
 
@@ -18,45 +20,30 @@ public class AdresseAccess {
         LOGGER = Logger.getLogger(AdresseAccess.class.getName());
     }
 
-    private DatabaseManager databaseManager;
+    private String nomRue;
+    private String numeroNpa;
 
-    AdresseAccess(DatabaseManager databaseManager) {
-        this.databaseManager = databaseManager;
-    }
+    private void setAll(Adresse adresse, Rue rue, String numeroDeRue, Npa npa) {
+        if (rue != null) {
+            adresse.setRue(rue);
+        }
 
-    public DatabaseManager getDatabaseManager() {
-        return databaseManager;
-    }
+        if (numeroDeRue != null) {
+            adresse.setNumeroDeRue(numeroDeRue);
+        }
 
-    public void setDatabaseManager(DatabaseManager databaseManager) {
-        this.databaseManager = databaseManager;
-    }
-
-    private void rollback(Exception ex, Transaction transaction) {
-        if (transaction != null) {
-            try {
-                transaction.rollback();
-                LOGGER.log(Level.SEVERE, ex.getMessage(), ex);
-            } catch (Exception _ex) {
-                LOGGER.log(Level.SEVERE, _ex.getMessage(), _ex);
-            }
+        if (npa != null) {
+            adresse.setNpa(npa);
         }
     }
 
-    private void close(Session session) {
-        if (session != null) {
-            try {
-                session.close();
-            } catch (Exception ex) {
-                LOGGER.log(Level.SEVERE, ex.getMessage(), ex);
-            }
-        }
+    private void checkNull(Rue rue, Npa npa) {
+        nomRue = rue != null ? rue.getNomRue() : null;
+        numeroNpa = npa != null ? npa.getNumeroNpa() : null;
     }
 
     public List<Adresse> get(Rue rue, String numeroDeRue, Npa npa) {
-        String nomRue = rue != null ? rue.getNomRue() : null;
-        String numeroNpa = npa != null ? npa.getNumeroNpa() : null;
-
+        checkNull(rue, npa);
         return get(nomRue, numeroDeRue, numeroNpa);
     }
 
@@ -67,10 +54,10 @@ public class AdresseAccess {
         Transaction transaction = null;
 
         try {
-            session = databaseManager.getSession();
+            session = Hibernate.getSession();
             transaction = session.beginTransaction();
 
-            CriteriaBuilder criteriaBuilder = databaseManager.getCriteriaBuilder();
+            CriteriaBuilder criteriaBuilder = Hibernate.getCriteriaBuilder();
             CriteriaQuery<Adresse> criteriaQuery = criteriaBuilder.createQuery(Adresse.class);
 
             Root<Adresse> adresseRoot = criteriaQuery.from(Adresse.class);
@@ -97,18 +84,18 @@ public class AdresseAccess {
             }
 
             criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
-            adresseList = databaseManager.createQuery(criteriaQuery).getResultList();
+            adresseList = Hibernate.createQuery(criteriaQuery).getResultList();
 
             transaction.commit();
-        } catch (Exception ex) {
-            rollback(ex, transaction);
+        } catch (Exception e) {
+            DatabaseAccess.rollback(e, transaction);
         } finally {
-            close(session);
+            DatabaseAccess.close(session);
         }
 
-        LOGGER.log(Level.INFO, adresseList != null ?
-                adresseList.size() + " " + databaseManager.getString("databaseAccess.results")
-                : databaseManager.getString("databaseAccess.noResults"));
+        LOGGER.log(Level.INFO,
+                ConfigurationManager.getString("databaseAccess.results"),
+                adresseList != null ? adresseList.size() : 0);
 
         return adresseList;
     }
@@ -121,18 +108,7 @@ public class AdresseAccess {
         Adresse adresse = DatabaseAccess.get(Adresse.class, idAdresse);
 
         if (adresse != null) {
-            if (rue != null) {
-                adresse.setRue(rue);
-            }
-
-            if (numeroDeRue != null) {
-                adresse.setNumeroDeRue(numeroDeRue);
-            }
-
-            if (npa != null) {
-                adresse.setNpa(npa);
-            }
-
+            setAll(adresse, rue, numeroDeRue, npa);
             DatabaseAccess.update(adresse);
         }
     }
@@ -147,17 +123,7 @@ public class AdresseAccess {
 
         if (adresseList != null) {
             for (Adresse adresse : adresseList) {
-                if (newRue != null) {
-                    adresse.setRue(newRue);
-                }
-
-                if (newNumeroDeRue != null) {
-                    adresse.setNumeroDeRue(newNumeroDeRue);
-                }
-
-                if (newNpa != null) {
-                    adresse.setNpa(newNpa);
-                }
+                setAll(adresse, newRue, newNumeroDeRue, newNpa);
             }
 
             DatabaseAccess.update(adresseList);
@@ -165,9 +131,7 @@ public class AdresseAccess {
     }
 
     public void delete(Rue rue, String numeroDeRue, Npa npa) {
-        String nomRue = rue != null ? rue.getNomRue() : null;
-        String numeroNpa = npa != null ? npa.getNumeroNpa() : null;
-
+        checkNull(rue, npa);
         delete(nomRue, numeroDeRue, numeroNpa);
     }
 

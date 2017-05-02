@@ -1,5 +1,7 @@
-package database.controllers;
+package database.controllers.access;
 
+import database.controllers.ConfigurationManager;
+import database.controllers.Hibernate;
 import database.models.*;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -11,7 +13,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class CommentaireAccess {
+class CommentaireAccess {
 
     private static final Logger LOGGER;
 
@@ -19,48 +21,36 @@ public class CommentaireAccess {
         LOGGER = Logger.getLogger(CommentaireAccess.class.getName());
     }
 
-    private DatabaseManager databaseManager;
+    private String nomEvenement;
+    private String nomUtilisateur;
 
-    CommentaireAccess(DatabaseManager databaseManager) {
-        this.databaseManager = databaseManager;
-    }
+    private void setAll(Commentaire objCommentaire,
+                        Evenement evenement,
+                        Utilisateur utilisateur,
+                        String commentaire) {
+        if (evenement != null) {
+            objCommentaire.setEvenement(evenement);
+        }
 
-    public DatabaseManager getDatabaseManager() {
-        return databaseManager;
-    }
+        if (utilisateur != null) {
+            objCommentaire.setUtilisateur(utilisateur);
+        }
 
-    public void setDatabaseManager(DatabaseManager databaseManager) {
-        this.databaseManager = databaseManager;
-    }
-
-    private void rollback(Exception ex, Transaction transaction) {
-        if (transaction != null) {
-            try {
-                transaction.rollback();
-                LOGGER.log(Level.SEVERE, ex.getMessage(), ex);
-            } catch (Exception _ex) {
-                LOGGER.log(Level.SEVERE, _ex.getMessage(), _ex);
-            }
+        if (commentaire != null) {
+            objCommentaire.setCommentaire(commentaire);
         }
     }
 
-    private void close(Session session) {
-        if (session != null) {
-            try {
-                session.close();
-            } catch (Exception ex) {
-                LOGGER.log(Level.SEVERE, ex.getMessage(), ex);
-            }
-        }
+    private void checkNull(Evenement evenement, Utilisateur utilisateur) {
+        nomEvenement = evenement != null ? evenement.getNomEvenement() : null;
+        nomUtilisateur = utilisateur != null ? utilisateur.getNomUtilisateur() : null;
     }
 
     public List<Commentaire> get(Evenement evenement,
                                  Utilisateur utilisateur,
                                  String commentaire,
                                  Calendar creation) {
-        String nomEvenement = evenement != null ? evenement.getNomEvenement() : null;
-        String nomUtilisateur = utilisateur != null ? utilisateur.getNomUtilisateur() : null;
-
+        checkNull(evenement, utilisateur);
         return get(nomEvenement, nomUtilisateur, commentaire, creation);
     }
 
@@ -74,10 +64,10 @@ public class CommentaireAccess {
         Transaction transaction = null;
 
         try {
-            session = databaseManager.getSession();
+            session = Hibernate.getSession();
             transaction = session.beginTransaction();
 
-            CriteriaBuilder criteriaBuilder = databaseManager.getCriteriaBuilder();
+            CriteriaBuilder criteriaBuilder = Hibernate.getCriteriaBuilder();
             CriteriaQuery<Commentaire> criteriaQuery = criteriaBuilder
                     .createQuery(Commentaire.class);
 
@@ -113,19 +103,18 @@ public class CommentaireAccess {
             }
 
             criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
-            commentaireList = databaseManager.createQuery(criteriaQuery).getResultList();
+            commentaireList = Hibernate.createQuery(criteriaQuery).getResultList();
 
             transaction.commit();
-        } catch (Exception ex) {
-            rollback(ex, transaction);
+        } catch (Exception e) {
+            DatabaseAccess.rollback(e, transaction);
         } finally {
-            close(session);
+            DatabaseAccess.close(session);
         }
 
-        LOGGER.log(Level.INFO, commentaireList != null ?
-                commentaireList.size() + " " +
-                        databaseManager.getString("databaseAccess.results")
-                : databaseManager.getString("databaseAccess.noResults"));
+        LOGGER.log(Level.INFO,
+                ConfigurationManager.getString("databaseAccess.results"),
+                commentaireList != null ? commentaireList.size() : 0);
 
         return commentaireList;
     }
@@ -138,22 +127,11 @@ public class CommentaireAccess {
                        Evenement evenement,
                        Utilisateur utilisateur,
                        String commentaire) {
-        Commentaire commentaireObject = DatabaseAccess.get(Commentaire.class, idCommentaire);
+        Commentaire objCommentaire = DatabaseAccess.get(Commentaire.class, idCommentaire);
 
-        if (commentaireObject != null) {
-            if (evenement != null) {
-                commentaireObject.setEvenement(evenement);
-            }
-
-            if (utilisateur != null) {
-                commentaireObject.setUtilisateur(utilisateur);
-            }
-
-            if (commentaire != null) {
-                commentaireObject.setCommentaire(commentaire);
-            }
-
-            DatabaseAccess.update(commentaireObject);
+        if (objCommentaire != null) {
+            setAll(objCommentaire, evenement, utilisateur, commentaire);
+            DatabaseAccess.update(objCommentaire);
         }
     }
 
@@ -171,17 +149,7 @@ public class CommentaireAccess {
 
         if (commentaireList != null) {
             for (Commentaire commentaire : commentaireList) {
-                if (newEvenement != null) {
-                    commentaire.setEvenement(newEvenement);
-                }
-
-                if (newUtilisateur != null) {
-                    commentaire.setUtilisateur(newUtilisateur);
-                }
-
-                if (newCommentaire != null) {
-                    commentaire.setCommentaire(newCommentaire);
-                }
+                setAll(commentaire, newEvenement, newUtilisateur, newCommentaire);
             }
 
             DatabaseAccess.update(commentaireList);
@@ -192,9 +160,7 @@ public class CommentaireAccess {
                        Utilisateur utilisateur,
                        String commentaire,
                        Calendar creation) {
-        String nomEvenement = evenement != null ? evenement.getNomEvenement() : null;
-        String nomUtilisateur = utilisateur != null ? utilisateur.getNomUtilisateur() : null;
-
+        checkNull(evenement, utilisateur);
         delete(nomEvenement, nomUtilisateur, commentaire, creation);
     }
 

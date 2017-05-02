@@ -1,5 +1,7 @@
-package database.controllers;
+package database.controllers.access;
 
+import database.controllers.ConfigurationManager;
+import database.controllers.Hibernate;
 import database.models.Rue;
 import database.models.Rue_;
 import org.hibernate.Session;
@@ -14,7 +16,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class RueAccess {
+class RueAccess {
 
     private static final Logger LOGGER;
 
@@ -22,38 +24,9 @@ public class RueAccess {
         LOGGER = Logger.getLogger(RueAccess.class.getName());
     }
 
-    private DatabaseManager databaseManager;
-
-    RueAccess(DatabaseManager databaseManager) {
-        this.databaseManager = databaseManager;
-    }
-
-    public DatabaseManager getDatabaseManager() {
-        return databaseManager;
-    }
-
-    public void setDatabaseManager(DatabaseManager databaseManager) {
-        this.databaseManager = databaseManager;
-    }
-
-    private void rollback(Exception ex, Transaction transaction) {
-        if (transaction != null) {
-            try {
-                transaction.rollback();
-                LOGGER.log(Level.SEVERE, ex.getMessage(), ex);
-            } catch (Exception _ex) {
-                LOGGER.log(Level.SEVERE, _ex.getMessage(), _ex);
-            }
-        }
-    }
-
-    private void close(Session session) {
-        if (session != null) {
-            try {
-                session.close();
-            } catch (Exception ex) {
-                LOGGER.log(Level.SEVERE, ex.getMessage(), ex);
-            }
+    private void setAll(Rue rue, String nomRue) {
+        if (nomRue != null) {
+            rue.setNomRue(nomRue);
         }
     }
 
@@ -64,10 +37,10 @@ public class RueAccess {
         Transaction transaction = null;
 
         try {
-            session = databaseManager.getSession();
+            session = Hibernate.getSession();
             transaction = session.beginTransaction();
 
-            CriteriaBuilder criteriaBuilder = databaseManager.getCriteriaBuilder();
+            CriteriaBuilder criteriaBuilder = Hibernate.getCriteriaBuilder();
             CriteriaQuery<Rue> criteriaQuery = criteriaBuilder
                     .createQuery(Rue.class);
             Root<Rue> rueRoot = criteriaQuery.from(Rue.class);
@@ -80,19 +53,18 @@ public class RueAccess {
             }
 
             criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
-            rueList = databaseManager.createQuery(criteriaQuery).getResultList();
+            rueList = Hibernate.createQuery(criteriaQuery).getResultList();
 
             transaction.commit();
-        } catch (Exception ex) {
-            rollback(ex, transaction);
+        } catch (Exception e) {
+            DatabaseAccess.rollback(e, transaction);
         } finally {
-            close(session);
-            databaseManager.close();
+            DatabaseAccess.close(session);
         }
 
-        LOGGER.log(Level.INFO, rueList != null ?
-                rueList.size() + " " + databaseManager.getString("databaseAccess.results")
-                : databaseManager.getString("databaseAccess.noResults"));
+        LOGGER.log(Level.INFO,
+                ConfigurationManager.getString("databaseAccess.results"),
+                rueList != null ? rueList.size() : 0);
 
         return rueList;
     }
@@ -105,10 +77,7 @@ public class RueAccess {
         Rue rue = DatabaseAccess.get(Rue.class, idRue);
 
         if (rue != null) {
-            if (nomRue != null) {
-                rue.setNomRue(nomRue);
-            }
-
+            setAll(rue, nomRue);
             DatabaseAccess.update(rue);
         }
     }
@@ -118,9 +87,7 @@ public class RueAccess {
 
         if (rueList != null) {
             for (Rue rue : rueList) {
-                if (newNomRue != null) {
-                    rue.setNomRue(newNomRue);
-                }
+                setAll(rue, newNomRue);
             }
 
             DatabaseAccess.update(rueList);

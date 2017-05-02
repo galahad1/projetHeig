@@ -1,5 +1,8 @@
-package database.controllers;
+package database.controllers.access;
 
+import database.controllers.ConfigurationManager;
+import database.controllers.Hibernate;
+import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.resource.transaction.spi.TransactionStatus;
@@ -27,26 +30,29 @@ public class DatabaseAccess {
     public static final TitreCivilAccess TITRE_CIVIL_ACCESS;
     public static final UtilisateurAccess UTILISATEUR_ACCESS;
     private static final Logger LOGGER;
-    private static final DatabaseManager DATABASE_MANAGER;
 
     static {
         LOGGER = Logger.getLogger(DatabaseAccess.class.getName());
-        DATABASE_MANAGER = new DatabaseManager();
 
-        ADRESSE_ACCESS = new AdresseAccess(DATABASE_MANAGER);
-        COMMENTAIRE_ACCESS = new CommentaireAccess(DATABASE_MANAGER);
-        CONFIANCE_ACCESS = new ConfianceAccess(DATABASE_MANAGER);
-        EVENEMENT_ACCESS = new EvenementAccess(DATABASE_MANAGER);
-        NATIONALITE_ACCESS = new NationaliteAccess(DATABASE_MANAGER);
-        NPA_ACCESS = new NpaAccess(DATABASE_MANAGER);
-        PRIORITE_ACCESS = new PrioriteAccess(DATABASE_MANAGER);
-        RUBRIQUE_ENFANT_ACCESS = new RubriqueEnfantAccess(DATABASE_MANAGER);
-        RUBRIQUE_PARENT_ACCESS = new RubriqueParentAccess(DATABASE_MANAGER);
-        SEXE_ACCESS = new SexeAccess(DATABASE_MANAGER);
-        RUE_ACCESS = new RueAccess(DATABASE_MANAGER);
-        STATUT_ACCESS = new StatutAccess(DATABASE_MANAGER);
-        TITRE_CIVIL_ACCESS = new TitreCivilAccess(DATABASE_MANAGER);
-        UTILISATEUR_ACCESS = new UtilisateurAccess(DATABASE_MANAGER);
+        try {
+            ADRESSE_ACCESS = new AdresseAccess();
+            COMMENTAIRE_ACCESS = new CommentaireAccess();
+            CONFIANCE_ACCESS = new ConfianceAccess();
+            EVENEMENT_ACCESS = new EvenementAccess();
+            NATIONALITE_ACCESS = new NationaliteAccess();
+            NPA_ACCESS = new NpaAccess();
+            PRIORITE_ACCESS = new PrioriteAccess();
+            RUBRIQUE_ENFANT_ACCESS = new RubriqueEnfantAccess();
+            RUBRIQUE_PARENT_ACCESS = new RubriqueParentAccess();
+            SEXE_ACCESS = new SexeAccess();
+            RUE_ACCESS = new RueAccess();
+            STATUT_ACCESS = new StatutAccess();
+            TITRE_CIVIL_ACCESS = new TitreCivilAccess();
+            UTILISATEUR_ACCESS = new UtilisateurAccess();
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, e.getMessage(), e);
+            throw new ExceptionInInitializerError(e);
+        }
     }
 
     public static <T> T get(Class<T> tClass, Integer id) {
@@ -56,21 +62,21 @@ public class DatabaseAccess {
         Transaction transaction = null;
 
         try {
-            session = DATABASE_MANAGER.getSession();
+            session = Hibernate.getSession();
             transaction = session.beginTransaction();
 
             t = session.get(tClass, id);
 
             transaction.commit();
-        } catch (Exception ex) {
-            rollback(ex, transaction);
+        } catch (Exception e) {
+            rollback(e, transaction);
         } finally {
             close(session);
         }
 
-        LOGGER.log(Level.INFO, t != null ?
-                DATABASE_MANAGER.getString("databaseAccess.oneResult")
-                : DATABASE_MANAGER.getString("databaseAccess.noResults"));
+        LOGGER.log(Level.INFO,
+                ConfigurationManager.getString("databaseAccess.results"),
+                t != null ? 1 : 0);
 
         return t;
     }
@@ -82,24 +88,24 @@ public class DatabaseAccess {
         Transaction transaction = null;
 
         try {
-            session = DATABASE_MANAGER.getSession();
+            session = Hibernate.getSession();
             transaction = session.beginTransaction();
 
-            CriteriaBuilder criteriaBuilder = DATABASE_MANAGER.getCriteriaBuilder();
+            CriteriaBuilder criteriaBuilder = Hibernate.getCriteriaBuilder();
             CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(tClass);
             criteriaQuery.from(tClass);
-            tList = DATABASE_MANAGER.createQuery(criteriaQuery).getResultList();
+            tList = Hibernate.createQuery(criteriaQuery).getResultList();
 
             transaction.commit();
-        } catch (Exception ex) {
-            rollback(ex, transaction);
+        } catch (Exception e) {
+            rollback(e, transaction);
         } finally {
             close(session);
         }
 
-        LOGGER.log(Level.INFO, tList != null ?
-                tList.size() + " " + DATABASE_MANAGER.getString("databaseAccess.results")
-                : DATABASE_MANAGER.getString("databaseAccess.noResults"));
+        LOGGER.log(Level.INFO,
+                ConfigurationManager.getString("databaseAccess.results"),
+                tList != null ? tList.size() : 0);
 
         return tList;
     }
@@ -109,14 +115,14 @@ public class DatabaseAccess {
         Transaction transaction = null;
 
         try {
-            session = DATABASE_MANAGER.getSession();
+            session = Hibernate.getSession();
             transaction = session.beginTransaction();
 
             session.save(t);
 
             transaction.commit();
-        } catch (Exception ex) {
-            rollback(ex, transaction);
+        } catch (Exception e) {
+            rollback(e, transaction);
         } finally {
             close(session);
         }
@@ -129,7 +135,7 @@ public class DatabaseAccess {
         Transaction transaction = null;
 
         try {
-            session = DATABASE_MANAGER.getSession();
+            session = Hibernate.getSession();
             transaction = session.beginTransaction();
 
             for (T t : tList) {
@@ -137,8 +143,8 @@ public class DatabaseAccess {
             }
 
             transaction.commit();
-        } catch (Exception ex) {
-            rollback(ex, transaction);
+        } catch (Exception e) {
+            rollback(e, transaction);
         } finally {
             close(session);
         }
@@ -151,14 +157,14 @@ public class DatabaseAccess {
         Transaction transaction = null;
 
         try {
-            session = DATABASE_MANAGER.getSession();
+            session = Hibernate.getSession();
             transaction = session.beginTransaction();
 
             session.update(t);
 
             transaction.commit();
-        } catch (Exception ex) {
-            rollback(ex, transaction);
+        } catch (Exception e) {
+            rollback(e, transaction);
         } finally {
             close(session);
         }
@@ -171,7 +177,7 @@ public class DatabaseAccess {
         Transaction transaction = null;
 
         try {
-            session = DATABASE_MANAGER.getSession();
+            session = Hibernate.getSession();
             transaction = session.beginTransaction();
 
             for (T t : tList) {
@@ -179,8 +185,8 @@ public class DatabaseAccess {
             }
 
             transaction.commit();
-        } catch (Exception ex) {
-            rollback(ex, transaction);
+        } catch (Exception e) {
+            rollback(e, transaction);
         } finally {
             close(session);
         }
@@ -197,14 +203,14 @@ public class DatabaseAccess {
         Transaction transaction = null;
 
         try {
-            session = DATABASE_MANAGER.getSession();
+            session = Hibernate.getSession();
             transaction = session.beginTransaction();
 
             session.delete(t);
 
             transaction.commit();
-        } catch (Exception ex) {
-            rollback(ex, transaction);
+        } catch (Exception e) {
+            rollback(e, transaction);
         } finally {
             close(session);
         }
@@ -217,7 +223,7 @@ public class DatabaseAccess {
         Transaction transaction = null;
 
         try {
-            session = DATABASE_MANAGER.getSession();
+            session = Hibernate.getSession();
             transaction = session.beginTransaction();
 
             for (T t : tList) {
@@ -225,8 +231,8 @@ public class DatabaseAccess {
             }
 
             transaction.commit();
-        } catch (Exception ex) {
-            rollback(ex, transaction);
+        } catch (Exception e) {
+            rollback(e, transaction);
         } finally {
             close(session);
         }
@@ -235,40 +241,36 @@ public class DatabaseAccess {
     }
 
     public static void close() {
-        DATABASE_MANAGER.close();
+        Hibernate.close();
     }
 
-    private static void transactionMessage(Transaction transaction) {
-
-        String key;
-
-        if (transaction != null && transaction.getStatus().equals(TransactionStatus.COMMITTED)) {
-            key = "databaseAccess.transactionCommitted";
-        } else {
-            key = "databaseAccess.transactionRollbacked";
-        }
-
-        LOGGER.log(Level.INFO, DATABASE_MANAGER.getString(key));
-    }
-
-    private static void rollback(Exception ex, Transaction transaction) {
+    public static void rollback(Exception e, Transaction transaction) {
         if (transaction != null) {
-            try {
-                transaction.rollback();
-                LOGGER.log(Level.SEVERE, ex.getMessage(), ex);
-            } catch (Exception _ex) {
-                LOGGER.log(Level.SEVERE, _ex.getMessage(), _ex);
-            }
+            transaction.rollback();
+            LOGGER.log(Level.SEVERE, e.getMessage(), e);
         }
     }
 
-    private static void close(Session session) {
+    public static void close(Session session) throws HibernateException {
         if (session != null) {
             try {
                 session.close();
-            } catch (Exception ex) {
-                LOGGER.log(Level.SEVERE, ex.getMessage(), ex);
+            } catch (Exception e) {
+                LOGGER.log(Level.SEVERE, e.getMessage(), e);
+                throw new HibernateException(e);
             }
         }
+    }
+
+    private static void transactionMessage(Transaction transaction) {
+        String key = "databaseAccess.transaction";
+
+        if (transaction != null && transaction.getStatus().equals(TransactionStatus.COMMITTED)) {
+            key += "Committed";
+        } else {
+            key += "Rollbacked";
+        }
+
+        LOGGER.info(ConfigurationManager.getString(key));
     }
 }

@@ -1,5 +1,7 @@
-package database.controllers;
+package database.controllers.access;
 
+import database.controllers.ConfigurationManager;
+import database.controllers.Hibernate;
 import database.models.Nationalite;
 import database.models.Nationalite_;
 import org.hibernate.Session;
@@ -14,7 +16,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class NationaliteAccess {
+class NationaliteAccess {
 
     private static final Logger LOGGER;
 
@@ -22,38 +24,9 @@ public class NationaliteAccess {
         LOGGER = Logger.getLogger(NationaliteAccess.class.getName());
     }
 
-    private DatabaseManager databaseManager;
-
-    NationaliteAccess(DatabaseManager databaseManager) {
-        this.databaseManager = databaseManager;
-    }
-
-    public DatabaseManager getDatabaseManager() {
-        return databaseManager;
-    }
-
-    public void setDatabaseManager(DatabaseManager databaseManager) {
-        this.databaseManager = databaseManager;
-    }
-
-    private void rollback(Exception ex, Transaction transaction) {
-        if (transaction != null) {
-            try {
-                transaction.rollback();
-                LOGGER.log(Level.SEVERE, ex.getMessage(), ex);
-            } catch (Exception _ex) {
-                LOGGER.log(Level.SEVERE, _ex.getMessage(), _ex);
-            }
-        }
-    }
-
-    private void close(Session session) {
-        if (session != null) {
-            try {
-                session.close();
-            } catch (Exception ex) {
-                LOGGER.log(Level.SEVERE, ex.getMessage(), ex);
-            }
+    private void setAll(Nationalite nationalite, String nomNationalite) {
+        if (nomNationalite != null) {
+            nationalite.setNomNationalite(nomNationalite);
         }
     }
 
@@ -64,10 +37,10 @@ public class NationaliteAccess {
         Transaction transaction = null;
 
         try {
-            session = databaseManager.getSession();
+            session = Hibernate.getSession();
             transaction = session.beginTransaction();
 
-            CriteriaBuilder criteriaBuilder = databaseManager.getCriteriaBuilder();
+            CriteriaBuilder criteriaBuilder = Hibernate.getCriteriaBuilder();
             CriteriaQuery<Nationalite> criteriaQuery = criteriaBuilder
                     .createQuery(Nationalite.class);
 
@@ -81,19 +54,18 @@ public class NationaliteAccess {
             }
 
             criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
-            nationaliteList = databaseManager.createQuery(criteriaQuery).getResultList();
+            nationaliteList = Hibernate.createQuery(criteriaQuery).getResultList();
 
             transaction.commit();
-        } catch (Exception ex) {
-            rollback(ex, transaction);
+        } catch (Exception e) {
+            DatabaseAccess.rollback(e, transaction);
         } finally {
-            close(session);
+            DatabaseAccess.close(session);
         }
 
-        LOGGER.log(Level.INFO, nationaliteList != null ?
-                nationaliteList.size() + " " +
-                        databaseManager.getString("databaseAccess.results")
-                : databaseManager.getString("databaseAccess.noResults"));
+        LOGGER.log(Level.INFO,
+                ConfigurationManager.getString("databaseAccess.results"),
+                nationaliteList != null ? nationaliteList.size() : 0);
 
         return nationaliteList;
     }
@@ -106,10 +78,7 @@ public class NationaliteAccess {
         Nationalite nationalite = DatabaseAccess.get(Nationalite.class, idNationalite);
 
         if (nationalite != null) {
-            if (nomNationalite != null) {
-                nationalite.setNomNationalite(nomNationalite);
-            }
-
+            setAll(nationalite, nomNationalite);
             DatabaseAccess.update(nationalite);
         }
     }
@@ -119,9 +88,7 @@ public class NationaliteAccess {
 
         if (nationaliteList != null) {
             for (Nationalite nationalite : nationaliteList) {
-                if (newNomNationalite != null) {
-                    nationalite.setNomNationalite(newNomNationalite);
-                }
+                setAll(nationalite, newNomNationalite);
             }
 
             DatabaseAccess.update(nationaliteList);

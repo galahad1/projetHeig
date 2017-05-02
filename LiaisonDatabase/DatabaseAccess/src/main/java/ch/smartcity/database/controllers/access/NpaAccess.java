@@ -1,5 +1,7 @@
-package database.controllers;
+package database.controllers.access;
 
+import database.controllers.ConfigurationManager;
+import database.controllers.Hibernate;
 import database.models.Npa;
 import database.models.Npa_;
 import org.hibernate.Session;
@@ -14,7 +16,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class NpaAccess {
+class NpaAccess {
 
     private static final Logger LOGGER;
 
@@ -22,38 +24,9 @@ public class NpaAccess {
         LOGGER = Logger.getLogger(NpaAccess.class.getName());
     }
 
-    private DatabaseManager databaseManager;
-
-    NpaAccess(DatabaseManager databaseManager) {
-        this.databaseManager = databaseManager;
-    }
-
-    public DatabaseManager getDatabaseManager() {
-        return databaseManager;
-    }
-
-    public void setDatabaseManager(DatabaseManager databaseManager) {
-        this.databaseManager = databaseManager;
-    }
-
-    private void rollback(Exception ex, Transaction transaction) {
-        if (transaction != null) {
-            try {
-                transaction.rollback();
-                LOGGER.log(Level.SEVERE, ex.getMessage(), ex);
-            } catch (Exception _ex) {
-                LOGGER.log(Level.SEVERE, _ex.getMessage(), _ex);
-            }
-        }
-    }
-
-    private void close(Session session) {
-        if (session != null) {
-            try {
-                session.close();
-            } catch (Exception ex) {
-                LOGGER.log(Level.SEVERE, ex.getMessage(), ex);
-            }
+    private void setAll(Npa npa, String numeroNpa) {
+        if (numeroNpa != null) {
+            npa.setNumeroNpa(numeroNpa);
         }
     }
 
@@ -64,10 +37,10 @@ public class NpaAccess {
         Transaction transaction = null;
 
         try {
-            session = databaseManager.getSession();
+            session = Hibernate.getSession();
             transaction = session.beginTransaction();
 
-            CriteriaBuilder criteriaBuilder = databaseManager.getCriteriaBuilder();
+            CriteriaBuilder criteriaBuilder = Hibernate.getCriteriaBuilder();
             CriteriaQuery<Npa> criteriaQuery = criteriaBuilder.createQuery(Npa.class);
             Root<Npa> npaRoot = criteriaQuery.from(Npa.class);
             List<Predicate> predicateList = new ArrayList<>();
@@ -78,18 +51,18 @@ public class NpaAccess {
             }
 
             criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
-            npaList = databaseManager.createQuery(criteriaQuery).getResultList();
+            npaList = Hibernate.createQuery(criteriaQuery).getResultList();
 
             transaction.commit();
-        } catch (Exception ex) {
-            rollback(ex, transaction);
+        } catch (Exception e) {
+            DatabaseAccess.rollback(e, transaction);
         } finally {
-            close(session);
+            DatabaseAccess.close(session);
         }
 
-        LOGGER.log(Level.INFO, npaList != null ?
-                npaList.size() + " " + databaseManager.getString("databaseAccess.results")
-                : databaseManager.getString("databaseAccess.noResults"));
+        LOGGER.log(Level.INFO,
+                ConfigurationManager.getString("databaseAccess.results"),
+                npaList != null ? npaList.size() : 0);
 
         return npaList;
     }
@@ -102,10 +75,7 @@ public class NpaAccess {
         Npa npa = DatabaseAccess.get(Npa.class, idNpa);
 
         if (npa != null) {
-            if (numeroNpa != null) {
-                npa.setNumeroNpa(numeroNpa);
-            }
-
+            setAll(npa, numeroNpa);
             DatabaseAccess.update(npa);
         }
     }
@@ -115,9 +85,7 @@ public class NpaAccess {
 
         if (npaList != null) {
             for (Npa npa : npaList) {
-                if (newNumeroNpa != null) {
-                    npa.setNumeroNpa(newNumeroNpa);
-                }
+                setAll(npa, newNumeroNpa);
             }
 
             DatabaseAccess.update(npaList);

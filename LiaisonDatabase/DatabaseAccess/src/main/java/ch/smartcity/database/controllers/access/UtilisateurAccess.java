@@ -1,5 +1,7 @@
-package database.controllers;
+package database.controllers.access;
 
+import database.controllers.ConfigurationManager;
+import database.controllers.Hibernate;
 import database.models.*;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -11,7 +13,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class UtilisateurAccess {
+class UtilisateurAccess {
 
     private static final Logger LOGGER;
 
@@ -19,39 +21,92 @@ public class UtilisateurAccess {
         LOGGER = Logger.getLogger(UtilisateurAccess.class.getName());
     }
 
-    private DatabaseManager databaseManager;
+    private String titre;
+    private String abreviation;
+    private String nomSexe;
+    private String nomPriorite;
+    private String nomRue;
+    private String numeroDeRue;
+    private String numeroNpa;
 
-    UtilisateurAccess(DatabaseManager databaseManager) {
-        this.databaseManager = databaseManager;
-    }
+    private void setAll(Utilisateur utilisateur,
+                        Boolean personnePhysique,
+                        String avs,
+                        TitreCivil titreCivil,
+                        String nomUtilisateur,
+                        String prenom,
+                        Calendar dateDeNaissance,
+                        Sexe sexe,
+                        Nationalite nationalite,
+                        Adresse adresse,
+                        String email,
+                        String pseudo,
+                        String motDePasse,
+                        String sel) {
+        if (personnePhysique != null) {
+            utilisateur.setPersonnePhysique(personnePhysique);
+        }
 
-    public DatabaseManager getDatabaseManager() {
-        return databaseManager;
-    }
+        if (avs != null) {
+            utilisateur.setAvs(avs);
+        }
 
-    public void setDatabaseManager(DatabaseManager databaseManager) {
-        this.databaseManager = databaseManager;
-    }
+        if (titreCivil != null) {
+            utilisateur.setTitreCivil(titreCivil);
+        }
 
-    private void rollback(Exception ex, Transaction transaction) {
-        if (transaction != null) {
-            try {
-                transaction.rollback();
-                LOGGER.log(Level.SEVERE, ex.getMessage(), ex);
-            } catch (Exception _ex) {
-                LOGGER.log(Level.SEVERE, _ex.getMessage(), _ex);
-            }
+        if (nomUtilisateur != null) {
+            utilisateur.setNomUtilisateur(nomUtilisateur);
+        }
+
+        if (prenom != null) {
+            utilisateur.setPrenom(prenom);
+        }
+
+        if (dateDeNaissance != null) {
+            utilisateur.setDateDeNaissance(dateDeNaissance);
+        }
+
+        if (sexe != null) {
+            utilisateur.setSexe(sexe);
+        }
+
+        if (nationalite != null) {
+            utilisateur.setNationalite(nationalite);
+        }
+
+        if (adresse != null) {
+            utilisateur.setAdresse(adresse);
+        }
+
+        if (email != null) {
+            utilisateur.setEmail(email);
+        }
+
+        if (pseudo != null) {
+            utilisateur.setPseudo(pseudo);
+        }
+
+        if (motDePasse != null) {
+            utilisateur.setMotDePasse(motDePasse);
+        }
+
+        if (sel != null) {
+            utilisateur.setSel(sel);
         }
     }
 
-    private void close(Session session) {
-        if (session != null) {
-            try {
-                session.close();
-            } catch (Exception ex) {
-                LOGGER.log(Level.SEVERE, ex.getMessage(), ex);
-            }
-        }
+    private void checkNull(TitreCivil titreCivil,
+                           Sexe sexe,
+                           Nationalite nationalite,
+                           Adresse adresse) {
+        titre = titreCivil != null ? titreCivil.getTitre() : null;
+        abreviation = titreCivil != null ? titreCivil.getAbreviation() : null;
+        nomSexe = sexe != null ? sexe.getNomSexe() : null;
+        nomPriorite = nationalite != null ? nationalite.getNomNationalite() : null;
+        nomRue = adresse != null ? adresse.getRue().getNomRue() : null;
+        numeroDeRue = adresse != null ? adresse.getNumeroDeRue() : null;
+        numeroNpa = adresse != null ? adresse.getNpa().getNumeroNpa() : null;
     }
 
     public List<Utilisateur> get(Boolean personnePhysique,
@@ -68,27 +123,7 @@ public class UtilisateurAccess {
                                  String motDePasse,
                                  String sel,
                                  Calendar creation) {
-        String titre = titreCivil != null ?
-                titreCivil.getTitre() : null;
-
-        String abreviation = titreCivil != null ?
-                titreCivil.getAbreviation() : null;
-
-        String nomSexe = sexe != null ?
-                sexe.getNomSexe() : null;
-
-        String nomPriorite = nationalite != null ?
-                nationalite.getNomNationalite() : null;
-
-        String nomRue = null;
-        String numeroDeRue = null;
-        String numeroNpa = null;
-        if (adresse != null) {
-            nomRue = adresse.getRue().getNomRue();
-            numeroDeRue = adresse.getNumeroDeRue();
-            numeroNpa = adresse.getNpa().getNumeroNpa();
-        }
-
+        checkNull(titreCivil, sexe, nationalite, adresse);
         return get(personnePhysique,
                 avs,
                 titre,
@@ -132,10 +167,10 @@ public class UtilisateurAccess {
         Transaction transaction = null;
 
         try {
-            session = databaseManager.getSession();
+            session = Hibernate.getSession();
             transaction = session.beginTransaction();
 
-            CriteriaBuilder criteriaBuilder = databaseManager.getCriteriaBuilder();
+            CriteriaBuilder criteriaBuilder = Hibernate.getCriteriaBuilder();
             CriteriaQuery<Utilisateur> criteriaQuery = criteriaBuilder
                     .createQuery(Utilisateur.class);
             Root<Utilisateur> utilisateurRoot = criteriaQuery.from(Utilisateur.class);
@@ -256,19 +291,18 @@ public class UtilisateurAccess {
             }
 
             criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
-            utilisateurList = databaseManager.createQuery(criteriaQuery).getResultList();
+            utilisateurList = Hibernate.createQuery(criteriaQuery).getResultList();
 
             transaction.commit();
-        } catch (Exception ex) {
-            rollback(ex, transaction);
+        } catch (Exception e) {
+            DatabaseAccess.rollback(e, transaction);
         } finally {
-            close(session);
+            DatabaseAccess.close(session);
         }
 
-        LOGGER.log(Level.INFO, utilisateurList != null ?
-                utilisateurList.size() + " " +
-                        databaseManager.getString("databaseAccess.results")
-                : databaseManager.getString("databaseAccess.noResults"));
+        LOGGER.log(Level.INFO,
+                ConfigurationManager.getString("databaseAccess.results"),
+                utilisateurList != null ? utilisateurList.size() : 0);
 
         return utilisateurList;
     }
@@ -363,58 +397,20 @@ public class UtilisateurAccess {
         Utilisateur utilisateur = DatabaseAccess.get(Utilisateur.class, idUtilisateur);
 
         if (utilisateur != null) {
-            if (personnePhysique != null) {
-                utilisateur.setPersonnePhysique(personnePhysique);
-            }
-
-            if (avs != null) {
-                utilisateur.setAvs(avs);
-            }
-
-            if (titreCivil != null) {
-                utilisateur.setTitreCivil(titreCivil);
-            }
-
-            if (nomUtilisateur != null) {
-                utilisateur.setNomUtilisateur(nomUtilisateur);
-            }
-
-            if (prenom != null) {
-                utilisateur.setPrenom(prenom);
-            }
-
-            if (dateDeNaissance != null) {
-                utilisateur.setDateDeNaissance(dateDeNaissance);
-            }
-
-            if (sexe != null) {
-                utilisateur.setSexe(sexe);
-            }
-
-            if (nationalite != null) {
-                utilisateur.setNationalite(nationalite);
-            }
-
-            if (adresse != null) {
-                utilisateur.setAdresse(adresse);
-            }
-
-            if (email != null) {
-                utilisateur.setEmail(email);
-            }
-
-            if (pseudo != null) {
-                utilisateur.setPseudo(pseudo);
-            }
-
-            if (motDePasse != null) {
-                utilisateur.setMotDePasse(motDePasse);
-            }
-
-            if (sel != null) {
-                utilisateur.setSel(sel);
-            }
-
+            setAll(utilisateur,
+                    personnePhysique,
+                    avs,
+                    titreCivil,
+                    nomUtilisateur,
+                    prenom,
+                    dateDeNaissance,
+                    sexe,
+                    nationalite,
+                    adresse,
+                    email,
+                    pseudo,
+                    motDePasse,
+                    sel);
             DatabaseAccess.update(utilisateur);
         }
     }
@@ -464,60 +460,22 @@ public class UtilisateurAccess {
 
         if (utilisateurList != null) {
             for (Utilisateur utilisateur : utilisateurList) {
-                if (newPersonnePhysique != null) {
-                    utilisateur.setPersonnePhysique(newPersonnePhysique);
-                }
-
-                if (newAvs != null) {
-                    utilisateur.setAvs(newAvs);
-                }
-
-                if (newTitreCivil != null) {
-                    utilisateur.setTitreCivil(newTitreCivil);
-                }
-
-                if (newNomUtilisateur != null) {
-                    utilisateur.setNomUtilisateur(newNomUtilisateur);
-                }
-
-                if (newPrenom != null) {
-                    utilisateur.setPrenom(newPrenom);
-                }
-
-                if (newDateDeNaissance != null) {
-                    utilisateur.setDateDeNaissance(newDateDeNaissance);
-                }
-
-                if (newSexe != null) {
-                    utilisateur.setSexe(newSexe);
-                }
-
-                if (newNationalite != null) {
-                    utilisateur.setNationalite(newNationalite);
-                }
-
-                if (newAdresse != null) {
-                    utilisateur.setAdresse(newAdresse);
-                }
-
-                if (newEmail != null) {
-                    utilisateur.setEmail(newEmail);
-                }
-
-                if (newPseudo != null) {
-                    utilisateur.setPseudo(newPseudo);
-                }
-
-                if (newMotDePasse != null) {
-                    utilisateur.setMotDePasse(newMotDePasse);
-                }
-
-                if (newSel != null) {
-                    utilisateur.setSel(newSel);
-                }
+                setAll(utilisateur,
+                        newPersonnePhysique,
+                        newAvs,
+                        newTitreCivil,
+                        newNomUtilisateur,
+                        newPrenom,
+                        newDateDeNaissance,
+                        newSexe,
+                        newNationalite,
+                        newAdresse,
+                        newEmail,
+                        newPseudo,
+                        newMotDePasse,
+                        newSel);
+                DatabaseAccess.update(utilisateurList);
             }
-
-            DatabaseAccess.update(utilisateurList);
         }
     }
 
@@ -535,27 +493,7 @@ public class UtilisateurAccess {
                        String motDePasse,
                        String sel,
                        Calendar creation) {
-        String titre = titreCivil != null ?
-                titreCivil.getTitre() : null;
-
-        String abreviation = titreCivil != null ?
-                titreCivil.getAbreviation() : null;
-
-        String nomSexe = sexe != null ?
-                sexe.getNomSexe() : null;
-
-        String nomPriorite = nationalite != null ?
-                nationalite.getNomNationalite() : null;
-
-        String nomRue = null;
-        String numeroDeRue = null;
-        String numeroNpa = null;
-        if (adresse != null) {
-            nomRue = adresse.getRue().getNomRue();
-            numeroDeRue = adresse.getNumeroDeRue();
-            numeroNpa = adresse.getNpa().getNumeroNpa();
-        }
-
+        checkNull(titreCivil, sexe, nationalite, adresse);
         delete(personnePhysique,
                 avs,
                 titre,

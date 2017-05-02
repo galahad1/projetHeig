@@ -1,5 +1,7 @@
-package database.controllers;
+package database.controllers.access;
 
+import database.controllers.ConfigurationManager;
+import database.controllers.Hibernate;
 import database.models.TitreCivil;
 import database.models.TitreCivil_;
 import org.hibernate.Session;
@@ -14,7 +16,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class TitreCivilAccess {
+class TitreCivilAccess {
 
     private static final Logger LOGGER;
 
@@ -22,38 +24,13 @@ public class TitreCivilAccess {
         LOGGER = Logger.getLogger(TitreCivilAccess.class.getName());
     }
 
-    private DatabaseManager databaseManager;
-
-    TitreCivilAccess(DatabaseManager databaseManager) {
-        this.databaseManager = databaseManager;
-    }
-
-    public DatabaseManager getDatabaseManager() {
-        return databaseManager;
-    }
-
-    public void setDatabaseManager(DatabaseManager databaseManager) {
-        this.databaseManager = databaseManager;
-    }
-
-    private void rollback(Exception ex, Transaction transaction) {
-        if (transaction != null) {
-            try {
-                transaction.rollback();
-                LOGGER.log(Level.SEVERE, ex.getMessage(), ex);
-            } catch (Exception _ex) {
-                LOGGER.log(Level.SEVERE, _ex.getMessage(), _ex);
-            }
+    private void setAll(TitreCivil titreCivil, String titre, String abreviation) {
+        if (titre != null) {
+            titreCivil.setTitre(titre);
         }
-    }
 
-    private void close(Session session) {
-        if (session != null) {
-            try {
-                session.close();
-            } catch (Exception ex) {
-                LOGGER.log(Level.SEVERE, ex.getMessage(), ex);
-            }
+        if (abreviation != null) {
+            titreCivil.setAbreviation(abreviation);
         }
     }
 
@@ -64,10 +41,10 @@ public class TitreCivilAccess {
         Transaction transaction = null;
 
         try {
-            session = databaseManager.getSession();
+            session = Hibernate.getSession();
             transaction = session.beginTransaction();
 
-            CriteriaBuilder criteriaBuilder = databaseManager.getCriteriaBuilder();
+            CriteriaBuilder criteriaBuilder = Hibernate.getCriteriaBuilder();
             CriteriaQuery<TitreCivil> criteriaQuery = criteriaBuilder
                     .createQuery(TitreCivil.class);
             Root<TitreCivil> titreCivilRoot = criteriaQuery.from(TitreCivil.class);
@@ -86,19 +63,18 @@ public class TitreCivilAccess {
             }
 
             criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
-            titreCivilList = databaseManager.createQuery(criteriaQuery).getResultList();
+            titreCivilList = Hibernate.createQuery(criteriaQuery).getResultList();
 
             transaction.commit();
-        } catch (Exception ex) {
-            rollback(ex, transaction);
+        } catch (Exception e) {
+            DatabaseAccess.rollback(e, transaction);
         } finally {
-            close(session);
+            DatabaseAccess.close(session);
         }
 
-        LOGGER.log(Level.INFO, titreCivilList != null ?
-                titreCivilList.size() + " " +
-                        databaseManager.getString("databaseAccess.results")
-                : databaseManager.getString("databaseAccess.noResults"));
+        LOGGER.log(Level.INFO,
+                ConfigurationManager.getString("databaseAccess.results"),
+                titreCivilList != null ? titreCivilList.size() : 0);
 
         return titreCivilList;
     }
@@ -111,14 +87,7 @@ public class TitreCivilAccess {
         TitreCivil titreCivil = DatabaseAccess.get(TitreCivil.class, idTitreCivil);
 
         if (titreCivil != null) {
-            if (titre != null) {
-                titreCivil.setTitre(titre);
-            }
-
-            if (abreviation != null) {
-                titreCivil.setAbreviation(abreviation);
-            }
-
+            setAll(titreCivil, titre, abreviation);
             DatabaseAccess.update(titreCivil);
         }
     }
@@ -131,13 +100,7 @@ public class TitreCivilAccess {
 
         if (titreCivilList != null) {
             for (TitreCivil titreCivil : titreCivilList) {
-                if (newTitre != null) {
-                    titreCivil.setTitre(newTitre);
-                }
-
-                if (newAbreviation != null) {
-                    titreCivil.setAbreviation(newAbreviation);
-                }
+                setAll(titreCivil, newTitre, newAbreviation);
             }
 
             DatabaseAccess.update(titreCivilList);

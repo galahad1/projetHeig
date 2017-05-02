@@ -1,8 +1,9 @@
-import database.controllers.DatabaseAccess;
+import database.controllers.access.DatabaseAccess;
 
 public class Main {
 
     public static void main(String[] args) {
+//        TODO: Reformate le code, inspect code, vérifier présentation code
 //        TODO: Implémenter les classes permettant l'accès aux données
 //        TODO: Organiser la classe DatabaseAccess
 
@@ -87,8 +88,8 @@ public class Main {
 //            List<Utilisateur> utilisateursList = DatabaseAccess.get(Utilisateur.class);
 //            System.out.println(utilisateursList);
 //            System.out.println("=======================================================\n");
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         } finally {
             DatabaseAccess.close();
         }

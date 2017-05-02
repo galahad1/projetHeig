@@ -1,5 +1,7 @@
-package database.controllers;
+package database.controllers.access;
 
+import database.controllers.ConfigurationManager;
+import database.controllers.Hibernate;
 import database.models.Statut;
 import database.models.Statut_;
 import org.hibernate.Session;
@@ -14,7 +16,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class StatutAccess {
+class StatutAccess {
 
     private static final Logger LOGGER;
 
@@ -22,38 +24,9 @@ public class StatutAccess {
         LOGGER = Logger.getLogger(StatutAccess.class.getName());
     }
 
-    private DatabaseManager databaseManager;
-
-    StatutAccess(DatabaseManager databaseManager) {
-        this.databaseManager = databaseManager;
-    }
-
-    public DatabaseManager getDatabaseManager() {
-        return databaseManager;
-    }
-
-    public void setDatabaseManager(DatabaseManager databaseManager) {
-        this.databaseManager = databaseManager;
-    }
-
-    private void rollback(Exception ex, Transaction transaction) {
-        if (transaction != null) {
-            try {
-                transaction.rollback();
-                LOGGER.log(Level.SEVERE, ex.getMessage(), ex);
-            } catch (Exception _ex) {
-                LOGGER.log(Level.SEVERE, _ex.getMessage(), _ex);
-            }
-        }
-    }
-
-    private void close(Session session) {
-        if (session != null) {
-            try {
-                session.close();
-            } catch (Exception ex) {
-                LOGGER.log(Level.SEVERE, ex.getMessage(), ex);
-            }
+    private void setAll(Statut statut, String nomStatut) {
+        if (nomStatut != null) {
+            statut.setNomStatut(nomStatut);
         }
     }
 
@@ -64,10 +37,10 @@ public class StatutAccess {
         Transaction transaction = null;
 
         try {
-            session = databaseManager.getSession();
+            session = Hibernate.getSession();
             transaction = session.beginTransaction();
 
-            CriteriaBuilder criteriaBuilder = databaseManager.getCriteriaBuilder();
+            CriteriaBuilder criteriaBuilder = Hibernate.getCriteriaBuilder();
             CriteriaQuery<Statut> criteriaQuery = criteriaBuilder
                     .createQuery(Statut.class);
             Root<Statut> statutRoot = criteriaQuery.from(Statut.class);
@@ -80,18 +53,18 @@ public class StatutAccess {
             }
 
             criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
-            statutList = databaseManager.createQuery(criteriaQuery).getResultList();
+            statutList = Hibernate.createQuery(criteriaQuery).getResultList();
 
             transaction.commit();
-        } catch (Exception ex) {
-            rollback(ex, transaction);
+        } catch (Exception e) {
+            DatabaseAccess.rollback(e, transaction);
         } finally {
-            close(session);
+            DatabaseAccess.close(session);
         }
 
-        LOGGER.log(Level.INFO, statutList != null ?
-                statutList.size() + " " + databaseManager.getString("databaseAccess.results")
-                : databaseManager.getString("databaseAccess.noResults"));
+        LOGGER.log(Level.INFO,
+                ConfigurationManager.getString("databaseAccess.results"),
+                statutList != null ? statutList.size() : 0);
 
         return statutList;
     }
@@ -104,10 +77,7 @@ public class StatutAccess {
         Statut statut = DatabaseAccess.get(Statut.class, idStatut);
 
         if (statut != null) {
-            if (nomStatut != null) {
-                statut.setNomStatut(nomStatut);
-            }
-
+            setAll(statut, nomStatut);
             DatabaseAccess.update(statut);
         }
     }
@@ -117,9 +87,7 @@ public class StatutAccess {
 
         if (statutList != null) {
             for (Statut statut : statutList) {
-                if (newNomStatut != null) {
-                    statut.setNomStatut(newNomStatut);
-                }
+                setAll(statut, newNomStatut);
             }
 
             DatabaseAccess.update(statutList);
