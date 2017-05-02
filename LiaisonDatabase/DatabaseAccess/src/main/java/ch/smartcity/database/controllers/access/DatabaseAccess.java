@@ -32,6 +32,7 @@ public class DatabaseAccess {
     private static final Logger LOGGER;
 
     static {
+        ConfigurationManager.init();
         LOGGER = Logger.getLogger(DatabaseAccess.class.getName());
 
         try {

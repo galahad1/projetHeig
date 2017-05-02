@@ -1,5 +1,6 @@
 package database.controllers;
 
+import java.io.IOException;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.logging.LogManager;
@@ -10,13 +11,15 @@ public class ConfigurationManager {
 
     static {
         try {
-            LogManager.getLogManager().readConfiguration(ConfigurationManager.class.getClassLoader()
-                    .getResourceAsStream("database/resources/logging.properties"));
+            loadLoggingProperties("database/resources/logging.properties");
             setResourceBundle("database/resources/messagesBundles/messageBundle");
         } catch (Exception e) {
             e.printStackTrace();
             throw new ExceptionInInitializerError(e);
         }
+    }
+
+    public static void init() {
     }
 
     public static ResourceBundle getResourceBundle() {
@@ -33,5 +36,10 @@ public class ConfigurationManager {
 
     public static String getString(String key) {
         return resourceBundle.getString(key);
+    }
+
+    private static void loadLoggingProperties(String loggingPropertiesFile) throws IOException {
+        LogManager.getLogManager().readConfiguration(ConfigurationManager.class.getClassLoader()
+                .getResourceAsStream(loggingPropertiesFile));
     }
 }

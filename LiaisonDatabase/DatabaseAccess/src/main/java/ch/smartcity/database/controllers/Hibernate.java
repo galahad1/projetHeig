@@ -29,11 +29,18 @@ public class Hibernate {
         }
     }
 
+    public static void init() {
+    }
+
     public static SessionFactory getSessionFactory() {
         return sessionFactory;
     }
 
     public static Session getSession() {
+        if (session == null || !session.isOpen()) {
+            session = sessionFactory.openSession();
+        }
+
         return session;
     }
 
