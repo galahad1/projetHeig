@@ -62,9 +62,10 @@ class RubriqueParentAccess {
             DatabaseAccess.close(session);
         }
 
-        LOGGER.log(Level.INFO,
+        LOGGER.log(Level.INFO, String.format(
                 ConfigurationManager.getString("databaseAccess.results"),
-                rubriqueParentList != null ? rubriqueParentList.size() : 0);
+                rubriqueParentList != null ? rubriqueParentList.size() : 0,
+                RubriqueParent.class.getSimpleName()));
 
         return rubriqueParentList;
     }

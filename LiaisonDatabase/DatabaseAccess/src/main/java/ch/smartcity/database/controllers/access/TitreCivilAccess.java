@@ -72,9 +72,10 @@ class TitreCivilAccess {
             DatabaseAccess.close(session);
         }
 
-        LOGGER.log(Level.INFO,
+        LOGGER.log(Level.INFO, String.format(
                 ConfigurationManager.getString("databaseAccess.results"),
-                titreCivilList != null ? titreCivilList.size() : 0);
+                titreCivilList != null ? titreCivilList.size() : 0,
+                TitreCivil.class.getSimpleName()));
 
         return titreCivilList;
     }

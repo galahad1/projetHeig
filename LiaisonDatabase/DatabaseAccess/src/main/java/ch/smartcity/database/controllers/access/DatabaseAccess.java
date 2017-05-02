@@ -32,7 +32,7 @@ public class DatabaseAccess {
     private static final Logger LOGGER;
 
     static {
-        ConfigurationManager.init();
+        ConfigurationManager.initialize();
         LOGGER = Logger.getLogger(DatabaseAccess.class.getName());
 
         try {
@@ -75,9 +75,10 @@ public class DatabaseAccess {
             close(session);
         }
 
-        LOGGER.log(Level.INFO,
+        LOGGER.log(Level.INFO, String.format(
                 ConfigurationManager.getString("databaseAccess.results"),
-                t != null ? 1 : 0);
+                t != null ? 1 : 0,
+                tClass.getSimpleName()));
 
         return t;
     }
@@ -104,9 +105,10 @@ public class DatabaseAccess {
             close(session);
         }
 
-        LOGGER.log(Level.INFO,
+        LOGGER.log(Level.INFO, String.format(
                 ConfigurationManager.getString("databaseAccess.results"),
-                tList != null ? tList.size() : 0);
+                tList != null ? tList.size() : 0,
+                tClass.getSimpleName()));
 
         return tList;
     }
@@ -241,10 +243,6 @@ public class DatabaseAccess {
         transactionMessage(transaction);
     }
 
-    public static void close() {
-        Hibernate.close();
-    }
-
     public static void rollback(Exception e, Transaction transaction) {
         if (transaction != null) {
             transaction.rollback();
@@ -263,13 +261,17 @@ public class DatabaseAccess {
         }
     }
 
+    public static void close() {
+        Hibernate.close();
+    }
+
     private static void transactionMessage(Transaction transaction) {
-        String key = "databaseAccess.transaction";
+        String key;
 
         if (transaction != null && transaction.getStatus().equals(TransactionStatus.COMMITTED)) {
-            key += "Committed";
+            key = "databaseAccess.transactionCommitted";
         } else {
-            key += "Rollbacked";
+            key = "databaseAccess.transactionRollbacked";
         }
 
         LOGGER.info(ConfigurationManager.getString(key));

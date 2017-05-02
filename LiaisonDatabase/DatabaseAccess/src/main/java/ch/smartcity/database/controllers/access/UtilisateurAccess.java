@@ -300,9 +300,10 @@ class UtilisateurAccess {
             DatabaseAccess.close(session);
         }
 
-        LOGGER.log(Level.INFO,
+        LOGGER.log(Level.INFO, String.format(
                 ConfigurationManager.getString("databaseAccess.results"),
-                utilisateurList != null ? utilisateurList.size() : 0);
+                utilisateurList != null ? utilisateurList.size() : 0,
+                Utilisateur.class.getSimpleName()));
 
         return utilisateurList;
     }

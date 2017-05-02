@@ -99,9 +99,10 @@ class ConfianceAccess {
             DatabaseAccess.close(session);
         }
 
-        LOGGER.log(Level.INFO,
+        LOGGER.log(Level.INFO, String.format(
                 ConfigurationManager.getString("databaseAccess.results"),
-                confianceList != null ? confianceList.size() : 0);
+                confianceList != null ? confianceList.size() : 0,
+                Confiance.class.getSimpleName()));
 
         return confianceList;
     }

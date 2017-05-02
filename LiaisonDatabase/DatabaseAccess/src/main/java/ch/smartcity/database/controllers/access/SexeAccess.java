@@ -62,9 +62,10 @@ class SexeAccess {
             DatabaseAccess.close(session);
         }
 
-        LOGGER.log(Level.INFO,
+        LOGGER.log(Level.INFO, String.format(
                 ConfigurationManager.getString("databaseAccess.results"),
-                sexeList != null ? sexeList.size() : 0);
+                sexeList != null ? sexeList.size() : 0,
+                Sexe.class.getSimpleName()));
 
         return sexeList;
     }

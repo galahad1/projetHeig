@@ -71,9 +71,10 @@ class PrioriteAccess {
             DatabaseAccess.close(session);
         }
 
-        LOGGER.log(Level.INFO,
+        LOGGER.log(Level.INFO, String.format(
                 ConfigurationManager.getString("databaseAccess.results"),
-                prioriteList != null ? prioriteList.size() : 0);
+                prioriteList != null ? prioriteList.size() : 0,
+                Priorite.class.getSimpleName()));
 
         return prioriteList;
     }

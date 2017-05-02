@@ -29,9 +29,6 @@ public class Hibernate {
         }
     }
 
-    public static void init() {
-    }
-
     public static SessionFactory getSessionFactory() {
         return sessionFactory;
     }

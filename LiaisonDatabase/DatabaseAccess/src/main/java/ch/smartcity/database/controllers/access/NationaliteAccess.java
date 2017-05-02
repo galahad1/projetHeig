@@ -63,9 +63,10 @@ class NationaliteAccess {
             DatabaseAccess.close(session);
         }
 
-        LOGGER.log(Level.INFO,
+        LOGGER.log(Level.INFO, String.format(
                 ConfigurationManager.getString("databaseAccess.results"),
-                nationaliteList != null ? nationaliteList.size() : 0);
+                nationaliteList != null ? nationaliteList.size() : 0,
+                Nationalite.class.getSimpleName()));
 
         return nationaliteList;
     }

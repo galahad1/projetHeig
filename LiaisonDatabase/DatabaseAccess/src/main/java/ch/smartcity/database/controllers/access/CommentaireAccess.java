@@ -112,9 +112,10 @@ class CommentaireAccess {
             DatabaseAccess.close(session);
         }
 
-        LOGGER.log(Level.INFO,
+        LOGGER.log(Level.INFO, String.format(
                 ConfigurationManager.getString("databaseAccess.results"),
-                commentaireList != null ? commentaireList.size() : 0);
+                commentaireList != null ? commentaireList.size() : 0,
+                Commentaire.class.getSimpleName()));
 
         return commentaireList;
     }

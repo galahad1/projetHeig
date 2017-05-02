@@ -24,6 +24,13 @@
         <property name="connection.useSSL">true</property>
         <property name="connection.useUnicode">true</property>
 
+        <!-- Configuration Pool via C3P0 -->
+        <property name="c3p0.acquire_increment">1</property>
+        <property name="c3p0.idle_test_period">100</property>
+        <property name="c3p0.max_size">1</property>
+        <property name="c3p0.min_size">1</property>
+        <property name="c3p0.timeout">300</property>
+
         <!-- Various properties -->
         <property name="hbm2ddl.auto">update</property>
         <property name="enable_lazy_load_no_trans">true</property>

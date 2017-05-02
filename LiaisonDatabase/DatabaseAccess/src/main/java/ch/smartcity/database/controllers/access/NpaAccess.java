@@ -60,9 +60,10 @@ class NpaAccess {
             DatabaseAccess.close(session);
         }
 
-        LOGGER.log(Level.INFO,
+        LOGGER.log(Level.INFO, String.format(
                 ConfigurationManager.getString("databaseAccess.results"),
-                npaList != null ? npaList.size() : 0);
+                npaList != null ? npaList.size() : 0,
+                Npa.class.getSimpleName()));
 
         return npaList;
     }

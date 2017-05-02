@@ -265,9 +265,10 @@ class EvenementAccess {
             DatabaseAccess.close(session);
         }
 
-        LOGGER.log(Level.INFO,
+        LOGGER.log(Level.INFO, String.format(
                 ConfigurationManager.getString("databaseAccess.results"),
-                evenementList != null ? evenementList.size() : 0);
+                evenementList != null ? evenementList.size() : 0,
+                Evenement.class.getSimpleName()));
 
         return evenementList;
     }

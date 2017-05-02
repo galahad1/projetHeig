@@ -19,19 +19,19 @@ public class ConfigurationManager {
         }
     }
 
-    public static void init() {
+    public static void initialize() {
     }
 
     public static ResourceBundle getResourceBundle() {
         return resourceBundle;
     }
 
-    public static void setResourceBundle(String baseNameResourceBundle) {
-        setResourceBundle(ResourceBundle.getBundle(baseNameResourceBundle, Locale.getDefault()));
-    }
-
     public static void setResourceBundle(ResourceBundle resourceBundle) {
         ConfigurationManager.resourceBundle = resourceBundle;
+    }
+
+    public static void setResourceBundle(String baseNameResourceBundle) {
+        setResourceBundle(ResourceBundle.getBundle(baseNameResourceBundle, Locale.getDefault()));
     }
 
     public static String getString(String key) {

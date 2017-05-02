@@ -93,9 +93,10 @@ class AdresseAccess {
             DatabaseAccess.close(session);
         }
 
-        LOGGER.log(Level.INFO,
+        LOGGER.log(Level.INFO, String.format(
                 ConfigurationManager.getString("databaseAccess.results"),
-                adresseList != null ? adresseList.size() : 0);
+                adresseList != null ? adresseList.size() : 0,
+                Adresse.class.getSimpleName()));
 
         return adresseList;
     }

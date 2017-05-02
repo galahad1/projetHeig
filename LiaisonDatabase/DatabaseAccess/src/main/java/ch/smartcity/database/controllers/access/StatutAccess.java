@@ -62,9 +62,10 @@ class StatutAccess {
             DatabaseAccess.close(session);
         }
 
-        LOGGER.log(Level.INFO,
+        LOGGER.log(Level.INFO, String.format(
                 ConfigurationManager.getString("databaseAccess.results"),
-                statutList != null ? statutList.size() : 0);
+                statutList != null ? statutList.size() : 0,
+                Statut.class.getSimpleName()));
 
         return statutList;
     }

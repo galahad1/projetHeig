@@ -62,9 +62,10 @@ class RueAccess {
             DatabaseAccess.close(session);
         }
 
-        LOGGER.log(Level.INFO,
+        LOGGER.log(Level.INFO, String.format(
                 ConfigurationManager.getString("databaseAccess.results"),
-                rueList != null ? rueList.size() : 0);
+                rueList != null ? rueList.size() : 0,
+                Rue.class.getSimpleName()));
 
         return rueList;
     }
