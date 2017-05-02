@@ -1,11 +1,12 @@
 import database.controllers.DatabaseAccess;
 import database.models.*;
+import org.hibernate.HibernateException;
 
 import java.util.List;
 
 public class Main {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws HibernateException {
 //        TODO: Pour chaque objet, tester l'obtention
 //        TODO: Pour chaque objet, tester l'insertion
 //        TODO: Pour chaque objet, tester la mise à jour

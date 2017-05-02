@@ -230,7 +230,7 @@ public class DatabaseAccess {
         }
     }
 
-    public static void close() {
+    public static void close() throws HibernateException {
         Hibernate.close();
     }
 

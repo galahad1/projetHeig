@@ -1,5 +1,6 @@
 package database.controllers;
 
+import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
@@ -53,7 +54,7 @@ public class Hibernate {
         return getSession().createQuery(tCriteriaQuery);
     }
 
-    public static void closeSession() {
+    public static void closeSession() throws HibernateException {
         if (session != null && session.isOpen()) {
             try {
                 session.close();
@@ -64,7 +65,7 @@ public class Hibernate {
         }
     }
 
-    public static void closeSessionFactory() {
+    public static void closeSessionFactory() throws HibernateException {
         if (sessionFactory != null && sessionFactory.isOpen()) {
             try {
                 sessionFactory.close();
@@ -75,7 +76,7 @@ public class Hibernate {
         }
     }
 
-    public static void close() {
+    public static void close() throws HibernateException {
         closeSession();
         closeSessionFactory();
     }
