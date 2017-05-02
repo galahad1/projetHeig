@@ -3,7 +3,6 @@ import database.controllers.access.DatabaseAccess;
 public class Main {
 
     public static void main(String[] args) {
-//        TODO: Reformate le code, inspect code, vérifier présentation code
 //        TODO: Implémenter les classes permettant l'accès aux données
 //        TODO: Organiser la classe DatabaseAccess
 
