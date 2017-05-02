@@ -11,7 +11,6 @@ import javax.persistence.criteria.*;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class CommentaireAccess {
@@ -90,7 +89,7 @@ public class CommentaireAccess {
             DatabaseAccess.close(session);
         }
 
-        LOGGER.log(Level.INFO, String.format(
+        LOGGER.info(String.format(
                 ConfigurationManager.getString("databaseAccess.results"),
                 commentaireList != null ? commentaireList.size() : 0,
                 Commentaire.class.getSimpleName()));

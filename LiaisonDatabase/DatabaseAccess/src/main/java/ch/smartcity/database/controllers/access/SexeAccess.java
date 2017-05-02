@@ -14,7 +14,6 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class SexeAccess {
@@ -57,7 +56,7 @@ public class SexeAccess {
             DatabaseAccess.close(session);
         }
 
-        LOGGER.log(Level.INFO, String.format(
+        LOGGER.info(String.format(
                 ConfigurationManager.getString("databaseAccess.results"),
                 sexeList != null ? sexeList.size() : 0,
                 Sexe.class.getSimpleName()));

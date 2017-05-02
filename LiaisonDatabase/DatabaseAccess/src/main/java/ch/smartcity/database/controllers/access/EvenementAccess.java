@@ -11,7 +11,6 @@ import javax.persistence.criteria.*;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class EvenementAccess {
@@ -194,7 +193,7 @@ public class EvenementAccess {
             DatabaseAccess.close(session);
         }
 
-        LOGGER.log(Level.INFO, String.format(
+        LOGGER.info(String.format(
                 ConfigurationManager.getString("databaseAccess.results"),
                 evenementList != null ? evenementList.size() : 0,
                 Evenement.class.getSimpleName()));

@@ -44,7 +44,7 @@ public class DatabaseAccess {
             close(session);
         }
 
-        LOGGER.log(Level.INFO, String.format(
+        LOGGER.info(String.format(
                 ConfigurationManager.getString("databaseAccess.results"),
                 t != null ? 1 : 0,
                 tClass.getSimpleName()));
@@ -74,7 +74,7 @@ public class DatabaseAccess {
             close(session);
         }
 
-        LOGGER.log(Level.INFO, String.format(
+        LOGGER.info(String.format(
                 ConfigurationManager.getString("databaseAccess.results"),
                 tList != null ? tList.size() : 0,
                 tClass.getSimpleName()));

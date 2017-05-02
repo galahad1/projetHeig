@@ -10,7 +10,6 @@ import org.hibernate.Transaction;
 import javax.persistence.criteria.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class AdresseAccess {
@@ -74,7 +73,7 @@ public class AdresseAccess {
             DatabaseAccess.close(session);
         }
 
-        LOGGER.log(Level.INFO, String.format(
+        LOGGER.info(String.format(
                 ConfigurationManager.getString("databaseAccess.results"),
                 adresseList != null ? adresseList.size() : 0,
                 Adresse.class.getSimpleName()));

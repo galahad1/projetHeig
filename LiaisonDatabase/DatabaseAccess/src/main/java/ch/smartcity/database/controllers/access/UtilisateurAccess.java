@@ -11,7 +11,6 @@ import javax.persistence.criteria.*;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class UtilisateurAccess {
@@ -220,7 +219,7 @@ public class UtilisateurAccess {
             DatabaseAccess.close(session);
         }
 
-        LOGGER.log(Level.INFO, String.format(
+        LOGGER.info(String.format(
                 ConfigurationManager.getString("databaseAccess.results"),
                 utilisateurList != null ? utilisateurList.size() : 0,
                 Utilisateur.class.getSimpleName()));

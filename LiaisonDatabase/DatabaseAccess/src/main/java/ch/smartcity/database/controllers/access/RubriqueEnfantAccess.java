@@ -13,7 +13,6 @@ import org.hibernate.Transaction;
 import javax.persistence.criteria.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class RubriqueEnfantAccess {
@@ -70,7 +69,7 @@ public class RubriqueEnfantAccess {
             DatabaseAccess.close(session);
         }
 
-        LOGGER.log(Level.INFO, String.format(
+        LOGGER.info(String.format(
                 ConfigurationManager.getString("databaseAccess.results"),
                 rubriqueEnfantList != null ? rubriqueEnfantList.size() : 0,
                 RubriqueEnfant.class.getSimpleName()));

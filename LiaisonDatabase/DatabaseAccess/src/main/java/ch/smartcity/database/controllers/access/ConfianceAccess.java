@@ -11,7 +11,6 @@ import javax.persistence.criteria.*;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class ConfianceAccess {
@@ -82,7 +81,7 @@ public class ConfianceAccess {
             DatabaseAccess.close(session);
         }
 
-        LOGGER.log(Level.INFO, String.format(
+        LOGGER.info(String.format(
                 ConfigurationManager.getString("databaseAccess.results"),
                 confianceList != null ? confianceList.size() : 0,
                 Confiance.class.getSimpleName()));
