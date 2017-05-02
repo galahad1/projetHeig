@@ -1,6 +1,7 @@
 package database.controllers.access;
 
 import database.controllers.ConfigurationManager;
+import database.controllers.DatabaseAccess;
 import database.controllers.Hibernate;
 import database.models.*;
 import org.hibernate.Session;
@@ -13,105 +14,33 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-class EvenementAccess {
+public class EvenementAccess {
 
     private static final Logger LOGGER;
+    private static String nomRubriqueEnfant;
+    private static String nomUtilisateur;
+    private static String nomRue;
+    private static String numeroDeRue;
+    private static String numeroNpa;
+    private static String nomPriorite;
+    private static String nomStatut;
 
     static {
         LOGGER = Logger.getLogger(EvenementAccess.class.getName());
     }
 
-    private String nomRubriqueEnfant;
-    private String nomUtilisateur;
-    private String nomRue;
-    private String numeroDeRue;
-    private String numeroNpa;
-    private String nomPriorite;
-    private String nomStatut;
-
-    private void setAll(Evenement evenement,
-                        RubriqueEnfant rubriqueEnfant,
-                        Utilisateur utilisateur,
-                        String nomEvenement,
-                        Adresse adresse,
-                        Double latitude,
-                        Double longitude,
-                        Calendar debut,
-                        Calendar fin,
-                        String details,
-                        Priorite priorite,
-                        Statut statut) {
-        if (rubriqueEnfant != null) {
-            evenement.setRubriqueEnfant(rubriqueEnfant);
-        }
-
-        if (utilisateur != null) {
-            evenement.setUtilisateur(utilisateur);
-        }
-
-        if (nomEvenement != null) {
-            evenement.setNomEvenement(nomEvenement);
-        }
-
-        if (adresse != null) {
-            evenement.setAdresse(adresse);
-        }
-
-        if (latitude != null) {
-            evenement.setLatitude(latitude);
-        }
-
-        if (longitude != null) {
-            evenement.setLongitude(longitude);
-        }
-
-        if (debut != null) {
-            evenement.setDebut(debut);
-        }
-
-        if (fin != null) {
-            evenement.setFin(fin);
-        }
-
-        if (details != null) {
-            evenement.setDetails(details);
-        }
-
-        if (priorite != null) {
-            evenement.setPriorite(priorite);
-        }
-
-        if (statut != null) {
-            evenement.setStatut(statut);
-        }
-    }
-
-    private void checkNull(RubriqueEnfant rubriqueEnfant,
-                           Utilisateur utilisateur,
-                           Adresse adresse,
-                           Priorite priorite,
-                           Statut statut) {
-        nomRubriqueEnfant = rubriqueEnfant != null ? rubriqueEnfant.getNomRubriqueEnfant() : null;
-        nomUtilisateur = utilisateur != null ? utilisateur.getNomUtilisateur() : null;
-        nomRue = adresse != null ? adresse.getRue().getNomRue() : null;
-        numeroDeRue = adresse != null ? adresse.getNumeroDeRue() : null;
-        numeroNpa = adresse != null ? adresse.getNpa().getNumeroNpa() : null;
-        nomPriorite = priorite != null ? priorite.getNomPriorite() : null;
-        nomStatut = statut != null ? statut.getNomStatut() : null;
-    }
-
-    public List<Evenement> get(RubriqueEnfant rubriqueEnfant,
-                               Utilisateur utilisateur,
-                               String nomEvenement,
-                               Adresse adresse,
-                               Double latitude,
-                               Double longitude,
-                               Calendar debut,
-                               Calendar fin,
-                               String details,
-                               Priorite priorite,
-                               Statut statut,
-                               Calendar creation) {
+    public static List<Evenement> get(RubriqueEnfant rubriqueEnfant,
+                                      Utilisateur utilisateur,
+                                      String nomEvenement,
+                                      Adresse adresse,
+                                      Double latitude,
+                                      Double longitude,
+                                      Calendar debut,
+                                      Calendar fin,
+                                      String details,
+                                      Priorite priorite,
+                                      Statut statut,
+                                      Calendar creation) {
         checkNull(rubriqueEnfant, utilisateur, adresse, priorite, statut);
         return get(nomRubriqueEnfant,
                 nomUtilisateur,
@@ -129,20 +58,20 @@ class EvenementAccess {
                 creation);
     }
 
-    public List<Evenement> get(String nomRubriqueEnfant,
-                               String nomUtilisateur,
-                               String nomEvenement,
-                               String nomRue,
-                               String numeroDeRue,
-                               String numeroNpa,
-                               Double latitude,
-                               Double longitude,
-                               Calendar debut,
-                               Calendar fin,
-                               String details,
-                               String nomPriorite,
-                               String nomStatut,
-                               Calendar creation) {
+    public static List<Evenement> get(String nomRubriqueEnfant,
+                                      String nomUtilisateur,
+                                      String nomEvenement,
+                                      String nomRue,
+                                      String numeroDeRue,
+                                      String numeroNpa,
+                                      Double latitude,
+                                      Double longitude,
+                                      Calendar debut,
+                                      Calendar fin,
+                                      String details,
+                                      String nomPriorite,
+                                      String nomStatut,
+                                      Calendar creation) {
         List<Evenement> evenementList = null;
 
         Session session = null;
@@ -273,12 +202,12 @@ class EvenementAccess {
         return evenementList;
     }
 
-    public void save(RubriqueEnfant rubriqueEnfant,
-                     Utilisateur utilisateur,
-                     String nomEvenement,
-                     Calendar debut,
-                     Priorite priorite,
-                     Statut statut) {
+    public static void save(RubriqueEnfant rubriqueEnfant,
+                            Utilisateur utilisateur,
+                            String nomEvenement,
+                            Calendar debut,
+                            Priorite priorite,
+                            Statut statut) {
         DatabaseAccess.save(new Evenement(
                 rubriqueEnfant,
                 utilisateur,
@@ -288,17 +217,17 @@ class EvenementAccess {
                 statut));
     }
 
-    public void save(RubriqueEnfant rubriqueEnfant,
-                     Utilisateur utilisateur,
-                     String nomEvenement,
-                     Adresse adresse,
-                     Double latitude,
-                     Double longitude,
-                     Calendar debut,
-                     Calendar fin,
-                     String details,
-                     Priorite priorite,
-                     Statut statut) {
+    public static void save(RubriqueEnfant rubriqueEnfant,
+                            Utilisateur utilisateur,
+                            String nomEvenement,
+                            Adresse adresse,
+                            Double latitude,
+                            Double longitude,
+                            Calendar debut,
+                            Calendar fin,
+                            String details,
+                            Priorite priorite,
+                            Statut statut) {
         DatabaseAccess.save(new Evenement(
                 rubriqueEnfant,
                 utilisateur,
@@ -313,18 +242,18 @@ class EvenementAccess {
                 statut));
     }
 
-    public void update(Integer idEvenement,
-                       RubriqueEnfant rubriqueEnfant,
-                       Utilisateur utilisateur,
-                       String nomEvenement,
-                       Adresse adresse,
-                       Double latitude,
-                       Double longitude,
-                       Calendar debut,
-                       Calendar fin,
-                       String details,
-                       Priorite priorite,
-                       Statut statut) {
+    public static void update(Integer idEvenement,
+                              RubriqueEnfant rubriqueEnfant,
+                              Utilisateur utilisateur,
+                              String nomEvenement,
+                              Adresse adresse,
+                              Double latitude,
+                              Double longitude,
+                              Calendar debut,
+                              Calendar fin,
+                              String details,
+                              Priorite priorite,
+                              Statut statut) {
         Evenement evenement = DatabaseAccess.get(Evenement.class, idEvenement);
 
         if (evenement != null) {
@@ -344,29 +273,29 @@ class EvenementAccess {
         }
     }
 
-    public void update(RubriqueEnfant oldRubriqueEnfant,
-                       Utilisateur oldUtilisateur,
-                       String oldNomEvenement,
-                       Adresse oldAdresse,
-                       Double oldLatitude,
-                       Double oldLongitude,
-                       Calendar oldDebut,
-                       Calendar oldFin,
-                       String oldDetails,
-                       Priorite oldPriorite,
-                       Statut oldStatut,
-                       Calendar creation,
-                       RubriqueEnfant newRubriqueEnfant,
-                       Utilisateur newUtilisateur,
-                       String newNomEvenement,
-                       Adresse newAdresse,
-                       Double newLatitude,
-                       Double newLongitude,
-                       Calendar newDebut,
-                       Calendar newFin,
-                       String newDetails,
-                       Priorite newPriorite,
-                       Statut newStatut) {
+    public static void update(RubriqueEnfant oldRubriqueEnfant,
+                              Utilisateur oldUtilisateur,
+                              String oldNomEvenement,
+                              Adresse oldAdresse,
+                              Double oldLatitude,
+                              Double oldLongitude,
+                              Calendar oldDebut,
+                              Calendar oldFin,
+                              String oldDetails,
+                              Priorite oldPriorite,
+                              Statut oldStatut,
+                              Calendar creation,
+                              RubriqueEnfant newRubriqueEnfant,
+                              Utilisateur newUtilisateur,
+                              String newNomEvenement,
+                              Adresse newAdresse,
+                              Double newLatitude,
+                              Double newLongitude,
+                              Calendar newDebut,
+                              Calendar newFin,
+                              String newDetails,
+                              Priorite newPriorite,
+                              Statut newStatut) {
         List<Evenement> evenementList = get(
                 oldRubriqueEnfant,
                 oldUtilisateur,
@@ -401,18 +330,18 @@ class EvenementAccess {
         }
     }
 
-    public void delete(RubriqueEnfant rubriqueEnfant,
-                       Utilisateur utilisateur,
-                       String nomEvenement,
-                       Adresse adresse,
-                       Double latitude,
-                       Double longitude,
-                       Calendar debut,
-                       Calendar fin,
-                       String details,
-                       Priorite priorite,
-                       Statut statut,
-                       Calendar creation) {
+    public static void delete(RubriqueEnfant rubriqueEnfant,
+                              Utilisateur utilisateur,
+                              String nomEvenement,
+                              Adresse adresse,
+                              Double latitude,
+                              Double longitude,
+                              Calendar debut,
+                              Calendar fin,
+                              String details,
+                              Priorite priorite,
+                              Statut statut,
+                              Calendar creation) {
         checkNull(rubriqueEnfant, utilisateur, adresse, priorite, statut);
         delete(nomRubriqueEnfant,
                 nomUtilisateur,
@@ -430,20 +359,20 @@ class EvenementAccess {
                 creation);
     }
 
-    public void delete(String nomRubriqueEnfant,
-                       String nomUtilisateur,
-                       String nomEvenement,
-                       String nomRue,
-                       String numeroDeRue,
-                       String numeroNpa,
-                       Double latitude,
-                       Double longitude,
-                       Calendar debut,
-                       Calendar fin,
-                       String details,
-                       String nomPriorite,
-                       String nomStatut,
-                       Calendar creation) {
+    public static void delete(String nomRubriqueEnfant,
+                              String nomUtilisateur,
+                              String nomEvenement,
+                              String nomRue,
+                              String numeroDeRue,
+                              String numeroNpa,
+                              Double latitude,
+                              Double longitude,
+                              Calendar debut,
+                              Calendar fin,
+                              String details,
+                              String nomPriorite,
+                              String nomStatut,
+                              Calendar creation) {
         DatabaseAccess.delete(get(
                 nomRubriqueEnfant,
                 nomUtilisateur,
@@ -459,5 +388,76 @@ class EvenementAccess {
                 nomPriorite,
                 nomStatut,
                 creation));
+    }
+
+    private static void setAll(Evenement evenement,
+                               RubriqueEnfant rubriqueEnfant,
+                               Utilisateur utilisateur,
+                               String nomEvenement,
+                               Adresse adresse,
+                               Double latitude,
+                               Double longitude,
+                               Calendar debut,
+                               Calendar fin,
+                               String details,
+                               Priorite priorite,
+                               Statut statut) {
+        if (rubriqueEnfant != null) {
+            evenement.setRubriqueEnfant(rubriqueEnfant);
+        }
+
+        if (utilisateur != null) {
+            evenement.setUtilisateur(utilisateur);
+        }
+
+        if (nomEvenement != null) {
+            evenement.setNomEvenement(nomEvenement);
+        }
+
+        if (adresse != null) {
+            evenement.setAdresse(adresse);
+        }
+
+        if (latitude != null) {
+            evenement.setLatitude(latitude);
+        }
+
+        if (longitude != null) {
+            evenement.setLongitude(longitude);
+        }
+
+        if (debut != null) {
+            evenement.setDebut(debut);
+        }
+
+        if (fin != null) {
+            evenement.setFin(fin);
+        }
+
+        if (details != null) {
+            evenement.setDetails(details);
+        }
+
+        if (priorite != null) {
+            evenement.setPriorite(priorite);
+        }
+
+        if (statut != null) {
+            evenement.setStatut(statut);
+        }
+    }
+
+    private static void checkNull(RubriqueEnfant rubriqueEnfant,
+                                  Utilisateur utilisateur,
+                                  Adresse adresse,
+                                  Priorite priorite,
+                                  Statut statut) {
+        nomRubriqueEnfant = rubriqueEnfant != null ? rubriqueEnfant.getNomRubriqueEnfant() : null;
+        nomUtilisateur = utilisateur != null ? utilisateur.getNomUtilisateur() : null;
+        nomRue = adresse != null ? adresse.getRue().getNomRue() : null;
+        numeroDeRue = adresse != null ? adresse.getNumeroDeRue() : null;
+        numeroNpa = adresse != null ? adresse.getNpa().getNumeroNpa() : null;
+        nomPriorite = priorite != null ? priorite.getNomPriorite() : null;
+        nomStatut = statut != null ? statut.getNomStatut() : null;
     }
 }

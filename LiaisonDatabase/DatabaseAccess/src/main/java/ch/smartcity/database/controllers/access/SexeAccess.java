@@ -1,6 +1,7 @@
 package database.controllers.access;
 
 import database.controllers.ConfigurationManager;
+import database.controllers.DatabaseAccess;
 import database.controllers.Hibernate;
 import database.models.Sexe;
 import database.models.Sexe_;
@@ -16,7 +17,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-class SexeAccess {
+public class SexeAccess {
 
     private static final Logger LOGGER;
 
@@ -24,13 +25,7 @@ class SexeAccess {
         LOGGER = Logger.getLogger(SexeAccess.class.getName());
     }
 
-    private void setAll(Sexe sexe, String nomSexe) {
-        if (nomSexe != null) {
-            sexe.setNomSexe(nomSexe);
-        }
-    }
-
-    public List<Sexe> get(String nomSexe) {
+    public static List<Sexe> get(String nomSexe) {
         List<Sexe> sexeList = null;
 
         Session session = null;
@@ -70,11 +65,11 @@ class SexeAccess {
         return sexeList;
     }
 
-    public void save(String nomSexe) {
+    public static void save(String nomSexe) {
         DatabaseAccess.save(new Sexe(nomSexe));
     }
 
-    public void update(Integer idSexe, String nomSexe) {
+    public static void update(Integer idSexe, String nomSexe) {
         Sexe sexe = DatabaseAccess.get(Sexe.class, idSexe);
 
         if (sexe != null) {
@@ -83,7 +78,7 @@ class SexeAccess {
         }
     }
 
-    public void update(String oldNomSexe, String newNomSexe) {
+    public static void update(String oldNomSexe, String newNomSexe) {
         List<Sexe> sexeList = get(oldNomSexe);
 
         if (sexeList != null) {
@@ -95,7 +90,13 @@ class SexeAccess {
         }
     }
 
-    public void delete(String nomSexe) {
+    public static void delete(String nomSexe) {
         DatabaseAccess.delete(get(nomSexe));
+    }
+
+    private static void setAll(Sexe sexe, String nomSexe) {
+        if (nomSexe != null) {
+            sexe.setNomSexe(nomSexe);
+        }
     }
 }

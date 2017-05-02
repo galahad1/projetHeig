@@ -1,6 +1,7 @@
 package database.controllers.access;
 
 import database.controllers.ConfigurationManager;
+import database.controllers.DatabaseAccess;
 import database.controllers.Hibernate;
 import database.models.Npa;
 import database.models.Npa_;
@@ -16,7 +17,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-class NpaAccess {
+public class NpaAccess {
 
     private static final Logger LOGGER;
 
@@ -24,13 +25,7 @@ class NpaAccess {
         LOGGER = Logger.getLogger(NpaAccess.class.getName());
     }
 
-    private void setAll(Npa npa, String numeroNpa) {
-        if (numeroNpa != null) {
-            npa.setNumeroNpa(numeroNpa);
-        }
-    }
-
-    public List<Npa> get(String numeroNpa) {
+    public static List<Npa> get(String numeroNpa) {
         List<Npa> npaList = null;
 
         Session session = null;
@@ -68,11 +63,11 @@ class NpaAccess {
         return npaList;
     }
 
-    public void save(String numeroNpa) {
+    public static void save(String numeroNpa) {
         DatabaseAccess.save(new Npa(numeroNpa));
     }
 
-    public void update(Integer idNpa, String numeroNpa) {
+    public static void update(Integer idNpa, String numeroNpa) {
         Npa npa = DatabaseAccess.get(Npa.class, idNpa);
 
         if (npa != null) {
@@ -81,7 +76,7 @@ class NpaAccess {
         }
     }
 
-    public void update(String oldNumeroNpa, String newNumeroNpa) {
+    public static void update(String oldNumeroNpa, String newNumeroNpa) {
         List<Npa> npaList = get(oldNumeroNpa);
 
         if (npaList != null) {
@@ -93,7 +88,13 @@ class NpaAccess {
         }
     }
 
-    public void delete(String numeroNpa) {
+    public static void delete(String numeroNpa) {
         DatabaseAccess.delete(get(numeroNpa));
+    }
+
+    private static void setAll(Npa npa, String numeroNpa) {
+        if (numeroNpa != null) {
+            npa.setNumeroNpa(numeroNpa);
+        }
     }
 }

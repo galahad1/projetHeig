@@ -1,6 +1,7 @@
 package database.controllers.access;
 
 import database.controllers.ConfigurationManager;
+import database.controllers.DatabaseAccess;
 import database.controllers.Hibernate;
 import database.models.RubriqueParent;
 import database.models.RubriqueParent_;
@@ -16,7 +17,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-class RubriqueParentAccess {
+public class RubriqueParentAccess {
 
     private static final Logger LOGGER;
 
@@ -24,13 +25,7 @@ class RubriqueParentAccess {
         LOGGER = Logger.getLogger(RubriqueParentAccess.class.getName());
     }
 
-    private void setAll(RubriqueParent rubriqueParent, String nomRubriqueParent) {
-        if (nomRubriqueParent != null) {
-            rubriqueParent.setNomRubriqueParent(nomRubriqueParent);
-        }
-    }
-
-    public List<RubriqueParent> get(String nomRubriqueParent) {
+    public static List<RubriqueParent> get(String nomRubriqueParent) {
         List<RubriqueParent> rubriqueParentList = null;
 
         Session session = null;
@@ -70,11 +65,11 @@ class RubriqueParentAccess {
         return rubriqueParentList;
     }
 
-    public void save(String nomRubriqueParent) {
+    public static void save(String nomRubriqueParent) {
         DatabaseAccess.save(new RubriqueParent(nomRubriqueParent));
     }
 
-    public void update(Integer idRubriqueParent, String nomRubriqueParent) {
+    public static void update(Integer idRubriqueParent, String nomRubriqueParent) {
         RubriqueParent rubriqueParent = DatabaseAccess.get(RubriqueParent.class, idRubriqueParent);
 
         if (rubriqueParent != null) {
@@ -83,7 +78,7 @@ class RubriqueParentAccess {
         }
     }
 
-    public void update(String oldNomRubriqueParent, String newNomRubriqueParent) {
+    public static void update(String oldNomRubriqueParent, String newNomRubriqueParent) {
         List<RubriqueParent> rubriqueParentList = get(oldNomRubriqueParent);
 
         if (rubriqueParentList != null) {
@@ -95,7 +90,13 @@ class RubriqueParentAccess {
         }
     }
 
-    public void delete(String nomRubriqueParent) {
+    public static void delete(String nomRubriqueParent) {
         DatabaseAccess.delete(get(nomRubriqueParent));
+    }
+
+    private static void setAll(RubriqueParent rubriqueParent, String nomRubriqueParent) {
+        if (nomRubriqueParent != null) {
+            rubriqueParent.setNomRubriqueParent(nomRubriqueParent);
+        }
     }
 }

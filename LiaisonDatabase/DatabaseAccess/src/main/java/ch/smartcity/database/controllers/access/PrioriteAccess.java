@@ -1,6 +1,7 @@
 package database.controllers.access;
 
 import database.controllers.ConfigurationManager;
+import database.controllers.DatabaseAccess;
 import database.controllers.Hibernate;
 import database.models.Priorite;
 import database.models.Priorite_;
@@ -16,7 +17,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-class PrioriteAccess {
+public class PrioriteAccess {
 
     private static final Logger LOGGER;
 
@@ -24,17 +25,7 @@ class PrioriteAccess {
         LOGGER = Logger.getLogger(PrioriteAccess.class.getName());
     }
 
-    private void setAll(Priorite priorite, String nomPriorite, Integer niveau) {
-        if (nomPriorite != null) {
-            priorite.setNomPriorite(nomPriorite);
-        }
-
-        if (niveau != null) {
-            priorite.setNiveau(niveau);
-        }
-    }
-
-    public List<Priorite> get(String nomPriorite, Integer niveau) {
+    public static List<Priorite> get(String nomPriorite, Integer niveau) {
         List<Priorite> prioriteList = null;
 
         Session session = null;
@@ -79,11 +70,11 @@ class PrioriteAccess {
         return prioriteList;
     }
 
-    public void save(String nomPriorite, Integer numero) {
+    public static void save(String nomPriorite, Integer numero) {
         DatabaseAccess.save(new Priorite(nomPriorite, numero));
     }
 
-    public void update(Integer idPriorite, String nomPriorite, Integer niveau) {
+    public static void update(Integer idPriorite, String nomPriorite, Integer niveau) {
         Priorite priorite = DatabaseAccess.get(Priorite.class, idPriorite);
 
         if (priorite != null) {
@@ -92,10 +83,10 @@ class PrioriteAccess {
         }
     }
 
-    public void update(String oldNomPriorite,
-                       Integer oldNiveau,
-                       String newNomPriorite,
-                       Integer newNiveau) {
+    public static void update(String oldNomPriorite,
+                              Integer oldNiveau,
+                              String newNomPriorite,
+                              Integer newNiveau) {
         List<Priorite> prioriteList = get(oldNomPriorite, oldNiveau);
 
         if (prioriteList != null) {
@@ -107,7 +98,17 @@ class PrioriteAccess {
         }
     }
 
-    public void delete(String nomPriorite, Integer niveau) {
+    public static void delete(String nomPriorite, Integer niveau) {
         DatabaseAccess.delete(get(nomPriorite, niveau));
+    }
+
+    private static void setAll(Priorite priorite, String nomPriorite, Integer niveau) {
+        if (nomPriorite != null) {
+            priorite.setNomPriorite(nomPriorite);
+        }
+
+        if (niveau != null) {
+            priorite.setNiveau(niveau);
+        }
     }
 }

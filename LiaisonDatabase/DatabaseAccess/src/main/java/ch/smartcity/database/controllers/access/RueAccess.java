@@ -1,6 +1,7 @@
 package database.controllers.access;
 
 import database.controllers.ConfigurationManager;
+import database.controllers.DatabaseAccess;
 import database.controllers.Hibernate;
 import database.models.Rue;
 import database.models.Rue_;
@@ -16,7 +17,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-class RueAccess {
+public class RueAccess {
 
     private static final Logger LOGGER;
 
@@ -24,13 +25,7 @@ class RueAccess {
         LOGGER = Logger.getLogger(RueAccess.class.getName());
     }
 
-    private void setAll(Rue rue, String nomRue) {
-        if (nomRue != null) {
-            rue.setNomRue(nomRue);
-        }
-    }
-
-    public List<Rue> get(String nomRue) {
+    public static List<Rue> get(String nomRue) {
         List<Rue> rueList = null;
 
         Session session = null;
@@ -70,11 +65,11 @@ class RueAccess {
         return rueList;
     }
 
-    public void save(String nomRue) {
+    public static void save(String nomRue) {
         DatabaseAccess.save(new Rue(nomRue));
     }
 
-    public void update(Integer idRue, String nomRue) {
+    public static void update(Integer idRue, String nomRue) {
         Rue rue = DatabaseAccess.get(Rue.class, idRue);
 
         if (rue != null) {
@@ -83,7 +78,7 @@ class RueAccess {
         }
     }
 
-    public void update(String oldNomRue, String newNomRue) {
+    public static void update(String oldNomRue, String newNomRue) {
         List<Rue> rueList = get(oldNomRue);
 
         if (rueList != null) {
@@ -95,7 +90,13 @@ class RueAccess {
         }
     }
 
-    public void delete(String nomRue) {
+    public static void delete(String nomRue) {
         DatabaseAccess.delete(get(nomRue));
+    }
+
+    private static void setAll(Rue rue, String nomRue) {
+        if (nomRue != null) {
+            rue.setNomRue(nomRue);
+        }
     }
 }

@@ -1,7 +1,5 @@
-package database.controllers.access;
+package database.controllers;
 
-import database.controllers.ConfigurationManager;
-import database.controllers.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -15,43 +13,14 @@ import java.util.logging.Logger;
 
 public class DatabaseAccess {
 
-    public static final AdresseAccess ADRESSE_ACCESS;
-    public static final CommentaireAccess COMMENTAIRE_ACCESS;
-    public static final ConfianceAccess CONFIANCE_ACCESS;
-    public static final EvenementAccess EVENEMENT_ACCESS;
-    public static final NationaliteAccess NATIONALITE_ACCESS;
-    public static final NpaAccess NPA_ACCESS;
-    public static final PrioriteAccess PRIORITE_ACCESS;
-    public static final RubriqueEnfantAccess RUBRIQUE_ENFANT_ACCESS;
-    public static final RubriqueParentAccess RUBRIQUE_PARENT_ACCESS;
-    public static final RueAccess RUE_ACCESS;
-    public static final SexeAccess SEXE_ACCESS;
-    public static final StatutAccess STATUT_ACCESS;
-    public static final TitreCivilAccess TITRE_CIVIL_ACCESS;
-    public static final UtilisateurAccess UTILISATEUR_ACCESS;
     private static final Logger LOGGER;
 
     static {
-        ConfigurationManager.initialize();
-        LOGGER = Logger.getLogger(DatabaseAccess.class.getName());
-
         try {
-            ADRESSE_ACCESS = new AdresseAccess();
-            COMMENTAIRE_ACCESS = new CommentaireAccess();
-            CONFIANCE_ACCESS = new ConfianceAccess();
-            EVENEMENT_ACCESS = new EvenementAccess();
-            NATIONALITE_ACCESS = new NationaliteAccess();
-            NPA_ACCESS = new NpaAccess();
-            PRIORITE_ACCESS = new PrioriteAccess();
-            RUBRIQUE_ENFANT_ACCESS = new RubriqueEnfantAccess();
-            RUBRIQUE_PARENT_ACCESS = new RubriqueParentAccess();
-            SEXE_ACCESS = new SexeAccess();
-            RUE_ACCESS = new RueAccess();
-            STATUT_ACCESS = new StatutAccess();
-            TITRE_CIVIL_ACCESS = new TitreCivilAccess();
-            UTILISATEUR_ACCESS = new UtilisateurAccess();
+            ConfigurationManager.initialize();
+            LOGGER = Logger.getLogger(DatabaseAccess.class.getName());
         } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, e.getMessage(), e);
+            e.printStackTrace();
             throw new ExceptionInInitializerError(e);
         }
     }

@@ -1,6 +1,7 @@
 package database.controllers.access;
 
 import database.controllers.ConfigurationManager;
+import database.controllers.DatabaseAccess;
 import database.controllers.Hibernate;
 import database.models.*;
 import org.hibernate.Session;
@@ -13,51 +14,28 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-class CommentaireAccess {
+public class CommentaireAccess {
 
     private static final Logger LOGGER;
+    private static String nomEvenement;
+    private static String nomUtilisateur;
 
     static {
         LOGGER = Logger.getLogger(CommentaireAccess.class.getName());
     }
 
-    private String nomEvenement;
-    private String nomUtilisateur;
-
-    private void setAll(Commentaire objCommentaire,
-                        Evenement evenement,
-                        Utilisateur utilisateur,
-                        String commentaire) {
-        if (evenement != null) {
-            objCommentaire.setEvenement(evenement);
-        }
-
-        if (utilisateur != null) {
-            objCommentaire.setUtilisateur(utilisateur);
-        }
-
-        if (commentaire != null) {
-            objCommentaire.setCommentaire(commentaire);
-        }
-    }
-
-    private void checkNull(Evenement evenement, Utilisateur utilisateur) {
-        nomEvenement = evenement != null ? evenement.getNomEvenement() : null;
-        nomUtilisateur = utilisateur != null ? utilisateur.getNomUtilisateur() : null;
-    }
-
-    public List<Commentaire> get(Evenement evenement,
-                                 Utilisateur utilisateur,
-                                 String commentaire,
-                                 Calendar creation) {
+    public static List<Commentaire> get(Evenement evenement,
+                                        Utilisateur utilisateur,
+                                        String commentaire,
+                                        Calendar creation) {
         checkNull(evenement, utilisateur);
         return get(nomEvenement, nomUtilisateur, commentaire, creation);
     }
 
-    public List<Commentaire> get(String nomEvenement,
-                                 String nomUtilisateur,
-                                 String commentaire,
-                                 Calendar creation) {
+    public static List<Commentaire> get(String nomEvenement,
+                                        String nomUtilisateur,
+                                        String commentaire,
+                                        Calendar creation) {
         List<Commentaire> commentaireList = null;
 
         Session session = null;
@@ -120,14 +98,14 @@ class CommentaireAccess {
         return commentaireList;
     }
 
-    public void save(Evenement evenement, Utilisateur utilisateur, String commentaire) {
+    public static void save(Evenement evenement, Utilisateur utilisateur, String commentaire) {
         DatabaseAccess.save(new Commentaire(new IdCommentaire(evenement, utilisateur), commentaire));
     }
 
-    public void update(Integer idCommentaire,
-                       Evenement evenement,
-                       Utilisateur utilisateur,
-                       String commentaire) {
+    public static void update(Integer idCommentaire,
+                              Evenement evenement,
+                              Utilisateur utilisateur,
+                              String commentaire) {
         Commentaire objCommentaire = DatabaseAccess.get(Commentaire.class, idCommentaire);
 
         if (objCommentaire != null) {
@@ -136,13 +114,13 @@ class CommentaireAccess {
         }
     }
 
-    public void update(Evenement oldEvenement,
-                       Utilisateur oldUtilisateur,
-                       String oldCommentaire,
-                       Calendar creation,
-                       Evenement newEvenement,
-                       Utilisateur newUtilisateur,
-                       String newCommentaire) {
+    public static void update(Evenement oldEvenement,
+                              Utilisateur oldUtilisateur,
+                              String oldCommentaire,
+                              Calendar creation,
+                              Evenement newEvenement,
+                              Utilisateur newUtilisateur,
+                              String newCommentaire) {
         List<Commentaire> commentaireList = get(oldEvenement,
                 oldUtilisateur,
                 oldCommentaire,
@@ -157,18 +135,40 @@ class CommentaireAccess {
         }
     }
 
-    public void delete(Evenement evenement,
-                       Utilisateur utilisateur,
-                       String commentaire,
-                       Calendar creation) {
+    public static void delete(Evenement evenement,
+                              Utilisateur utilisateur,
+                              String commentaire,
+                              Calendar creation) {
         checkNull(evenement, utilisateur);
         delete(nomEvenement, nomUtilisateur, commentaire, creation);
     }
 
-    public void delete(String nomEvenement,
-                       String nomUtilisateur,
-                       String commentaire,
-                       Calendar creation) {
+    public static void delete(String nomEvenement,
+                              String nomUtilisateur,
+                              String commentaire,
+                              Calendar creation) {
         DatabaseAccess.delete(get(nomEvenement, nomUtilisateur, commentaire, creation));
+    }
+
+    private static void setAll(Commentaire objCommentaire,
+                               Evenement evenement,
+                               Utilisateur utilisateur,
+                               String commentaire) {
+        if (evenement != null) {
+            objCommentaire.setEvenement(evenement);
+        }
+
+        if (utilisateur != null) {
+            objCommentaire.setUtilisateur(utilisateur);
+        }
+
+        if (commentaire != null) {
+            objCommentaire.setCommentaire(commentaire);
+        }
+    }
+
+    private static void checkNull(Evenement evenement, Utilisateur utilisateur) {
+        nomEvenement = evenement != null ? evenement.getNomEvenement() : null;
+        nomUtilisateur = utilisateur != null ? utilisateur.getNomUtilisateur() : null;
     }
 }

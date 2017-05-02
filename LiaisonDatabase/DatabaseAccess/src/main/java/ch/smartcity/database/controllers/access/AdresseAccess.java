@@ -1,6 +1,7 @@
 package database.controllers.access;
 
 import database.controllers.ConfigurationManager;
+import database.controllers.DatabaseAccess;
 import database.controllers.Hibernate;
 import database.models.*;
 import org.hibernate.Session;
@@ -12,42 +13,22 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-class AdresseAccess {
+public class AdresseAccess {
 
     private static final Logger LOGGER;
+    private static String nomRue;
+    private static String numeroNpa;
 
     static {
         LOGGER = Logger.getLogger(AdresseAccess.class.getName());
     }
 
-    private String nomRue;
-    private String numeroNpa;
-
-    private void setAll(Adresse adresse, Rue rue, String numeroDeRue, Npa npa) {
-        if (rue != null) {
-            adresse.setRue(rue);
-        }
-
-        if (numeroDeRue != null) {
-            adresse.setNumeroDeRue(numeroDeRue);
-        }
-
-        if (npa != null) {
-            adresse.setNpa(npa);
-        }
-    }
-
-    private void checkNull(Rue rue, Npa npa) {
-        nomRue = rue != null ? rue.getNomRue() : null;
-        numeroNpa = npa != null ? npa.getNumeroNpa() : null;
-    }
-
-    public List<Adresse> get(Rue rue, String numeroDeRue, Npa npa) {
+    public static List<Adresse> get(Rue rue, String numeroDeRue, Npa npa) {
         checkNull(rue, npa);
         return get(nomRue, numeroDeRue, numeroNpa);
     }
 
-    public List<Adresse> get(String nomRue, String numeroDeRue, String numeroNpa) {
+    public static List<Adresse> get(String nomRue, String numeroDeRue, String numeroNpa) {
         List<Adresse> adresseList = null;
 
         Session session = null;
@@ -101,11 +82,11 @@ class AdresseAccess {
         return adresseList;
     }
 
-    public void save(Rue rue, String numeroDeRue, Npa npa) {
+    public static void save(Rue rue, String numeroDeRue, Npa npa) {
         DatabaseAccess.save(new Adresse(rue, numeroDeRue, npa));
     }
 
-    public void update(Integer idAdresse, Rue rue, String numeroDeRue, Npa npa) {
+    public static void update(Integer idAdresse, Rue rue, String numeroDeRue, Npa npa) {
         Adresse adresse = DatabaseAccess.get(Adresse.class, idAdresse);
 
         if (adresse != null) {
@@ -114,12 +95,12 @@ class AdresseAccess {
         }
     }
 
-    public void update(Rue oldRue,
-                       String oldNumeroDeRue,
-                       Npa oldNpa,
-                       Rue newRue,
-                       String newNumeroDeRue,
-                       Npa newNpa) {
+    public static void update(Rue oldRue,
+                              String oldNumeroDeRue,
+                              Npa oldNpa,
+                              Rue newRue,
+                              String newNumeroDeRue,
+                              Npa newNpa) {
         List<Adresse> adresseList = get(oldRue, oldNumeroDeRue, oldNpa);
 
         if (adresseList != null) {
@@ -131,12 +112,31 @@ class AdresseAccess {
         }
     }
 
-    public void delete(Rue rue, String numeroDeRue, Npa npa) {
+    public static void delete(Rue rue, String numeroDeRue, Npa npa) {
         checkNull(rue, npa);
         delete(nomRue, numeroDeRue, numeroNpa);
     }
 
-    public void delete(String nomRue, String numeroDeRue, String numeroNpa) {
+    public static void delete(String nomRue, String numeroDeRue, String numeroNpa) {
         DatabaseAccess.delete(get(nomRue, numeroDeRue, numeroNpa));
+    }
+
+    private static void setAll(Adresse adresse, Rue rue, String numeroDeRue, Npa npa) {
+        if (rue != null) {
+            adresse.setRue(rue);
+        }
+
+        if (numeroDeRue != null) {
+            adresse.setNumeroDeRue(numeroDeRue);
+        }
+
+        if (npa != null) {
+            adresse.setNpa(npa);
+        }
+    }
+
+    private static void checkNull(Rue rue, Npa npa) {
+        nomRue = rue != null ? rue.getNomRue() : null;
+        numeroNpa = npa != null ? npa.getNumeroNpa() : null;
     }
 }

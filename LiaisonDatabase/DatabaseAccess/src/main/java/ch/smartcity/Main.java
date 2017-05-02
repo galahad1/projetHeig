@@ -1,4 +1,4 @@
-import database.controllers.access.DatabaseAccess;
+import database.controllers.DatabaseAccess;
 import database.models.*;
 
 import java.util.List;
@@ -6,19 +6,18 @@ import java.util.List;
 public class Main {
 
     public static void main(String[] args) {
-//        TODO: Implémenter les classes permettant l'accès aux données
-//        TODO: Organiser la classe DatabaseAccess
-
 //        TODO: Pour chaque objet, tester l'obtention
 //        TODO: Pour chaque objet, tester l'insertion
 //        TODO: Pour chaque objet, tester la mise à jour
 //        TODO: Pour chaque objet, tester la suppression
 
-//        TODO: DatabaseAccess mutithreadée
 //        TODO: Implémenter des requêtes personnalisée
 //        TODO: Aperçu des évènements pour la liste déroulante
 //        TODO: Liste des évènements en attente de validation
 //        TODO: Liste des évènements en fonction d'une rubrique et d'une date
+
+//        TODO: Accès à la base de données par plusieurs clients en même temps
+//        TODO: Mise en place de la base de données et du gestionnaire sur un serveur
 
         try {
             System.out.println("Adresses\n=======================================================");

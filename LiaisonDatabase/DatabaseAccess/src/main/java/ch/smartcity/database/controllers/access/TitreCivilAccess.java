@@ -1,6 +1,7 @@
 package database.controllers.access;
 
 import database.controllers.ConfigurationManager;
+import database.controllers.DatabaseAccess;
 import database.controllers.Hibernate;
 import database.models.TitreCivil;
 import database.models.TitreCivil_;
@@ -16,7 +17,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-class TitreCivilAccess {
+public class TitreCivilAccess {
 
     private static final Logger LOGGER;
 
@@ -24,17 +25,7 @@ class TitreCivilAccess {
         LOGGER = Logger.getLogger(TitreCivilAccess.class.getName());
     }
 
-    private void setAll(TitreCivil titreCivil, String titre, String abreviation) {
-        if (titre != null) {
-            titreCivil.setTitre(titre);
-        }
-
-        if (abreviation != null) {
-            titreCivil.setAbreviation(abreviation);
-        }
-    }
-
-    public List<TitreCivil> get(String titre, String abreviation) {
+    public static List<TitreCivil> get(String titre, String abreviation) {
         List<TitreCivil> titreCivilList = null;
 
         Session session = null;
@@ -80,11 +71,11 @@ class TitreCivilAccess {
         return titreCivilList;
     }
 
-    public void save(String titre, String abreviation) {
+    public static void save(String titre, String abreviation) {
         DatabaseAccess.save(new TitreCivil(titre, abreviation));
     }
 
-    public void update(Integer idTitreCivil, String titre, String abreviation) {
+    public static void update(Integer idTitreCivil, String titre, String abreviation) {
         TitreCivil titreCivil = DatabaseAccess.get(TitreCivil.class, idTitreCivil);
 
         if (titreCivil != null) {
@@ -93,10 +84,10 @@ class TitreCivilAccess {
         }
     }
 
-    public void update(String oldTitre,
-                       String oldAbreviation,
-                       String newTitre,
-                       String newAbreviation) {
+    public static void update(String oldTitre,
+                              String oldAbreviation,
+                              String newTitre,
+                              String newAbreviation) {
         List<TitreCivil> titreCivilList = get(oldTitre, oldAbreviation);
 
         if (titreCivilList != null) {
@@ -108,7 +99,17 @@ class TitreCivilAccess {
         }
     }
 
-    public void delete(String titre, String abreviation) {
+    public static void delete(String titre, String abreviation) {
         DatabaseAccess.delete(get(titre, abreviation));
+    }
+
+    private static void setAll(TitreCivil titreCivil, String titre, String abreviation) {
+        if (titre != null) {
+            titreCivil.setTitre(titre);
+        }
+
+        if (abreviation != null) {
+            titreCivil.setAbreviation(abreviation);
+        }
     }
 }

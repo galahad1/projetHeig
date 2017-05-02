@@ -1,6 +1,7 @@
 package database.controllers.access;
 
 import database.controllers.ConfigurationManager;
+import database.controllers.DatabaseAccess;
 import database.controllers.Hibernate;
 import database.models.Statut;
 import database.models.Statut_;
@@ -16,7 +17,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-class StatutAccess {
+public class StatutAccess {
 
     private static final Logger LOGGER;
 
@@ -24,13 +25,7 @@ class StatutAccess {
         LOGGER = Logger.getLogger(StatutAccess.class.getName());
     }
 
-    private void setAll(Statut statut, String nomStatut) {
-        if (nomStatut != null) {
-            statut.setNomStatut(nomStatut);
-        }
-    }
-
-    public List<Statut> get(String nomStatut) {
+    public static List<Statut> get(String nomStatut) {
         List<Statut> statutList = null;
 
         Session session = null;
@@ -70,11 +65,11 @@ class StatutAccess {
         return statutList;
     }
 
-    public void save(String nomStatut) {
+    public static void save(String nomStatut) {
         DatabaseAccess.save(new Statut(nomStatut));
     }
 
-    public void update(Integer idStatut, String nomStatut) {
+    public static void update(Integer idStatut, String nomStatut) {
         Statut statut = DatabaseAccess.get(Statut.class, idStatut);
 
         if (statut != null) {
@@ -83,7 +78,7 @@ class StatutAccess {
         }
     }
 
-    public void update(String oldNomStatut, String newNomStatut) {
+    public static void update(String oldNomStatut, String newNomStatut) {
         List<Statut> statutList = get(oldNomStatut);
 
         if (statutList != null) {
@@ -95,7 +90,13 @@ class StatutAccess {
         }
     }
 
-    public void delete(String nomStatut) {
+    public static void delete(String nomStatut) {
         DatabaseAccess.delete(get(nomStatut));
+    }
+
+    private static void setAll(Statut statut, String nomStatut) {
+        if (nomStatut != null) {
+            statut.setNomStatut(nomStatut);
+        }
     }
 }

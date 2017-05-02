@@ -1,6 +1,7 @@
 package database.controllers.access;
 
 import database.controllers.ConfigurationManager;
+import database.controllers.DatabaseAccess;
 import database.controllers.Hibernate;
 import database.models.*;
 import org.hibernate.Session;
@@ -13,44 +14,26 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-class ConfianceAccess {
+public class ConfianceAccess {
 
     private static final Logger LOGGER;
+    private static String nomUtilisateur;
+    private static String nomRubriqueEnfant;
 
     static {
         LOGGER = Logger.getLogger(ConfianceAccess.class.getName());
     }
 
-    private String nomUtilisateur;
-    private String nomRubriqueEnfant;
-
-    private void setAll(Confiance confiance,
-                        Utilisateur utilisateur,
-                        RubriqueEnfant rubriqueEnfant) {
-        if (utilisateur != null) {
-            confiance.setUtilisateur(utilisateur);
-        }
-
-        if (rubriqueEnfant != null) {
-            confiance.setRubriqueEnfant(rubriqueEnfant);
-        }
-    }
-
-    private void checkNull(Utilisateur utilisateur, RubriqueEnfant rubriqueEnfant) {
-        nomUtilisateur = utilisateur != null ? utilisateur.getNomUtilisateur() : null;
-        nomRubriqueEnfant = rubriqueEnfant != null ? rubriqueEnfant.getNomRubriqueEnfant() : null;
-    }
-
-    public List<Confiance> get(Utilisateur utilisateur,
-                               RubriqueEnfant rubriqueEnfant,
-                               Calendar creation) {
+    public static List<Confiance> get(Utilisateur utilisateur,
+                                      RubriqueEnfant rubriqueEnfant,
+                                      Calendar creation) {
         checkNull(utilisateur, rubriqueEnfant);
         return get(nomUtilisateur, nomRubriqueEnfant, creation);
     }
 
-    public List<Confiance> get(String nomUtilisateur,
-                               String nomRubriqueEnfant,
-                               Calendar creation) {
+    public static List<Confiance> get(String nomUtilisateur,
+                                      String nomRubriqueEnfant,
+                                      Calendar creation) {
         List<Confiance> confianceList = null;
 
         Session session = null;
@@ -107,13 +90,13 @@ class ConfianceAccess {
         return confianceList;
     }
 
-    public void save(Utilisateur utilisateur, RubriqueEnfant rubriqueEnfant) {
+    public static void save(Utilisateur utilisateur, RubriqueEnfant rubriqueEnfant) {
         DatabaseAccess.save(new Confiance(new IdConfiance(utilisateur, rubriqueEnfant)));
     }
 
-    public void update(Integer idConfiance,
-                       Utilisateur utilisateur,
-                       RubriqueEnfant rubriqueEnfant) {
+    public static void update(Integer idConfiance,
+                              Utilisateur utilisateur,
+                              RubriqueEnfant rubriqueEnfant) {
         Confiance confiance = DatabaseAccess.get(Confiance.class, idConfiance);
 
         if (confiance != null) {
@@ -122,11 +105,11 @@ class ConfianceAccess {
         }
     }
 
-    public void update(Utilisateur oldUtilisateur,
-                       RubriqueEnfant oldRubriqueEnfant,
-                       Calendar creation,
-                       Utilisateur newUtilisateur,
-                       RubriqueEnfant newRubriqueEnfant) {
+    public static void update(Utilisateur oldUtilisateur,
+                              RubriqueEnfant oldRubriqueEnfant,
+                              Calendar creation,
+                              Utilisateur newUtilisateur,
+                              RubriqueEnfant newRubriqueEnfant) {
         List<Confiance> confianceList = get(oldUtilisateur, oldRubriqueEnfant, creation);
 
         if (confianceList != null) {
@@ -138,16 +121,33 @@ class ConfianceAccess {
         }
     }
 
-    public void delete(Utilisateur utilisateur,
-                       RubriqueEnfant rubriqueEnfant,
-                       Calendar creation) {
+    public static void delete(Utilisateur utilisateur,
+                              RubriqueEnfant rubriqueEnfant,
+                              Calendar creation) {
         checkNull(utilisateur, rubriqueEnfant);
         delete(nomUtilisateur, nomRubriqueEnfant, creation);
     }
 
-    public void delete(String nomUtilisateur,
-                       String nomRubriqueEnfant,
-                       Calendar creation) {
+    public static void delete(String nomUtilisateur,
+                              String nomRubriqueEnfant,
+                              Calendar creation) {
         DatabaseAccess.delete(get(nomUtilisateur, nomRubriqueEnfant, creation));
+    }
+
+    private static void setAll(Confiance confiance,
+                               Utilisateur utilisateur,
+                               RubriqueEnfant rubriqueEnfant) {
+        if (utilisateur != null) {
+            confiance.setUtilisateur(utilisateur);
+        }
+
+        if (rubriqueEnfant != null) {
+            confiance.setRubriqueEnfant(rubriqueEnfant);
+        }
+    }
+
+    private static void checkNull(Utilisateur utilisateur, RubriqueEnfant rubriqueEnfant) {
+        nomUtilisateur = utilisateur != null ? utilisateur.getNomUtilisateur() : null;
+        nomRubriqueEnfant = rubriqueEnfant != null ? rubriqueEnfant.getNomRubriqueEnfant() : null;
     }
 }

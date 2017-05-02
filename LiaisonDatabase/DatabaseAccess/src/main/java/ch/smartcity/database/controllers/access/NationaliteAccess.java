@@ -1,6 +1,7 @@
 package database.controllers.access;
 
 import database.controllers.ConfigurationManager;
+import database.controllers.DatabaseAccess;
 import database.controllers.Hibernate;
 import database.models.Nationalite;
 import database.models.Nationalite_;
@@ -16,7 +17,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-class NationaliteAccess {
+public class NationaliteAccess {
 
     private static final Logger LOGGER;
 
@@ -24,13 +25,7 @@ class NationaliteAccess {
         LOGGER = Logger.getLogger(NationaliteAccess.class.getName());
     }
 
-    private void setAll(Nationalite nationalite, String nomNationalite) {
-        if (nomNationalite != null) {
-            nationalite.setNomNationalite(nomNationalite);
-        }
-    }
-
-    public List<Nationalite> get(String nomNationalite) {
+    public static List<Nationalite> get(String nomNationalite) {
         List<Nationalite> nationaliteList = null;
 
         Session session = null;
@@ -71,11 +66,11 @@ class NationaliteAccess {
         return nationaliteList;
     }
 
-    public void save(String nomNationalite) {
+    public static void save(String nomNationalite) {
         DatabaseAccess.save(new Nationalite(nomNationalite));
     }
 
-    public void update(Integer idNationalite, String nomNationalite) {
+    public static void update(Integer idNationalite, String nomNationalite) {
         Nationalite nationalite = DatabaseAccess.get(Nationalite.class, idNationalite);
 
         if (nationalite != null) {
@@ -84,7 +79,7 @@ class NationaliteAccess {
         }
     }
 
-    public void update(String oldNomNationalite, String newNomNationalite) {
+    public static void update(String oldNomNationalite, String newNomNationalite) {
         List<Nationalite> nationaliteList = get(oldNomNationalite);
 
         if (nationaliteList != null) {
@@ -96,7 +91,13 @@ class NationaliteAccess {
         }
     }
 
-    public void delete(String nomNationalite) {
+    public static void delete(String nomNationalite) {
         DatabaseAccess.delete(get(nomNationalite));
+    }
+
+    private static void setAll(Nationalite nationalite, String nomNationalite) {
+        if (nomNationalite != null) {
+            nationalite.setNomNationalite(nomNationalite);
+        }
     }
 }

@@ -1,6 +1,7 @@
 package database.controllers.access;
 
 import database.controllers.ConfigurationManager;
+import database.controllers.DatabaseAccess;
 import database.controllers.Hibernate;
 import database.models.RubriqueEnfant;
 import database.models.RubriqueEnfant_;
@@ -15,38 +16,21 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-class RubriqueEnfantAccess {
+public class RubriqueEnfantAccess {
 
     private static final Logger LOGGER;
+    private static String nomRubriqueParent;
 
     static {
         LOGGER = Logger.getLogger(RubriqueEnfantAccess.class.getName());
     }
 
-    private String nomRubriqueParent;
-
-    private void setAll(RubriqueEnfant rubriqueEnfant,
-                        RubriqueParent rubriqueParent,
-                        String nomRubriqueEnfant) {
-        if (rubriqueParent != null) {
-            rubriqueEnfant.setRubriqueParent(rubriqueParent);
-        }
-
-        if (nomRubriqueEnfant != null) {
-            rubriqueEnfant.setNomRubriqueEnfant(nomRubriqueEnfant);
-        }
-    }
-
-    private void checkNull(RubriqueParent rubriqueParent) {
-        nomRubriqueParent = rubriqueParent != null ? rubriqueParent.getNomRubriqueParent() : null;
-    }
-
-    public List<RubriqueEnfant> get(RubriqueParent rubriqueParent, String nomRubriqueEnfant) {
+    public static List<RubriqueEnfant> get(RubriqueParent rubriqueParent, String nomRubriqueEnfant) {
         checkNull(rubriqueParent);
         return get(nomRubriqueParent, nomRubriqueEnfant);
     }
 
-    public List<RubriqueEnfant> get(String nomRubriqueParent, String nomRubriqueEnfant) {
+    public static List<RubriqueEnfant> get(String nomRubriqueParent, String nomRubriqueEnfant) {
         List<RubriqueEnfant> rubriqueEnfantList = null;
 
         Session session = null;
@@ -94,13 +78,13 @@ class RubriqueEnfantAccess {
         return rubriqueEnfantList;
     }
 
-    public void save(RubriqueParent rubriqueParent, String nomRubriqueEnfant) {
+    public static void save(RubriqueParent rubriqueParent, String nomRubriqueEnfant) {
         DatabaseAccess.save(new RubriqueEnfant(rubriqueParent, nomRubriqueEnfant));
     }
 
-    public void update(Integer idRubriqueEnfant,
-                       RubriqueParent rubriqueParent,
-                       String nomRubriqueEnfant) {
+    public static void update(Integer idRubriqueEnfant,
+                              RubriqueParent rubriqueParent,
+                              String nomRubriqueEnfant) {
         RubriqueEnfant rubriqueEnfant = DatabaseAccess.get(RubriqueEnfant.class, idRubriqueEnfant);
 
         if (rubriqueEnfant != null) {
@@ -109,10 +93,10 @@ class RubriqueEnfantAccess {
         }
     }
 
-    public void update(RubriqueParent oldRubriqueEnfant,
-                       String oldNomRubriqueEnfant,
-                       RubriqueParent newRubriqueParent,
-                       String newNomRubriqueEnfant) {
+    public static void update(RubriqueParent oldRubriqueEnfant,
+                              String oldNomRubriqueEnfant,
+                              RubriqueParent newRubriqueParent,
+                              String newNomRubriqueEnfant) {
         List<RubriqueEnfant> rubriqueEnfantList = get(oldRubriqueEnfant, oldNomRubriqueEnfant);
 
         if (rubriqueEnfantList != null) {
@@ -124,14 +108,30 @@ class RubriqueEnfantAccess {
         }
     }
 
-    public void delete(RubriqueParent rubriqueParent,
-                       String nomRubriqueEnfant) {
+    public static void delete(RubriqueParent rubriqueParent,
+                              String nomRubriqueEnfant) {
         checkNull(rubriqueParent);
         delete(nomRubriqueParent, nomRubriqueEnfant);
     }
 
-    public void delete(String nomRubriqueParent,
-                       String nomRubriqueEnfant) {
+    public static void delete(String nomRubriqueParent,
+                              String nomRubriqueEnfant) {
         DatabaseAccess.delete(get(nomRubriqueParent, nomRubriqueEnfant));
+    }
+
+    private static void setAll(RubriqueEnfant rubriqueEnfant,
+                               RubriqueParent rubriqueParent,
+                               String nomRubriqueEnfant) {
+        if (rubriqueParent != null) {
+            rubriqueEnfant.setRubriqueParent(rubriqueParent);
+        }
+
+        if (nomRubriqueEnfant != null) {
+            rubriqueEnfant.setNomRubriqueEnfant(nomRubriqueEnfant);
+        }
+    }
+
+    private static void checkNull(RubriqueParent rubriqueParent) {
+        nomRubriqueParent = rubriqueParent != null ? rubriqueParent.getNomRubriqueParent() : null;
     }
 }
