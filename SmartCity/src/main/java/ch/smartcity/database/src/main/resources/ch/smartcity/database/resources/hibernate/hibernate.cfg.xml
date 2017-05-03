@@ -1,0 +1,56 @@
+<?xml version='1.0'?>
+<!DOCTYPE hibernate-configuration PUBLIC
+        "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+
+<hibernate-configuration>
+    <session-factory>
+        <!-- Properties -->
+        <!-- Hibernate configuration properties -->
+        <property name="dialect">org.hibernate.dialect.MySQLDialect</property>
+        <property name="show_sql">false</property>
+
+        <!-- Hibernate properties related to JDBC and connections -->
+        <property name="connection.driver_class">com.mysql.cj.jdbc.Driver</property>
+        <property name="connection.url">jdbc:mysql://localhost:3306/smartcity</property>
+        <property name="connection.username">root</property>
+        <property name="connection.password">root</property>
+        <property name="connection.pool_size">1</property>
+        <property name="connection.isolation">2</property>
+        <property name="connection.autocommit">true</property>
+        <property name="connection.serverTimezone">CET</property>
+        <property name="connection.useJDBCCompliantTimezoneShift">true</property>
+        <property name="connection.useLegacyDatetimeCode">false</property>
+        <property name="connection.useSSL">true</property>
+        <property name="connection.useUnicode">true</property>
+
+        <!-- Configuration Pool via C3P0 -->
+        <property name="c3p0.acquire_increment">1</property>
+        <property name="c3p0.idle_test_period">100</property>
+        <property name="c3p0.max_size">1</property>
+        <property name="c3p0.min_size">1</property>
+        <property name="c3p0.timeout">300</property>
+
+        <!-- Various properties -->
+        <property name="hbm2ddl.auto">update</property>
+        <property name="enable_lazy_load_no_trans">true</property>
+
+        <!-- Mapping files -->
+        <mapping resource="ch/smartcity/database/resources/hibernate/mappings/adresse.hbm.xml"/>
+        <mapping resource="ch/smartcity/database/resources/hibernate/mappings/commentaire.hbm.xml"/>
+        <mapping resource="ch/smartcity/database/resources/hibernate/mappings/confiance.hbm.xml"/>
+        <mapping resource="ch/smartcity/database/resources/hibernate/mappings/evenement.hbm.xml"/>
+        <mapping resource="ch/smartcity/database/resources/hibernate/mappings/nationalite.hbm.xml"/>
+        <mapping resource="ch/smartcity/database/resources/hibernate/mappings/npa.hbm.xml"/>
+        <mapping resource="ch/smartcity/database/resources/hibernate/mappings/priorite.hbm.xml"/>
+        <mapping
+                resource="ch/smartcity/database/resources/hibernate/mappings/rubriqueEnfant.hbm.xml"/>
+        <mapping
+                resource="ch/smartcity/database/resources/hibernate/mappings/rubriqueParent.hbm.xml"/>
+        <mapping resource="ch/smartcity/database/resources/hibernate/mappings/rue.hbm.xml"/>
+        <mapping resource="ch/smartcity/database/resources/hibernate/mappings/sexe.hbm.xml"/>
+        <mapping resource="ch/smartcity/database/resources/hibernate/mappings/statut.hbm.xml"/>
+        <mapping resource="ch/smartcity/database/resources/hibernate/mappings/titreCivil.hbm.xml"/>
+        <mapping resource="ch/smartcity/database/resources/hibernate/mappings/utilisateur.hbm.xml"/>
+    </session-factory>
+</hibernate-configuration>

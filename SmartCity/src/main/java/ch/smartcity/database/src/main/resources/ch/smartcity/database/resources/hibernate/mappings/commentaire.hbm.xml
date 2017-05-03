@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping catalog="smartcity" package="ch.database.models">
+    <class name="ch.smartcity.database.models.Commentaire" dynamic-update="true">
+        <composite-id name="idCommentaire" class="ch.smartcity.database.models.IdCommentaire">
+            <key-many-to-one name="evenement" column="idEvenement"/>
+            <key-many-to-one name="utilisateur" column="idUtilisateur"/>
+        </composite-id>
+        <property name="commentaire" not-null="true"/>
+        <property name="creation" not-null="true" generated="always"/>
+        <property name="derniereMiseAJour" not-null="true" generated="always"/>
+    </class>
+</hibernate-mapping>

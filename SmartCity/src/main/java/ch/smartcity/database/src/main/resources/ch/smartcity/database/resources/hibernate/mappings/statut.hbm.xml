@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping catalog="smartcity" package="ch.database.models">
+    <class name="ch.smartcity.database.models.Statut" dynamic-update="true">
+        <id name="idStatut">
+            <generator class="native"/>
+        </id>
+        <property name="nomStatut" not-null="true"/>
+        <property name="derniereMiseAJour" not-null="true" generated="always"/>
+        <set name="evenementSet" table="Evenement" inverse="true" lazy="true">
+            <key column="idStatut" not-null="true"/>
+            <one-to-many class="ch.smartcity.database.models.Evenement"/>
+        </set>
+    </class>
+</hibernate-mapping>
