@@ -10,7 +10,7 @@ import java.awt.image.WritableRaster;
  * @author Wojciech Myskorowski
  * @author Jérémie Zanone
  */
-public final class Tile {
+public final class Tuile {
     private final int zoom;
     private final int x;
     private final int y;
@@ -26,7 +26,7 @@ public final class Tile {
      * @param image L'image représentant la tuile, partie de la carte aux
      *              coordonnées données
      */
-    Tile(int zoom, int x, int y, BufferedImage image) {
+    Tuile(int zoom, int x, int y, BufferedImage image) {
         this.zoom = zoom;
         this.x = x;
         this.y = y;

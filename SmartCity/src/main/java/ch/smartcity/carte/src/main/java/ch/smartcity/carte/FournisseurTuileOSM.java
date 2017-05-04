@@ -13,7 +13,7 @@ import java.net.URL;
  * @author Wojciech Myskorowski
  * @author Jérémie Zanone
  */
-public final class OSMTileProvider implements TileProvider {
+public final class FournisseurTuileOSM implements FournisseurTuile {
     private static final String ERROR_TILE_PNG_FILE =
             "ch/smartcity/carte/resources/image/error-tile.png";
     final String baseServerAdress;
@@ -23,12 +23,12 @@ public final class OSMTileProvider implements TileProvider {
      *
      * @param baseServerAdress L'adresse de base du serveur
      */
-    public OSMTileProvider(String baseServerAdress) {
+    public FournisseurTuileOSM(String baseServerAdress) {
         this.baseServerAdress = baseServerAdress;
     }
 
     @Override
-    public Tile tileAt(int zoom, int x, int y) {
+    public Tuile tileAt(int zoom, int x, int y) {
         BufferedImage image = null;
         try {
             URL url = new URL(baseServerAdress + "/" + zoom + "/" + x + "/" + y + ".png");
@@ -37,13 +37,13 @@ public final class OSMTileProvider implements TileProvider {
             try {
                 image = ImageIO.read(getClass().getClassLoader()
                         .getResource(ERROR_TILE_PNG_FILE));
-            } catch (Exception imageReadingError) {
-                System.out.print("Erreur lors de la lecture de la ressource image: ");
+            } catch (IOException imageReadingError) {
+                System.out.print("Erreur lor de la lecture de la ressource image: ");
                 imageReadingError.printStackTrace();
                 System.exit(1);
             }
         }
-        return new Tile(zoom, x, y, image);
+        return new Tuile(zoom, x, y, image);
     }
 
 }

@@ -38,5 +38,6 @@
     <orderEntry type="library" name="Maven: org.hibernate:hibernate-c3p0:5.2.10.Final" level="project" />
     <orderEntry type="library" name="Maven: com.mchange:c3p0:0.9.5.2" level="project" />
     <orderEntry type="library" name="Maven: com.mchange:mchange-commons-java:0.2.11" level="project" />
+    <orderEntry type="library" name="Maven: com.toedter:jcalendar:1.4" level="project" />
   </component>
 </module>

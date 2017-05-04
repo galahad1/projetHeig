@@ -1,11 +1,10 @@
+package ch.smartcity.carte;
 /**
  * Modélise un point dans le systéme de coordonnées WGS 84.
  *
  * @author Wojciech Myskorowski
  * @author Jérémie Zanone
  */
-
-package ch.smartcity.carte;
 
 import static java.lang.Math.*;
 
@@ -34,9 +33,9 @@ public final class PointWGS84 {
     }
 
     public double distanceTo(PointWGS84 that) {
-        return 2 * 6378137 * asin(sqrt(Math1.haversin(latitude - that.latitude())
+        return 2 * 6378137 * asin(sqrt(Utils.haversin(latitude - that.latitude())
                 + cos(latitude) * cos(that.latitude())
-                * Math1.haversin(longitude - that.longitude())));
+                * Utils.haversin(longitude - that.longitude())));
     }
 
     public PointOSM toOSM(int zoom) {
@@ -44,11 +43,11 @@ public final class PointWGS84 {
             throw new IllegalArgumentException();
         double s = pow(2, zoom + 8);
         double x = (s / (2 * PI)) * (longitude + PI);
-        double y = (s / (2 * PI)) * (PI - Math1.asinh(tan(latitude)));
+        double y = (s / (2 * PI)) * (PI - Utils.asinh(tan(latitude)));
         return new PointOSM(zoom, x, y);
     }
 
     public String toString() {
-        return "(" + Math1.radToDeg(longitude) + "," + Math1.radToDeg(latitude) + ")";
+        return "(" + Utils.radToDeg(longitude) + "," + Utils.radToDeg(latitude) + ")";
     }
 }

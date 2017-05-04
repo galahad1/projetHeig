@@ -41,5 +41,6 @@
     <orderEntry type="library" name="Maven: com.itextpdf:sign:7.0.2" level="project" />
     <orderEntry type="library" name="Maven: org.jfree:jfreechart:1.0.19" level="project" />
     <orderEntry type="library" name="Maven: org.jfree:jcommon:1.0.23" level="project" />
+    <orderEntry type="library" name="Maven: com.toedter:jcalendar:1.4" level="project" />
   </component>
 </module>

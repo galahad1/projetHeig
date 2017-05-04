@@ -12,12 +12,12 @@ import java.util.List;
  * @author Wojciech Myskorowski
  * @author Jérémie Zanone
  */
-public final class TiledMapComponent extends JComponent {
+public final class CarteTuilesComponent extends JComponent {
 
     private static final long serialVersionUID = 1L;
     private final int TILESIZE = 256;
     private int zoom;
-    private List<TileProvider> tileProviders;
+    private List<FournisseurTuile> fournisseurTuiles;
 
     /**
      * Crée un composant Swing capable d'afficher une carte en tuiles
@@ -26,12 +26,12 @@ public final class TiledMapComponent extends JComponent {
      * @throws IllegalArgumentException Léve l'exeption si le niveau de zoom est inférieur é 10 ou
      *                                  supérieur é 19.
      */
-    TiledMapComponent(int zoom) {
+    CarteTuilesComponent(int zoom) {
         if (zoom < 10 || zoom > 19) {
             throw new IllegalArgumentException();
         }
         this.zoom = zoom;
-        tileProviders = new ArrayList<TileProvider>();
+        fournisseurTuiles = new ArrayList<FournisseurTuile>();
     }
 
     /**
@@ -63,10 +63,10 @@ public final class TiledMapComponent extends JComponent {
      * Ajoute un nouveau fournisseur de tuiles é la liste des fournisseurs de la
      * carte
      *
-     * @param tileProvider Un nouveau fournisseur de tuiles de la carte
+     * @param fournisseurTuile Un nouveau fournisseur de tuiles de la carte
      */
-    public void addTileProviders(TileProvider tileProvider) {
-        tileProviders.add(tileProvider);
+    public void addTileProviders(FournisseurTuile fournisseurTuile) {
+        fournisseurTuiles.add(fournisseurTuile);
         repaint();
     }
 
@@ -89,12 +89,12 @@ public final class TiledMapComponent extends JComponent {
         int maxX = visibleRect.x + visibleRect.width;
         int maxY = visibleRect.y + visibleRect.height;
 
-        for (TileProvider tileProvider : tileProviders) {
+        for (FournisseurTuile fournisseurTuile : fournisseurTuiles) {
             for (int x = baseX; x < maxX; x += TILESIZE) {
                 for (int y = baseY; y < maxY; y += TILESIZE) {
                     int tilePosX = x / TILESIZE;
                     int tilePosY = y / TILESIZE;
-                    Tile t = tileProvider.tileAt(zoom, tilePosX, tilePosY);
+                    Tuile t = fournisseurTuile.tileAt(zoom, tilePosX, tilePosY);
                     g0.drawImage(t.image(), x, y, null);
 
                 }

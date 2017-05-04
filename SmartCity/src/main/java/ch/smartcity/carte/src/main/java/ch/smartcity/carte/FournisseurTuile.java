@@ -6,7 +6,7 @@ package ch.smartcity.carte;
  * @author Wojciech Myskorowski
  * @author Jérémie Zanone
  */
-public interface TileProvider {
+public interface FournisseurTuile {
     /**
      * Fournit la tuile de coordonnées données
      *
@@ -15,5 +15,5 @@ public interface TileProvider {
      * @param y    Coordonnée y de la tuile
      * @return La tuile de coordonnées données
      */
-    Tile tileAt(int zoom, int x, int y);
+    Tuile tileAt(int zoom, int x, int y);
 }

@@ -9,14 +9,14 @@ import java.util.Map;
  * @author Wojciech Myskorowski
  * @author Jérémie Zanone
  */
-public final class TileCache {
+public final class TuileCache {
     private final int MAX_SIZE = 5000; // nombre de tuile en cache
-    private LinkedHashMap<Long, Tile> cache = new LinkedHashMap<Long, Tile>() {
+    private LinkedHashMap<Long, Tuile> cache = new LinkedHashMap<Long, Tuile>() {
         private static final long serialVersionUID = 1L;
 
         @Override
         //redéfinie la taile maximum du HashMap (FIFO)
-        protected boolean removeEldestEntry(Map.Entry<Long, Tile> e) {
+        protected boolean removeEldestEntry(Map.Entry<Long, Tuile> e) {
             return size() > MAX_SIZE;
         }
     };
@@ -24,13 +24,13 @@ public final class TileCache {
     /**
      * Mémorise une tuile de la carte
      *
-     * @param zoom Niveau de zoom de la carte pour la tuile
-     * @param x    Coordonnée x de la tuile
-     * @param y    Coordonnée y de la tuile
-     * @param tile La tuile é mémoriser
+     * @param zoom  Niveau de zoom de la carte pour la tuile
+     * @param x     Coordonnée x de la tuile
+     * @param y     Coordonnée y de la tuile
+     * @param tuile La tuile é mémoriser
      */
-    public void put(int zoom, int x, int y, Tile tile) {
-        cache.put(packCoordinates(zoom, x, y), tile);
+    public void put(int zoom, int x, int y, Tuile tuile) {
+        cache.put(packCoordinates(zoom, x, y), tuile);
     }
 
     /**
@@ -45,7 +45,7 @@ public final class TileCache {
      * a été supprimée aprés que le cache ait atteint sa taille
      * maximale)
      */
-    public Tile get(int zoom, int x, int y) {
+    public Tuile get(int zoom, int x, int y) {
         return cache.get(packCoordinates(zoom, x, y));
     }
 

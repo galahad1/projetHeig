@@ -101,7 +101,7 @@ public final class PointOSM {
     /**
      * Retourne ce méme point mais au niveau de zoom passé en argument.
      *
-     * @param zoom Le niveau de zoom du systéme de coordonnées OSM.
+     * @param newZoom Le niveau de zoom du systéme de coordonnées OSM.
      * @return Retourne le point au niveau de zoom passé en argument..
      * @throws IllegalArgumentException Si le zoom est négatif.
      */

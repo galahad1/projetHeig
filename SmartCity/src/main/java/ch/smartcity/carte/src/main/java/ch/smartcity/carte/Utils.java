@@ -8,12 +8,12 @@ import static java.lang.Math.*;
  * @author Wojciech Myskorowski
  * @author Jérémie Zanone
  */
-public final class Math1 {
+public final class Utils {
 
     /**
      * constructeur par défaut en private pour rendre la classe non-instanciable
      */
-    private Math1() {
+    private Utils() {
     }
 
     /**
