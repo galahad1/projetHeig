@@ -88,9 +88,10 @@ public class GenerateurPDF {
 
     // !! TODO: LOAN : Vérifier le bon fonctionnement des modifications !!
     static {
+        DEST = System.getProperty("user.home") + File.separator + "Documents" + File.separator
+                + "Smartcity" + File.separator + "PDF" + File.separator + "test.pdf";
+
         try {
-            DEST = System.getProperty("user.home") + File.separator + "Documents" + File.separator
-                    + "Smartcity" + File.separator + "test.pdf";
             LOGO = GenerateurPDF.class.getClassLoader()
                     .getResource("ch/smartcity/pdf/resources/logo.png");
         } catch (Exception e) {
@@ -230,6 +231,7 @@ public class GenerateurPDF {
         information.setBorder(null);
         information.setFont(PdfFontFactory.createFont(FontConstants.TIMES_BOLD));
 
+        // !! TODO: LOAN : Vérifier le bonne dimension du graphique !!
         GenerateurGraphique graphe = new GenerateurGraphique();
         Image image = new Image(ImageDataFactory.create(graphe.CHEMIN_IMAGE));
         image.setAutoScale(true);
