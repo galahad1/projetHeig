@@ -77,7 +77,7 @@ public class EvenementAccess {
         Transaction transaction = null;
 
         try {
-            session = Hibernate.getSession();
+            session = Hibernate.openSession();
             transaction = session.beginTransaction();
 
             CriteriaBuilder criteriaBuilder = Hibernate.getCriteriaBuilder();

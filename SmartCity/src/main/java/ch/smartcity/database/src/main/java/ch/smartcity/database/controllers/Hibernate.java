@@ -13,64 +13,82 @@ import java.util.logging.Logger;
 
 public class Hibernate {
 
-    private static final Logger LOGGER;
-    private static final SessionFactory sessionFactory;
-    private static Session session;
-
     static {
-        LOGGER = Logger.getLogger(ConfigurationManager.class.getName());
+        ConfigurationManager.initialize();
+    }
+
+    private final String hibernateConfigurationXmlFile =
+            "ch/smartcity/database/resources/hibernate/hibernate.cfg.xml";
+    private final Logger logger;
+    private final SessionFactory sessionFactory;
+    private Session session;
+
+    private Hibernate() {
+        logger = Logger.getLogger(Hibernate.class.getName());
 
         try {
             sessionFactory = new Configuration()
-                    .configure("ch/smartcity/database/resources/hibernate/hibernate.cfg.xml")
+                    .configure(hibernateConfigurationXmlFile)
                     .buildSessionFactory();
         } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, e.getMessage(), e);
+            logger.log(Level.SEVERE, e.getMessage(), e);
             throw new ExceptionInInitializerError(e);
         }
     }
 
+    public static Hibernate getInstance() {
+        return SingletonHolder.instance;
+    }
+
+    private static Logger getLogger() {
+        return getInstance().logger;
+    }
+
     public static SessionFactory getSessionFactory() {
-        return sessionFactory;
+        return getInstance().sessionFactory;
     }
 
     public static Session getSession() {
-        if (session == null || !session.isOpen()) {
-            session = sessionFactory.openSession();
-        }
-
-        return session;
+        return getInstance().session;
     }
 
     public static void setSession(Session session) {
-        Hibernate.session = session;
+        getInstance().session = session;
+    }
+
+    public static Session openSession() {
+        if (getSession() == null || !getSession().isOpen()) {
+            setSession(getSessionFactory().openSession());
+        }
+
+        return getSession();
     }
 
     public static CriteriaBuilder getCriteriaBuilder() {
-        return sessionFactory.getCriteriaBuilder();
+        return getSessionFactory().getCriteriaBuilder();
     }
 
     public static <T> TypedQuery<T> createQuery(CriteriaQuery<T> tCriteriaQuery) {
-        return getSession().createQuery(tCriteriaQuery);
+        return openSession().createQuery(tCriteriaQuery);
     }
 
     public static void closeSession() throws HibernateException {
-        if (session != null && session.isOpen()) {
+        if (getSession() != null && getSession().isOpen()) {
             try {
-                session.close();
+                getSession().close();
             } catch (Exception e) {
-                LOGGER.log(Level.SEVERE, e.getMessage(), e);
+                getLogger().log(Level.SEVERE, e.getMessage(), e);
                 throw e;
             }
         }
     }
 
     public static void closeSessionFactory() throws HibernateException {
-        if (sessionFactory != null && sessionFactory.isOpen()) {
+        if (getSessionFactory() != null && getSessionFactory().isOpen()) {
             try {
-                sessionFactory.close();
+                getSessionFactory().close();
             } catch (Exception e) {
-                LOGGER.log(Level.SEVERE, e.getMessage(), e);
+                getLogger().log(Level.SEVERE, e.getMessage(), e);
                 throw e;
             }
         }
@@ -79,5 +97,9 @@ public class Hibernate {
     public static void close() throws HibernateException {
         closeSession();
         closeSessionFactory();
+    }
+
+    private static class SingletonHolder {
+        private final static Hibernate instance = new Hibernate();
     }
 }

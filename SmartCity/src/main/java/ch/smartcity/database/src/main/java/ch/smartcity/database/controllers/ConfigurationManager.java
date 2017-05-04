@@ -7,42 +7,40 @@ import java.util.logging.LogManager;
 
 public class ConfigurationManager {
 
-    private static final ClassLoader CLASS_LOADER;
-    private static ResourceBundle resourceBundle;
+    private final String messageBundleFileProperties =
+            "ch/smartcity/database/resources/messagesBundles/messageBundle";
+    private final String loggingFileProperties =
+            "ch/smartcity/database/resources/logging.properties";
+    private final ResourceBundle resourceBundle;
 
-    static {
-        CLASS_LOADER = ConfigurationManager.class.getClassLoader();
+    private ConfigurationManager() {
+        resourceBundle = ResourceBundle.getBundle(messageBundleFileProperties, Locale.getDefault());
 
         try {
-            loadLoggingProperties("ch/smartcity/database/resources/logging.properties");
-            setResourceBundle("ch/smartcity/database/resources/messagesBundles/messageBundle");
-        } catch (Exception e) {
+            LogManager.getLogManager().readConfiguration(getClass().getClassLoader()
+                    .getResourceAsStream(loggingFileProperties));
+        } catch (IOException e) {
             e.printStackTrace();
-            throw new ExceptionInInitializerError(e);
         }
     }
 
+    public static ConfigurationManager getInstance() {
+        return SingletonHolder.instance;
+    }
+
     public static void initialize() {
+        getInstance();
     }
 
     public static ResourceBundle getResourceBundle() {
-        return resourceBundle;
-    }
-
-    public static void setResourceBundle(ResourceBundle resourceBundle) {
-        ConfigurationManager.resourceBundle = resourceBundle;
-    }
-
-    public static void setResourceBundle(String baseNameResourceBundle) {
-        setResourceBundle(ResourceBundle.getBundle(baseNameResourceBundle, Locale.getDefault()));
+        return getInstance().resourceBundle;
     }
 
     public static String getString(String key) {
-        return resourceBundle.getString(key);
+        return getResourceBundle().getString(key);
     }
 
-    private static void loadLoggingProperties(String loggingPropertiesFile) throws IOException {
-        LogManager.getLogManager().readConfiguration(CLASS_LOADER
-                .getResourceAsStream(loggingPropertiesFile));
+    private static class SingletonHolder {
+        private final static ConfigurationManager instance = new ConfigurationManager();
     }
 }

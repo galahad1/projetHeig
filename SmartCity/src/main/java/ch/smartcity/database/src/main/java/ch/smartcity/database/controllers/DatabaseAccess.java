@@ -13,16 +13,22 @@ import java.util.logging.Logger;
 
 public class DatabaseAccess {
 
-    private static final Logger LOGGER;
-
     static {
-        try {
-            ConfigurationManager.initialize();
-            LOGGER = Logger.getLogger(DatabaseAccess.class.getName());
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new ExceptionInInitializerError(e);
-        }
+        ConfigurationManager.initialize();
+    }
+
+    private final Logger logger;
+
+    private DatabaseAccess() {
+        logger = Logger.getLogger(DatabaseAccess.class.getName());
+    }
+
+    public static DatabaseAccess getInstance() {
+        return SingletonHolder.instance;
+    }
+
+    private static Logger getLogger() {
+        return getInstance().logger;
     }
 
     public static <T> T get(Class<T> tClass, Integer id) {
@@ -32,7 +38,7 @@ public class DatabaseAccess {
         Transaction transaction = null;
 
         try {
-            session = Hibernate.getSession();
+            session = Hibernate.openSession();
             transaction = session.beginTransaction();
 
             t = session.get(tClass, id);
@@ -44,7 +50,7 @@ public class DatabaseAccess {
             close(session);
         }
 
-        LOGGER.info(String.format(
+        getLogger().info(String.format(
                 ConfigurationManager.getString("databaseAccess.results"),
                 t != null ? 1 : 0,
                 tClass.getSimpleName()));
@@ -59,7 +65,7 @@ public class DatabaseAccess {
         Transaction transaction = null;
 
         try {
-            session = Hibernate.getSession();
+            session = Hibernate.openSession();
             transaction = session.beginTransaction();
 
             CriteriaBuilder criteriaBuilder = Hibernate.getCriteriaBuilder();
@@ -74,7 +80,7 @@ public class DatabaseAccess {
             close(session);
         }
 
-        LOGGER.info(String.format(
+        getLogger().info(String.format(
                 ConfigurationManager.getString("databaseAccess.results"),
                 tList != null ? tList.size() : 0,
                 tClass.getSimpleName()));
@@ -87,7 +93,7 @@ public class DatabaseAccess {
         Transaction transaction = null;
 
         try {
-            session = Hibernate.getSession();
+            session = Hibernate.openSession();
             transaction = session.beginTransaction();
 
             session.save(t);
@@ -107,7 +113,7 @@ public class DatabaseAccess {
         Transaction transaction = null;
 
         try {
-            session = Hibernate.getSession();
+            session = Hibernate.openSession();
             transaction = session.beginTransaction();
 
             for (T t : tList) {
@@ -129,7 +135,7 @@ public class DatabaseAccess {
         Transaction transaction = null;
 
         try {
-            session = Hibernate.getSession();
+            session = Hibernate.openSession();
             transaction = session.beginTransaction();
 
             session.update(t);
@@ -149,7 +155,7 @@ public class DatabaseAccess {
         Transaction transaction = null;
 
         try {
-            session = Hibernate.getSession();
+            session = Hibernate.openSession();
             transaction = session.beginTransaction();
 
             for (T t : tList) {
@@ -175,7 +181,7 @@ public class DatabaseAccess {
         Transaction transaction = null;
 
         try {
-            session = Hibernate.getSession();
+            session = Hibernate.openSession();
             transaction = session.beginTransaction();
 
             session.delete(t);
@@ -195,7 +201,7 @@ public class DatabaseAccess {
         Transaction transaction = null;
 
         try {
-            session = Hibernate.getSession();
+            session = Hibernate.openSession();
             transaction = session.beginTransaction();
 
             for (T t : tList) {
@@ -215,7 +221,7 @@ public class DatabaseAccess {
     public static void rollback(Exception e, Transaction transaction) {
         if (transaction != null) {
             transaction.rollback();
-            LOGGER.log(Level.SEVERE, e.getMessage(), e);
+            getLogger().log(Level.SEVERE, e.getMessage(), e);
         }
     }
 
@@ -224,7 +230,7 @@ public class DatabaseAccess {
             try {
                 session.close();
             } catch (Exception e) {
-                LOGGER.log(Level.SEVERE, e.getMessage(), e);
+                getLogger().log(Level.SEVERE, e.getMessage(), e);
                 throw new HibernateException(e);
             }
         }
@@ -243,6 +249,10 @@ public class DatabaseAccess {
             key = "databaseAccess.transactionRollbacked";
         }
 
-        LOGGER.info(ConfigurationManager.getString(key));
+        getLogger().info(ConfigurationManager.getString(key));
+    }
+
+    private static class SingletonHolder {
+        private final static DatabaseAccess instance = new DatabaseAccess();
     }
 }
