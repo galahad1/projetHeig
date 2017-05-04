@@ -18,10 +18,22 @@ import java.util.logging.Logger;
 
 public class PrioriteAccess {
 
-    private static final Logger LOGGER;
-
     static {
-        LOGGER = Logger.getLogger(PrioriteAccess.class.getName());
+        ConfigurationManager.initialize();
+    }
+
+    private final Logger logger;
+
+    private PrioriteAccess() {
+        logger = Logger.getLogger(getClass().getName());
+    }
+
+    public static PrioriteAccess getInstance() {
+        return SingletonHolder.instance;
+    }
+
+    private static Logger getLogger() {
+        return getInstance().logger;
     }
 
     public static List<Priorite> get(String nomPriorite, Integer niveau) {
@@ -39,7 +51,7 @@ public class PrioriteAccess {
             Root<Priorite> prioriteRoot = criteriaQuery.from(Priorite.class);
             List<Predicate> predicateList = new ArrayList<>();
 
-            if (nomPriorite != null) {
+            if (nomPriorite != null && !nomPriorite.isEmpty()) {
                 predicateList.add(criteriaBuilder.equal(
                         prioriteRoot.get(Priorite_.nomPriorite),
                         nomPriorite.toLowerCase()));
@@ -61,7 +73,7 @@ public class PrioriteAccess {
             DatabaseAccess.close(session);
         }
 
-        LOGGER.info(String.format(
+        getLogger().info(String.format(
                 ConfigurationManager.getString("databaseAccess.results"),
                 prioriteList != null ? prioriteList.size() : 0,
                 Priorite.class.getSimpleName()));
@@ -109,5 +121,9 @@ public class PrioriteAccess {
         if (niveau != null) {
             priorite.setNiveau(niveau);
         }
+    }
+
+    private static class SingletonHolder {
+        private final static PrioriteAccess instance = new PrioriteAccess();
     }
 }

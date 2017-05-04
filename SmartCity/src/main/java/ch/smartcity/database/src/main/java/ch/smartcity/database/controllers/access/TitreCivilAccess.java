@@ -18,10 +18,22 @@ import java.util.logging.Logger;
 
 public class TitreCivilAccess {
 
-    private static final Logger LOGGER;
-
     static {
-        LOGGER = Logger.getLogger(TitreCivilAccess.class.getName());
+        ConfigurationManager.initialize();
+    }
+
+    private final Logger logger;
+
+    private TitreCivilAccess() {
+        logger = Logger.getLogger(getClass().getName());
+    }
+
+    public static TitreCivilAccess getInstance() {
+        return SingletonHolder.instance;
+    }
+
+    private static Logger getLogger() {
+        return getInstance().logger;
     }
 
     public static List<TitreCivil> get(String titre, String abreviation) {
@@ -40,13 +52,13 @@ public class TitreCivilAccess {
             Root<TitreCivil> titreCivilRoot = criteriaQuery.from(TitreCivil.class);
             List<Predicate> predicateList = new ArrayList<>();
 
-            if (titre != null) {
+            if (titre != null && !titre.isEmpty()) {
                 predicateList.add(criteriaBuilder.equal(titreCivilRoot.get(
                         TitreCivil_.titre),
                         titre.toLowerCase()));
             }
 
-            if (abreviation != null) {
+            if (abreviation != null && !abreviation.isEmpty()) {
                 predicateList.add(criteriaBuilder.equal(titreCivilRoot.get(
                         TitreCivil_.abreviation),
                         abreviation.toLowerCase()));
@@ -62,7 +74,7 @@ public class TitreCivilAccess {
             DatabaseAccess.close(session);
         }
 
-        LOGGER.info(String.format(
+        getLogger().info(String.format(
                 ConfigurationManager.getString("databaseAccess.results"),
                 titreCivilList != null ? titreCivilList.size() : 0,
                 TitreCivil.class.getSimpleName()));
@@ -110,5 +122,9 @@ public class TitreCivilAccess {
         if (abreviation != null) {
             titreCivil.setAbreviation(abreviation);
         }
+    }
+
+    private static class SingletonHolder {
+        private final static TitreCivilAccess instance = new TitreCivilAccess();
     }
 }

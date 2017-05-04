@@ -12,20 +12,8 @@ import java.util.Random;
 
 public class GenerateurGraphique {
 
-    public final static String CHEMIN_IMAGE;
-    private static final ClassLoader CLASS_LOADER;
-
-    static {
-        CLASS_LOADER = GenerateurGraphique.class.getClassLoader();
-
-        try {
-            CHEMIN_IMAGE = CLASS_LOADER.getResource("ch/smartcity/pdf/resources/image.png")
-                    .getPath();
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new ExceptionInInitializerError(e);
-        }
-    }
+    // !! TODO: LOAN : Vérifier le bon fonctionnement des modifications !!
+    public final static String CHEMIN_IMAGE = "ch/smartcity/pdf/resources/image.png";
 
     public GenerateurGraphique() throws URISyntaxException {
 
@@ -40,8 +28,9 @@ public class GenerateurGraphique {
             chart = GraphiqueEnBarres.cree();
         }
 
-
-        File file = new File(CHEMIN_IMAGE);
+        // !! TODO: LOAN : Vérifier le bonne dimension du graphique !!
+        System.out.println(getClass().getClassLoader().getResource(CHEMIN_IMAGE).getFile());
+        File file = new File(getClass().getClassLoader().getResource(CHEMIN_IMAGE).getFile());
         try {
             ChartUtilities.saveChartAsPNG(file, chart, 800, 600);
         } catch (Exception e) {

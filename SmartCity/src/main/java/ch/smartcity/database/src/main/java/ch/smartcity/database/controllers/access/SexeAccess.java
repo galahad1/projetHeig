@@ -18,10 +18,22 @@ import java.util.logging.Logger;
 
 public class SexeAccess {
 
-    private static final Logger LOGGER;
-
     static {
-        LOGGER = Logger.getLogger(SexeAccess.class.getName());
+        ConfigurationManager.initialize();
+    }
+
+    private final Logger logger;
+
+    private SexeAccess() {
+        logger = Logger.getLogger(getClass().getName());
+    }
+
+    public static SexeAccess getInstance() {
+        return SingletonHolder.instance;
+    }
+
+    private static Logger getLogger() {
+        return getInstance().logger;
     }
 
     public static List<Sexe> get(String nomSexe) {
@@ -40,7 +52,7 @@ public class SexeAccess {
             Root<Sexe> sexeRoot = criteriaQuery.from(Sexe.class);
             List<Predicate> predicateList = new ArrayList<>();
 
-            if (nomSexe != null) {
+            if (nomSexe != null && !nomSexe.isEmpty()) {
                 predicateList.add(criteriaBuilder.equal(sexeRoot.get(
                         Sexe_.nomSexe),
                         nomSexe.toLowerCase()));
@@ -56,7 +68,7 @@ public class SexeAccess {
             DatabaseAccess.close(session);
         }
 
-        LOGGER.info(String.format(
+        getLogger().info(String.format(
                 ConfigurationManager.getString("databaseAccess.results"),
                 sexeList != null ? sexeList.size() : 0,
                 Sexe.class.getSimpleName()));
@@ -97,5 +109,9 @@ public class SexeAccess {
         if (nomSexe != null) {
             sexe.setNomSexe(nomSexe);
         }
+    }
+
+    private static class SingletonHolder {
+        private final static SexeAccess instance = new SexeAccess();
     }
 }

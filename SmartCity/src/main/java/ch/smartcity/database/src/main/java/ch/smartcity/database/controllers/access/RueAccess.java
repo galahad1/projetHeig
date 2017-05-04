@@ -18,10 +18,22 @@ import java.util.logging.Logger;
 
 public class RueAccess {
 
-    private static final Logger LOGGER;
-
     static {
-        LOGGER = Logger.getLogger(RueAccess.class.getName());
+        ConfigurationManager.initialize();
+    }
+
+    private final Logger logger;
+
+    private RueAccess() {
+        logger = Logger.getLogger(getClass().getName());
+    }
+
+    public static RueAccess getInstance() {
+        return SingletonHolder.instance;
+    }
+
+    private static Logger getLogger() {
+        return getInstance().logger;
     }
 
     public static List<Rue> get(String nomRue) {
@@ -40,7 +52,7 @@ public class RueAccess {
             Root<Rue> rueRoot = criteriaQuery.from(Rue.class);
             List<Predicate> predicateList = new ArrayList<>();
 
-            if (nomRue != null) {
+            if (nomRue != null && !nomRue.isEmpty()) {
                 predicateList.add(criteriaBuilder.equal(rueRoot.get(
                         Rue_.nomRue),
                         nomRue.toLowerCase()));
@@ -56,7 +68,7 @@ public class RueAccess {
             DatabaseAccess.close(session);
         }
 
-        LOGGER.info(String.format(
+        getLogger().info(String.format(
                 ConfigurationManager.getString("databaseAccess.results"),
                 rueList != null ? rueList.size() : 0,
                 Rue.class.getSimpleName()));
@@ -97,5 +109,9 @@ public class RueAccess {
         if (nomRue != null) {
             rue.setNomRue(nomRue);
         }
+    }
+
+    private static class SingletonHolder {
+        private final static RueAccess instance = new RueAccess();
     }
 }

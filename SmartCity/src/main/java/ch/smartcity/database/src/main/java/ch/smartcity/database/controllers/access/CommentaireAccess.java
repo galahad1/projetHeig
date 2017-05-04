@@ -15,12 +15,25 @@ import java.util.logging.Logger;
 
 public class CommentaireAccess {
 
-    private static final Logger LOGGER;
     private static String nomEvenement;
     private static String nomUtilisateur;
 
     static {
-        LOGGER = Logger.getLogger(CommentaireAccess.class.getName());
+        ConfigurationManager.initialize();
+    }
+
+    private final Logger logger;
+
+    private CommentaireAccess() {
+        logger = Logger.getLogger(getClass().getName());
+    }
+
+    public static CommentaireAccess getInstance() {
+        return SingletonHolder.instance;
+    }
+
+    private static Logger getLogger() {
+        return getInstance().logger;
     }
 
     public static List<Commentaire> get(Evenement evenement,
@@ -57,19 +70,19 @@ public class CommentaireAccess {
                     commentaireIdCommentaireJoin.join(IdCommentaire_.utilisateur);
             List<Predicate> predicateList = new ArrayList<>();
 
-            if (nomEvenement != null) {
+            if (nomEvenement != null && !nomEvenement.isEmpty()) {
                 predicateList.add(criteriaBuilder.equal(
                         idCommentaireEvenementJoin.get(Evenement_.nomEvenement),
                         nomEvenement.toLowerCase()));
             }
 
-            if (nomUtilisateur != null) {
+            if (nomUtilisateur != null && !nomUtilisateur.isEmpty()) {
                 predicateList.add(criteriaBuilder.equal(
                         idCommentaireUtilisateurJoin.get(Utilisateur_.nomUtilisateur),
                         nomUtilisateur.toLowerCase()));
             }
 
-            if (commentaire != null) {
+            if (commentaire != null && !commentaire.isEmpty()) {
                 predicateList.add(criteriaBuilder.equal(
                         commentaireRoot.get(Commentaire_.commentaire), commentaire.toLowerCase()));
             }
@@ -89,7 +102,7 @@ public class CommentaireAccess {
             DatabaseAccess.close(session);
         }
 
-        LOGGER.info(String.format(
+        getLogger().info(String.format(
                 ConfigurationManager.getString("databaseAccess.results"),
                 commentaireList != null ? commentaireList.size() : 0,
                 Commentaire.class.getSimpleName()));
@@ -169,5 +182,9 @@ public class CommentaireAccess {
     private static void checkNull(Evenement evenement, Utilisateur utilisateur) {
         nomEvenement = evenement != null ? evenement.getNomEvenement() : null;
         nomUtilisateur = utilisateur != null ? utilisateur.getNomUtilisateur() : null;
+    }
+
+    private static class SingletonHolder {
+        private final static CommentaireAccess instance = new CommentaireAccess();
     }
 }

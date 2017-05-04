@@ -14,12 +14,25 @@ import java.util.logging.Logger;
 
 public class AdresseAccess {
 
-    private static final Logger LOGGER;
     private static String nomRue;
     private static String numeroNpa;
 
     static {
-        LOGGER = Logger.getLogger(AdresseAccess.class.getName());
+        ConfigurationManager.initialize();
+    }
+
+    private final Logger logger;
+
+    private AdresseAccess() {
+        logger = Logger.getLogger(getClass().getName());
+    }
+
+    public static AdresseAccess getInstance() {
+        return SingletonHolder.instance;
+    }
+
+    private static Logger getLogger() {
+        return getInstance().logger;
     }
 
     public static List<Adresse> get(Rue rue, String numeroDeRue, Npa npa) {
@@ -45,19 +58,19 @@ public class AdresseAccess {
             Join<Adresse, Npa> adresseNpaJoin = adresseRoot.join(Adresse_.npa);
             List<Predicate> predicateList = new ArrayList<>();
 
-            if (nomRue != null) {
+            if (nomRue != null && !nomRue.isEmpty()) {
                 predicateList.add(criteriaBuilder.equal(
                         adresseRueJoin.get(Rue_.nomRue),
                         nomRue.toLowerCase()));
             }
 
-            if (numeroDeRue != null) {
+            if (numeroDeRue != null && !numeroDeRue.isEmpty()) {
                 predicateList.add(criteriaBuilder.equal(
                         adresseRoot.get(Adresse_.numeroDeRue),
                         numeroDeRue.toLowerCase()));
             }
 
-            if (numeroNpa != null) {
+            if (numeroNpa != null && !numeroNpa.isEmpty()) {
                 predicateList.add(criteriaBuilder.equal(
                         adresseNpaJoin.get(Npa_.numeroNpa),
                         numeroNpa.toLowerCase()));
@@ -73,7 +86,7 @@ public class AdresseAccess {
             DatabaseAccess.close(session);
         }
 
-        LOGGER.info(String.format(
+        getLogger().info(String.format(
                 ConfigurationManager.getString("databaseAccess.results"),
                 adresseList != null ? adresseList.size() : 0,
                 Adresse.class.getSimpleName()));
@@ -137,5 +150,9 @@ public class AdresseAccess {
     private static void checkNull(Rue rue, Npa npa) {
         nomRue = rue != null ? rue.getNomRue() : null;
         numeroNpa = npa != null ? npa.getNumeroNpa() : null;
+    }
+
+    private static class SingletonHolder {
+        private final static AdresseAccess instance = new AdresseAccess();
     }
 }

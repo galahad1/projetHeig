@@ -14,6 +14,8 @@ import java.net.URL;
  * @author Jérémie Zanone
  */
 public final class OSMTileProvider implements TileProvider {
+    private static final String ERROR_TILE_PNG_FILE =
+            "ch/smartcity/carte/resources/image/error-tile.png";
     final String baseServerAdress;
 
     /**
@@ -33,8 +35,9 @@ public final class OSMTileProvider implements TileProvider {
             image = ImageIO.read(url);
         } catch (IOException e) {
             try {
-                image = ImageIO.read(getClass().getResource("resources/image/error-tile.png"));
-            } catch (IOException imageReadingError) {
+                image = ImageIO.read(getClass().getClassLoader()
+                        .getResource(ERROR_TILE_PNG_FILE));
+            } catch (Exception imageReadingError) {
                 System.out.print("Erreur lors de la lecture de la ressource image: ");
                 imageReadingError.printStackTrace();
                 System.exit(1);

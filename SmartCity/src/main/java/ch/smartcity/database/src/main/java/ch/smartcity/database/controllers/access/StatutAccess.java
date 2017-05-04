@@ -18,10 +18,22 @@ import java.util.logging.Logger;
 
 public class StatutAccess {
 
-    private static final Logger LOGGER;
-
     static {
-        LOGGER = Logger.getLogger(StatutAccess.class.getName());
+        ConfigurationManager.initialize();
+    }
+
+    private final Logger logger;
+
+    private StatutAccess() {
+        logger = Logger.getLogger(getClass().getName());
+    }
+
+    public static StatutAccess getInstance() {
+        return SingletonHolder.instance;
+    }
+
+    private static Logger getLogger() {
+        return getInstance().logger;
     }
 
     public static List<Statut> get(String nomStatut) {
@@ -40,7 +52,7 @@ public class StatutAccess {
             Root<Statut> statutRoot = criteriaQuery.from(Statut.class);
             List<Predicate> predicateList = new ArrayList<>();
 
-            if (nomStatut != null) {
+            if (nomStatut != null && !nomStatut.isEmpty()) {
                 predicateList.add(criteriaBuilder.equal(statutRoot.get(
                         Statut_.nomStatut),
                         nomStatut.toLowerCase()));
@@ -56,7 +68,7 @@ public class StatutAccess {
             DatabaseAccess.close(session);
         }
 
-        LOGGER.info(String.format(
+        getLogger().info(String.format(
                 ConfigurationManager.getString("databaseAccess.results"),
                 statutList != null ? statutList.size() : 0,
                 Statut.class.getSimpleName()));
@@ -97,5 +109,9 @@ public class StatutAccess {
         if (nomStatut != null) {
             statut.setNomStatut(nomStatut);
         }
+    }
+
+    private static class SingletonHolder {
+        private final static StatutAccess instance = new StatutAccess();
     }
 }

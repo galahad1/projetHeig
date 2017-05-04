@@ -20,7 +20,7 @@ public class DatabaseAccess {
     private final Logger logger;
 
     private DatabaseAccess() {
-        logger = Logger.getLogger(DatabaseAccess.class.getName());
+        logger = Logger.getLogger(getClass().getName());
     }
 
     public static DatabaseAccess getInstance() {

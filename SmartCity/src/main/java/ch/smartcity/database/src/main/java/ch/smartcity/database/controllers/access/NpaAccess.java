@@ -18,10 +18,22 @@ import java.util.logging.Logger;
 
 public class NpaAccess {
 
-    private static final Logger LOGGER;
-
     static {
-        LOGGER = Logger.getLogger(NpaAccess.class.getName());
+        ConfigurationManager.initialize();
+    }
+
+    private final Logger logger;
+
+    private NpaAccess() {
+        logger = Logger.getLogger(getClass().getName());
+    }
+
+    public static NpaAccess getInstance() {
+        return SingletonHolder.instance;
+    }
+
+    private static Logger getLogger() {
+        return getInstance().logger;
     }
 
     public static List<Npa> get(String numeroNpa) {
@@ -39,7 +51,7 @@ public class NpaAccess {
             Root<Npa> npaRoot = criteriaQuery.from(Npa.class);
             List<Predicate> predicateList = new ArrayList<>();
 
-            if (numeroNpa != null) {
+            if (numeroNpa != null && !numeroNpa.isEmpty()) {
                 predicateList.add(criteriaBuilder.equal(
                         npaRoot.get(Npa_.numeroNpa), numeroNpa.toLowerCase()));
             }
@@ -54,7 +66,7 @@ public class NpaAccess {
             DatabaseAccess.close(session);
         }
 
-        LOGGER.info(String.format(
+        getLogger().info(String.format(
                 ConfigurationManager.getString("databaseAccess.results"),
                 npaList != null ? npaList.size() : 0,
                 Npa.class.getSimpleName()));
@@ -95,5 +107,9 @@ public class NpaAccess {
         if (numeroNpa != null) {
             npa.setNumeroNpa(numeroNpa);
         }
+    }
+
+    private static class SingletonHolder {
+        private final static NpaAccess instance = new NpaAccess();
     }
 }

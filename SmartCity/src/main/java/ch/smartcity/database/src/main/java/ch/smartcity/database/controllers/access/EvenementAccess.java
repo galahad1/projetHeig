@@ -15,7 +15,6 @@ import java.util.logging.Logger;
 
 public class EvenementAccess {
 
-    private static final Logger LOGGER;
     private static String nomRubriqueEnfant;
     private static String nomUtilisateur;
     private static String nomRue;
@@ -25,7 +24,21 @@ public class EvenementAccess {
     private static String nomStatut;
 
     static {
-        LOGGER = Logger.getLogger(EvenementAccess.class.getName());
+        ConfigurationManager.initialize();
+    }
+
+    private final Logger logger;
+
+    private EvenementAccess() {
+        logger = Logger.getLogger(getClass().getName());
+    }
+
+    public static EvenementAccess getInstance() {
+        return SingletonHolder.instance;
+    }
+
+    private static Logger getLogger() {
+        return getInstance().logger;
     }
 
     public static List<Evenement> get(RubriqueEnfant rubriqueEnfant,
@@ -100,37 +113,37 @@ public class EvenementAccess {
                     evenementRoot.join(Evenement_.statut);
             List<Predicate> predicateList = new ArrayList<>();
 
-            if (nomRubriqueEnfant != null) {
+            if (nomRubriqueEnfant != null && !nomRubriqueEnfant.isEmpty()) {
                 predicateList.add(criteriaBuilder.equal(
                         evenementRubriqueEnfantJoin.get(RubriqueEnfant_.nomRubriqueEnfant),
                         nomRubriqueEnfant.toLowerCase()));
             }
 
-            if (nomUtilisateur != null) {
+            if (nomUtilisateur != null && !nomUtilisateur.isEmpty()) {
                 predicateList.add(criteriaBuilder.equal(
                         evenementUtilisateurJoin.get(Utilisateur_.nomUtilisateur),
                         nomUtilisateur.toLowerCase()));
             }
 
-            if (nomEvenement != null) {
+            if (nomEvenement != null && !nomEvenement.isEmpty()) {
                 predicateList.add(criteriaBuilder.equal(
                         evenementRoot.get(Evenement_.nomEvenement),
                         nomEvenement.toLowerCase()));
             }
 
-            if (nomRue != null) {
+            if (nomRue != null && !nomRue.isEmpty()) {
                 predicateList.add(criteriaBuilder.equal(
                         adresseRueJoin.get(Rue_.nomRue),
                         nomRue.toLowerCase()));
             }
 
-            if (numeroDeRue != null) {
+            if (numeroDeRue != null && !numeroDeRue.isEmpty()) {
                 predicateList.add(criteriaBuilder.equal(
                         evenementAdresseJoin.get(Adresse_.numeroDeRue),
                         numeroDeRue.toLowerCase()));
             }
 
-            if (numeroNpa != null) {
+            if (numeroNpa != null && !numeroNpa.isEmpty()) {
                 predicateList.add(criteriaBuilder.equal(
                         adresseNpaJoin.get(Npa_.numeroNpa),
                         numeroNpa.toLowerCase()));
@@ -160,19 +173,19 @@ public class EvenementAccess {
                         fin));
             }
 
-            if (details != null) {
+            if (details != null && !details.isEmpty()) {
                 predicateList.add(criteriaBuilder.equal(
                         evenementRoot.get(Evenement_.details),
                         details.toLowerCase()));
             }
 
-            if (nomPriorite != null) {
+            if (nomPriorite != null && !nomPriorite.isEmpty()) {
                 predicateList.add(criteriaBuilder.equal(
                         evenementPrioriteJoin.get(Priorite_.nomPriorite),
                         nomPriorite.toLowerCase()));
             }
 
-            if (nomStatut != null) {
+            if (nomStatut != null && !nomStatut.isEmpty()) {
                 predicateList.add(criteriaBuilder.equal(
                         evenementStatutJoin.get(Statut_.nomStatut),
                         nomStatut.toLowerCase()));
@@ -193,7 +206,7 @@ public class EvenementAccess {
             DatabaseAccess.close(session);
         }
 
-        LOGGER.info(String.format(
+        getLogger().info(String.format(
                 ConfigurationManager.getString("databaseAccess.results"),
                 evenementList != null ? evenementList.size() : 0,
                 Evenement.class.getSimpleName()));
@@ -458,5 +471,9 @@ public class EvenementAccess {
         numeroNpa = adresse != null ? adresse.getNpa().getNumeroNpa() : null;
         nomPriorite = priorite != null ? priorite.getNomPriorite() : null;
         nomStatut = statut != null ? statut.getNomStatut() : null;
+    }
+
+    private static class SingletonHolder {
+        private final static EvenementAccess instance = new EvenementAccess();
     }
 }

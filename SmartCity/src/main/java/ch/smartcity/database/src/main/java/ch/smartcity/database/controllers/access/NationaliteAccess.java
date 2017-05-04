@@ -18,10 +18,22 @@ import java.util.logging.Logger;
 
 public class NationaliteAccess {
 
-    private static final Logger LOGGER;
-
     static {
-        LOGGER = Logger.getLogger(NationaliteAccess.class.getName());
+        ConfigurationManager.initialize();
+    }
+
+    private final Logger logger;
+
+    private NationaliteAccess() {
+        logger = Logger.getLogger(getClass().getName());
+    }
+
+    public static NationaliteAccess getInstance() {
+        return SingletonHolder.instance;
+    }
+
+    private static Logger getLogger() {
+        return getInstance().logger;
     }
 
     public static List<Nationalite> get(String nomNationalite) {
@@ -41,7 +53,7 @@ public class NationaliteAccess {
             Root<Nationalite> nationaliteRoot = criteriaQuery.from(Nationalite.class);
             List<Predicate> predicateList = new ArrayList<>();
 
-            if (nomNationalite != null) {
+            if (nomNationalite != null && !nomNationalite.isEmpty()) {
                 predicateList.add(criteriaBuilder.equal(
                         nationaliteRoot.get(Nationalite_.nomNationalite),
                         nomNationalite.toLowerCase()));
@@ -57,7 +69,7 @@ public class NationaliteAccess {
             DatabaseAccess.close(session);
         }
 
-        LOGGER.info(String.format(
+        getLogger().info(String.format(
                 ConfigurationManager.getString("databaseAccess.results"),
                 nationaliteList != null ? nationaliteList.size() : 0,
                 Nationalite.class.getSimpleName()));
@@ -98,5 +110,9 @@ public class NationaliteAccess {
         if (nomNationalite != null) {
             nationalite.setNomNationalite(nomNationalite);
         }
+    }
+
+    private static class SingletonHolder {
+        private final static NationaliteAccess instance = new NationaliteAccess();
     }
 }

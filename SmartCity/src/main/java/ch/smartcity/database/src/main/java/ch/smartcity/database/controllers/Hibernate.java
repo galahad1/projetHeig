@@ -24,7 +24,7 @@ public class Hibernate {
     private Session session;
 
     private Hibernate() {
-        logger = Logger.getLogger(Hibernate.class.getName());
+        logger = Logger.getLogger(getClass().getName());
 
         try {
             sessionFactory = new Configuration()

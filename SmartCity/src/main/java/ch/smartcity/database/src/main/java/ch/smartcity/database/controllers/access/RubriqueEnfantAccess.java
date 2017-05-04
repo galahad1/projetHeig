@@ -17,11 +17,24 @@ import java.util.logging.Logger;
 
 public class RubriqueEnfantAccess {
 
-    private static final Logger LOGGER;
     private static String nomRubriqueParent;
 
     static {
-        LOGGER = Logger.getLogger(RubriqueEnfantAccess.class.getName());
+        ConfigurationManager.initialize();
+    }
+
+    private final Logger logger;
+
+    private RubriqueEnfantAccess() {
+        logger = Logger.getLogger(getClass().getName());
+    }
+
+    public static RubriqueEnfantAccess getInstance() {
+        return SingletonHolder.instance;
+    }
+
+    private static Logger getLogger() {
+        return getInstance().logger;
     }
 
     public static List<RubriqueEnfant> get(RubriqueParent rubriqueParent, String nomRubriqueEnfant) {
@@ -47,13 +60,13 @@ public class RubriqueEnfantAccess {
                     rubriqueEnfantRoot.join(RubriqueEnfant_.rubriqueParent);
             List<Predicate> predicateList = new ArrayList<>();
 
-            if (nomRubriqueParent != null) {
+            if (nomRubriqueParent != null && !nomRubriqueParent.isEmpty()) {
                 predicateList.add(criteriaBuilder.equal(rubriqueEnfantRubriqueParentJoin.get(
                         RubriqueParent_.nomRubriqueParent),
                         nomRubriqueParent.toLowerCase()));
             }
 
-            if (nomRubriqueEnfant != null) {
+            if (nomRubriqueEnfant != null && !nomRubriqueEnfant.isEmpty()) {
                 predicateList.add(criteriaBuilder.equal(rubriqueEnfantRoot.get(
                         RubriqueEnfant_.nomRubriqueEnfant),
                         nomRubriqueEnfant.toLowerCase()));
@@ -69,7 +82,7 @@ public class RubriqueEnfantAccess {
             DatabaseAccess.close(session);
         }
 
-        LOGGER.info(String.format(
+        getLogger().info(String.format(
                 ConfigurationManager.getString("databaseAccess.results"),
                 rubriqueEnfantList != null ? rubriqueEnfantList.size() : 0,
                 RubriqueEnfant.class.getSimpleName()));
@@ -132,5 +145,9 @@ public class RubriqueEnfantAccess {
 
     private static void checkNull(RubriqueParent rubriqueParent) {
         nomRubriqueParent = rubriqueParent != null ? rubriqueParent.getNomRubriqueParent() : null;
+    }
+
+    private static class SingletonHolder {
+        private final static RubriqueEnfantAccess instance = new RubriqueEnfantAccess();
     }
 }

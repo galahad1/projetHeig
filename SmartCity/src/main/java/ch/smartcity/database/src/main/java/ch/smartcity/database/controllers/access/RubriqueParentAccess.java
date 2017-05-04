@@ -18,10 +18,22 @@ import java.util.logging.Logger;
 
 public class RubriqueParentAccess {
 
-    private static final Logger LOGGER;
-
     static {
-        LOGGER = Logger.getLogger(RubriqueParentAccess.class.getName());
+        ConfigurationManager.initialize();
+    }
+
+    private final Logger logger;
+
+    private RubriqueParentAccess() {
+        logger = Logger.getLogger(getClass().getName());
+    }
+
+    public static RubriqueParentAccess getInstance() {
+        return SingletonHolder.instance;
+    }
+
+    private static Logger getLogger() {
+        return getInstance().logger;
     }
 
     public static List<RubriqueParent> get(String nomRubriqueParent) {
@@ -40,7 +52,7 @@ public class RubriqueParentAccess {
             Root<RubriqueParent> rubriqueParentRoot = criteriaQuery.from(RubriqueParent.class);
             List<Predicate> predicateList = new ArrayList<>();
 
-            if (nomRubriqueParent != null) {
+            if (nomRubriqueParent != null && !nomRubriqueParent.isEmpty()) {
                 predicateList.add(criteriaBuilder.equal(rubriqueParentRoot.get(
                         RubriqueParent_.nomRubriqueParent),
                         nomRubriqueParent.toLowerCase()));
@@ -56,7 +68,7 @@ public class RubriqueParentAccess {
             DatabaseAccess.close(session);
         }
 
-        LOGGER.info(String.format(
+        getLogger().info(String.format(
                 ConfigurationManager.getString("databaseAccess.results"),
                 rubriqueParentList != null ? rubriqueParentList.size() : 0,
                 RubriqueParent.class.getSimpleName()));
@@ -97,5 +109,9 @@ public class RubriqueParentAccess {
         if (nomRubriqueParent != null) {
             rubriqueParent.setNomRubriqueParent(nomRubriqueParent);
         }
+    }
+
+    private static class SingletonHolder {
+        private final static RubriqueParentAccess instance = new RubriqueParentAccess();
     }
 }

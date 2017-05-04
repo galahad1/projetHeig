@@ -15,12 +15,25 @@ import java.util.logging.Logger;
 
 public class ConfianceAccess {
 
-    private static final Logger LOGGER;
     private static String nomUtilisateur;
     private static String nomRubriqueEnfant;
 
     static {
-        LOGGER = Logger.getLogger(ConfianceAccess.class.getName());
+        ConfigurationManager.initialize();
+    }
+
+    private final Logger logger;
+
+    private ConfianceAccess() {
+        logger = Logger.getLogger(getClass().getName());
+    }
+
+    public static ConfianceAccess getInstance() {
+        return SingletonHolder.instance;
+    }
+
+    private static Logger getLogger() {
+        return getInstance().logger;
     }
 
     public static List<Confiance> get(Utilisateur utilisateur,
@@ -54,13 +67,13 @@ public class ConfianceAccess {
                     confianceIdConfianceJoin.join(IdConfiance_.rubriqueEnfant);
             List<Predicate> predicateList = new ArrayList<>();
 
-            if (nomUtilisateur != null) {
+            if (nomUtilisateur != null && !nomUtilisateur.isEmpty()) {
                 predicateList.add(criteriaBuilder.equal(
                         idConfianceUtilisateurJoin.get(Utilisateur_.nomUtilisateur),
                         nomUtilisateur.toLowerCase()));
             }
 
-            if (nomRubriqueEnfant != null) {
+            if (nomRubriqueEnfant != null && !nomRubriqueEnfant.isEmpty()) {
                 predicateList.add(criteriaBuilder.equal(
                         idConfianceRubriqueEnfantJoin.get(RubriqueEnfant_.nomRubriqueEnfant),
                         nomRubriqueEnfant.toLowerCase()));
@@ -81,7 +94,7 @@ public class ConfianceAccess {
             DatabaseAccess.close(session);
         }
 
-        LOGGER.info(String.format(
+        getLogger().info(String.format(
                 ConfigurationManager.getString("databaseAccess.results"),
                 confianceList != null ? confianceList.size() : 0,
                 Confiance.class.getSimpleName()));
@@ -148,5 +161,9 @@ public class ConfianceAccess {
     private static void checkNull(Utilisateur utilisateur, RubriqueEnfant rubriqueEnfant) {
         nomUtilisateur = utilisateur != null ? utilisateur.getNomUtilisateur() : null;
         nomRubriqueEnfant = rubriqueEnfant != null ? rubriqueEnfant.getNomRubriqueEnfant() : null;
+    }
+
+    private static class SingletonHolder {
+        private final static ConfianceAccess instance = new ConfianceAccess();
     }
 }

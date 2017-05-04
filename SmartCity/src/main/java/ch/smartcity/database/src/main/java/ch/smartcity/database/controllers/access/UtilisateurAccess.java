@@ -15,7 +15,6 @@ import java.util.logging.Logger;
 
 public class UtilisateurAccess {
 
-    private static final Logger LOGGER;
     private static String titre;
     private static String abreviation;
     private static String nomSexe;
@@ -25,7 +24,21 @@ public class UtilisateurAccess {
     private static String numeroNpa;
 
     static {
-        LOGGER = Logger.getLogger(UtilisateurAccess.class.getName());
+        ConfigurationManager.initialize();
+    }
+
+    private final Logger logger;
+
+    private UtilisateurAccess() {
+        logger = Logger.getLogger(getClass().getName());
+    }
+
+    public static UtilisateurAccess getInstance() {
+        return SingletonHolder.instance;
+    }
+
+    private static Logger getLogger() {
+        return getInstance().logger;
     }
 
     public static List<Utilisateur> get(Boolean personnePhysique,
@@ -113,31 +126,31 @@ public class UtilisateurAccess {
                         personnePhysique));
             }
 
-            if (avs != null) {
+            if (avs != null && !avs.isEmpty()) {
                 predicateList.add(criteriaBuilder.equal(
                         utilisateurRoot.get(Utilisateur_.avs),
                         avs));
             }
 
-            if (titre != null) {
+            if (titre != null && !titre.isEmpty()) {
                 predicateList.add(criteriaBuilder.equal(
                         utilisateurTitreCivilJoin.get(TitreCivil_.titre),
                         titre.toLowerCase()));
             }
 
-            if (abreviation != null) {
+            if (abreviation != null && !abreviation.isEmpty()) {
                 predicateList.add(criteriaBuilder.equal(
                         utilisateurTitreCivilJoin.get(TitreCivil_.abreviation),
                         abreviation.toLowerCase()));
             }
 
-            if (nomUtilisateur != null) {
+            if (nomUtilisateur != null && !nomUtilisateur.isEmpty()) {
                 predicateList.add(criteriaBuilder.equal(
                         utilisateurRoot.get(Utilisateur_.nomUtilisateur),
                         nomUtilisateur.toLowerCase()));
             }
 
-            if (prenom != null) {
+            if (prenom != null && !prenom.isEmpty()) {
                 predicateList.add(criteriaBuilder.equal(
                         utilisateurRoot.get(Utilisateur_.prenom),
                         prenom.toLowerCase()));
@@ -149,55 +162,55 @@ public class UtilisateurAccess {
                         dateDeNaissance));
             }
 
-            if (nomSexe != null) {
+            if (nomSexe != null && !nomSexe.isEmpty()) {
                 predicateList.add(criteriaBuilder.equal(
                         utilisateurSexeJoin.get(Sexe_.nomSexe),
                         nomSexe.toLowerCase()));
             }
 
-            if (nomNationalite != null) {
+            if (nomNationalite != null && !nomNationalite.isEmpty()) {
                 predicateList.add(criteriaBuilder.equal(
                         utilisateurNationaliteJoin.get(Nationalite_.nomNationalite),
                         nomNationalite.toLowerCase()));
             }
 
-            if (nomRue != null) {
+            if (nomRue != null && !nomRue.isEmpty()) {
                 predicateList.add(criteriaBuilder.equal(
                         adresseRueJoin.get(Rue_.nomRue),
                         nomRue.toLowerCase()));
             }
 
-            if (numeroDeRue != null) {
+            if (numeroDeRue != null && !numeroDeRue.isEmpty()) {
                 predicateList.add(criteriaBuilder.equal(
                         utilisateurAdresseJoin.get(Adresse_.numeroDeRue),
                         numeroDeRue.toLowerCase()));
             }
 
-            if (numeroNpa != null) {
+            if (numeroNpa != null && !numeroNpa.isEmpty()) {
                 predicateList.add(criteriaBuilder.equal(
                         adresseNpaJoin.get(Npa_.numeroNpa),
                         numeroNpa.toLowerCase()));
             }
 
-            if (email != null) {
+            if (email != null && !email.isEmpty()) {
                 predicateList.add(criteriaBuilder.equal(
                         utilisateurRoot.get(Utilisateur_.email),
                         email.toLowerCase()));
             }
 
-            if (pseudo != null) {
+            if (pseudo != null && !pseudo.isEmpty()) {
                 predicateList.add(criteriaBuilder.equal(
                         utilisateurRoot.get(Utilisateur_.pseudo),
                         pseudo.toLowerCase()));
             }
 
-            if (motDePasse != null) {
+            if (motDePasse != null && !motDePasse.isEmpty()) {
                 predicateList.add(criteriaBuilder.equal(
                         utilisateurRoot.get(Utilisateur_.motDePasse),
                         motDePasse.toLowerCase()));
             }
 
-            if (sel != null) {
+            if (sel != null && !sel.isEmpty()) {
                 predicateList.add(criteriaBuilder.equal(
                         utilisateurRoot.get(Utilisateur_.sel),
                         sel.toLowerCase()));
@@ -219,7 +232,7 @@ public class UtilisateurAccess {
             DatabaseAccess.close(session);
         }
 
-        LOGGER.info(String.format(
+        getLogger().info(String.format(
                 ConfigurationManager.getString("databaseAccess.results"),
                 utilisateurList != null ? utilisateurList.size() : 0,
                 Utilisateur.class.getSimpleName()));
@@ -548,5 +561,9 @@ public class UtilisateurAccess {
         nomRue = adresse != null ? adresse.getRue().getNomRue() : null;
         numeroDeRue = adresse != null ? adresse.getNumeroDeRue() : null;
         numeroNpa = adresse != null ? adresse.getNpa().getNumeroNpa() : null;
+    }
+
+    private static class SingletonHolder {
+        private final static UtilisateurAccess instance = new UtilisateurAccess();
     }
 }

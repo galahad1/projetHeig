@@ -72,7 +72,9 @@ import com.itextpdf.layout.element.Image;
 import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.property.TextAlignment;
 
+import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
@@ -80,17 +82,17 @@ public class GenerateurPDF {
 
     /* FIXME : Gestion du chemin !!!! */
     public static final String DEST;
-    public static final String LOGO;
-    private static final ClassLoader CLASS_LOADER;
+    public static final URL LOGO;
     // private String nomRapport = getFromDataBaseName();
     private static String LIEU = "Lausanne";
 
+    // !! TODO: LOAN : Vérifier le bon fonctionnement des modifications !!
     static {
-        CLASS_LOADER = GenerateurGraphique.class.getClassLoader();
-
         try {
-            DEST = CLASS_LOADER.getResource("ch/smartcity/pdf/resources/test.pdf").getPath();
-            LOGO = CLASS_LOADER.getResource("ch/smartcity/pdf/resources/logo.png").getPath();
+            DEST = System.getProperty("user.home") + File.separator + "Documents" + File.separator
+                    + "Smartcity" + File.separator + "test.pdf";
+            LOGO = GenerateurPDF.class.getClassLoader()
+                    .getResource("ch/smartcity/pdf/resources/logo.png");
         } catch (Exception e) {
             e.printStackTrace();
             throw new ExceptionInInitializerError(e);
@@ -117,6 +119,10 @@ public class GenerateurPDF {
      * @throws IOException
      */
     public void createPdf(String dest) throws Exception {
+        File outFile = new File(dest);
+        outFile.getParentFile().mkdirs();
+        outFile.createNewFile();
+
         PdfDocument pdf = new PdfDocument(new PdfWriter(dest));
         PageSize pagesize = PageSize.A4;
 
