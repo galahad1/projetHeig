@@ -6,7 +6,7 @@ import org.hibernate.HibernateException;
 
 import java.util.List;
 
-public class Main {
+public class Database {
 
     public static void main(String[] args) throws HibernateException {
 //        TODO: Pour chaque objet, tester l'obtention

@@ -1,23 +1,14 @@
 package ch.smartcity;
 
-import ch.smartcity.database.controllers.DatabaseAccess;
-import ch.smartcity.database.models.Adresse;
-import org.hibernate.HibernateException;
-
-import java.util.List;
+import ch.smartcity.carte.Carte;
+import ch.smartcity.database.Database;
+import ch.smartcity.pdf.GenerateurPDF;
 
 public class Main {
 
-    public static void main(String[] args) throws HibernateException {
-        try {
-            System.out.println("Adresses\n=======================================================");
-            List<Adresse> adresseList = DatabaseAccess.get(Adresse.class);
-            System.out.println(adresseList);
-            System.out.println("=======================================================\n");
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            DatabaseAccess.close();
-        }
+    public static void main(String[] args) throws Exception {
+        Carte.main(null);
+        Database.main(null);
+        GenerateurPDF.main(null);
     }
 }

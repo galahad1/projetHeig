@@ -29,6 +29,7 @@ public class GraphiqueEnBarres {
      * Méthode principale
      * Crée un graphique en barre
      * Les données sont extraites de la base de données
+     *
      * @return une instance représentant un graphique en barre
      */
     public static JFreeChart cree() {

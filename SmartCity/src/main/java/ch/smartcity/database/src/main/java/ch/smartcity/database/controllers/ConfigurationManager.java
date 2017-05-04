@@ -7,9 +7,12 @@ import java.util.logging.LogManager;
 
 public class ConfigurationManager {
 
+    private static final ClassLoader CLASS_LOADER;
     private static ResourceBundle resourceBundle;
 
     static {
+        CLASS_LOADER = ConfigurationManager.class.getClassLoader();
+
         try {
             loadLoggingProperties("ch/smartcity/database/resources/logging.properties");
             setResourceBundle("ch/smartcity/database/resources/messagesBundles/messageBundle");
@@ -39,7 +42,7 @@ public class ConfigurationManager {
     }
 
     private static void loadLoggingProperties(String loggingPropertiesFile) throws IOException {
-        LogManager.getLogManager().readConfiguration(ConfigurationManager.class.getClassLoader()
+        LogManager.getLogManager().readConfiguration(CLASS_LOADER
                 .getResourceAsStream(loggingPropertiesFile));
     }
 }

@@ -7,13 +7,27 @@ import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
 
 import java.io.File;
+import java.net.URISyntaxException;
 import java.util.Random;
 
 public class GenerateurGraphique {
 
-    public final static String CHEMIN_IMAGE = "image.png";
+    public final static String CHEMIN_IMAGE;
+    private static final ClassLoader CLASS_LOADER;
 
-    public GenerateurGraphique() {
+    static {
+        CLASS_LOADER = GenerateurGraphique.class.getClassLoader();
+
+        try {
+            CHEMIN_IMAGE = CLASS_LOADER.getResource("ch/smartcity/pdf/resources/image.png")
+                    .getPath();
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ExceptionInInitializerError(e);
+        }
+    }
+
+    public GenerateurGraphique() throws URISyntaxException {
 
         Random generateurGraphe = new Random();
         int i = generateurGraphe.nextInt(2);

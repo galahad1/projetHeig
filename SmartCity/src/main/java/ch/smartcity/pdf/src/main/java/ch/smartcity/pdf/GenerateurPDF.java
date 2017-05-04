@@ -55,7 +55,7 @@
  * Présentation intermédiaire
  */
 
-package ch.smartcity.pdf.generateur;
+package ch.smartcity.pdf;
 
 import ch.smartcity.pdf.graphiques.GenerateurGraphique;
 import com.itextpdf.io.font.FontConstants;
@@ -66,7 +66,10 @@ import com.itextpdf.kernel.geom.PageSize;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
-import com.itextpdf.layout.element.*;
+import com.itextpdf.layout.element.AreaBreak;
+import com.itextpdf.layout.element.Cell;
+import com.itextpdf.layout.element.Image;
+import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.property.TextAlignment;
 
 import java.io.IOException;
@@ -76,13 +79,26 @@ import java.time.format.DateTimeFormatter;
 public class GenerateurPDF {
 
     /* FIXME : Gestion du chemin !!!! */
-    public static final String DEST = "test.pdf";
-
+    public static final String DEST;
+    public static final String LOGO;
+    private static final ClassLoader CLASS_LOADER;
     // private String nomRapport = getFromDataBaseName();
     private static String LIEU = "Lausanne";
 
+    static {
+        CLASS_LOADER = GenerateurGraphique.class.getClassLoader();
+
+        try {
+            DEST = CLASS_LOADER.getResource("ch/smartcity/pdf/resources/test.pdf").getPath();
+            LOGO = CLASS_LOADER.getResource("ch/smartcity/pdf/resources/logo.png").getPath();
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ExceptionInInitializerError(e);
+        }
+    }
+
     /* FIXME : Le main doit disparaitre */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
 
         /* Creation of a PDF */
         try {
@@ -95,11 +111,12 @@ public class GenerateurPDF {
     }
 
     /**
-     * Main method. Create a new PDF
+     * Database method. Create a new PDF
+     *
      * @param dest name of the destination's file
      * @throws IOException
      */
-    public void createPdf(String dest) throws IOException {
+    public void createPdf(String dest) throws Exception {
         PdfDocument pdf = new PdfDocument(new PdfWriter(dest));
         PageSize pagesize = PageSize.A4;
 
@@ -119,7 +136,7 @@ public class GenerateurPDF {
 
         /* EN-TÈTE */
         /* Contains logo and name of project */
-        Image logo = new Image(ImageDataFactory.create("logo.png"));
+        Image logo = new Image(ImageDataFactory.create(LOGO));
         logo.scaleAbsolute(110, 15);
 
         Cell tete = new Cell().add("SmartCity").add(logo);

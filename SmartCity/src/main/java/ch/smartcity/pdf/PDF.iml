@@ -11,11 +11,18 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="Maven: com.itextpdf:root:7.0.1" level="project" />
+    <orderEntry type="library" name="Maven: com.itextpdf:barcodes:7.0.2" level="project" />
     <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.13" level="project" />
+    <orderEntry type="library" name="Maven: com.itextpdf:font-asian:7.0.2" level="project" />
+    <orderEntry type="library" name="Maven: com.itextpdf:forms:7.0.2" level="project" />
+    <orderEntry type="library" name="Maven: com.itextpdf:hyph:7.0.2" level="project" />
+    <orderEntry type="library" name="Maven: com.itextpdf:io:7.0.2" level="project" />
+    <orderEntry type="library" name="Maven: com.itextpdf:kernel:7.0.2" level="project" />
+    <orderEntry type="library" name="Maven: com.itextpdf:layout:7.0.2" level="project" />
+    <orderEntry type="library" name="Maven: com.itextpdf:pdfa:7.0.2" level="project" />
+    <orderEntry type="library" name="Maven: com.itextpdf:sign:7.0.2" level="project" />
     <orderEntry type="library" name="Maven: org.jfree:jfreechart:1.0.19" level="project" />
     <orderEntry type="library" name="Maven: org.jfree:jcommon:1.0.23" level="project" />
-    <orderEntry type="module" module-name="Database" />
     <orderEntry type="library" name="Maven: mysql:mysql-connector-java:6.0.6" level="project" />
     <orderEntry type="library" name="Maven: org.apache.commons:commons-lang3:3.5" level="project" />
     <orderEntry type="library" name="Maven: org.hibernate:hibernate-core:5.2.10.Final" level="project" />
