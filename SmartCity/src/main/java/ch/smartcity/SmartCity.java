@@ -1,6 +1,5 @@
 package ch.smartcity;
 
-import ch.smartcity.database.Database;
 import ch.smartcity.graphique.FenetrePrincipale;
 import ch.smartcity.pdf.GenerateurPDF;
 
@@ -22,7 +21,7 @@ public class SmartCity {
 //		fenetre2.frame.dispose();
 //		fenetre.fenetre.setEnabled(true);
 
-        Database.main(null);
+//        Database.main(null);
         GenerateurPDF.main(null);
     }
 }
