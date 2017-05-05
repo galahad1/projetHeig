@@ -36,7 +36,7 @@ public class GenerateurGraphique {
         file.getParentFile().mkdirs();
         file.createNewFile();
         try {
-            ChartUtilities.saveChartAsPNG(file, chart, 800, 600);
+            ChartUtilities.saveChartAsPNG(file, chart, 900, 700);
         } catch (Exception e) {
             // Gestion d'erreur
         }

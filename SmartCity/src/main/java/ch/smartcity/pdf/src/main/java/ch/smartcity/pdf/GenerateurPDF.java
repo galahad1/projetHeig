@@ -231,10 +231,10 @@ public class GenerateurPDF {
         information.setBorder(null);
         information.setFont(PdfFontFactory.createFont(FontConstants.TIMES_BOLD));
 
-        // !! TODO: LOAN : Vérifier le bonne dimension du graphique !!
         GenerateurGraphique graphe = new GenerateurGraphique();
         Image image = new Image(ImageDataFactory.create(graphe.CHEMIN_IMAGE));
-        image.setAutoScale(true);
+        //image.setAutoScale(true);
+        image.scaleAbsolute(350, 250);
         image.setMargins(25, 55, 15, 55);
         information.add(image);
         page2.addCell(information);
