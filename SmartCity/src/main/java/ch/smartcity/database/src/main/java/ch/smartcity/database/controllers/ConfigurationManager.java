@@ -7,18 +7,18 @@ import java.util.logging.LogManager;
 
 public class ConfigurationManager {
 
-    private final String messageBundleFileProperties =
+    private final String messageBundlePropertiesFile =
             "ch/smartcity/database/resources/messagesBundles/messageBundle";
-    private final String loggingFileProperties =
+    private final String loggingPropertiesFile =
             "ch/smartcity/database/resources/logging.properties";
     private final ResourceBundle resourceBundle;
 
     private ConfigurationManager() {
-        resourceBundle = ResourceBundle.getBundle(messageBundleFileProperties, Locale.getDefault());
+        resourceBundle = ResourceBundle.getBundle(messageBundlePropertiesFile, Locale.getDefault());
 
         try {
             LogManager.getLogManager().readConfiguration(getClass().getClassLoader()
-                    .getResourceAsStream(loggingFileProperties));
+                    .getResourceAsStream(loggingPropertiesFile));
         } catch (IOException e) {
             e.printStackTrace();
         }
