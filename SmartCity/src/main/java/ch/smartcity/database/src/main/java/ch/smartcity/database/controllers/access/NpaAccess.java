@@ -18,22 +18,30 @@ import java.util.logging.Logger;
 
 public class NpaAccess {
 
-    static {
-        ConfigurationManager.initialize();
-    }
-
+    private final ConfigurationManager configurationManager;
     private final Logger logger;
+    private final Hibernate hibernate;
 
     private NpaAccess() {
+        configurationManager = ConfigurationManager.getInstance();
         logger = Logger.getLogger(getClass().getName());
+        hibernate = Hibernate.getInstance();
     }
 
     public static NpaAccess getInstance() {
         return SingletonHolder.instance;
     }
 
+    private static ConfigurationManager getConfigurationManager() {
+        return getInstance().configurationManager;
+    }
+
     private static Logger getLogger() {
         return getInstance().logger;
+    }
+
+    private static Hibernate getHibernate() {
+        return getInstance().hibernate;
     }
 
     public static List<Npa> get(String numeroNpa) {
@@ -43,10 +51,10 @@ public class NpaAccess {
         Transaction transaction = null;
 
         try {
-            session = Hibernate.openSession();
+            session = getHibernate().openSession();
             transaction = session.beginTransaction();
 
-            CriteriaBuilder criteriaBuilder = Hibernate.getCriteriaBuilder();
+            CriteriaBuilder criteriaBuilder = getHibernate().getCriteriaBuilder();
             CriteriaQuery<Npa> criteriaQuery = criteriaBuilder.createQuery(Npa.class);
             Root<Npa> npaRoot = criteriaQuery.from(Npa.class);
             List<Predicate> predicateList = new ArrayList<>();
@@ -57,7 +65,7 @@ public class NpaAccess {
             }
 
             criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
-            npaList = Hibernate.createQuery(criteriaQuery).getResultList();
+            npaList = getHibernate().createQuery(criteriaQuery).getResultList();
 
             transaction.commit();
         } catch (Exception e) {
@@ -67,7 +75,7 @@ public class NpaAccess {
         }
 
         getLogger().info(String.format(
-                ConfigurationManager.getString("databaseAccess.results"),
+                getConfigurationManager().getString("databaseAccess.results"),
                 npaList != null ? npaList.size() : 0,
                 Npa.class.getSimpleName()));
 

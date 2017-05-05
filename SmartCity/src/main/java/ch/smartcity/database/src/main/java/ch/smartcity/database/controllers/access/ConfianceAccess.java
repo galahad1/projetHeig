@@ -17,23 +17,30 @@ public class ConfianceAccess {
 
     private static String nomUtilisateur;
     private static String nomRubriqueEnfant;
-
-    static {
-        ConfigurationManager.initialize();
-    }
-
+    private final ConfigurationManager configurationManager;
     private final Logger logger;
+    private final Hibernate hibernate;
 
     private ConfianceAccess() {
+        configurationManager = ConfigurationManager.getInstance();
         logger = Logger.getLogger(getClass().getName());
+        hibernate = Hibernate.getInstance();
     }
 
     public static ConfianceAccess getInstance() {
         return SingletonHolder.instance;
     }
 
+    private static ConfigurationManager getConfigurationManager() {
+        return getInstance().configurationManager;
+    }
+
     private static Logger getLogger() {
         return getInstance().logger;
+    }
+
+    private static Hibernate getHibernate() {
+        return getInstance().hibernate;
     }
 
     public static List<Confiance> get(Utilisateur utilisateur,
@@ -52,10 +59,10 @@ public class ConfianceAccess {
         Transaction transaction = null;
 
         try {
-            session = Hibernate.openSession();
+            session = getHibernate().openSession();
             transaction = session.beginTransaction();
 
-            CriteriaBuilder criteriaBuilder = Hibernate.getCriteriaBuilder();
+            CriteriaBuilder criteriaBuilder = getHibernate().getCriteriaBuilder();
             CriteriaQuery<Confiance> criteriaQuery = criteriaBuilder.createQuery(Confiance.class);
 
             Root<Confiance> confianceRoot = criteriaQuery.from(Confiance.class);
@@ -85,7 +92,7 @@ public class ConfianceAccess {
             }
 
             criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
-            confianceList = Hibernate.createQuery(criteriaQuery).getResultList();
+            confianceList = getHibernate().createQuery(criteriaQuery).getResultList();
 
             transaction.commit();
         } catch (Exception e) {
@@ -95,7 +102,7 @@ public class ConfianceAccess {
         }
 
         getLogger().info(String.format(
-                ConfigurationManager.getString("databaseAccess.results"),
+                getConfigurationManager().getString("databaseAccess.results"),
                 confianceList != null ? confianceList.size() : 0,
                 Confiance.class.getSimpleName()));
 

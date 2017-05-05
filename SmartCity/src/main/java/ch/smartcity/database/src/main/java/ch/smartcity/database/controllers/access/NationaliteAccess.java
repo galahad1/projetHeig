@@ -18,22 +18,30 @@ import java.util.logging.Logger;
 
 public class NationaliteAccess {
 
-    static {
-        ConfigurationManager.initialize();
-    }
-
+    private final ConfigurationManager configurationManager;
     private final Logger logger;
+    private final Hibernate hibernate;
 
     private NationaliteAccess() {
+        configurationManager = ConfigurationManager.getInstance();
         logger = Logger.getLogger(getClass().getName());
+        hibernate = Hibernate.getInstance();
     }
 
     public static NationaliteAccess getInstance() {
         return SingletonHolder.instance;
     }
 
+    private static ConfigurationManager getConfigurationManager() {
+        return getInstance().configurationManager;
+    }
+
     private static Logger getLogger() {
         return getInstance().logger;
+    }
+
+    private static Hibernate getHibernate() {
+        return getInstance().hibernate;
     }
 
     public static List<Nationalite> get(String nomNationalite) {
@@ -43,10 +51,10 @@ public class NationaliteAccess {
         Transaction transaction = null;
 
         try {
-            session = Hibernate.openSession();
+            session = getHibernate().openSession();
             transaction = session.beginTransaction();
 
-            CriteriaBuilder criteriaBuilder = Hibernate.getCriteriaBuilder();
+            CriteriaBuilder criteriaBuilder = getHibernate().getCriteriaBuilder();
             CriteriaQuery<Nationalite> criteriaQuery = criteriaBuilder
                     .createQuery(Nationalite.class);
 
@@ -60,7 +68,7 @@ public class NationaliteAccess {
             }
 
             criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
-            nationaliteList = Hibernate.createQuery(criteriaQuery).getResultList();
+            nationaliteList = getHibernate().createQuery(criteriaQuery).getResultList();
 
             transaction.commit();
         } catch (Exception e) {
@@ -70,7 +78,7 @@ public class NationaliteAccess {
         }
 
         getLogger().info(String.format(
-                ConfigurationManager.getString("databaseAccess.results"),
+                getConfigurationManager().getString("databaseAccess.results"),
                 nationaliteList != null ? nationaliteList.size() : 0,
                 Nationalite.class.getSimpleName()));
 

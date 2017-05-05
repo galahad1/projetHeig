@@ -18,22 +18,30 @@ import java.util.logging.Logger;
 
 public class SexeAccess {
 
-    static {
-        ConfigurationManager.initialize();
-    }
-
+    private final ConfigurationManager configurationManager;
     private final Logger logger;
+    private final Hibernate hibernate;
 
     private SexeAccess() {
+        configurationManager = ConfigurationManager.getInstance();
         logger = Logger.getLogger(getClass().getName());
+        hibernate = Hibernate.getInstance();
     }
 
     public static SexeAccess getInstance() {
         return SingletonHolder.instance;
     }
 
+    private static ConfigurationManager getConfigurationManager() {
+        return getInstance().configurationManager;
+    }
+
     private static Logger getLogger() {
         return getInstance().logger;
+    }
+
+    private static Hibernate getHibernate() {
+        return getInstance().hibernate;
     }
 
     public static List<Sexe> get(String nomSexe) {
@@ -43,10 +51,10 @@ public class SexeAccess {
         Transaction transaction = null;
 
         try {
-            session = Hibernate.openSession();
+            session = getHibernate().openSession();
             transaction = session.beginTransaction();
 
-            CriteriaBuilder criteriaBuilder = Hibernate.getCriteriaBuilder();
+            CriteriaBuilder criteriaBuilder = getHibernate().getCriteriaBuilder();
             CriteriaQuery<Sexe> criteriaQuery = criteriaBuilder
                     .createQuery(Sexe.class);
             Root<Sexe> sexeRoot = criteriaQuery.from(Sexe.class);
@@ -59,7 +67,7 @@ public class SexeAccess {
             }
 
             criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
-            sexeList = Hibernate.createQuery(criteriaQuery).getResultList();
+            sexeList = getHibernate().createQuery(criteriaQuery).getResultList();
 
             transaction.commit();
         } catch (Exception e) {
@@ -69,7 +77,7 @@ public class SexeAccess {
         }
 
         getLogger().info(String.format(
-                ConfigurationManager.getString("databaseAccess.results"),
+                getConfigurationManager().getString("databaseAccess.results"),
                 sexeList != null ? sexeList.size() : 0,
                 Sexe.class.getSimpleName()));
 

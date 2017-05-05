@@ -13,17 +13,15 @@ import java.util.logging.Logger;
 
 public class Hibernate {
 
-    static {
-        ConfigurationManager.initialize();
-    }
-
     private final String hibernateConfigurationXmlFile =
             "ch/smartcity/database/resources/hibernate/hibernate.cfg.xml";
+    private final ConfigurationManager configurationManager;
     private final Logger logger;
     private final SessionFactory sessionFactory;
     private Session session;
 
     private Hibernate() {
+        configurationManager = ConfigurationManager.getInstance();
         logger = Logger.getLogger(getClass().getName());
 
         try {
@@ -38,6 +36,10 @@ public class Hibernate {
 
     public static Hibernate getInstance() {
         return SingletonHolder.instance;
+    }
+
+    private static ConfigurationManager getConfigurationManager() {
+        return getInstance().configurationManager;
     }
 
     private static Logger getLogger() {

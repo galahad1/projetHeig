@@ -22,23 +22,30 @@ public class EvenementAccess {
     private static String numeroNpa;
     private static String nomPriorite;
     private static String nomStatut;
-
-    static {
-        ConfigurationManager.initialize();
-    }
-
+    private final ConfigurationManager configurationManager;
     private final Logger logger;
+    private final Hibernate hibernate;
 
     private EvenementAccess() {
+        configurationManager = ConfigurationManager.getInstance();
         logger = Logger.getLogger(getClass().getName());
+        hibernate = Hibernate.getInstance();
     }
 
     public static EvenementAccess getInstance() {
         return SingletonHolder.instance;
     }
 
+    private static ConfigurationManager getConfigurationManager() {
+        return getInstance().configurationManager;
+    }
+
     private static Logger getLogger() {
         return getInstance().logger;
+    }
+
+    private static Hibernate getHibernate() {
+        return getInstance().hibernate;
     }
 
     public static List<Evenement> get(RubriqueEnfant rubriqueEnfant,
@@ -90,10 +97,10 @@ public class EvenementAccess {
         Transaction transaction = null;
 
         try {
-            session = Hibernate.openSession();
+            session = getHibernate().openSession();
             transaction = session.beginTransaction();
 
-            CriteriaBuilder criteriaBuilder = Hibernate.getCriteriaBuilder();
+            CriteriaBuilder criteriaBuilder = getHibernate().getCriteriaBuilder();
             CriteriaQuery<Evenement> criteriaQuery = criteriaBuilder.createQuery(Evenement.class);
 
             Root<Evenement> evenementRoot = criteriaQuery.from(Evenement.class);
@@ -197,7 +204,7 @@ public class EvenementAccess {
             }
 
             criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
-            evenementList = Hibernate.createQuery(criteriaQuery).getResultList();
+            evenementList = getHibernate().createQuery(criteriaQuery).getResultList();
 
             transaction.commit();
         } catch (Exception e) {
@@ -207,7 +214,7 @@ public class EvenementAccess {
         }
 
         getLogger().info(String.format(
-                ConfigurationManager.getString("databaseAccess.results"),
+                getConfigurationManager().getString("databaseAccess.results"),
                 evenementList != null ? evenementList.size() : 0,
                 Evenement.class.getSimpleName()));
 

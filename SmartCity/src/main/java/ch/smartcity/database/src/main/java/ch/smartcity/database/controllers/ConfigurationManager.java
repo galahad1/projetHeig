@@ -11,7 +11,7 @@ public class ConfigurationManager {
             "ch/smartcity/database/resources/messagesBundles/messageBundle";
     private final String loggingPropertiesFile =
             "ch/smartcity/database/resources/logging.properties";
-    private final ResourceBundle resourceBundle;
+    private ResourceBundle resourceBundle;
 
     private ConfigurationManager() {
         resourceBundle = ResourceBundle.getBundle(messageBundlePropertiesFile, Locale.getDefault());
@@ -28,15 +28,15 @@ public class ConfigurationManager {
         return SingletonHolder.instance;
     }
 
-    public static void initialize() {
-        getInstance();
-    }
-
-    public static ResourceBundle getResourceBundle() {
+    public ResourceBundle getResourceBundle() {
         return getInstance().resourceBundle;
     }
 
-    public static String getString(String key) {
+    public void setResourceBundle(ResourceBundle resourceBundle) {
+        getInstance().resourceBundle = resourceBundle;
+    }
+
+    public String getString(String key) {
         return getResourceBundle().getString(key);
     }
 

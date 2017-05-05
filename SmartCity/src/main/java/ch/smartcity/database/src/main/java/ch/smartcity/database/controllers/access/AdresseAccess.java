@@ -16,23 +16,30 @@ public class AdresseAccess {
 
     private static String nomRue;
     private static String numeroNpa;
-
-    static {
-        ConfigurationManager.initialize();
-    }
-
+    private final ConfigurationManager configurationManager;
     private final Logger logger;
+    private final Hibernate hibernate;
 
     private AdresseAccess() {
+        configurationManager = ConfigurationManager.getInstance();
         logger = Logger.getLogger(getClass().getName());
+        hibernate = Hibernate.getInstance();
     }
 
     public static AdresseAccess getInstance() {
         return SingletonHolder.instance;
     }
 
+    private static ConfigurationManager getConfigurationManager() {
+        return getInstance().configurationManager;
+    }
+
     private static Logger getLogger() {
         return getInstance().logger;
+    }
+
+    private static Hibernate getHibernate() {
+        return getInstance().hibernate;
     }
 
     public static List<Adresse> get(Rue rue, String numeroDeRue, Npa npa) {
@@ -47,10 +54,10 @@ public class AdresseAccess {
         Transaction transaction = null;
 
         try {
-            session = Hibernate.openSession();
+            session = getHibernate().openSession();
             transaction = session.beginTransaction();
 
-            CriteriaBuilder criteriaBuilder = Hibernate.getCriteriaBuilder();
+            CriteriaBuilder criteriaBuilder = getHibernate().getCriteriaBuilder();
             CriteriaQuery<Adresse> criteriaQuery = criteriaBuilder.createQuery(Adresse.class);
 
             Root<Adresse> adresseRoot = criteriaQuery.from(Adresse.class);
@@ -77,7 +84,7 @@ public class AdresseAccess {
             }
 
             criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
-            adresseList = Hibernate.createQuery(criteriaQuery).getResultList();
+            adresseList = getHibernate().createQuery(criteriaQuery).getResultList();
 
             transaction.commit();
         } catch (Exception e) {
@@ -87,7 +94,7 @@ public class AdresseAccess {
         }
 
         getLogger().info(String.format(
-                ConfigurationManager.getString("databaseAccess.results"),
+                getConfigurationManager().getString("databaseAccess.results"),
                 adresseList != null ? adresseList.size() : 0,
                 Adresse.class.getSimpleName()));
 

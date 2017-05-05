@@ -18,22 +18,30 @@ import java.util.logging.Logger;
 
 public class RubriqueParentAccess {
 
-    static {
-        ConfigurationManager.initialize();
-    }
-
+    private final ConfigurationManager configurationManager;
     private final Logger logger;
+    private final Hibernate hibernate;
 
     private RubriqueParentAccess() {
+        configurationManager = ConfigurationManager.getInstance();
         logger = Logger.getLogger(getClass().getName());
+        hibernate = Hibernate.getInstance();
     }
 
     public static RubriqueParentAccess getInstance() {
         return SingletonHolder.instance;
     }
 
+    private static ConfigurationManager getConfigurationManager() {
+        return getInstance().configurationManager;
+    }
+
     private static Logger getLogger() {
         return getInstance().logger;
+    }
+
+    private static Hibernate getHibernate() {
+        return getInstance().hibernate;
     }
 
     public static List<RubriqueParent> get(String nomRubriqueParent) {
@@ -43,10 +51,10 @@ public class RubriqueParentAccess {
         Transaction transaction = null;
 
         try {
-            session = Hibernate.openSession();
+            session = getHibernate().openSession();
             transaction = session.beginTransaction();
 
-            CriteriaBuilder criteriaBuilder = Hibernate.getCriteriaBuilder();
+            CriteriaBuilder criteriaBuilder = getHibernate().getCriteriaBuilder();
             CriteriaQuery<RubriqueParent> criteriaQuery = criteriaBuilder
                     .createQuery(RubriqueParent.class);
             Root<RubriqueParent> rubriqueParentRoot = criteriaQuery.from(RubriqueParent.class);
@@ -59,7 +67,7 @@ public class RubriqueParentAccess {
             }
 
             criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
-            rubriqueParentList = Hibernate.createQuery(criteriaQuery).getResultList();
+            rubriqueParentList = getHibernate().createQuery(criteriaQuery).getResultList();
 
             transaction.commit();
         } catch (Exception e) {
@@ -69,7 +77,7 @@ public class RubriqueParentAccess {
         }
 
         getLogger().info(String.format(
-                ConfigurationManager.getString("databaseAccess.results"),
+                getConfigurationManager().getString("databaseAccess.results"),
                 rubriqueParentList != null ? rubriqueParentList.size() : 0,
                 RubriqueParent.class.getSimpleName()));
 

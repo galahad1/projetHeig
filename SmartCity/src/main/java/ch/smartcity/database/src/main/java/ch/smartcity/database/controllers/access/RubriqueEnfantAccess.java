@@ -18,23 +18,30 @@ import java.util.logging.Logger;
 public class RubriqueEnfantAccess {
 
     private static String nomRubriqueParent;
-
-    static {
-        ConfigurationManager.initialize();
-    }
-
+    private final ConfigurationManager configurationManager;
     private final Logger logger;
+    private final Hibernate hibernate;
 
     private RubriqueEnfantAccess() {
+        configurationManager = ConfigurationManager.getInstance();
         logger = Logger.getLogger(getClass().getName());
+        hibernate = Hibernate.getInstance();
     }
 
     public static RubriqueEnfantAccess getInstance() {
         return SingletonHolder.instance;
     }
 
+    private static ConfigurationManager getConfigurationManager() {
+        return getInstance().configurationManager;
+    }
+
     private static Logger getLogger() {
         return getInstance().logger;
+    }
+
+    private static Hibernate getHibernate() {
+        return getInstance().hibernate;
     }
 
     public static List<RubriqueEnfant> get(RubriqueParent rubriqueParent, String nomRubriqueEnfant) {
@@ -49,10 +56,10 @@ public class RubriqueEnfantAccess {
         Transaction transaction = null;
 
         try {
-            session = Hibernate.openSession();
+            session = getHibernate().openSession();
             transaction = session.beginTransaction();
 
-            CriteriaBuilder criteriaBuilder = Hibernate.getCriteriaBuilder();
+            CriteriaBuilder criteriaBuilder = getHibernate().getCriteriaBuilder();
             CriteriaQuery<RubriqueEnfant> criteriaQuery = criteriaBuilder
                     .createQuery(RubriqueEnfant.class);
             Root<RubriqueEnfant> rubriqueEnfantRoot = criteriaQuery.from(RubriqueEnfant.class);
@@ -73,7 +80,7 @@ public class RubriqueEnfantAccess {
             }
 
             criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
-            rubriqueEnfantList = Hibernate.createQuery(criteriaQuery).getResultList();
+            rubriqueEnfantList = getHibernate().createQuery(criteriaQuery).getResultList();
 
             transaction.commit();
         } catch (Exception e) {
@@ -83,7 +90,7 @@ public class RubriqueEnfantAccess {
         }
 
         getLogger().info(String.format(
-                ConfigurationManager.getString("databaseAccess.results"),
+                getConfigurationManager().getString("databaseAccess.results"),
                 rubriqueEnfantList != null ? rubriqueEnfantList.size() : 0,
                 RubriqueEnfant.class.getSimpleName()));
 

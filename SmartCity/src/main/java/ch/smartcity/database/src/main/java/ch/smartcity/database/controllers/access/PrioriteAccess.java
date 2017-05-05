@@ -18,22 +18,30 @@ import java.util.logging.Logger;
 
 public class PrioriteAccess {
 
-    static {
-        ConfigurationManager.initialize();
-    }
-
+    private final ConfigurationManager configurationManager;
     private final Logger logger;
+    private final Hibernate hibernate;
 
     private PrioriteAccess() {
+        configurationManager = ConfigurationManager.getInstance();
         logger = Logger.getLogger(getClass().getName());
+        hibernate = Hibernate.getInstance();
     }
 
     public static PrioriteAccess getInstance() {
         return SingletonHolder.instance;
     }
 
+    private static ConfigurationManager getConfigurationManager() {
+        return getInstance().configurationManager;
+    }
+
     private static Logger getLogger() {
         return getInstance().logger;
+    }
+
+    private static Hibernate getHibernate() {
+        return getInstance().hibernate;
     }
 
     public static List<Priorite> get(String nomPriorite, Integer niveau) {
@@ -43,10 +51,10 @@ public class PrioriteAccess {
         Transaction transaction = null;
 
         try {
-            session = Hibernate.openSession();
+            session = getHibernate().openSession();
             transaction = session.beginTransaction();
 
-            CriteriaBuilder criteriaBuilder = Hibernate.getCriteriaBuilder();
+            CriteriaBuilder criteriaBuilder = getHibernate().getCriteriaBuilder();
             CriteriaQuery<Priorite> criteriaQuery = criteriaBuilder.createQuery(Priorite.class);
             Root<Priorite> prioriteRoot = criteriaQuery.from(Priorite.class);
             List<Predicate> predicateList = new ArrayList<>();
@@ -64,7 +72,7 @@ public class PrioriteAccess {
             }
 
             criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
-            prioriteList = Hibernate.createQuery(criteriaQuery).getResultList();
+            prioriteList = getHibernate().createQuery(criteriaQuery).getResultList();
 
             transaction.commit();
         } catch (Exception e) {
@@ -74,7 +82,7 @@ public class PrioriteAccess {
         }
 
         getLogger().info(String.format(
-                ConfigurationManager.getString("databaseAccess.results"),
+                getConfigurationManager().getString("databaseAccess.results"),
                 prioriteList != null ? prioriteList.size() : 0,
                 Priorite.class.getSimpleName()));
 

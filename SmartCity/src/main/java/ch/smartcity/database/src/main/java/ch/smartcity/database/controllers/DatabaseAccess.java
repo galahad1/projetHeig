@@ -13,22 +13,30 @@ import java.util.logging.Logger;
 
 public class DatabaseAccess {
 
-    static {
-        ConfigurationManager.initialize();
-    }
-
+    private final ConfigurationManager configurationManager;
     private final Logger logger;
+    private final Hibernate hibernate;
 
     private DatabaseAccess() {
+        configurationManager = ConfigurationManager.getInstance();
         logger = Logger.getLogger(getClass().getName());
+        hibernate = Hibernate.getInstance();
     }
 
     public static DatabaseAccess getInstance() {
         return SingletonHolder.instance;
     }
 
+    private static ConfigurationManager getConfigurationManager() {
+        return getInstance().configurationManager;
+    }
+
     private static Logger getLogger() {
         return getInstance().logger;
+    }
+
+    private static Hibernate getHibernate() {
+        return getInstance().hibernate;
     }
 
     public static <T> T get(Class<T> tClass, Integer id) {
@@ -38,7 +46,7 @@ public class DatabaseAccess {
         Transaction transaction = null;
 
         try {
-            session = Hibernate.openSession();
+            session = getHibernate().openSession();
             transaction = session.beginTransaction();
 
             t = session.get(tClass, id);
@@ -51,7 +59,7 @@ public class DatabaseAccess {
         }
 
         getLogger().info(String.format(
-                ConfigurationManager.getString("databaseAccess.results"),
+                getConfigurationManager().getString("databaseAccess.results"),
                 t != null ? 1 : 0,
                 tClass.getSimpleName()));
 
@@ -65,13 +73,13 @@ public class DatabaseAccess {
         Transaction transaction = null;
 
         try {
-            session = Hibernate.openSession();
+            session = getHibernate().openSession();
             transaction = session.beginTransaction();
 
-            CriteriaBuilder criteriaBuilder = Hibernate.getCriteriaBuilder();
+            CriteriaBuilder criteriaBuilder = getHibernate().getCriteriaBuilder();
             CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(tClass);
             criteriaQuery.from(tClass);
-            tList = Hibernate.createQuery(criteriaQuery).getResultList();
+            tList = getHibernate().createQuery(criteriaQuery).getResultList();
 
             transaction.commit();
         } catch (Exception e) {
@@ -81,7 +89,7 @@ public class DatabaseAccess {
         }
 
         getLogger().info(String.format(
-                ConfigurationManager.getString("databaseAccess.results"),
+                getConfigurationManager().getString("databaseAccess.results"),
                 tList != null ? tList.size() : 0,
                 tClass.getSimpleName()));
 
@@ -93,7 +101,7 @@ public class DatabaseAccess {
         Transaction transaction = null;
 
         try {
-            session = Hibernate.openSession();
+            session = getHibernate().openSession();
             transaction = session.beginTransaction();
 
             session.save(t);
@@ -113,7 +121,7 @@ public class DatabaseAccess {
         Transaction transaction = null;
 
         try {
-            session = Hibernate.openSession();
+            session = getHibernate().openSession();
             transaction = session.beginTransaction();
 
             for (T t : tList) {
@@ -135,7 +143,7 @@ public class DatabaseAccess {
         Transaction transaction = null;
 
         try {
-            session = Hibernate.openSession();
+            session = getHibernate().openSession();
             transaction = session.beginTransaction();
 
             session.update(t);
@@ -155,7 +163,7 @@ public class DatabaseAccess {
         Transaction transaction = null;
 
         try {
-            session = Hibernate.openSession();
+            session = getHibernate().openSession();
             transaction = session.beginTransaction();
 
             for (T t : tList) {
@@ -181,7 +189,7 @@ public class DatabaseAccess {
         Transaction transaction = null;
 
         try {
-            session = Hibernate.openSession();
+            session = getHibernate().openSession();
             transaction = session.beginTransaction();
 
             session.delete(t);
@@ -201,7 +209,7 @@ public class DatabaseAccess {
         Transaction transaction = null;
 
         try {
-            session = Hibernate.openSession();
+            session = getHibernate().openSession();
             transaction = session.beginTransaction();
 
             for (T t : tList) {
@@ -237,7 +245,7 @@ public class DatabaseAccess {
     }
 
     public static void close() throws HibernateException {
-        Hibernate.close();
+        getHibernate().close();
     }
 
     private static void transactionMessage(Transaction transaction) {
@@ -249,7 +257,7 @@ public class DatabaseAccess {
             key = "databaseAccess.transactionRollbacked";
         }
 
-        getLogger().info(ConfigurationManager.getString(key));
+        getLogger().info(getConfigurationManager().getString(key));
     }
 
     private static class SingletonHolder {
