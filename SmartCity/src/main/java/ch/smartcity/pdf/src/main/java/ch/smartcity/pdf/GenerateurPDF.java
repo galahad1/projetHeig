@@ -120,9 +120,9 @@ public class GenerateurPDF {
      * @throws IOException
      */
     public void createPdf(String dest) throws Exception {
-        File outFile = new File(dest);
-        outFile.getParentFile().mkdirs();
-        outFile.createNewFile();
+        File file = new File(dest);
+        file.getParentFile().mkdirs();
+        file.createNewFile();
 
         PdfDocument pdf = new PdfDocument(new PdfWriter(dest));
         PageSize pagesize = PageSize.A4;
