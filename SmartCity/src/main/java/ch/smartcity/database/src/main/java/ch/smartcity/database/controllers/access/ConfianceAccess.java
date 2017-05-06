@@ -171,6 +171,6 @@ public class ConfianceAccess {
     }
 
     private static class SingletonHolder {
-        private final static ConfianceAccess instance = new ConfianceAccess();
+        private static final ConfianceAccess instance = new ConfianceAccess();
     }
 }

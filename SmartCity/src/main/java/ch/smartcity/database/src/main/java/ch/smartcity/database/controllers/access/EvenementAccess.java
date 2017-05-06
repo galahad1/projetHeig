@@ -481,6 +481,6 @@ public class EvenementAccess {
     }
 
     private static class SingletonHolder {
-        private final static EvenementAccess instance = new EvenementAccess();
+        private static final EvenementAccess instance = new EvenementAccess();
     }
 }

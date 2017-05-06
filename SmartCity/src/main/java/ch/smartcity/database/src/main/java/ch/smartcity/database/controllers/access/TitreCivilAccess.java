@@ -133,6 +133,6 @@ public class TitreCivilAccess {
     }
 
     private static class SingletonHolder {
-        private final static TitreCivilAccess instance = new TitreCivilAccess();
+        private static final TitreCivilAccess instance = new TitreCivilAccess();
     }
 }

@@ -102,6 +102,6 @@ public class Hibernate {
     }
 
     private static class SingletonHolder {
-        private final static Hibernate instance = new Hibernate();
+        private static final Hibernate instance = new Hibernate();
     }
 }

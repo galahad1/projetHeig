@@ -120,6 +120,6 @@ public class RueAccess {
     }
 
     private static class SingletonHolder {
-        private final static RueAccess instance = new RueAccess();
+        private static final RueAccess instance = new RueAccess();
     }
 }

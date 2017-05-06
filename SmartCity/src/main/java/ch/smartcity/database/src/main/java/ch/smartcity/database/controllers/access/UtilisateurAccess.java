@@ -571,6 +571,6 @@ public class UtilisateurAccess {
     }
 
     private static class SingletonHolder {
-        private final static UtilisateurAccess instance = new UtilisateurAccess();
+        private static final UtilisateurAccess instance = new UtilisateurAccess();
     }
 }

@@ -160,6 +160,6 @@ public class AdresseAccess {
     }
 
     private static class SingletonHolder {
-        private final static AdresseAccess instance = new AdresseAccess();
+        private static final AdresseAccess instance = new AdresseAccess();
     }
 }

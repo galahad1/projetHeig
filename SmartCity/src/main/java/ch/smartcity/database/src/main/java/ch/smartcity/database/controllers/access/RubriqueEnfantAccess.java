@@ -155,6 +155,6 @@ public class RubriqueEnfantAccess {
     }
 
     private static class SingletonHolder {
-        private final static RubriqueEnfantAccess instance = new RubriqueEnfantAccess();
+        private static final RubriqueEnfantAccess instance = new RubriqueEnfantAccess();
     }
 }

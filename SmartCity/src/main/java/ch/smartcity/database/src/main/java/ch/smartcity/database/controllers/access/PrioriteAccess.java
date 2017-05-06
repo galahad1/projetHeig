@@ -132,6 +132,6 @@ public class PrioriteAccess {
     }
 
     private static class SingletonHolder {
-        private final static PrioriteAccess instance = new PrioriteAccess();
+        private static final PrioriteAccess instance = new PrioriteAccess();
     }
 }

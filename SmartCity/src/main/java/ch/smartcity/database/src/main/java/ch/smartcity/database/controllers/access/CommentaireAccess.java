@@ -192,6 +192,6 @@ public class CommentaireAccess {
     }
 
     private static class SingletonHolder {
-        private final static CommentaireAccess instance = new CommentaireAccess();
+        private static final CommentaireAccess instance = new CommentaireAccess();
     }
 }

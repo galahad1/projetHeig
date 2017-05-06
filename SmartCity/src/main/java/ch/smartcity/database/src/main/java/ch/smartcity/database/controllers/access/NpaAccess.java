@@ -118,6 +118,6 @@ public class NpaAccess {
     }
 
     private static class SingletonHolder {
-        private final static NpaAccess instance = new NpaAccess();
+        private static final NpaAccess instance = new NpaAccess();
     }
 }

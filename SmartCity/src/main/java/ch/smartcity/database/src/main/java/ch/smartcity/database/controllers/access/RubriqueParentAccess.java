@@ -120,6 +120,6 @@ public class RubriqueParentAccess {
     }
 
     private static class SingletonHolder {
-        private final static RubriqueParentAccess instance = new RubriqueParentAccess();
+        private static final RubriqueParentAccess instance = new RubriqueParentAccess();
     }
 }

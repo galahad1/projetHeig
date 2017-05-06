@@ -120,6 +120,6 @@ public class StatutAccess {
     }
 
     private static class SingletonHolder {
-        private final static StatutAccess instance = new StatutAccess();
+        private static final StatutAccess instance = new StatutAccess();
     }
 }

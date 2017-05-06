@@ -121,6 +121,6 @@ public class NationaliteAccess {
     }
 
     private static class SingletonHolder {
-        private final static NationaliteAccess instance = new NationaliteAccess();
+        private static final NationaliteAccess instance = new NationaliteAccess();
     }
 }

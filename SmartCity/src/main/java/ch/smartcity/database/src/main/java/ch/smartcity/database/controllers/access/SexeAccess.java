@@ -120,6 +120,6 @@ public class SexeAccess {
     }
 
     private static class SingletonHolder {
-        private final static SexeAccess instance = new SexeAccess();
+        private static final SexeAccess instance = new SexeAccess();
     }
 }
