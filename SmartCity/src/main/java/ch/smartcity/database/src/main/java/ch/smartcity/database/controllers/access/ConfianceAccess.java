@@ -17,6 +17,7 @@ public class ConfianceAccess {
 
     private static String nomUtilisateur;
     private static String nomRubriqueEnfant;
+
     private final ConfigurationManager configurationManager;
     private final Logger logger;
     private final Hibernate hibernate;

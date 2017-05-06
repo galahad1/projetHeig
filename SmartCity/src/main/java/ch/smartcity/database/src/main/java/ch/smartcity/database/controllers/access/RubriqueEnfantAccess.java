@@ -18,6 +18,7 @@ import java.util.logging.Logger;
 public class RubriqueEnfantAccess {
 
     private static String nomRubriqueParent;
+
     private final ConfigurationManager configurationManager;
     private final Logger logger;
     private final Hibernate hibernate;

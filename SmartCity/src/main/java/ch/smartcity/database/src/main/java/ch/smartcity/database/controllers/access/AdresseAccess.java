@@ -16,6 +16,7 @@ public class AdresseAccess {
 
     private static String nomRue;
     private static String numeroNpa;
+
     private final ConfigurationManager configurationManager;
     private final Logger logger;
     private final Hibernate hibernate;

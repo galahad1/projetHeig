@@ -21,7 +21,7 @@ USE `smartcity` ;
 -- -----------------------------------------------------
 
 SET AUTOCOMMIT=0;
-INSERT INTO `smartcity`.`RubriqueParent` (`nomRubriqueParent`) VALUES ('trafic'),('manifestation'),('chantiers'),('doleances');
+INSERT INTO `smartcity`.`RubriqueParent` (`nomRubriqueParent`) VALUES ('trafic'),('manifestation'),('chantiers'),('doléances');
 COMMIT;
 
 -- -----------------------------------------------------
@@ -93,7 +93,7 @@ COMMIT;
 -- -----------------------------------------------------
 
 SET AUTOCOMMIT=0;
-INSERT INTO `smartcity`.`Nationalite` (`nomNationalite`) VALUES ('afghane'),('albanaise'),('belge'),('britanique'),('canadienne'),('espagnole'),('française'),('italienne'),('russe'),('suisse'),('turque'),('vietnamienne');
+INSERT INTO `smartcity`.`Nationalite` (`nomNationalite`) VALUES ('afghane'),('albanaise'),('allemande'),('belge'),('britanique'),('canadienne'),('espagnole'),('française'),('italienne'),('russe'),('suisse'),('turque'),('vietnamienne');
 COMMIT;
 
 -- -----------------------------------------------------

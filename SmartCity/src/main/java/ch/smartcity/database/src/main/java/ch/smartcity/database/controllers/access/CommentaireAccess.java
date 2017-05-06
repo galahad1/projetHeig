@@ -17,6 +17,7 @@ public class CommentaireAccess {
 
     private static String nomEvenement;
     private static String nomUtilisateur;
+
     private final ConfigurationManager configurationManager;
     private final Logger logger;
     private final Hibernate hibernate;

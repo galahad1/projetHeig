@@ -22,6 +22,7 @@ public class UtilisateurAccess {
     private static String nomRue;
     private static String numeroDeRue;
     private static String numeroNpa;
+
     private final ConfigurationManager configurationManager;
     private final Logger logger;
     private final Hibernate hibernate;

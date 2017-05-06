@@ -22,6 +22,7 @@ public class EvenementAccess {
     private static String numeroNpa;
     private static String nomPriorite;
     private static String nomStatut;
+
     private final ConfigurationManager configurationManager;
     private final Logger logger;
     private final Hibernate hibernate;
@@ -46,6 +47,31 @@ public class EvenementAccess {
 
     private static Hibernate getHibernate() {
         return getInstance().hibernate;
+    }
+
+    public static List<Evenement> getByStatut(String nomStatut) {
+        List<Evenement> evenementList = null;
+        List<Statut> statutList = StatutAccess.get(nomStatut);
+
+        if (statutList != null && statutList.size() == 1) {
+            evenementList = get(
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    null,
+                    null,
+                    null,
+                    null,
+                    "",
+                    "",
+                    nomStatut,
+                    null);
+        }
+
+        return evenementList;
     }
 
     public static List<Evenement> get(RubriqueEnfant rubriqueEnfant,
