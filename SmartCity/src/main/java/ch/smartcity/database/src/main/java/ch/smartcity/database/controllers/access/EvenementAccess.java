@@ -49,6 +49,21 @@ public class EvenementAccess {
         return getInstance().hibernate;
     }
 
+    public static List<Evenement> getByFin(Calendar fin) {
+        return get(null,
+                null,
+                "",
+                null,
+                null,
+                null,
+                null,
+                fin,
+                null,
+                null,
+                null,
+                null);
+    }
+
     public static List<Evenement> getByStatut(String nomStatut) {
         List<Evenement> evenementList = null;
         List<Statut> statutList = StatutAccess.get(nomStatut);

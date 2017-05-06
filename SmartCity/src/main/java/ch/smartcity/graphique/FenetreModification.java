@@ -1,9 +1,10 @@
 package ch.smartcity.graphique;
 
-import ch.smartcity.database.controllers.DatabaseAccess;
+import ch.smartcity.database.controllers.access.EvenementAccess;
 import ch.smartcity.database.models.Adresse;
 import ch.smartcity.database.models.Evenement;
 import ch.smartcity.database.models.Npa;
+import ch.smartcity.database.models.Statut_;
 import com.toedter.calendar.JCalendar;
 
 import javax.swing.*;
@@ -307,13 +308,23 @@ public class FenetreModification {
         if (context == 0) // ajout/modif TODO: constantes
         {
             //TODO recuperer seulements les evenements encore acifs
-            evenementList = DatabaseAccess.get(Evenement.class); // recupere tout les evenements actifs
+
+            //TODO <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+            evenementList = EvenementAccess.getByFin(Calendar.getInstance());
+//            evenementList = DatabaseAccess.get(Evenement.class); // recupere tout les evenements actifs
+            //TODO <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
             previews = previewEvenement(evenementList); // previsualisation des evenements
             previews.add(0, "Ajouter un événement");
         } else // en attente
         {
             //TODO recuperation de la liste des evenements en attente pour la fenetre de en attente
-            evenementList = DatabaseAccess.get(Evenement.class); // recupere tout les evenements actifs
+
+            //TODO <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+            evenementList = EvenementAccess.getByStatut(Statut_.EN_ATTENTE); // recupere tout les evenements en attente
+//            evenementList = DatabaseAccess.get(Evenement.class); // recupere tout les evenements actifs
+            //TODO <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
             previews = previewEvenement(evenementList); // previsualisation des evenements
             previews.add(0, "Selectionner");
             etatChamps(false);
@@ -577,7 +588,7 @@ public class FenetreModification {
 
     /**
      * @param texte
-     * @param regex
+     * @param taillemax
      * @return
      * @brief
      */
