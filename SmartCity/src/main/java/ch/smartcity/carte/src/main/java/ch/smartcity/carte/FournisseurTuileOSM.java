@@ -16,22 +16,22 @@ import java.net.URL;
 public final class FournisseurTuileOSM implements FournisseurTuile {
     private static final String ERROR_TILE_PNG_FILE =
             "ch/smartcity/carte/resources/image/error-tile.png";
-    final String baseServerAdress;
+    final String serveurTuileURL;
 
     /**
      * Construit un fournisseur de tuiles OSM
      *
-     * @param baseServerAdress L'adresse de base du serveur
+     * @param serveurURL L'URL du serveur de tuile
      */
-    public FournisseurTuileOSM(String baseServerAdress) {
-        this.baseServerAdress = baseServerAdress;
+    public FournisseurTuileOSM(String serveurURL) {
+        this.serveurTuileURL = serveurURL;
     }
 
     @Override
-    public Tuile tileAt(int zoom, int x, int y) {
+    public Tuile getTuile(int zoom, int x, int y) {
         BufferedImage image = null;
         try {
-            URL url = new URL(baseServerAdress + "/" + zoom + "/" + x + "/" + y + ".png");
+            URL url = new URL(serveurTuileURL + "/" + zoom + "/" + x + "/" + y + ".png");
             image = ImageIO.read(url);
         } catch (IOException e) {
             try {

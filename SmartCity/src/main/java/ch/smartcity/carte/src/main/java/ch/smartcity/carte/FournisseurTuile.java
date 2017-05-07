@@ -15,5 +15,5 @@ public interface FournisseurTuile {
      * @param y    Coordonnée y de la tuile
      * @return La tuile de coordonnées données
      */
-    Tuile tileAt(int zoom, int x, int y);
+    Tuile getTuile(int zoom, int x, int y);
 }

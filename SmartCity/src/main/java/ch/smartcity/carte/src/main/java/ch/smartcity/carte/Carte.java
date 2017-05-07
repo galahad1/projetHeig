@@ -11,8 +11,8 @@ import static java.lang.Math.pow;
 public final class Carte {
     private static final String OSM_TILE_URL = "http://a.tile.openstreetmap.org/";
     private static final int INITIAL_ZOOM = 14;
-    // ouest est / nord sud
-    private static final PointWGS84 INITIAL_POSITION = new PointWGS84(Math.toRadians(6.58), Math.toRadians(46.545));
+    //  nord sud / ouest est
+    private static final PointWGS84 INITIAL_POSITION = new PointWGS84(46.545, 6.58);
     private final FournisseurTuilePointCouleur fournisseurTuilePointCouleur;
     private final CarteTuilesComponent carteTuilesComponent;
     private Point mousePos = new Point();
@@ -22,16 +22,16 @@ public final class Carte {
         carteTuilesComponent = new CarteTuilesComponent(INITIAL_ZOOM);
 
         FournisseurTuile bgTileProvider = new FournisseurTuileCache(new FournisseurTuileOSM(OSM_TILE_URL));
-        carteTuilesComponent.addTileProviders(bgTileProvider);
+        carteTuilesComponent.ajoutFournisseurTuile(bgTileProvider);
 
         // construire ici l'ArrayList des Events avec une EventsBuilder
         ArrayList<Evenement> evenements = new ArrayList<>();
-        PointWGS84 p1 = new PointWGS84(Math.toRadians(6.6303347592), Math.toRadians(46.5206173997));
-        PointWGS84 p2 = new PointWGS84(Math.toRadians(6.62774113075), Math.toRadians(46.5100746361));
-        PointWGS84 p3 = new PointWGS84(Math.toRadians(6.63031), Math.toRadians(46.5068));
-        PointWGS84 p4 = new PointWGS84(Math.toRadians(6.63374113075), Math.toRadians(46.52400746361));
-        PointWGS84 p5 = new PointWGS84(Math.toRadians(6.628), Math.toRadians(46.511));
-        PointWGS84 p6 = new PointWGS84(Math.toRadians(6.625), Math.toRadians(46.515));
+        PointWGS84 p1 = new PointWGS84(46.52304, 6.58939);
+        PointWGS84 p2 = new PointWGS84(46.51665, 6.61917);
+        PointWGS84 p3 = new PointWGS84(46.52073, 6.63069);
+        PointWGS84 p4 = new PointWGS84(46.51717, 6.62923);
+        PointWGS84 p5 = new PointWGS84(46.50987, 6.6373);
+        PointWGS84 p6 = new PointWGS84(46.51716, 6.60333);
         Evenement e1 = new Evenement("Accidents", p1, 1);
         Evenement e2 = new Evenement("Travaux", p2, 2);
         Evenement e3 = new Evenement("Manifestations", p3, 3);
@@ -47,7 +47,7 @@ public final class Carte {
 
         fournisseurTuilePointCouleur = new FournisseurTuilePointCouleur(evenements);
 
-        carteTuilesComponent.addTileProviders(fournisseurTuilePointCouleur);
+        carteTuilesComponent.ajoutFournisseurTuile(fournisseurTuilePointCouleur);
 
     }
 
@@ -55,7 +55,7 @@ public final class Carte {
         final JViewport viewPort = new JViewport();
         viewPort.setView(carteTuilesComponent);
         PointOSM startingPosOSM = INITIAL_POSITION.toOSM(carteTuilesComponent.zoom());
-        viewPort.setViewPosition(new Point(startingPosOSM.roundedX(), startingPosOSM.roundedY()));
+        viewPort.setViewPosition(new Point(startingPosOSM.arrondiX(), startingPosOSM.arrondiY()));
 
         final JLayeredPane layeredPane = new JLayeredPane();
         layeredPane.setPreferredSize(new Dimension(1190, 765));

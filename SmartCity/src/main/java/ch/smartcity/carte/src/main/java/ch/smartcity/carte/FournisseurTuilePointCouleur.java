@@ -13,7 +13,7 @@ import java.util.ArrayList;
  * @author Jérémie Zanone
  */
 public final class FournisseurTuilePointCouleur implements FournisseurTuile {
-    public final static int DIMEN = 256;
+    public final static int TAILLE_TUILE = 256;
 
     private ArrayList<Evenement> evenements;
     private Color[] couleur = {Color.RED, Color.ORANGE, Color.YELLOW, Color.GREEN, Color.CYAN, Color.BLUE,
@@ -30,17 +30,17 @@ public final class FournisseurTuilePointCouleur implements FournisseurTuile {
     }
 
     @Override
-    public Tuile tileAt(int zoom, int x, int y) {
+    public Tuile getTuile(int zoom, int x, int y) {
         // création d'une tuile
-        BufferedImage i = new BufferedImage(DIMEN, DIMEN, BufferedImage.TYPE_INT_ARGB);
+        BufferedImage image = new BufferedImage(TAILLE_TUILE, TAILLE_TUILE, BufferedImage.TYPE_INT_ARGB);
 
-        Graphics2D g = i.createGraphics();
+        Graphics2D g = image.createGraphics();
 
         int rayon = 5;
         for (Evenement e : evenements) {
             g.setColor(couleur[e.getCategorie()]);
-            Ellipse2D ellipse = new Ellipse2D.Double(e.position().toOSM(zoom).x() - DIMEN * x - rayon,
-                    e.position().toOSM(zoom).y() - DIMEN * y - rayon, rayon * 2, rayon * 2);
+            Ellipse2D ellipse = new Ellipse2D.Double(e.getPosition().toOSM(zoom).x() - TAILLE_TUILE * x - rayon,
+                    e.getPosition().toOSM(zoom).y() - TAILLE_TUILE * y - rayon, rayon * 2, rayon * 2);
             g.fill(ellipse);
 
             // contour en noir
@@ -50,21 +50,21 @@ public final class FournisseurTuilePointCouleur implements FournisseurTuile {
             g.setColor(Color.white);
             g.setFont(new Font(Font.SERIF, 1, 15));
             // permet d'avoir un bord blanc autour de l'écriture
-            g.drawString(e.name(), e.position().toOSM(zoom).roundedX() - DIMEN * x - 6,
-                    e.position().toOSM(zoom).roundedY() - DIMEN * y - 9);
-            g.drawString(e.name(), e.position().toOSM(zoom).roundedX() - DIMEN * x - 6,
-                    e.position().toOSM(zoom).roundedY() - DIMEN * y - 7);
-            g.drawString(e.name(), e.position().toOSM(zoom).roundedX() - DIMEN * x - 4,
-                    e.position().toOSM(zoom).roundedY() - DIMEN * y - 9);
-            g.drawString(e.name(), e.position().toOSM(zoom).roundedX() - DIMEN * x - 4,
-                    e.position().toOSM(zoom).roundedY() - DIMEN * y - 7);
+            g.drawString(e.getNom(), e.getPosition().toOSM(zoom).arrondiX() - TAILLE_TUILE * x - 6,
+                    e.getPosition().toOSM(zoom).arrondiY() - TAILLE_TUILE * y - 9);
+            g.drawString(e.getNom(), e.getPosition().toOSM(zoom).arrondiX() - TAILLE_TUILE * x - 6,
+                    e.getPosition().toOSM(zoom).arrondiY() - TAILLE_TUILE * y - 7);
+            g.drawString(e.getNom(), e.getPosition().toOSM(zoom).arrondiX() - TAILLE_TUILE * x - 4,
+                    e.getPosition().toOSM(zoom).arrondiY() - TAILLE_TUILE * y - 9);
+            g.drawString(e.getNom(), e.getPosition().toOSM(zoom).arrondiX() - TAILLE_TUILE * x - 4,
+                    e.getPosition().toOSM(zoom).arrondiY() - TAILLE_TUILE * y - 7);
             g.setColor(Color.black);
-            g.drawString(e.name(), e.position().toOSM(zoom).roundedX() - DIMEN * x - 5,
-                    e.position().toOSM(zoom).roundedY() - DIMEN * y - 8);
+            g.drawString(e.getNom(), e.getPosition().toOSM(zoom).arrondiX() - TAILLE_TUILE * x - 5,
+                    e.getPosition().toOSM(zoom).arrondiY() - TAILLE_TUILE * y - 8);
             ;
         }
 
-        return new Tuile(zoom, x, y, i);
+        return new Tuile(zoom, x, y, image);
     }
 
 }

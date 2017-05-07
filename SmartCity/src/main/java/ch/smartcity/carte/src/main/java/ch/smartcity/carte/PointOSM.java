@@ -1,6 +1,7 @@
 package ch.smartcity.carte;
 
-import static java.lang.Math.*;
+import static java.lang.Math.pow;
+import static java.lang.Math.round;
 
 
 /**
@@ -34,7 +35,6 @@ public final class PointOSM {
     }
 
     /**
-     * Retourne ce point mais dans un systéme de coordonnées OSM.
      *
      * @param zoom Le niveau de zoom du systéme de coordonnées OSM.
      * @return retourne la taille de l'image de la carte du monde au niveau de zoom donné.
@@ -74,7 +74,7 @@ public final class PointOSM {
      * @return l'entier le plus proche de la coordonnée x du point.
      */
 
-    public int roundedX() {
+    public int arrondiX() {
         return (int) round(x);
     }
 
@@ -84,58 +84,10 @@ public final class PointOSM {
      * @return l'entier le plus proche de la coordonnée y du point.
      */
 
-    public int roundedY() {
+    public int arrondiY() {
         return (int) round(y);
     }
 
-    /**
-     * Retourne le niveau de zoom du systéme de coordonnées du point.
-     *
-     * @return retourne le niveau de zoom du systéme de coordonnées du point.
-     */
 
-    public int zoom() {
-        return zoom;
-    }
 
-    /**
-     * Retourne ce méme point mais au niveau de zoom passé en argument.
-     *
-     * @param newZoom Le niveau de zoom du systéme de coordonnées OSM.
-     * @return Retourne le point au niveau de zoom passé en argument..
-     * @throws IllegalArgumentException Si le zoom est négatif.
-     */
-
-    public PointOSM atZoom(int newZoom) {
-        if (newZoom < 0)
-            throw new IllegalArgumentException();
-        int diffZoom = newZoom - zoom;
-        double x = this.x * pow(2, diffZoom);
-        double y = this.y * pow(2, diffZoom);
-        return new PointOSM(newZoom, x, y);
-    }
-
-    /**
-     * Retourne ce point mais dans un systéme de coordonnées WGS 84.
-     *
-     * @return retourne le point dans un systéme de coordonnées WGS 84.
-     */
-
-    public PointWGS84 toWGS84() {
-
-        double s = pow(2, zoom + 8);
-        double longitude = ((2 * PI) / s) * x - PI;
-        double latitude = atan(sinh(PI - ((2 * PI) / s) * y));
-        return new PointWGS84(longitude, latitude);
-    }
-
-    /**
-     * Redéfinit la méthode toString et retourne une représentation textuelle du point.
-     *
-     * @return une représentation textuelle du point
-     */
-
-    public String toString() {
-        return "(" + zoom + "," + x + "," + y + ")";
-    }
 }

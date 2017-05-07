@@ -15,7 +15,7 @@ import java.util.List;
 public final class CarteTuilesComponent extends JComponent {
 
     private static final long serialVersionUID = 1L;
-    private final int TILESIZE = 256;
+    private final int TAILLE_TUILE = 256;
     private int zoom;
     private List<FournisseurTuile> fournisseurTuiles;
 
@@ -65,7 +65,7 @@ public final class CarteTuilesComponent extends JComponent {
      *
      * @param fournisseurTuile Un nouveau fournisseur de tuiles de la carte
      */
-    public void addTileProviders(FournisseurTuile fournisseurTuile) {
+    public void ajoutFournisseurTuile(FournisseurTuile fournisseurTuile) {
         fournisseurTuiles.add(fournisseurTuile);
         repaint();
     }
@@ -84,17 +84,17 @@ public final class CarteTuilesComponent extends JComponent {
         // fenétre de visualisation du component
         Rectangle visibleRect = getVisibleRect();
 
-        int baseX = (visibleRect.x / TILESIZE) * TILESIZE;
-        int baseY = (visibleRect.y / TILESIZE) * TILESIZE;
+        int baseX = (visibleRect.x / TAILLE_TUILE) * TAILLE_TUILE;
+        int baseY = (visibleRect.y / TAILLE_TUILE) * TAILLE_TUILE;
         int maxX = visibleRect.x + visibleRect.width;
         int maxY = visibleRect.y + visibleRect.height;
 
         for (FournisseurTuile fournisseurTuile : fournisseurTuiles) {
-            for (int x = baseX; x < maxX; x += TILESIZE) {
-                for (int y = baseY; y < maxY; y += TILESIZE) {
-                    int tilePosX = x / TILESIZE;
-                    int tilePosY = y / TILESIZE;
-                    Tuile t = fournisseurTuile.tileAt(zoom, tilePosX, tilePosY);
+            for (int x = baseX; x < maxX; x += TAILLE_TUILE) {
+                for (int y = baseY; y < maxY; y += TAILLE_TUILE) {
+                    int tilePosX = x / TAILLE_TUILE;
+                    int tilePosY = y / TAILLE_TUILE;
+                    Tuile t = fournisseurTuile.getTuile(zoom, tilePosX, tilePosY);
                     g0.drawImage(t.image(), x, y, null);
 
                 }

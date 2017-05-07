@@ -32,9 +32,8 @@ public final class Tuile {
         this.y = y;
 
         ColorModel cm = image.getColorModel();
-        boolean isAlphaPremultiplied = cm.isAlphaPremultiplied();
         WritableRaster raster = image.copyData(null);
-        this.image = new BufferedImage(cm, raster, isAlphaPremultiplied, null);     // copie profonde de l'image
+        this.image = new BufferedImage(cm, raster, cm.isAlphaPremultiplied(), null);     // copie profonde de l'image
 
     }
 

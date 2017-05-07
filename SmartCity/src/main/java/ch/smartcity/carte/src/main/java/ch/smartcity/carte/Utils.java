@@ -26,29 +26,6 @@ public final class Utils {
         return log(x + sqrt(1 + pow(x, 2)));
     }
 
-    /**
-     * retourne le resultat de la fonction haversin
-     *
-     * @param x la valeur x du point pour lequel calculer haversin
-     * @return La valeur de la fonction haversin
-     */
-    public static double haversin(double x) {
-        return pow(sin(x / 2), 2);
-    }
-
-    /**
-     * convertit un angle de radians vers degré
-     *
-     * @param angle Une valeur d'angle en radians
-     * @return L'angle en degré
-     */
-    public static double radToDeg(double angle) {
-        return 180 * angle / PI;
-    }
-
-    public static double degToRad(double angle) {
-        return PI * angle / 180;
-    }
 
 
 }

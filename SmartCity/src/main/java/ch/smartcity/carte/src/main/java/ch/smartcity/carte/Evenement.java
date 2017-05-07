@@ -7,18 +7,18 @@ package ch.smartcity.carte;
  * @author Jérémie Zanone
  */
 public final class Evenement {
-    private String name;
+    private String nom;
     private PointWGS84 position;
     private int categorie;
 
     /**
-     * Construit un nouvel événement avec le nom et la position donnés
+     * Construit un nouvel événement avec le nom et la getPosition donnés
      *
-     * @param name     Le nom de l'événement
-     * @param position La position de l'événement instance de la classe WGS84
+     * @param nom     Le nom de l'événement
+     * @param position La getPosition de l'événement instance de la classe WGS84
      */
-    Evenement(String name, PointWGS84 position, int categorie) {
-        this.name = name;
+    Evenement(String nom, PointWGS84 position, int categorie) {
+        this.nom = nom;
         this.position = position;
         this.categorie = categorie;
     }
@@ -28,8 +28,8 @@ public final class Evenement {
      *
      * @return le nom de l'événement
      */
-    public String name() {
-        return name;
+    public String getNom() {
+        return nom;
     }
 
     /**
@@ -37,7 +37,7 @@ public final class Evenement {
      *
      * @return la position de l'événement
      */
-    public PointWGS84 position() {
+    public PointWGS84 getPosition() {
         return position;
     }
 

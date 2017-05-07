@@ -10,14 +10,14 @@ import java.util.Map;
  * @author Jérémie Zanone
  */
 public final class TuileCache {
-    private final int MAX_SIZE = 5000; // nombre de tuile en cache
+    private final int TAILLE_MAX = 5000; // nombre de tuile en cache
     private LinkedHashMap<Long, Tuile> cache = new LinkedHashMap<Long, Tuile>() {
         private static final long serialVersionUID = 1L;
 
         @Override
         //redéfinie la taile maximum du HashMap (FIFO)
         protected boolean removeEldestEntry(Map.Entry<Long, Tuile> e) {
-            return size() > MAX_SIZE;
+            return size() > TAILLE_MAX;
         }
     };
 
@@ -30,7 +30,7 @@ public final class TuileCache {
      * @param tuile La tuile é mémoriser
      */
     public void put(int zoom, int x, int y, Tuile tuile) {
-        cache.put(packCoordinates(zoom, x, y), tuile);
+        cache.put(getCleCoordonnee(zoom, x, y), tuile);
     }
 
     /**
@@ -46,12 +46,22 @@ public final class TuileCache {
      * maximale)
      */
     public Tuile get(int zoom, int x, int y) {
-        return cache.get(packCoordinates(zoom, x, y));
+        return cache.get(getCleCoordonnee(zoom, x, y));
     }
 
     // Encode les coordonnées en un seul long, 2 chiffres pour le zoom, 7
     // chiffres pour la coordonnée x et autant pour la coordonnées y
-    private long packCoordinates(int zoom, int x, int y) {
+    //
+
+    /**
+     * Permet de retrouver la clé de la tuile selon les coordonées
+     *
+     * @param zoom
+     * @param x
+     * @param y
+     * @return La clé du Hashmap pour retrouvé la tuile
+     */
+    private long getCleCoordonnee(int zoom, int x, int y) {
         return (long) (zoom * Math.pow(10, 14) + x * Math.pow(10, 7) + y);
     }
 }

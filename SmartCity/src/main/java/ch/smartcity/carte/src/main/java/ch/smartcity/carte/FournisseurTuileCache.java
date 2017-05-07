@@ -23,14 +23,14 @@ public final class FournisseurTuileCache implements FournisseurTuile {
     }
 
     @Override
-    public Tuile tileAt(int zoom, int x, int y) {
-        Tuile cachedTile = tuileCache.get(zoom, x, y);
-        if (cachedTile != null) {
-            return cachedTile;
+    public Tuile getTuile(int zoom, int x, int y) {
+        Tuile tuileEnCache = tuileCache.get(zoom, x, y);
+        if (tuileEnCache != null) {
+            return tuileEnCache;
         }
-        Tuile notCachedTile = fournisseurTuile.tileAt(zoom, x, y);
-        tuileCache.put(zoom, x, y, notCachedTile);
-        return notCachedTile;
+        Tuile nouvelleTuile = fournisseurTuile.getTuile(zoom, x, y);
+        tuileCache.put(zoom, x, y, nouvelleTuile);
+        return nouvelleTuile;
     }
 
 }

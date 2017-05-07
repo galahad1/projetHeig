@@ -9,33 +9,21 @@ package ch.smartcity.carte;
 import static java.lang.Math.*;
 
 public final class PointWGS84 {
-    private final double longitude;
+
     private final double latitude;
+    private final double longitude;
 
-    public PointWGS84(double longitude, double latitude) {
 
-        if (longitude < -PI || longitude > PI)
+    public PointWGS84(double latitude, double longitude) {
+        if (latitude < -90 || latitude > 90)
             throw new IllegalArgumentException();
 
-        if (latitude < -(PI / 2) || latitude > PI / 2)
+        if (longitude < -180 || longitude > 180)
             throw new IllegalArgumentException();
 
-        this.longitude = longitude;
-        this.latitude = latitude;
-    }
 
-    public double longitude() {
-        return longitude;
-    }
-
-    public double latitude() {
-        return latitude;
-    }
-
-    public double distanceTo(PointWGS84 that) {
-        return 2 * 6378137 * asin(sqrt(Utils.haversin(latitude - that.latitude())
-                + cos(latitude) * cos(that.latitude())
-                * Utils.haversin(longitude - that.longitude())));
+        this.longitude = Math.toRadians(longitude);
+        this.latitude = Math.toRadians(latitude);
     }
 
     public PointOSM toOSM(int zoom) {
@@ -47,7 +35,4 @@ public final class PointWGS84 {
         return new PointOSM(zoom, x, y);
     }
 
-    public String toString() {
-        return "(" + Utils.radToDeg(longitude) + "," + Utils.radToDeg(latitude) + ")";
-    }
 }
