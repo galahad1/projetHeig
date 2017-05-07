@@ -120,7 +120,15 @@ COMMIT;
 -- -----------------------------------------------------
 
 SET AUTOCOMMIT=0;
-INSERT INTO `smartcity`.`Evenement` (`idRubriqueEnfant`,`idUtilisateur`,`nomEvenement`,`idAdresse`,`latitude`,`longitude`,`debut`,`details`,`idPriorite`,`idStatut`) VALUES (1,1,'acidents dans les deux sens sur l\'a1',1,3.14,3.14,NOW(),'plusieurs camions sont retournés, plusieurs voitures se sont encastrées dans la station service',4,1);
+INSERT INTO `smartcity`.`Evenement` 
+(`idRubriqueEnfant`,`idUtilisateur`,`nomEvenement`,`idAdresse`,`latitude`,`longitude`,`debut`,`details`,`idPriorite`,`idStatut`) VALUES 
+(1,1,'accidents entrée autoroute bloqué',1,46.52304, 6.58939,NOW(),'Une voiture s\'est encastrée dans un bus',4,1),
+(1,1,'accidents tunnel Malley fermé',1,46.52651, 6.60319,NOW(),'Deux voitures ont fait un frontal, le tunnel est fermé',4,1),
+(2,1,'travaux rond-point',1,46.51665, 6.61917,NOW(),'construction d\'un rond-point, trafic ralenti',4,1),
+(3,1,'manifestation WWF',1,46.52073, 6.63069,NOW(),'Un camps avec des tentes ont été installé par les manifestants',4,1),
+(4,1,'rénovation de la façade de la gare',1,46.51717, 6.62923,NOW(),'Endroit bruyant',4,1),
+(5,1,'construction d\'un nouveau batiment',1,46.50987, 6.6373,NOW(),'Construction d\'un batiment pour le minage de bitcoin',4,1),
+(6,1,'doléance banc cassé',1,46.51716, 6.60333,NOW(),'Le banc en bois a été scié en deux',4,1);
 COMMIT;
 
 -- -----------------------------------------------------
