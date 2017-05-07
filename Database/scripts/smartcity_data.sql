@@ -30,7 +30,7 @@ COMMIT;
 -- -----------------------------------------------------
 
 SET AUTOCOMMIT=0;
-INSERT INTO `smartcity`.`RubriqueEnfant` (`idRubriqueParent`,`nomRubriqueEnfant`) VALUES (1,'accidents'),(1,'travaux'),(2,'manifestations'),(3,'rénovations'),(3,'constructions');
+INSERT INTO `smartcity`.`RubriqueEnfant` (`idRubriqueParent`,`nomRubriqueEnfant`) VALUES (1,'accidents'),(1,'travaux'),(2,'manifestations'),(3,'rénovations'),(3,'constructions'),(4,'doléances');
 COMMIT;
 
 -- -----------------------------------------------------
