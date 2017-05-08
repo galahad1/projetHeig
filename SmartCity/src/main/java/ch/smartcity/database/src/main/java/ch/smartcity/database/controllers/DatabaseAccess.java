@@ -1,6 +1,5 @@
 package ch.smartcity.database.controllers;
 
-import ch.smartcity.database.models.Adresse;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -67,7 +66,7 @@ public class DatabaseAccess {
         return t;
     }
 
-    public static <T> List<T> get(Class<Adresse> tClass) {
+    public static <T> List<T> get(Class<T> tClass) {
         List<T> tList = null;
 
         Session session = null;
@@ -78,7 +77,7 @@ public class DatabaseAccess {
             transaction = session.beginTransaction();
 
             CriteriaBuilder criteriaBuilder = getHibernate().getCriteriaBuilder();
-            CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery((Class<T>) tClass);
+            CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(tClass);
             criteriaQuery.from(tClass);
             tList = getHibernate().createQuery(criteriaQuery).getResultList();
 

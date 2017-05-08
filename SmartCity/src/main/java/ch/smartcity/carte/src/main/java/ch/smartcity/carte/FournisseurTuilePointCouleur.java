@@ -15,7 +15,7 @@ import java.util.ArrayList;
 public final class FournisseurTuilePointCouleur implements FournisseurTuile {
     public final static int TAILLE_TUILE = 256;
 
-    private ArrayList<Evenement> evenements;
+    private ArrayList<Event> evenements;
     private Color[] couleur = {Color.RED, Color.ORANGE, Color.YELLOW, Color.GREEN, Color.CYAN, Color.BLUE,
             Color.MAGENTA};
 
@@ -25,7 +25,7 @@ public final class FournisseurTuilePointCouleur implements FournisseurTuile {
      *
      * @param
      **/
-    public FournisseurTuilePointCouleur(ArrayList<Evenement> evenements) {
+    public FournisseurTuilePointCouleur(ArrayList<Event> evenements) {
         this.evenements = evenements;
     }
 
@@ -37,7 +37,7 @@ public final class FournisseurTuilePointCouleur implements FournisseurTuile {
         Graphics2D g = image.createGraphics();
 
         int rayon = 5;
-        for (Evenement e : evenements) {
+        for (Event e : evenements) {
             g.setColor(couleur[e.getCategorie()]);
             Ellipse2D ellipse = new Ellipse2D.Double(e.getPosition().toOSM(zoom).x() - TAILLE_TUILE * x - rayon,
                     e.getPosition().toOSM(zoom).y() - TAILLE_TUILE * y - rayon, rayon * 2, rayon * 2);

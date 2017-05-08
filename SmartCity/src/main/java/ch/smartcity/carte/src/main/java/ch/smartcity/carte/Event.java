@@ -6,7 +6,7 @@ package ch.smartcity.carte;
  * @author Wojciech Myskorowski
  * @author Jérémie Zanone
  */
-public final class Evenement {
+public final class Event {
     private String nom;
     private PointWGS84 position;
     private int categorie;
@@ -17,7 +17,7 @@ public final class Evenement {
      * @param nom     Le nom de l'événement
      * @param position La getPosition de l'événement instance de la classe WGS84
      */
-    Evenement(String nom, PointWGS84 position, int categorie) {
+    Event(String nom, PointWGS84 position, int categorie) {
         this.nom = nom;
         this.position = position;
         this.categorie = categorie;

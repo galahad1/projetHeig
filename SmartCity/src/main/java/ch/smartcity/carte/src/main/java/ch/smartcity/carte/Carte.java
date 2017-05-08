@@ -1,5 +1,8 @@
 package ch.smartcity.carte;
 
+import ch.smartcity.database.controllers.DatabaseAccess;
+import ch.smartcity.database.models.Evenement;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -24,20 +27,24 @@ public final class Carte {
         FournisseurTuile bgTileProvider = new FournisseurTuileCache(new FournisseurTuileOSM(OSM_TILE_URL));
         carteTuilesComponent.ajoutFournisseurTuile(bgTileProvider);
 
+
+        java.util.List<Evenement> list = DatabaseAccess.get(Evenement.class);
+
+
         // construire ici l'ArrayList des Events avec une EventsBuilder
-        ArrayList<Evenement> evenements = new ArrayList<>();
+        ArrayList<Event> evenements = new ArrayList<>();
         PointWGS84 p1 = new PointWGS84(46.52304, 6.58939);
         PointWGS84 p2 = new PointWGS84(46.51665, 6.61917);
         PointWGS84 p3 = new PointWGS84(46.52073, 6.63069);
         PointWGS84 p4 = new PointWGS84(46.51717, 6.62923);
         PointWGS84 p5 = new PointWGS84(46.50987, 6.6373);
         PointWGS84 p6 = new PointWGS84(46.51716, 6.60333);
-        Evenement e1 = new Evenement("Accidents", p1, 1);
-        Evenement e2 = new Evenement("Travaux", p2, 2);
-        Evenement e3 = new Evenement("Manifestations", p3, 3);
-        Evenement e4 = new Evenement("Rénovations", p4, 4);
-        Evenement e5 = new Evenement("Constructions", p5, 5);
-        Evenement e6 = new Evenement("Doléances", p6, 6);
+        Event e1 = new Event("Accidents", p1, 1);
+        Event e2 = new Event("Travaux", p2, 2);
+        Event e3 = new Event("Manifestations", p3, 3);
+        Event e4 = new Event("Rénovations", p4, 4);
+        Event e5 = new Event("Constructions", p5, 5);
+        Event e6 = new Event("Doléances", p6, 6);
         evenements.add(e1);
         evenements.add(e2);
         evenements.add(e3);
