@@ -1,6 +1,10 @@
 package ch.smartcity.graphique;
 
 import ch.smartcity.carte.Carte;
+import ch.smartcity.carte.Event;
+import ch.smartcity.carte.PointWGS84;
+import ch.smartcity.database.controllers.access.EvenementAccess;
+import ch.smartcity.database.models.Evenement;
 import com.toedter.calendar.JCalendar;
 
 import javax.swing.*;
@@ -10,6 +14,8 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class FenetrePrincipale {
@@ -23,7 +29,6 @@ public class FenetrePrincipale {
     private final JLabel labelManifestations = new JLabel("MANIFESTATIONS");
     private final JLabel labelChantiers = new JLabel("CHANTIERS");
     private final JCheckBox chckbxRenovation = new JCheckBox("Rénovations");
-
     private final JCheckBox chckbxConstruction = new JCheckBox("Constructions");
     private final JPanel panelMenu = new JPanel();
     private final JLabel lblNbrNotification = new JLabel("Notifications");
@@ -36,7 +41,6 @@ public class FenetrePrincipale {
     JButton btnAjouter = new JButton("Ajouter/Modifier");
     JButton btnPdf = new JButton("PDF");
     JButton btnEnAttente = new JButton("En attente");
-
     // création dynamique des checkboxes des doléances
     // TODO
     JPanel panelRubriques = new JPanel();
@@ -46,6 +50,11 @@ public class FenetrePrincipale {
     GroupLayout gl_panelMenu = new GroupLayout(panelMenu);
     JScrollPane scrollPaneDescription = new JScrollPane();
     JCalendar calendrier = new JCalendar();
+    private Carte carte = null;
+    private List<Event> allEvents = new ArrayList<>(); // tous les événements a afficher sur la carte
+    private List<Event> listeAccidents = new ArrayList<>();
+    private List<Event> listeTravaux = new ArrayList<>();
+    private List<Event> listeManifestations = new ArrayList<>();
     private JTextField textDescription = new JTextField();
 
     /**
@@ -53,6 +62,17 @@ public class FenetrePrincipale {
      */
     public FenetrePrincipale() {
         initialize();
+
+        listeAccidents = wrapperEvement(EvenementAccess.get("accidents", null, null, null,
+                null, null, null, null, null, null, null,
+                null, null, null));
+        listeTravaux = wrapperEvement(EvenementAccess.get("travaux", null, null, null,
+                null, null, null, null, null, null, null,
+                null, null, null));
+
+        listeManifestations = wrapperEvement(EvenementAccess.get("manifestations", null, null, null,
+                null, null, null, null, null, null, null,
+                null, null, null));
     }
 
     /**
@@ -113,7 +133,7 @@ public class FenetrePrincipale {
         //panelCarte.setBackground(Color.GRAY);
 
         panelCarte.setLayout(new BorderLayout());
-        Carte carte = null;
+
         try {
             carte = new Carte();
         } catch (IOException e) {
@@ -213,5 +233,70 @@ public class FenetrePrincipale {
 
         panelPrincipal.add(panelLogo);
 
+
+        chckbxAccidents.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                AbstractButton abstractButton = (AbstractButton) e.getSource();
+                boolean selected = abstractButton.getModel().isSelected();
+
+                if (selected) {
+                    allEvents.addAll(listeAccidents = wrapperEvement(EvenementAccess.get("accidents", null, "accidents entrée autoroute bloqué", null,
+                            null, null, null, null, null, null, null,
+                            null, null, null)));
+                    carte.updateEvenement((ArrayList<Event>) allEvents);
+                } else {
+                    allEvents.removeAll(listeAccidents);
+                    carte.updateEvenement((ArrayList<Event>) allEvents);
+                }
+            }
+        });
+
+        chckbxTravaux.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                AbstractButton abstractButton = (AbstractButton) e.getSource();
+                boolean selected = abstractButton.getModel().isSelected();
+
+                if (selected) {
+                    allEvents.addAll(listeTravaux);
+                    carte.updateEvenement((ArrayList<Event>) allEvents);
+                } else {
+                    allEvents.removeAll(listeTravaux);
+                    carte.updateEvenement((ArrayList<Event>) allEvents);
+                }
+            }
+        });
+
+        chckbxManifestations.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                AbstractButton abstractButton = (AbstractButton) e.getSource();
+                boolean selected = abstractButton.getModel().isSelected();
+
+                if (selected) {
+                    allEvents.addAll(listeManifestations);
+                    carte.updateEvenement((ArrayList<Event>) allEvents);
+                } else {
+                    allEvents.removeAll(listeManifestations);
+                    carte.updateEvenement((ArrayList<Event>) allEvents);
+                }
+            }
+        });
+
+    }
+
+    private ArrayList<Event> wrapperEvement(List<Evenement> listeEvenement) {
+        ArrayList<Event> evenements = new ArrayList<>();
+
+        for (Evenement e : listeEvenement) {
+            PointWGS84 point = new PointWGS84(e.getLatitude(), e.getLongitude());
+            evenements.add(new Event(e.getNomEvenement(), point, e.getRubriqueEnfant().getIdRubriqueEnfant()));
+        }
+
+        return evenements;
     }
 }

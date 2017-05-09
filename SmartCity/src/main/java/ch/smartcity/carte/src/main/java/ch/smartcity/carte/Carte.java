@@ -1,8 +1,5 @@
 package ch.smartcity.carte;
 
-import ch.smartcity.database.controllers.DatabaseAccess;
-import ch.smartcity.database.models.Evenement;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -16,7 +13,7 @@ public final class Carte {
     private static final int INITIAL_ZOOM = 14;
     //  nord sud / ouest est
     private static final PointWGS84 INITIAL_POSITION = new PointWGS84(46.545, 6.58);
-    private final FournisseurTuilePointCouleur fournisseurTuilePointCouleur;
+    // private final FournisseurTuilePointCouleur fournisseurTuilePointCouleur;
     private final CarteTuilesComponent carteTuilesComponent;
     private Point mousePos = new Point();
     private Point viewPos = new Point();
@@ -28,35 +25,56 @@ public final class Carte {
         carteTuilesComponent.ajoutFournisseurTuile(bgTileProvider);
 
 
-        java.util.List<Evenement> list = DatabaseAccess.get(Evenement.class);
+        // java.util.List<Evenement> eventList = DatabaseAccess.get(Evenement.class);
+
+        //WrapperEvenement wrapper = new WrapperEvenement(eventList);
 
 
         // construire ici l'ArrayList des Events avec une EventsBuilder
-        ArrayList<Event> evenements = new ArrayList<>();
-        PointWGS84 p1 = new PointWGS84(46.52304, 6.58939);
-        PointWGS84 p2 = new PointWGS84(46.51665, 6.61917);
-        PointWGS84 p3 = new PointWGS84(46.52073, 6.63069);
-        PointWGS84 p4 = new PointWGS84(46.51717, 6.62923);
-        PointWGS84 p5 = new PointWGS84(46.50987, 6.6373);
-        PointWGS84 p6 = new PointWGS84(46.51716, 6.60333);
-        Event e1 = new Event("Accidents", p1, 1);
-        Event e2 = new Event("Travaux", p2, 2);
-        Event e3 = new Event("Manifestations", p3, 3);
-        Event e4 = new Event("Rénovations", p4, 4);
-        Event e5 = new Event("Constructions", p5, 5);
-        Event e6 = new Event("Doléances", p6, 6);
-        evenements.add(e1);
-        evenements.add(e2);
-        evenements.add(e3);
-        evenements.add(e4);
-        evenements.add(e5);
-        evenements.add(e6);
+//        ArrayList<Event> evenements = new ArrayList<>();
+//        PointWGS84 p1 = new PointWGS84(46.52304, 6.58939);
+//        PointWGS84 p2 = new PointWGS84(46.51665, 6.61917);
+//        PointWGS84 p3 = new PointWGS84(46.52073, 6.63069);
+//        PointWGS84 p4 = new PointWGS84(46.51717, 6.62923);
+//        PointWGS84 p5 = new PointWGS84(46.50987, 6.6373);
+//        PointWGS84 p6 = new PointWGS84(46.51716, 6.60333);
+//        Event e1 = new Event("Accidents", p1, 1);
+//        Event e2 = new Event("Travaux", p2, 2);
+//        Event e3 = new Event("Manifestations", p3, 3);
+//        Event e4 = new Event("Rénovations", p4, 4);
+//        Event e5 = new Event("Constructions", p5, 5);
+//        Event e6 = new Event("Doléances", p6, 6);
+//        evenements.add(e1);
+//        evenements.add(e2);
+//        evenements.add(e3);
+//        evenements.add(e4);
+//        evenements.add(e5);
+//        evenements.add(e6);
 
-        fournisseurTuilePointCouleur = new FournisseurTuilePointCouleur(evenements);
+        // fournisseurTuilePointCouleur = new FournisseurTuilePointCouleur(wrapper.getEvenements());
 
-        carteTuilesComponent.ajoutFournisseurTuile(fournisseurTuilePointCouleur);
+        //carteTuilesComponent.ajoutFournisseurTuile(fournisseurTuilePointCouleur);
+
+//
+//        ArrayList<Event> evenements2 = new ArrayList<>();
+//        PointWGS84 p10 = new PointWGS84(46.52304, 6.58939);
+//        Event e10 = new Event("CA MARCHEEE", p1, 1);
+//
+//        evenements2.add(e10);
+//
+//
+//        FournisseurTuilePointCouleur fournisseurTuilePointCouleur2 = new FournisseurTuilePointCouleur(evenements2);
+//        carteTuilesComponent.updateFournisseurTuile(fournisseurTuilePointCouleur2);
+
 
     }
+
+    public void updateEvenement(ArrayList<Event> newEvenements) {
+
+        FournisseurTuilePointCouleur newFournisseurTuilePointCouleur = new FournisseurTuilePointCouleur(newEvenements);
+        carteTuilesComponent.updateFournisseurTuile(newFournisseurTuilePointCouleur);
+    }
+
 
     public JComponent createCenterPanel() {
         final JViewport viewPort = new JViewport();
