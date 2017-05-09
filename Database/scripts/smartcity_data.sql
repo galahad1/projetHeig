@@ -111,7 +111,7 @@ COMMIT;
 -- -----------------------------------------------------
 
 SET AUTOCOMMIT=0;
-INSERT INTO `smartcity`.`Utilisateur` (`personnePhysique`,`avs`,`idTitreCivil`,`nomUtilisateur`,`prenom`,`dateDeNaissance`,`idSexe`,`idNationalite`,`idAdresse`,`email`,`pseudo`,`motDePasse`,`sel`) VALUES ,(1,'756.1234.5678.97',1,'lassalle','loan',NOW(),1,7,1,'loan.lassalle@heig-vd.ch','loan.lassalle','_smartcity_','3EgLiQyssGvABUUaqFGUZgrDKGPOlA'),(0,NULL,7,'touring club suisse',NULL,NULL,NULL,NULL,1,'contact-tcs@tcs.ch','contact-tcs','contact-tcs','CG5bWHG0YxOvABUUaF8ra0HQvvJXr7');
+INSERT INTO `smartcity`.`Utilisateur` (`personnePhysique`,`avs`,`idTitreCivil`,`nomUtilisateur`,`prenom`,`dateDeNaissance`,`idSexe`,`idNationalite`,`idAdresse`,`email`,`pseudo`,`motDePasse`,`sel`) VALUES (1,'756.1234.5678.97',1,'lassalle','loan',NOW(),1,7,1,'loan.lassalle@heig-vd.ch','loan.lassalle','_smartcity_','3EgLiQyssGvABUUaqFGUZgrDKGPOlA'),(0,NULL,7,'touring club suisse',NULL,NULL,NULL,NULL,1,'contact-tcs@tcs.ch','contact-tcs','contact-tcs','CG5bWHG0YxOvABUUaF8ra0HQvvJXr7');
 COMMIT;
 
 -- -----------------------------------------------------
@@ -122,10 +122,10 @@ COMMIT;
 SET AUTOCOMMIT=0;
 INSERT INTO `smartcity`.`Evenement` 
 (`idRubriqueEnfant`,`idUtilisateur`,`nomEvenement`,`idAdresse`,`latitude`,`longitude`,`debut`,`details`,`idPriorite`,`idStatut`) VALUES 
-(1,1,'accidents entrée autoroute bloqué',1,46.52304, 6.58939,NOW(),'Une voiture s\'est encastrée dans un bus',4,1),
-(1,1,'accidents tunnel Malley fermé',1,46.52651, 6.60319,NOW(),'Deux voitures ont fait un frontal, le tunnel est fermé',4,1),
-(2,1,'travaux rond-point',1,46.51665, 6.61917,NOW(),'construction d\'un rond-point, trafic ralenti',4,1),
-(3,1,'manifestation WWF',1,46.52073, 6.63069,NOW(),'Un camps avec des tentes ont été installé par les manifestants',4,1),
+(1,1,'accidents entrée autoroute bloqué',1,46.52304, 6.58939,NOW(),'Une voiture s\'est encastrée dans un bus',4,2),
+(1,1,'accidents tunnel Malley fermé',1,46.52651, 6.60319,NOW(),'Deux voitures ont fait un frontal, le tunnel est fermé',4,2),
+(2,1,'travaux rond-point',1,46.51665, 6.61917,NOW(),'construction d\'un rond-point, trafic ralenti',4,2),
+(3,1,'manifestation WWF',1,46.52073, 6.63069,NOW(),'Un camps avec des tentes ont été installé par les manifestants',4,2),
 (4,1,'rénovation de la façade de la gare',1,46.51717, 6.62923,NOW(),'Endroit bruyant',4,1),
 (5,1,'construction d\'un nouveau batiment',1,46.50987, 6.6373,NOW(),'Construction d\'un batiment pour le minage de bitcoin',4,1),
 (6,1,'doléance banc cassé',1,46.51716, 6.60333,NOW(),'Le banc en bois a été scié en deux',4,1);
