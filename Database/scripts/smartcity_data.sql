@@ -111,7 +111,7 @@ COMMIT;
 -- -----------------------------------------------------
 
 SET AUTOCOMMIT=0;
-INSERT INTO `smartcity`.`Utilisateur` (`personnePhysique`,`avs`,`idTitreCivil`,`nomUtilisateur`,`prenom`,`dateDeNaissance`,`idSexe`,`idNationalite`,`idAdresse`,`email`,`pseudo`,`motDePasse`,`sel`) VALUES (0,NULL,7,'touring club suisse',NULL,NULL,NULL,NULL,1,'contact-tcs@tcs.ch','contact-tcs','contact-tcs','CG5bWHG0YxOvABUUaF8ra0HQvvJXr7'),(1,'756.1234.5678.97',1,'lassalle','loan',NOW(),1,7,1,'loan.lassalle@heig-vd.ch','loan.lassalle','_smartcity_','3EgLiQyssGvABUUaqFGUZgrDKGPOlA');
+INSERT INTO `smartcity`.`Utilisateur` (`personnePhysique`,`avs`,`idTitreCivil`,`nomUtilisateur`,`prenom`,`dateDeNaissance`,`idSexe`,`idNationalite`,`idAdresse`,`email`,`pseudo`,`motDePasse`,`sel`) VALUES ,(1,'756.1234.5678.97',1,'lassalle','loan',NOW(),1,7,1,'loan.lassalle@heig-vd.ch','loan.lassalle','_smartcity_','3EgLiQyssGvABUUaqFGUZgrDKGPOlA'),(0,NULL,7,'touring club suisse',NULL,NULL,NULL,NULL,1,'contact-tcs@tcs.ch','contact-tcs','contact-tcs','CG5bWHG0YxOvABUUaF8ra0HQvvJXr7');
 COMMIT;
 
 -- -----------------------------------------------------
