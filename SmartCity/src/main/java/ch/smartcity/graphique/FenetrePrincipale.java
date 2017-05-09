@@ -23,6 +23,7 @@ public class FenetrePrincipale {
     private final JLabel labelManifestations = new JLabel("MANIFESTATIONS");
     private final JLabel labelChantiers = new JLabel("CHANTIERS");
     private final JCheckBox chckbxRenovation = new JCheckBox("Rénovations");
+
     private final JCheckBox chckbxConstruction = new JCheckBox("Constructions");
     private final JPanel panelMenu = new JPanel();
     private final JLabel lblNbrNotification = new JLabel("Notifications");
@@ -136,7 +137,6 @@ public class FenetrePrincipale {
 
         panelPrincipal.add(panelMenu);
         panelMenu.setLayout(gl_panelMenu);
-
 
         scrollPaneDescription.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         scrollPaneDescription.setViewportBorder(UIManager.getBorder("Button.border"));

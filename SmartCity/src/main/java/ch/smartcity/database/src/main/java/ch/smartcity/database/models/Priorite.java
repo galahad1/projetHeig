@@ -93,11 +93,7 @@ public class Priorite implements Serializable {
 
     @Override
     public String toString() {
-        return "Priorite{" +
-                "idPriorite=" + idPriorite +
-                ", nomPriorite='" + nomPriorite + '\'' +
-                ", niveau=" + niveau +
-                ", derniereMiseAJour=" + derniereMiseAJour.getTime() +
-                '}';
+        return niveau + " - " + nomPriorite;
+
     }
 }

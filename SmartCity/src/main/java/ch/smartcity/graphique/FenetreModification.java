@@ -1,24 +1,28 @@
 package ch.smartcity.graphique;
 
-import ch.smartcity.database.controllers.access.EvenementAccess;
-import ch.smartcity.database.models.Adresse;
-import ch.smartcity.database.models.Evenement;
-import ch.smartcity.database.models.Npa;
-import ch.smartcity.database.models.Statut_;
+import ch.smartcity.database.Database;
+import ch.smartcity.database.controllers.DatabaseAccess;
+import ch.smartcity.database.controllers.access.*;
+import ch.smartcity.database.models.*;
 import com.toedter.calendar.JCalendar;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+
+import static com.sun.java.accessibility.util.AWTEventMonitor.addWindowListener;
 
 public class FenetreModification {
 
@@ -33,8 +37,7 @@ public class FenetreModification {
     private static final int TAILLE_MAX_NUMERO_RUE = 4;
     private static final int TAILLE_MAX_DETAILS = 50000;
     // controle des caracteres de la saisie
-    //TODO : accepter apostrphe et tiret
-    private static final String REGEX_ALPHA_NUMERIQUE = "[a-zA-ZÀ-ÿ0-9]";
+    private static final String REGEX_ALPHA_NUMERIQUE = "[a-zA-ZÀ-ÿ0-9 \\-']*";
     private static final String REGEX_NUMERIQUE = "[0-9]*";
 
     private static final String REGEX_LATITUDE = "^(\\+|-)?(?:90(?:(?:\\.0{1,6})?)|(?:[0-9]|[1-8][0-9])(?:(?:\\.[0-9]{1,6})?))$";
@@ -75,13 +78,13 @@ public class FenetreModification {
     private JPanel panelErreurSaisie;
     private JTextPane ErreurSaisiePane;
     private JComboBox<String> comboBoxNpa;
+    private JComboBox<String> comboBoxRubrique;
 
     /**
      * Create the application.
      */
     public FenetreModification(int contexte) {
         initialize(contexte);
-
     }
 
     /**
@@ -90,12 +93,23 @@ public class FenetreModification {
     private void initialize(int context) {
         fenetre = new JFrame();
         fenetre.setAlwaysOnTop(true);
-
-
         fenetre.setResizable(false);
         fenetre.setBounds(0, 0, 1200, 800);
         fenetre.setLocationRelativeTo(null);
-        fenetre.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        //pop up de confirmation avant de quitter la fenetre
+        fenetre.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        fenetre.addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent e) {
+                int confirmed = JOptionPane.showConfirmDialog(null,
+                        "Etes vous sûrs de vouloir quitter ?", "Confirmer",
+                        JOptionPane.YES_NO_OPTION);
+
+                if (confirmed == JOptionPane.YES_OPTION) {
+                    fenetre.dispose();
+                }
+            }
+        });
 
         JPanel panelModification = new JPanel();
         panelModification.setForeground(Color.LIGHT_GRAY);
@@ -106,7 +120,6 @@ public class FenetreModification {
         comboBoxEvenements.setMaximumRowCount(16);
 
         comboBoxEvenements.setBounds(61, 46, 701, 41);
-        //System.out.println(comboBoxEvenements.getSelectedIndex()); // ajout d'un nouvel événement par défaut
 
         JPanel panelAjoutEvenement = new JPanel();
         panelAjoutEvenement.setForeground(Color.LIGHT_GRAY);
@@ -163,8 +176,15 @@ public class FenetreModification {
         labelNumRue.setBounds(59, 210, 70, 15);
         panelAjoutEvenement.add(labelNumRue);
 
-        comboBoxNpa = new JComboBox<String>();
-        comboBoxNpa.setModel(new DefaultComboBoxModel<String>(new String[]{"1000", "1001", "1002", "1003", "1004", "1005", "1006", "1007", "1010", "1011", "1012", "1015", "1018"}));
+        comboBoxNpa = new JComboBox<>();
+        List<Npa> listNpa = DatabaseAccess.get(Npa.class);
+
+        String[] npas = new String[listNpa.size()];
+        for(int i = 0; i < npas.length ; i++) {
+            npas[i] = listNpa.get(i).toString();
+        }
+
+        comboBoxNpa.setModel(new DefaultComboBoxModel<String>(npas));
         comboBoxNpa.setBounds(539, 12, 183, 37);
         panelAjoutEvenement.add(comboBoxNpa);
 
@@ -173,12 +193,29 @@ public class FenetreModification {
         panelAjoutEvenement.add(labelNpa);
 
         comboBoxPriorite = new JComboBox<String>();
-        comboBoxPriorite.setModel(new DefaultComboBoxModel<String>(new String[]{"0 - Mineur", "1 - Gênant", "2 - Préoccupant", "3 - Important", "4 - Urgent "}));
+
+        List<Priorite> listPriorite = DatabaseAccess.get(Priorite.class);
+        String[] priorites = new String[listPriorite.size()];
+        for(int i = 0; i < priorites.length; i++)
+        {
+            priorites[i] = listPriorite.get(i).toString();
+        }
+
+
+        comboBoxPriorite.setModel(new DefaultComboBoxModel<String>(priorites));
         comboBoxPriorite.setBounds(539, 79, 183, 37);
         panelAjoutEvenement.add(comboBoxPriorite);
 
-        JComboBox<String> comboBoxRubrique = new JComboBox<String>();
-        comboBoxRubrique.setModel(new DefaultComboBoxModel<String>(new String[]{"Accidents", "Travaux", "Manifestations", "Rénovations", "Constructions", "Doléances"}));
+        comboBoxRubrique = new JComboBox<String>();
+        List<RubriqueEnfant> listRubriqueEnfant = DatabaseAccess.get(RubriqueEnfant.class);
+
+        String[] rubriques = new String[listRubriqueEnfant.size()];
+        for(int i = 0; i < rubriques.length ; i++)
+        {
+            rubriques[i] = listRubriqueEnfant.get(i).toString();
+        }
+        comboBoxRubrique.setModel(new DefaultComboBoxModel<String>(rubriques));
+
         comboBoxRubrique.setBounds(147, 79, 183, 37);
         panelAjoutEvenement.add(comboBoxRubrique);
 
@@ -227,7 +264,21 @@ public class FenetreModification {
 
                 if (controleSaisie()) {
                     System.out.println("Evenement valide");
-                    //TODO: mettre evenement dans la base de données
+
+                    if(comboBoxEvenements.getSelectedIndex() == 0) // nouvel evenement
+                    {
+                        //ajouterEvenement();
+                    }
+                    else // evenment deja exsistant
+                    {
+                        modifierEvenement();
+                    }
+
+                    //TODO pop up ellement ajouter avec succes pendant environ 5 secondes, puis ferme la popup
+                    //TODO mettre a jour la fenetre, = la relancer
+
+
+
                 }
             }
         });
@@ -248,7 +299,7 @@ public class FenetreModification {
         JButton boutonSupprimer = new JButton("Supprimer");
         boutonSupprimer.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                //TODO - supprime l evenement de la base de données
+                //TODO - supprime l evenement de la base de données = modfier ca date de fin a hier ?
                 // rafraichit la page
             }
         });
@@ -277,7 +328,6 @@ public class FenetreModification {
 
         final JCalendar calendrier = new JCalendar();
         calendrier.getDayChooser().setAlwaysFireDayProperty(true);
-        //calendrier.getDayChooser().setAlwaysFireDayProperty(true); // permet d'ajouter la date lorsqu'on clique sur la date d'aujourd'hui
         calendrier.getDayChooser().addPropertyChangeListener("day", new PropertyChangeListener() {
 
             @Override
@@ -285,7 +335,6 @@ public class FenetreModification {
 
                 Date valDate = calendrier.getDate();
                 String date = dateFormat.format(valDate);
-
 
                 // remplis le champs date debut si celui-ci n'est pas valide, sinon remplit la date de fin
                 if (!controlSaisie(textFieldDateDebut.getText(), REGEX_DATE)) // date debut
@@ -295,8 +344,6 @@ public class FenetreModification {
                 {
                     textFieldDateFin.setText(date);
                 }
-
-
             }
 
         });
@@ -307,34 +354,30 @@ public class FenetreModification {
         List<String> previews;
         if (context == 0) // ajout/modif TODO: constantes
         {
-            //TODO recuperer seulements les evenements encore acifs
-
-            //TODO <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
             evenementList = EvenementAccess.getByFin(Calendar.getInstance());
-//            evenementList = DatabaseAccess.get(Evenement.class); // recupere tout les evenements actifs
-            //TODO <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+            //TODO trier la liste par rapport au IDs
 
             previews = previewEvenement(evenementList); // previsualisation des evenements
+
+
             previews.add(0, "Ajouter un événement");
         } else // en attente
         {
-            //TODO recuperation de la liste des evenements en attente pour la fenetre de en attente
 
-            //TODO <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
             evenementList = EvenementAccess.getByStatut(Statut_.EN_ATTENTE); // recupere tout les evenements en attente
-//            evenementList = DatabaseAccess.get(Evenement.class); // recupere tout les evenements actifs
-            //TODO <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+            //TODO trier la liste par rapport aux ids
 
             previews = previewEvenement(evenementList); // previsualisation des evenements
+
             previews.add(0, "Selectionner");
             etatChamps(false);
 
 
         }
-        // final pour utiliser dans actionPerformed
-        //final List<Evenement> evenements = evenementList;
 
-        comboBoxEvenements.setModel(new DefaultComboBoxModel<String>(previews.toArray(new String[0])));
+        comboBoxEvenements.setModel(new DefaultComboBoxModel<>(previews.toArray(new String[0])));
+
+        // lorsque l'on choisi un evenement dans la liste, on remplis les chapms
         comboBoxEvenements.addActionListener(new ActionListener() {
 
             @Override
@@ -346,13 +389,13 @@ public class FenetreModification {
                 if (index != 0) // un evenement de la base de donnée
                 {
 
-                    if (context == 1) //TODO; constante
+                    if (context == 1) //modification/ajout  //TODO; constante
                     {
                         etatChamps(true); // deverouille les champs
                     }
 
                     // recupration de l evenement
-                    Evenement evenement = evenementList.get(index - 1); // TODO: depent du context
+                    Evenement evenement = evenementList.get(index - 1); // TODO:
 
                     // remplissage des champs
                     textFieldNom.setText(evenement.getNomEvenement());
@@ -462,12 +505,71 @@ public class FenetreModification {
             boutonSupprimer.setVisible(false);
             boutonSupprimer.setEnabled(false);
         } else {
-            //TODO
-            // Leve une exeption
+            //TODO Leve une exeption
         }
 
 
     } // fin initialize
+
+    private void modifierEvenement() {
+
+    //TODO modifier evenement de la base de données
+
+        // voir tout les champs qui ont ete modifier
+
+        // attention, les evenements peuvent etre dans l etat en attente, dans ce cas il faut modifier
+        // ce champs car c'est l administrateur qui le valide ici.
+
+
+    }
+
+    private void ajouterEvenement() {
+        // recuperation rubrique enfant dans la base de donnée
+        String nomEnfant = comboBoxRubrique.getSelectedItem().toString();
+        String rubriqueParent = null;
+        List<RubriqueEnfant> rubriqueEnfantList = RubriqueEnfantAccess.get("", nomEnfant);
+        RubriqueEnfant rubriqueEnfant = rubriqueEnfantList.get(0);
+
+        // controle si rue est dans la base de donnée
+        List<Rue> rues = RueAccess.get(textFieldRue.getText());
+        Rue rue;
+        // test effecuté car rue n'est pas une liste déroulante
+        if(rues == null || rues.isEmpty()) // rue n'existe pas
+        {
+            rue = new Rue(textFieldRue.getText()); // nouvelle rue
+        }
+        else
+        {
+            rue = rues.get(0); // recuperation rue dans la base de données
+        }
+
+        // recuperation npa
+        List<Npa> npa = NpaAccess.get(comboBoxNpa.getSelectedItem().toString());
+        // creation rue
+        Adresse adresse = new Adresse(rue, textFieldNumRue.getText(), npa.get(0));
+
+        // convertion dates en calendar
+        Calendar calDebut = Calendar.getInstance();
+        Calendar calFin = Calendar.getInstance();
+        try {
+            calDebut.setTime(dateFormat.parse(textFieldDateDebut.getText()));
+            calFin.setTime(dateFormat.parse(textFieldDateFin.getText()));
+        } catch (ParseException e1) {
+            e1.printStackTrace();
+        }
+
+        Utilisateur admin = DatabaseAccess.get(Utilisateur.class, 2);
+
+        String[] elementsPriorite = comboBoxPriorite.getSelectedItem().toString().split(" - ");
+        List<Priorite> p = PrioriteAccess.get(elementsPriorite[1], Integer.valueOf(elementsPriorite[0]));
+
+        Double latitude = Double.valueOf(textFieldLatitude.getText());
+        Double longitude = Double.valueOf(textFieldLongitude.getText());
+
+
+        List<Statut> statut = StatutAccess.get(Statut_.TRAITE);
+        EvenementAccess.save(rubriqueEnfant,admin,textFieldNom.getText(),adresse,latitude,longitude,calDebut,calFin,textAreaDetails.getText(),p.get(0),statut.get(0));
+    }
 
     /**
      * Cette methode controle la saisie de tout les champs de la fenetre lors de l'appuis du bouton valider
@@ -551,7 +653,7 @@ public class FenetreModification {
         }
 
 
-        if (valide == true) // saisie valide fermeture du panel de mauvaise saisie
+        if (valide) // saisie valide fermeture du panel de mauvaise saisie
         {
 
             ErreurSaisiePane.setEnabled(false);
@@ -568,7 +670,6 @@ public class FenetreModification {
         }
 
         return valide;
-
     }
 
     /**
@@ -634,7 +735,6 @@ public class FenetreModification {
             return false;
         }
 
-
         if (texte.isEmpty() || !texte.matches(regex)) {
             return false;
         }
@@ -696,8 +796,6 @@ public class FenetreModification {
                 date = dateFormat.format(c.getTime());
                 str += date;
             }
-            //str += date;
-
             preview.add(str); // ajout a la liste
         }
         return preview;

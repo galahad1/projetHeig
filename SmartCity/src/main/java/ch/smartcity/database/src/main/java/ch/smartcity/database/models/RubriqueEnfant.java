@@ -104,11 +104,6 @@ public class RubriqueEnfant implements Serializable {
 
     @Override
     public String toString() {
-        return "RubriqueEnfant{" +
-                "idRubriqueEnfant=" + idRubriqueEnfant +
-                ", rubriqueParent=" + rubriqueParent +
-                ", nomRubriqueEnfant='" + nomRubriqueEnfant + '\'' +
-                ", derniereMiseAJour=" + derniereMiseAJour.getTime() +
-                '}';
+        return nomRubriqueEnfant;
     }
 }
