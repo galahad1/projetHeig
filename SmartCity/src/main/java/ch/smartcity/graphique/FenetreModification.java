@@ -558,7 +558,7 @@ public class FenetreModification {
             e1.printStackTrace();
         }
 
-        Utilisateur admin = DatabaseAccess.get(Utilisateur.class, 2);
+        Utilisateur admin = DatabaseAccess.get(Utilisateur.class, 1);
 
         String[] elementsPriorite = comboBoxPriorite.getSelectedItem().toString().split(" - ");
         List<Priorite> p = PrioriteAccess.get(elementsPriorite[1], Integer.valueOf(elementsPriorite[0]));
