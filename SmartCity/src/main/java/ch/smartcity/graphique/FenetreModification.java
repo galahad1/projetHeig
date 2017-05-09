@@ -1,6 +1,5 @@
 package ch.smartcity.graphique;
 
-import ch.smartcity.database.Database;
 import ch.smartcity.database.controllers.DatabaseAccess;
 import ch.smartcity.database.controllers.access.*;
 import ch.smartcity.database.models.*;
@@ -21,8 +20,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-
-import static com.sun.java.accessibility.util.AWTEventMonitor.addWindowListener;
 
 public class FenetreModification {
 

@@ -49,40 +49,35 @@ public class EvenementAccess {
         return getInstance().hibernate;
     }
 
+    public static List<Evenement> getActif() {
+        return getByFinStatut(Calendar.getInstance(), Statut_.TRAITE);
+    }
+
     public static List<Evenement> getByFin(Calendar fin) {
-        return get(null,
-                null,
-                "",
-                null,
-                null,
-                null,
-                null,
-                fin,
-                null,
-                null,
-                null,
-                null);
+        return getByFinStatut(fin, Statut_.TRAITE);
     }
 
     public static List<Evenement> getByStatut(String nomStatut) {
+        return getByFinStatut(Calendar.getInstance(), nomStatut);
+    }
+
+    public static List<Evenement> getByFinStatut(Calendar fin, String nomStatut) {
         List<Evenement> evenementList = null;
         List<Statut> statutList = StatutAccess.get(nomStatut);
 
         if (statutList != null && statutList.size() == 1) {
             evenementList = get(
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
                     null,
                     null,
                     null,
                     null,
+                    null,
+                    null,
+                    null,
+                    fin,
                     "",
-                    "",
-                    nomStatut,
+                    null,
+                    statutList.get(0),
                     null);
         }
 
