@@ -484,6 +484,13 @@ public class EvenementAccess {
         }
     }
 
+    public static void delete(Evenement evenement) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DAY_OF_YEAR, -1);
+        evenement.setFin(calendar);
+        DatabaseAccess.update(evenement);
+    }
+
     public static void delete(RubriqueEnfant rubriqueEnfant,
                               Utilisateur utilisateur,
                               String nomEvenement,
