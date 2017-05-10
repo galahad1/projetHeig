@@ -57,7 +57,7 @@ public class FenetrePrincipale {
     JCalendar calendrier = new JCalendar();
     private Carte carte = null;
     //liste totale des différents événements
-    private List<Event> allEvents = new ArrayList<>(); // tous les événements a afficher sur la carte
+    private List<Event> allEvents = new ArrayList<>();
     private List<Event> listeAccidents = new ArrayList<>();
     private List<Event> listeTravaux = new ArrayList<>();
     private List<Event> listeManifestations = new ArrayList<>();
@@ -74,12 +74,6 @@ public class FenetrePrincipale {
      */
     public FenetrePrincipale() {
         initialize();
-
-        listeAccidents = wrapperEvement(EvenementAccess.getByRubriqueEnfant("accidents"));
-        listeTravaux = wrapperEvement(EvenementAccess.getByRubriqueEnfant("travaux"));
-        listeManifestations = wrapperEvement(EvenementAccess.getByRubriqueEnfant("manifestations"));
-        listeRenovations = wrapperEvement(EvenementAccess.getByRubriqueEnfant("renovations"));
-        listeConstructions = wrapperEvement(EvenementAccess.getByRubriqueEnfant("constructions"));
     }
 
     /**

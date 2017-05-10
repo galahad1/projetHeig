@@ -18,7 +18,6 @@ public final class CarteTuilesComponent extends JComponent {
     private final int TAILLE_TUILE = 256;
     private int zoom;
     private List<FournisseurTuile> fournisseurTuiles;
-    private FournisseurTuilePointCouleur derniersEvenements;
 
     /**
      * Crée un composant Swing capable d'afficher une carte en tuiles
@@ -32,7 +31,7 @@ public final class CarteTuilesComponent extends JComponent {
             throw new IllegalArgumentException();
         }
         this.zoom = zoom;
-        fournisseurTuiles = new ArrayList<FournisseurTuile>();
+        fournisseurTuiles = new ArrayList<>();
     }
 
     /**
@@ -67,22 +66,9 @@ public final class CarteTuilesComponent extends JComponent {
      * @param fournisseurTuile Un nouveau fournisseur de tuiles de la carte
      */
     public void ajoutFournisseurTuile(FournisseurTuile fournisseurTuile) {
-        if (fournisseurTuile instanceof FournisseurTuilePointCouleur) {
-            derniersEvenements = (FournisseurTuilePointCouleur) fournisseurTuile;
-        }
         fournisseurTuiles.add(fournisseurTuile);
         repaint();
     }
-
-
-    public void updateFournisseurTuile(FournisseurTuile fournisseurTuile) {
-        fournisseurTuiles.remove(derniersEvenements);
-        derniersEvenements = (FournisseurTuilePointCouleur) fournisseurTuile;
-        fournisseurTuiles.add(fournisseurTuile);
-        repaint();
-    }
-
-
 
     @Override
     public Dimension getPreferredSize() {
