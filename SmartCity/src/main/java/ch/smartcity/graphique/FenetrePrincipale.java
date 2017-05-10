@@ -291,7 +291,7 @@ public class FenetrePrincipale {
 
                 if (selected) {
 
-                    listeAccidents = wrapperEvement(EvenementAccess.getActif("accidents", dateSelectionne, dateSelectionne, Statut_.TRAITE));
+                    listeAccidents = wrapperEvement(EvenementAccess.getActif("accidents", dateSelectionne, Statut_.TRAITE));
                     allEvents.addAll(listeAccidents);
                     carte.updateEvenement((ArrayList<Event>) allEvents);
                 } else {
@@ -309,7 +309,7 @@ public class FenetrePrincipale {
                 boolean selected = abstractButton.getModel().isSelected();
 
                 if (selected) {
-                    allEvents.addAll(listeTravaux = wrapperEvement(EvenementAccess.getActif("travaux", dateSelectionne, dateSelectionne, Statut_.TRAITE)));
+                    allEvents.addAll(listeTravaux = wrapperEvement(EvenementAccess.getActif("travaux", dateSelectionne, Statut_.TRAITE)));
                     carte.updateEvenement((ArrayList<Event>) allEvents);
                 } else {
                     allEvents.removeAll(listeTravaux);
@@ -326,7 +326,7 @@ public class FenetrePrincipale {
                 boolean selected = abstractButton.getModel().isSelected();
 
                 if (selected) {
-                    listeManifestations = wrapperEvement(EvenementAccess.getActif("manifestations", dateSelectionne, dateSelectionne, Statut_.TRAITE));
+                    listeManifestations = wrapperEvement(EvenementAccess.getActif("manifestations", dateSelectionne, Statut_.TRAITE));
                     allEvents.addAll(listeManifestations);
                     carte.updateEvenement((ArrayList<Event>) allEvents);
                 } else {
@@ -344,7 +344,7 @@ public class FenetrePrincipale {
                 boolean selected = abstractButton.getModel().isSelected();
 
                 if (selected) {
-                    listeRenovations = wrapperEvement(EvenementAccess.getActif("rénovations", dateSelectionne, dateSelectionne, Statut_.TRAITE));
+                    listeRenovations = wrapperEvement(EvenementAccess.getActif("rénovations", dateSelectionne, Statut_.TRAITE));
                     allEvents.addAll(listeRenovations);
                     carte.updateEvenement((ArrayList<Event>) allEvents);
                 } else {
@@ -363,7 +363,7 @@ public class FenetrePrincipale {
 
                 if (selected) {
                     listeConstructions = wrapperEvement(
-                            EvenementAccess.getActif("constructions", dateSelectionne, dateSelectionne, Statut_.TRAITE));
+                            EvenementAccess.getActif("constructions", dateSelectionne, Statut_.TRAITE));
                     allEvents.addAll(listeConstructions);
                     carte.updateEvenement((ArrayList<Event>) allEvents);
                 } else {
