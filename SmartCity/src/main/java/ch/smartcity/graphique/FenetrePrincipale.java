@@ -42,8 +42,6 @@ public class FenetrePrincipale {
     private final JLabel lblNbrNotification = new JLabel("Notifications");
     private final JPanel panelLogo = new JPanel();
     private final JTextArea txtrDescription = new JTextArea();
-
-    private JList listEvenementsEnAttente;
     public JFrame fenetre;
     JPanel panelPrincipal = new JPanel();
     JPanel panelCarte = new JPanel();
@@ -51,7 +49,6 @@ public class FenetrePrincipale {
     JButton btnAjouter = new JButton("Ajouter/Modifier");
     JButton btnPdf = new JButton("PDF");
     JButton btnEnAttente = new JButton("En attente");
-
     // création dynamique des checkboxes des doléances
     // TODO
     JPanel panelRubriques = new JPanel();
@@ -61,6 +58,7 @@ public class FenetrePrincipale {
     GroupLayout gl_panelMenu = new GroupLayout(panelMenu);
     JScrollPane scrollPaneDescription = new JScrollPane();
     JCalendar calendrier = new JCalendar();
+    private JList listEvenementsEnAttente;
     private Carte carte = null;
     //liste totale des différents événements
     private List<Event> allEvents = new ArrayList<>();
@@ -293,7 +291,7 @@ public class FenetrePrincipale {
 
                 if (selected) {
 
-                    listeAccidents = wrapperEvement(EvenementAccess.getActif("accidents", dateSelectionne, Statut_.TRAITE));
+                    listeAccidents = wrapperEvement(EvenementAccess.getActif("accidents", dateSelectionne, dateSelectionne, Statut_.TRAITE));
                     allEvents.addAll(listeAccidents);
                     carte.updateEvenement((ArrayList<Event>) allEvents);
                 } else {
@@ -311,7 +309,7 @@ public class FenetrePrincipale {
                 boolean selected = abstractButton.getModel().isSelected();
 
                 if (selected) {
-                    allEvents.addAll(listeTravaux = wrapperEvement(EvenementAccess.getActif("travaux", dateSelectionne, Statut_.TRAITE)));
+                    allEvents.addAll(listeTravaux = wrapperEvement(EvenementAccess.getActif("travaux", dateSelectionne, dateSelectionne, Statut_.TRAITE)));
                     carte.updateEvenement((ArrayList<Event>) allEvents);
                 } else {
                     allEvents.removeAll(listeTravaux);
@@ -328,7 +326,7 @@ public class FenetrePrincipale {
                 boolean selected = abstractButton.getModel().isSelected();
 
                 if (selected) {
-                    listeManifestations = wrapperEvement(EvenementAccess.getActif("manifestations", dateSelectionne, Statut_.TRAITE));
+                    listeManifestations = wrapperEvement(EvenementAccess.getActif("manifestations", dateSelectionne, dateSelectionne, Statut_.TRAITE));
                     allEvents.addAll(listeManifestations);
                     carte.updateEvenement((ArrayList<Event>) allEvents);
                 } else {
@@ -346,7 +344,7 @@ public class FenetrePrincipale {
                 boolean selected = abstractButton.getModel().isSelected();
 
                 if (selected) {
-                    listeRenovations = wrapperEvement(EvenementAccess.getActif("rénovations", dateSelectionne, Statut_.TRAITE));
+                    listeRenovations = wrapperEvement(EvenementAccess.getActif("rénovations", dateSelectionne, dateSelectionne, Statut_.TRAITE));
                     allEvents.addAll(listeRenovations);
                     carte.updateEvenement((ArrayList<Event>) allEvents);
                 } else {
@@ -365,7 +363,7 @@ public class FenetrePrincipale {
 
                 if (selected) {
                     listeConstructions = wrapperEvement(
-                            EvenementAccess.getActif("constructions", dateSelectionne, Statut_.TRAITE));
+                            EvenementAccess.getActif("constructions", dateSelectionne, dateSelectionne, Statut_.TRAITE));
                     allEvents.addAll(listeConstructions);
                     carte.updateEvenement((ArrayList<Event>) allEvents);
                 } else {
