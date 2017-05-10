@@ -98,13 +98,13 @@ public class Utilisateur implements Serializable {
         this.avs = avs;
         this.titreCivil = titreCivil;
         this.nomUtilisateur = nomUtilisateur.toLowerCase();
-        this.prenom = prenom;
+        this.prenom = prenom.toLowerCase();
         this.dateDeNaissance = dateDeNaissance;
         this.sexe = sexe;
         this.nationalite = nationalite;
         this.adresse = adresse;
         this.email = email.toLowerCase();
-        this.pseudo = pseudo.toLowerCase();
+        this.pseudo = pseudo;
         this.motDePasse = motDePasse;
         this.sel = sel;
     }
@@ -146,7 +146,7 @@ public class Utilisateur implements Serializable {
     }
 
     public void setNomUtilisateur(String nomUtilisateur) {
-        this.nomUtilisateur = nomUtilisateur;
+        this.nomUtilisateur = nomUtilisateur.toLowerCase();
     }
 
     public String getPrenom() {
@@ -154,7 +154,7 @@ public class Utilisateur implements Serializable {
     }
 
     public void setPrenom(String prenom) {
-        this.prenom = prenom;
+        this.prenom = prenom.toLowerCase();
     }
 
     public Calendar getDateDeNaissance() {
@@ -194,7 +194,7 @@ public class Utilisateur implements Serializable {
     }
 
     public void setEmail(String email) {
-        this.email = email;
+        this.email = email.toLowerCase();
     }
 
     public String getPseudo() {
