@@ -1,9 +1,7 @@
 package ch.smartcity.graphique;
 
-import ch.smartcity.database.Database;
 import ch.smartcity.database.controllers.DatabaseAccess;
 import ch.smartcity.database.controllers.access.EvenementAccess;
-import ch.smartcity.database.controllers.access.StatutAccess;
 import ch.smartcity.database.models.*;
 import com.toedter.calendar.JCalendar;
 
@@ -39,7 +37,6 @@ public class FenetreModification {
     private static final String REGEX_ALPHA_NUMERIQUE = "[a-zA-ZÀ-ÿ0-9 \\-']*";
     private static final String REGEX_NUMERIQUE = "[0-9]*";
 
-    //TODO verifier regexe latitude et longitude
     private static final String REGEX_LATITUDE = "^(\\+|-)?(?:90(?:(?:\\.0{1,6})?)|(?:[0-9]|[1-8][0-9])(?:(?:\\.[0-9]{1,6})?))$";
     private static final String REGEX_LONGITUDE = "^(\\+|-)?(?:180(?:(?:\\.0{1,6})?)|(?:[0-9]|[1-9][0-9]|1[0-7][0-9])(?:(?:\\.[0-9]{1,6})?))$";
     private static final String REGEX_DATE = "^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\d\\d$";
@@ -79,7 +76,6 @@ public class FenetreModification {
     private JTextPane ErreurSaisiePane;
     private JComboBox<String> comboBoxNpa;
     private JComboBox<String> comboBoxRubrique;
-    private Evenement evenementSelectionne = null;
 
     /**
      * Create the application.
@@ -98,13 +94,17 @@ public class FenetreModification {
         fenetre.setBounds(0, 0, 1200, 800);
         fenetre.setLocationRelativeTo(null);
 
-        // fermeture de la fenetre lors de l'appuis sur la croix
+        //pop up de confirmation avant de quitter la fenetre
         fenetre.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         fenetre.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
+                int confirmed = JOptionPane.showConfirmDialog(null,
+                        "Etes vous sûrs de vouloir quitter ?", "Confirmer",
+                        JOptionPane.YES_NO_OPTION);
 
-                fenetre.dispose();
-
+                if (confirmed == JOptionPane.YES_OPTION) {
+                    fenetre.dispose();
+                }
             }
         });
 
@@ -264,25 +264,16 @@ public class FenetreModification {
 
                     if(comboBoxEvenements.getSelectedIndex() == 0) // nouvel evenement
                     {
-
                         ajouterEvenement();
-
-
                     }
-                    else // evenement deja exsistant
+                    else // evenment deja exsistant
                     {
                         modifierEvenement();
                     }
 
                     //TODO pop up ellement ajouter avec succes pendant environ 5 secondes, puis ferme la popup
-                    //TODO mettre a jour la fenetre
+                    //TODO mettre a jour la fenetre, = la relancer
 
-                    System.out.println("rafraichissement de la fenetre");
-                    SwingUtilities.updateComponentTreeUI(fenetre);
-                    fenetre.invalidate();
-                    fenetre.revalidate();
-                    //fenetre.validate();
-                    fenetre.repaint();
 
 
                 }
@@ -291,17 +282,12 @@ public class FenetreModification {
         boutonValider.setBounds(59, 412, 117, 25);
         panelAjoutEvenement.add(boutonValider);
 
-
         JButton boutonRefuser = new JButton("Refuser");
         boutonRefuser.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-
-                refuserEvenement(); // statut en refuser et change date de fin pour etre en etat supprimmer
-                //TODO rafraichir page
-                SwingUtilities.updateComponentTreeUI(fenetre);
-
-
-
+                //TODO refuser l'évenenement,
+                // le supprime de la base de donées
+                // rafraichi la page de modification
             }
         });
         boutonRefuser.setBounds(59, 470, 117, 25);
@@ -310,15 +296,8 @@ public class FenetreModification {
         JButton boutonSupprimer = new JButton("Supprimer");
         boutonSupprimer.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-
-                if(evenementSelectionne != null)
-                {
-                    DatabaseAccess.delete(evenementSelectionne); // supprime de la base de donnée
-                    //TODO rafraichit la page
-                    SwingUtilities.updateComponentTreeUI(fenetre);
-
-                }
-
+                //TODO - supprime l evenement de la base de données = modfier ca date de fin a hier ?
+                // rafraichit la page
             }
         });
         boutonSupprimer.setBounds(213, 412, 117, 25);
@@ -419,8 +398,7 @@ public class FenetreModification {
                     }
 
                     // recupration de l evenement
-                    Evenement evenement = evenementList.get(index - 1);
-                    setEvenementSelectionne(evenement); // evenement dans le champs
+                    Evenement evenement = evenementList.get(index - 1); // TODO:
 
                     // remplissage des champs
                     textFieldNom.setText(evenement.getNomEvenement());
@@ -536,22 +514,6 @@ public class FenetreModification {
 
     } // fin initialize
 
-    /**
-     * Refuse l'evenement et supprimer l'evenement
-     * //TODO differencier en attente et actif
-     * //TODO tester
-     */
-    private void refuserEvenement() {
-
-        List<Statut> statuts = StatutAccess.get(evenementSelectionne.getStatut().getNomStatut());
-
-        evenementSelectionne.setStatut(statuts.get(0));
-
-        DatabaseAccess.update(evenementSelectionne); // met a jour l evenemnt avec le statut refuse
-        DatabaseAccess.delete(evenementSelectionne); // change date de fin
-
-    }
-
     private void modifierEvenement() {
 
         //TODO modifier evenement de la base de données
@@ -560,10 +522,6 @@ public class FenetreModification {
 
         // attention, les evenements peuvent etre dans l etat en attente, dans ce cas il faut modifier
         // ce champs car c'est l administrateur qui le valide ici.
-
-        // il faut voir quel champs à été modifier et changer a chaque fois
-
-        // evenement.update(.....) pour chaque champs
 
 
     }
@@ -615,9 +573,6 @@ public class FenetreModification {
 //        List<Statut> statut = StatutAccess.get(Statut_.TRAITE);
 //        EvenementAccess.save(rubriqueEnfant,admin,textFieldNom.getText(),adresse,latitude,longitude,calDebut,calFin,textAreaDetails.getText(),p.get(0),statut.get(0));
 
-
-
-
         String nomEnfant = comboBoxRubrique.getSelectedItem().toString();
         String nomEvenement = textFieldNom.getText();
         String nomRue = textFieldRue.getText();
@@ -635,26 +590,11 @@ public class FenetreModification {
         } catch (ParseException e1) {
             e1.printStackTrace();
         }
-        String[] elementsPriorite = comboBoxPriorite.getSelectedItem().toString().split(" - "); // separe niveau et nom de la priorité
+        String[] elementsPriorite = comboBoxPriorite.getSelectedItem().toString().split(" - ");
 
-        // controle si l evenement exsite deja
-        List<Evenement> evenementsExsistants = EvenementAccess.get(nomEnfant,null,nomEvenement,nomRue,numeroRue,npa,latitude,longitude,calDebut,calFin,null,null,null,null);
-        if(evenementsExsistants == null || evenementsExsistants.isEmpty()) // n'exsiste pas
-        {
-
-            EvenementAccess.save(nomEnfant, 1, nomEvenement, nomRue, numeroRue, npa, latitude, longitude, calDebut, calFin, details, elementsPriorite[1], Integer.valueOf(elementsPriorite[0]), Statut_.TRAITE);
-        }
-        else
-        {
-            //TODO pop up evenement deja exsistant
-            System.out.println("evenement deja dans la DB");
-
-            int confirmed = JOptionPane.showConfirmDialog(null,
-                    "Evenement déjà dans la base de donnée", "Evénement présent",
-                    JOptionPane.DEFAULT_OPTION);
-
-        }
-
+        // TODO<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+        EvenementAccess.save(nomEnfant, 1, nomEvenement, nomRue, numeroRue, npa, latitude, longitude, calDebut, calFin, details, elementsPriorite[1], Integer.valueOf(elementsPriorite[0]), Statut_.TRAITE);
+        // TODO<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
     }
 
     /**
@@ -825,24 +765,25 @@ public class FenetreModification {
             return false;
         }
 
+        Date date = new Date();
+        String dateAujourdhui = dateFormat.format(date); // conversion
 
-        Date dateAujourdhui = new Date();
-        Date dateDebut = null;
-        Date dateFin = null;
-        try {
-                dateDebut = dateFormat.parse(textFieldDateDebut.getText());
-                dateFin = dateFormat.parse(textFieldDateFin.getText());
-        } catch (ParseException e) {
-            e.printStackTrace();
+        String partiesDate[] = texte.split("/");
+        String partiesDateAujourdhui[] = dateAujourdhui.split("/");
+
+        String dateDebut = textFieldDateDebut.getText();
+        String partieDateDebut[] = dateDebut.split("/");
+
+        // controle que la date saisie soit au plus tot aujourd'hui
+        //  et que la date saisie soit au plus tot le meme jour que la date de debut
+        for (int i = 2; i >= 0; i--) {
+
+            if (Integer.parseInt(partiesDate[i]) < Integer.parseInt(partiesDateAujourdhui[i]) || Integer.parseInt(partiesDate[i]) < Integer.parseInt(partieDateDebut[i])) {
+                return false;
+            }
         }
 
-        if(dateFin.before(dateAujourdhui) || dateFin.before(dateDebut) || dateFin.equals(dateDebut))
-        {
-            return false;
-        }
         return true;
-
-
     }
 
     /**
@@ -913,13 +854,5 @@ public class FenetreModification {
         textFieldDateFin.setText("jj/mm/aaaa");
         textAreaDetails.setText("");
 
-    }
-
-    public Evenement getEvenementSelectionne() {
-        return evenementSelectionne;
-    }
-
-    public void setEvenementSelectionne(Evenement evenementSelectionne) {
-        this.evenementSelectionne = evenementSelectionne;
     }
 }

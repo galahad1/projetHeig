@@ -17,7 +17,7 @@ public final class Event {
      * @param nom     Le nom de l'événement
      * @param position La getPosition de l'événement instance de la classe WGS84
      */
-    Event(String nom, PointWGS84 position, int categorie) {
+    public Event(String nom, PointWGS84 position, int categorie) {
         this.nom = nom;
         this.position = position;
         this.categorie = categorie;

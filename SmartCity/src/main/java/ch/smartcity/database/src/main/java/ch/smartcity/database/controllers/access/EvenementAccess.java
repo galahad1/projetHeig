@@ -56,11 +56,22 @@ public class EvenementAccess {
     public static List<Evenement> getActif(String nomRubriqueEnfant,
                                            Calendar date,
                                            String nomStatut) {
+        Calendar debut = null;
+        Calendar fin = null;
+
         if (date != null) {
-            date.set(Calendar.HOUR_OF_DAY, date.getMaximum(Calendar.HOUR_OF_DAY));
-            date.set(Calendar.MINUTE, date.getMaximum(Calendar.MINUTE));
-            date.set(Calendar.SECOND, date.getMaximum(Calendar.SECOND));
-            date.set(Calendar.MILLISECOND, date.getMaximum(Calendar.MILLISECOND));
+            debut = date;
+
+            debut.set(Calendar.HOUR_OF_DAY, debut.getMaximum(Calendar.HOUR_OF_DAY));
+            debut.set(Calendar.MINUTE, debut.getMaximum(Calendar.MINUTE));
+            debut.set(Calendar.SECOND, debut.getMaximum(Calendar.SECOND));
+            debut.set(Calendar.MILLISECOND, debut.getMaximum(Calendar.MILLISECOND));
+
+            fin = date;
+            fin.set(Calendar.HOUR_OF_DAY, fin.getMinimum(Calendar.HOUR_OF_DAY));
+            fin.set(Calendar.MINUTE, fin.getMinimum(Calendar.MINUTE));
+            fin.set(Calendar.SECOND, fin.getMinimum(Calendar.SECOND));
+            fin.set(Calendar.MILLISECOND, fin.getMinimum(Calendar.MILLISECOND));
         }
 
         List<Evenement> evenementList = null;
@@ -88,8 +99,8 @@ public class EvenementAccess {
                         null,
                         null,
                         null,
-                        date,
-                        date,
+                        debut,
+                        fin,
                         "",
                         null,
                         statutList.get(0),
@@ -257,7 +268,7 @@ public class EvenementAccess {
             }
 
             if (fin != null) {
-                predicateList.add(criteriaBuilder.greaterThan(
+                predicateList.add(criteriaBuilder.greaterThanOrEqualTo(
                         evenementRoot.get(Evenement_.fin),
                         fin));
             }
