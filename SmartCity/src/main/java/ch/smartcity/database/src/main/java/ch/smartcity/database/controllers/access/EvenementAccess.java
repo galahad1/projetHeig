@@ -49,6 +49,70 @@ public class EvenementAccess {
         return getInstance().hibernate;
     }
 
+    public static List<Evenement> getActif() {
+        return getActif(null, Calendar.getInstance(), Statut_.TRAITE);
+    }
+
+    public static List<Evenement> getActif(String nomRubriqueEnfant,
+                                           Calendar date,
+                                           String nomStatut) {
+        if (date != null) {
+            date.set(Calendar.HOUR_OF_DAY, date.getMaximum(Calendar.HOUR_OF_DAY));
+            date.set(Calendar.MINUTE, date.getMaximum(Calendar.MINUTE));
+            date.set(Calendar.SECOND, date.getMaximum(Calendar.SECOND));
+            date.set(Calendar.MILLISECOND, date.getMaximum(Calendar.MILLISECOND));
+        }
+
+        List<Evenement> evenementList = null;
+        RubriqueEnfant rubriqueEnfant = null;
+        boolean success = true;
+
+        if (nomRubriqueEnfant != null && !nomRubriqueEnfant.isEmpty()) {
+            List<RubriqueEnfant> rubriqueEnfantList = RubriqueEnfantAccess.get(
+                    "",
+                    nomRubriqueEnfant);
+            success = rubriqueEnfantList != null && rubriqueEnfantList.size() == 1;
+            if (success) {
+                rubriqueEnfant = rubriqueEnfantList.get(0);
+            }
+        }
+
+        if (success) {
+            List<Statut> statutList = StatutAccess.get(nomStatut);
+            success = statutList != null && statutList.size() == 1;
+            if (success) {
+                evenementList = get(
+                        rubriqueEnfant,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        date,
+                        date,
+                        "",
+                        null,
+                        statutList.get(0),
+                        null);
+            }
+        }
+
+        if (success) {
+            getLogger().info(getConfigurationManager()
+                    .getString("databaseAccess.successInSubQuery"));
+
+        } else {
+            getLogger().info(getConfigurationManager()
+                    .getString("databaseAccess.errorInSubQuery"));
+        }
+
+        return evenementList;
+    }
+
+    public static List<Evenement> getEnAttente() {
+        return getActif(null, Calendar.getInstance(), Statut_.EN_ATTENTE);
+    }
+
     public static List<Evenement> getByRubriqueEnfant(String nomRubriqueEnfant) {
         return get(nomRubriqueEnfant,
                 "",
@@ -64,51 +128,6 @@ public class EvenementAccess {
                 "",
                 "",
                 null);
-    }
-
-    public static List<Evenement> getActif() {
-        return getByFinStatut(Calendar.getInstance(), Statut_.TRAITE);
-    }
-
-    public static List<Evenement> getByFin(Calendar fin) {
-        return getByFinStatut(fin, Statut_.TRAITE);
-    }
-
-    public static List<Evenement> getByStatut(String nomStatut) {
-        return getByFinStatut(Calendar.getInstance(), nomStatut);
-    }
-
-    public static List<Evenement> getByFinStatut(Calendar fin, String nomStatut) {
-        List<Evenement> evenementList = null;
-        List<Statut> statutList = StatutAccess.get(nomStatut);
-
-        if (statutList != null && statutList.size() == 1) {
-            evenementList = get(
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    fin,
-                    null,
-                    "",
-                    null,
-                    statutList.get(0),
-                    null);
-        }
-
-        return evenementList;
-    }
-
-    // TODO : Attention
-    public static List<Evenement> getActifAtDate(String nomRubriqueEnfant,
-                                                 Calendar date,
-                                                 String nomStatut) {
-
-        // Vérifier que la date donnée soit plus grande ou égal à la date de début de l'évènement
-        // Et que la date de fin de l'évènement soit plus grande
-        return null;
     }
 
     public static List<Evenement> get(RubriqueEnfant rubriqueEnfant,
@@ -231,17 +250,15 @@ public class EvenementAccess {
                         longitude));
             }
 
-            //TODO: vérifier condition et modifier
             if (debut != null) {
                 predicateList.add(criteriaBuilder.lessThanOrEqualTo(
-                        evenementRoot.get(Evenement_.fin),
+                        evenementRoot.get(Evenement_.debut),
                         debut));
             }
 
-            //TODO: vérifier condition et modifier
             if (fin != null) {
-                predicateList.add(criteriaBuilder.greaterThanOrEqualTo(
-                        evenementRoot.get(Evenement_.debut),
+                predicateList.add(criteriaBuilder.greaterThan(
+                        evenementRoot.get(Evenement_.fin),
                         fin));
             }
 
