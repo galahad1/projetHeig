@@ -54,6 +54,12 @@ public class EvenementAccess {
     }
 
     public static List<Evenement> getActif(String nomRubriqueEnfant,
+                                           Calendar date,
+                                           String nomStatut) {
+        return getActif(nomRubriqueEnfant, date, date, nomStatut);
+    }
+
+    public static List<Evenement> getActif(String nomRubriqueEnfant,
                                            Calendar debut,
                                            Calendar fin,
                                            String nomStatut) {
@@ -117,23 +123,6 @@ public class EvenementAccess {
                 null,
                 Calendar.getInstance(),
                 Statut_.EN_ATTENTE);
-    }
-
-    public static List<Evenement> getByRubriqueEnfant(String nomRubriqueEnfant) {
-        return get(nomRubriqueEnfant,
-                "",
-                "",
-                "",
-                "",
-                "",
-                null,
-                null,
-                null,
-                null,
-                "",
-                "",
-                "",
-                null);
     }
 
     public static List<Evenement> get(RubriqueEnfant rubriqueEnfant,
