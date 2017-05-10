@@ -102,6 +102,7 @@ public class FenetreModification {
         fenetre.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         fenetre.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
+                rafraichireCarte();
                 fenetre.dispose();
             }
         });
@@ -473,6 +474,8 @@ public class FenetreModification {
         // ferme la fenetre lorsque le bouton est appuie
         btnFermer.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+
+                rafraichireCarte();
                 fenetre.dispose();
             }
         });
@@ -496,6 +499,12 @@ public class FenetreModification {
 
 
     } // fin initialize
+
+    private void rafraichireCarte() {
+
+        //TODO simuler decochage et recochage de toutes les checkboxs pour refresh l affichage de la carte
+
+    }
 
     /**
      * charge les evenements dans la liste ainsi que les preview
