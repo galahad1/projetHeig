@@ -81,6 +81,7 @@ public class FenetreModification {
     private JComboBox<String> comboBoxRubrique;
     private Evenement evenementSelectionne = null;
 
+    List<Evenement> evenementList;
     /**
      * Create the application.
      */
@@ -102,9 +103,7 @@ public class FenetreModification {
         fenetre.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         fenetre.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
-
                 fenetre.dispose();
-
             }
         });
 
@@ -275,15 +274,9 @@ public class FenetreModification {
                     }
 
                     //TODO pop up ellement ajouter avec succes pendant environ 5 secondes, puis ferme la popup
-                    //TODO mettre a jour la fenetre
 
-                    System.out.println("rafraichissement de la fenetre");
-                    SwingUtilities.updateComponentTreeUI(fenetre);
-                    fenetre.invalidate();
-                    fenetre.revalidate();
-                    //fenetre.validate();
-                    fenetre.repaint();
-
+                    chargementListeEvenements(context); // mise a jour de la liste
+                    videChamps();
 
                 }
             }
@@ -297,11 +290,8 @@ public class FenetreModification {
             public void actionPerformed(ActionEvent e) {
 
                 refuserEvenement(); // statut en refuser et change date de fin pour etre en etat supprimmer
-                //TODO rafraichir page
-                SwingUtilities.updateComponentTreeUI(fenetre);
-
-
-
+                chargementListeEvenements(context); // mise a jour de la liste
+                videChamps();
             }
         });
         boutonRefuser.setBounds(59, 470, 117, 25);
@@ -311,12 +301,11 @@ public class FenetreModification {
         boutonSupprimer.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
 
-                if(evenementSelectionne != null)
+                if(evenementSelectionne != null && comboBoxEvenements.getSelectedIndex() != 0)
                 {
                     DatabaseAccess.delete(evenementSelectionne); // supprime de la base de donnée
-                    //TODO rafraichit la page
-                    SwingUtilities.updateComponentTreeUI(fenetre);
-
+                    chargementListeEvenements(context); // mise a jour de la liste
+                    videChamps();
                 }
 
             }
@@ -368,38 +357,8 @@ public class FenetreModification {
 
         panelCalendrier.add(calendrier, "name_15195119934482");
 
-        List<Evenement> evenementList;
-        List<String> previews;
-        if (context == 0) // ajout/modif TODO: constantes
-        {
-            //TODO MODIFICATIONS LOAN <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-            evenementList = EvenementAccess.getActif();
-            //TODO MODIFICATIONS LOAN <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-
-            //TODO trier la liste par rapport au IDs
-
-            previews = previewEvenement(evenementList); // previsualisation des evenements
-
-
-            previews.add(0, "Ajouter un événement");
-        } else // en attente
-        {
-
-            //TODO MODIFICATIONS LOAN <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-            evenementList = EvenementAccess.getEnAttente(); // recupere tout les evenements en attente
-            //TODO MODIFICATIONS LOAN <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-
-            //TODO trier la liste par rapport aux ids
-
-            previews = previewEvenement(evenementList); // previsualisation des evenements
-
-            previews.add(0, "Selectionner");
-            etatChamps(false);
-
-
-        }
-
-        comboBoxEvenements.setModel(new DefaultComboBoxModel<>(previews.toArray(new String[0])));
+        // init liste des evenements
+        chargementListeEvenements(context);
 
         // lorsque l'on choisi un evenement dans la liste, on remplis les chapms
         comboBoxEvenements.addActionListener(new ActionListener() {
@@ -409,17 +368,20 @@ public class FenetreModification {
 
 
                 int index = comboBoxEvenements.getSelectedIndex();
+                System.out.println(index);
+
                 // TODO : constante context
                 if (index != 0) // un evenement de la base de donnée
                 {
 
-                    if (context == 1) //modification/ajout  //TODO; constante
+                    if (context == 1)  //TODO; constante
                     {
                         etatChamps(true); // deverouille les champs
                     }
 
                     // recupration de l evenement
                     Evenement evenement = evenementList.get(index - 1);
+                    System.out.println(evenement);
                     setEvenementSelectionne(evenement); // evenement dans le champs
 
                     // remplissage des champs
@@ -433,6 +395,7 @@ public class FenetreModification {
                     // et tester ajout dynamique de la rubrique doleances
                     comboBoxRubrique.setSelectedIndex(evenement.getRubriqueEnfant().getIdRubriqueEnfant() - 1);
                     int i = getIndexNpa(evenement.getAdresse().getNpa());
+                    System.out.println(i);
                     comboBoxNpa.setSelectedIndex(i);
                     comboBoxPriorite.setSelectedIndex(evenement.getPriorite().getNiveau());
 
@@ -494,10 +457,10 @@ public class FenetreModification {
                         index = 10;
                         break;
                     case "1015":
-                        index = 12;
+                        index = 11;
                         break;
                     case "1018":
-                        index = 13;
+                        index = 12;
                         break;
                     default:
                         index = 0;
@@ -537,6 +500,43 @@ public class FenetreModification {
     } // fin initialize
 
     /**
+     * charge les evenements dans la liste ainsi que les preview
+     * @param context
+     */
+    private void chargementListeEvenements(int context) {
+
+        List<String> previews;
+
+        if (context == 0) // ajout/modif TODO: constantes
+        {
+            //fixme il faut retourner les evements traités dont la date de fin est egual ou supérieur a la date d'aujourd hui
+            evenementList = EvenementAccess.getActif();
+
+            //TODO trier la liste par rapport au IDs
+
+            previews = previewEvenement(evenementList); // previsualisation des evenements
+
+
+            previews.add(0, "Ajouter un événement");
+        } else // en attente
+        {
+
+            evenementList = EvenementAccess.getEnAttente(); // recupere tout les evenements en attente
+
+            //TODO trier la liste par rapport aux ids
+
+            previews = previewEvenement(evenementList); // previsualisation des evenements
+
+            previews.add(0, "Selectionner");
+            etatChamps(false);
+
+        }
+
+        comboBoxEvenements.setModel(new DefaultComboBoxModel<>(previews.toArray(new String[0])));
+
+    }
+
+    /**
      * Refuse l'evenement et supprimer l'evenement
      * //TODO differencier en attente et actif
      * //TODO tester
@@ -565,7 +565,13 @@ public class FenetreModification {
 
         // evenement.update(.....) pour chaque champs
 
+        System.out.println("modification de l'evenement");
 
+        /*
+        int confirmed = JOptionPane.showConfirmDialog(null,
+                "Evenement modifié avec succès", "Evénement modifié",
+                JOptionPane.DEFAULT_OPTION);
+        */
     }
 
     private void ajouterEvenement() {
@@ -638,17 +644,18 @@ public class FenetreModification {
         String[] elementsPriorite = comboBoxPriorite.getSelectedItem().toString().split(" - "); // separe niveau et nom de la priorité
 
         // controle si l evenement exsite deja
-        List<Evenement> evenementsExsistants = EvenementAccess.get(nomEnfant,null,nomEvenement,nomRue,numeroRue,npa,latitude,longitude,calDebut,calFin,null,null,null,null);
+        List<Evenement> evenementsExsistants = EvenementAccess.get(nomEnfant,null,nomEvenement,nomRue,numeroRue,npa,latitude,longitude,calDebut,calFin,details,elementsPriorite[1],null,null);
         if(evenementsExsistants == null || evenementsExsistants.isEmpty()) // n'exsiste pas
         {
 
             EvenementAccess.save(nomEnfant, 1, nomEvenement, nomRue, numeroRue, npa, latitude, longitude, calDebut, calFin, details, elementsPriorite[1], Integer.valueOf(elementsPriorite[0]), Statut_.TRAITE);
+            System.out.println("evenement ajouté");
+            int confirmed = JOptionPane.showConfirmDialog(null,
+                    "Evenement ajouté avec succès", "Evénement ajouté",
+                    JOptionPane.DEFAULT_OPTION);
         }
         else
         {
-            //TODO pop up evenement deja exsistant
-            System.out.println("evenement deja dans la DB");
-
             int confirmed = JOptionPane.showConfirmDialog(null,
                     "Evenement déjà dans la base de donnée", "Evénement présent",
                     JOptionPane.DEFAULT_OPTION);
