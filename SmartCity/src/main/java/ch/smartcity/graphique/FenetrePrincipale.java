@@ -9,6 +9,8 @@ import javax.swing.LayoutStyle.ComponentPlacement;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.IOException;
 
 
@@ -87,7 +89,20 @@ public class FenetrePrincipale {
         fenetre.setTitle("SmartCity");
         fenetre.setResizable(false);
         fenetre.setBounds(0, 0, 1900, 1000);
-        fenetre.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        //pop up de confirmation avant de quitter la fenetre
+        fenetre.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        fenetre.addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent e) {
+                int confirmed = JOptionPane.showConfirmDialog(null,
+                        "Etes vous sûrs de vouloir quitter ?", "Confirmer",
+                        JOptionPane.YES_NO_OPTION);
+
+                if (confirmed == JOptionPane.YES_OPTION) {
+                fenetre.dispose();
+                }
+            }
+        });
         fenetre.getContentPane().setLayout(null);
 
         btnAjouter.addActionListener(new ActionListener() {
