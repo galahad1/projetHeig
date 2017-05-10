@@ -1,6 +1,5 @@
 package ch.smartcity.graphique;
 
-import ch.smartcity.database.Database;
 import ch.smartcity.database.controllers.DatabaseAccess;
 import ch.smartcity.database.controllers.access.EvenementAccess;
 import ch.smartcity.database.controllers.access.StatutAccess;
@@ -268,8 +267,7 @@ public class FenetreModification {
                         ajouterEvenement();
 
 
-                    }
-                    else // evenement deja exsistant
+                    } else // evenement deja exsistant
                     {
                         modifierEvenement();
                     }
@@ -311,8 +309,7 @@ public class FenetreModification {
         boutonSupprimer.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
 
-                if(evenementSelectionne != null)
-                {
+                if (evenementSelectionne != null) {
                     DatabaseAccess.delete(evenementSelectionne); // supprime de la base de donnée
                     //TODO rafraichit la page
                     SwingUtilities.updateComponentTreeUI(fenetre);
@@ -616,8 +613,6 @@ public class FenetreModification {
 //        EvenementAccess.save(rubriqueEnfant,admin,textFieldNom.getText(),adresse,latitude,longitude,calDebut,calFin,textAreaDetails.getText(),p.get(0),statut.get(0));
 
 
-
-
         String nomEnfant = comboBoxRubrique.getSelectedItem().toString();
         String nomEvenement = textFieldNom.getText();
         String nomRue = textFieldRue.getText();
@@ -638,14 +633,12 @@ public class FenetreModification {
         String[] elementsPriorite = comboBoxPriorite.getSelectedItem().toString().split(" - "); // separe niveau et nom de la priorité
 
         // controle si l evenement exsite deja
-        List<Evenement> evenementsExsistants = EvenementAccess.get(nomEnfant,null,nomEvenement,nomRue,numeroRue,npa,latitude,longitude,calDebut,calFin,null,null,null,null);
-        if(evenementsExsistants == null || evenementsExsistants.isEmpty()) // n'exsiste pas
+        List<Evenement> evenementsExsistants = EvenementAccess.get(nomEnfant, null, nomEvenement, nomRue, numeroRue, npa, latitude, longitude, calDebut, calFin, null, null, null, null);
+        if (evenementsExsistants == null || evenementsExsistants.isEmpty()) // n'exsiste pas
         {
 
             EvenementAccess.save(nomEnfant, 1, nomEvenement, nomRue, numeroRue, npa, latitude, longitude, calDebut, calFin, details, elementsPriorite[1], Integer.valueOf(elementsPriorite[0]), Statut_.TRAITE);
-        }
-        else
-        {
+        } else {
             //TODO pop up evenement deja exsistant
             System.out.println("evenement deja dans la DB");
 
@@ -830,14 +823,13 @@ public class FenetreModification {
         Date dateDebut = null;
         Date dateFin = null;
         try {
-                dateDebut = dateFormat.parse(textFieldDateDebut.getText());
-                dateFin = dateFormat.parse(textFieldDateFin.getText());
+            dateDebut = dateFormat.parse(textFieldDateDebut.getText());
+            dateFin = dateFormat.parse(textFieldDateFin.getText());
         } catch (ParseException e) {
             e.printStackTrace();
         }
 
-        if(dateFin.before(dateAujourdhui) || dateFin.before(dateDebut) || dateFin.equals(dateDebut))
-        {
+        if (dateFin.before(dateAujourdhui) || dateFin.before(dateDebut) || dateFin.equals(dateDebut)) {
             return false;
         }
         return true;

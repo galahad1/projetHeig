@@ -31,7 +31,7 @@ public final class CarteTuilesComponent extends JComponent {
             throw new IllegalArgumentException();
         }
         this.zoom = zoom;
-        fournisseurTuiles = new ArrayList<FournisseurTuile>();
+        fournisseurTuiles = new ArrayList<>();
     }
 
     /**
@@ -81,7 +81,7 @@ public final class CarteTuilesComponent extends JComponent {
         g0 = (Graphics2D) g0;
 
         g0.setColor(Color.black);
-        // fenétre de visualisation du component
+        // fenêtre de visualisation du component
         Rectangle visibleRect = getVisibleRect();
 
         int baseX = (visibleRect.x / TAILLE_TUILE) * TAILLE_TUILE;
