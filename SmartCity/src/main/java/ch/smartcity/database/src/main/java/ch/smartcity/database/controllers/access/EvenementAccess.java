@@ -49,6 +49,23 @@ public class EvenementAccess {
         return getInstance().hibernate;
     }
 
+    public static List<Evenement> getByRubriqueEnfant(String nomRubriqueEnfant) {
+        return get(nomRubriqueEnfant,
+                "",
+                "",
+                "",
+                "",
+                "",
+                null,
+                null,
+                null,
+                null,
+                "",
+                "",
+                "",
+                null);
+    }
+
     public static List<Evenement> getActif() {
         return getByFinStatut(Calendar.getInstance(), Statut_.TRAITE);
     }
@@ -73,8 +90,8 @@ public class EvenementAccess {
                     null,
                     null,
                     null,
-                    null,
                     fin,
+                    null,
                     "",
                     null,
                     statutList.get(0),
@@ -82,6 +99,16 @@ public class EvenementAccess {
         }
 
         return evenementList;
+    }
+
+    // TODO : Attention
+    public static List<Evenement> getActifAtDate(String nomRubriqueEnfant,
+                                                 Calendar date,
+                                                 String nomStatut) {
+
+        // Vérifier que la date donnée soit plus grande ou égal à la date de début de l'évènement
+        // Et que la date de fin de l'évènement soit plus grande
+        return null;
     }
 
     public static List<Evenement> get(RubriqueEnfant rubriqueEnfant,
@@ -204,15 +231,17 @@ public class EvenementAccess {
                         longitude));
             }
 
+            //TODO: vérifier condition et modifier
             if (debut != null) {
-                predicateList.add(criteriaBuilder.greaterThanOrEqualTo(
-                        evenementRoot.get(Evenement_.debut),
+                predicateList.add(criteriaBuilder.lessThanOrEqualTo(
+                        evenementRoot.get(Evenement_.fin),
                         debut));
             }
 
+            //TODO: vérifier condition et modifier
             if (fin != null) {
                 predicateList.add(criteriaBuilder.greaterThanOrEqualTo(
-                        evenementRoot.get(Evenement_.fin),
+                        evenementRoot.get(Evenement_.debut),
                         fin));
             }
 
