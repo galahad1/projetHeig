@@ -5,6 +5,7 @@ import ch.smartcity.carte.Event;
 import ch.smartcity.carte.PointWGS84;
 import ch.smartcity.database.controllers.access.EvenementAccess;
 import ch.smartcity.database.models.Evenement;
+import ch.smartcity.database.models.Statut_;
 import com.toedter.calendar.JCalendar;
 
 import javax.swing.*;
@@ -13,8 +14,12 @@ import javax.swing.LayoutStyle.ComponentPlacement;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 
@@ -51,11 +56,18 @@ public class FenetrePrincipale {
     JScrollPane scrollPaneDescription = new JScrollPane();
     JCalendar calendrier = new JCalendar();
     private Carte carte = null;
+    //liste totale des différents événements
     private List<Event> allEvents = new ArrayList<>(); // tous les événements a afficher sur la carte
     private List<Event> listeAccidents = new ArrayList<>();
     private List<Event> listeTravaux = new ArrayList<>();
     private List<Event> listeManifestations = new ArrayList<>();
+    private List<Event> listeRenovations = new ArrayList<>();
+    private List<Event> listeConstructions = new ArrayList<>();
+
+    private Calendar dateSelectionne;
+
     private JTextField textDescription = new JTextField();
+
 
     /**
      * Create the application.
@@ -63,16 +75,11 @@ public class FenetrePrincipale {
     public FenetrePrincipale() {
         initialize();
 
-        listeAccidents = wrapperEvement(EvenementAccess.get("accidents", null, null, null,
-                null, null, null, null, null, null, null,
-                null, null, null));
-        listeTravaux = wrapperEvement(EvenementAccess.get("travaux", null, null, null,
-                null, null, null, null, null, null, null,
-                null, null, null));
-
-        listeManifestations = wrapperEvement(EvenementAccess.get("manifestations", null, null, null,
-                null, null, null, null, null, null, null,
-                null, null, null));
+        listeAccidents = wrapperEvement(EvenementAccess.getByRubriqueEnfant("accidents"));
+        listeTravaux = wrapperEvement(EvenementAccess.getByRubriqueEnfant("travaux"));
+        listeManifestations = wrapperEvement(EvenementAccess.getByRubriqueEnfant("manifestations"));
+        listeRenovations = wrapperEvement(EvenementAccess.getByRubriqueEnfant("renovations"));
+        listeConstructions = wrapperEvement(EvenementAccess.getByRubriqueEnfant("constructions"));
     }
 
     /**
@@ -179,6 +186,20 @@ public class FenetrePrincipale {
 
         panelCalendrier.add(calendrier, "name_9865352109015");
 
+        calendrier.getDayChooser().setAlwaysFireDayProperty(true);
+        calendrier.getDayChooser().addPropertyChangeListener("day", new PropertyChangeListener() {
+
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+
+                Date valDate = calendrier.getDate();
+                dateSelectionne = Calendar.getInstance();
+                dateSelectionne.setTime(valDate);
+
+            }
+
+        });
+
         JScrollPane scrollPaneRubriques = new JScrollPane();
         scrollPaneRubriques.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         scrollPaneRubriques.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
@@ -242,9 +263,9 @@ public class FenetrePrincipale {
                 boolean selected = abstractButton.getModel().isSelected();
 
                 if (selected) {
-                    allEvents.addAll(listeAccidents = wrapperEvement(EvenementAccess.get("accidents", null, "accidents entrée autoroute bloqué", null,
-                            null, null, null, null, null, null, null,
-                            null, null, null)));
+
+                    listeAccidents = wrapperEvement(EvenementAccess.getActif("accidents", dateSelectionne, Statut_.TRAITE));
+                    allEvents.addAll(listeAccidents);
                     carte.updateEvenement((ArrayList<Event>) allEvents);
                 } else {
                     allEvents.removeAll(listeAccidents);
@@ -261,7 +282,7 @@ public class FenetrePrincipale {
                 boolean selected = abstractButton.getModel().isSelected();
 
                 if (selected) {
-                    allEvents.addAll(listeTravaux);
+                    allEvents.addAll(listeTravaux = wrapperEvement(EvenementAccess.getActif("travaux", dateSelectionne, Statut_.TRAITE)));
                     carte.updateEvenement((ArrayList<Event>) allEvents);
                 } else {
                     allEvents.removeAll(listeTravaux);
@@ -278,10 +299,48 @@ public class FenetrePrincipale {
                 boolean selected = abstractButton.getModel().isSelected();
 
                 if (selected) {
+                    listeManifestations = wrapperEvement(EvenementAccess.getActif("manifestations", dateSelectionne, Statut_.TRAITE));
                     allEvents.addAll(listeManifestations);
                     carte.updateEvenement((ArrayList<Event>) allEvents);
                 } else {
                     allEvents.removeAll(listeManifestations);
+                    carte.updateEvenement((ArrayList<Event>) allEvents);
+                }
+            }
+        });
+
+        chckbxRenovation.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                AbstractButton abstractButton = (AbstractButton) e.getSource();
+                boolean selected = abstractButton.getModel().isSelected();
+
+                if (selected) {
+                    listeRenovations = wrapperEvement(EvenementAccess.getActif("rénovations", dateSelectionne, Statut_.TRAITE));
+                    allEvents.addAll(listeRenovations);
+                    carte.updateEvenement((ArrayList<Event>) allEvents);
+                } else {
+                    allEvents.removeAll(listeRenovations);
+                    carte.updateEvenement((ArrayList<Event>) allEvents);
+                }
+            }
+        });
+
+        chckbxConstruction.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                AbstractButton abstractButton = (AbstractButton) e.getSource();
+                boolean selected = abstractButton.getModel().isSelected();
+
+                if (selected) {
+                    listeConstructions = wrapperEvement(
+                            EvenementAccess.getActif("constructions", dateSelectionne, Statut_.TRAITE));
+                    allEvents.addAll(listeConstructions);
+                    carte.updateEvenement((ArrayList<Event>) allEvents);
+                } else {
+                    allEvents.removeAll(listeConstructions);
                     carte.updateEvenement((ArrayList<Event>) allEvents);
                 }
             }

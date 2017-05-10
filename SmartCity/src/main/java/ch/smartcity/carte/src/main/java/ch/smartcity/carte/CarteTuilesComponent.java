@@ -74,11 +74,6 @@ public final class CarteTuilesComponent extends JComponent {
         repaint();
     }
 
-    public void supprimerFournisseurTuile(FournisseurTuile fournisseurTuile) {
-        fournisseurTuiles.remove(fournisseurTuile);
-        repaint();
-    }
-
 
     public void updateFournisseurTuile(FournisseurTuile fournisseurTuile) {
         fournisseurTuiles.remove(derniersEvenements);

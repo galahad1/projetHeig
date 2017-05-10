@@ -1,7 +1,7 @@
 package ch.smartcity.graphique;
 
 import ch.smartcity.database.controllers.DatabaseAccess;
-import ch.smartcity.database.controllers.access.*;
+import ch.smartcity.database.controllers.access.EvenementAccess;
 import ch.smartcity.database.models.*;
 import com.toedter.calendar.JCalendar;
 
@@ -264,7 +264,7 @@ public class FenetreModification {
 
                     if(comboBoxEvenements.getSelectedIndex() == 0) // nouvel evenement
                     {
-                        //ajouterEvenement();
+                        ajouterEvenement();
                     }
                     else // evenment deja exsistant
                     {
@@ -351,7 +351,10 @@ public class FenetreModification {
         List<String> previews;
         if (context == 0) // ajout/modif TODO: constantes
         {
-            evenementList = EvenementAccess.getByFin(Calendar.getInstance());
+            //TODO MODIFICATIONS LOAN <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+            evenementList = EvenementAccess.getActif();
+            //TODO MODIFICATIONS LOAN <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
             //TODO trier la liste par rapport au IDs
 
             previews = previewEvenement(evenementList); // previsualisation des evenements
@@ -361,7 +364,10 @@ public class FenetreModification {
         } else // en attente
         {
 
-            evenementList = EvenementAccess.getByStatut(Statut_.EN_ATTENTE); // recupere tout les evenements en attente
+            //TODO MODIFICATIONS LOAN <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+            evenementList = EvenementAccess.getEnAttente(); // recupere tout les evenements en attente
+            //TODO MODIFICATIONS LOAN <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
             //TODO trier la liste par rapport aux ids
 
             previews = previewEvenement(evenementList); // previsualisation des evenements
@@ -510,7 +516,7 @@ public class FenetreModification {
 
     private void modifierEvenement() {
 
-    //TODO modifier evenement de la base de données
+        //TODO modifier evenement de la base de données
 
         // voir tout les champs qui ont ete modifier
 
@@ -521,51 +527,74 @@ public class FenetreModification {
     }
 
     private void ajouterEvenement() {
-        // recuperation rubrique enfant dans la base de donnée
+//        // recuperation rubrique enfant dans la base de donnée
+//        String nomEnfant = comboBoxRubrique.getSelectedItem().toString();
+//        String rubriqueParent = null;
+//        List<RubriqueEnfant> rubriqueEnfantList = RubriqueEnfantAccess.get("", nomEnfant);
+//        RubriqueEnfant rubriqueEnfant = rubriqueEnfantList.get(0);
+//
+//        // controle si rue est dans la base de donnée
+//        List<Rue> rues = RueAccess.get(textFieldRue.getText());
+//        Rue rue;
+//        // test effecuté car rue n'est pas une liste déroulante
+//        if(rues == null || rues.isEmpty()) // rue n'existe pas
+//        {
+//            rue = new Rue(textFieldRue.getText()); // nouvelle rue
+//        }
+//        else
+//        {
+//            rue = rues.get(0); // recuperation rue dans la base de données
+//        }
+//
+//        // recuperation npa
+//        List<Npa> npa = NpaAccess.get(comboBoxNpa.getSelectedItem().toString());
+//        // creation rue
+//        Adresse adresse = new Adresse(rue, textFieldNumRue.getText(), npa.get(0));
+//
+//        // convertion dates en calendar
+//        Calendar calDebut = Calendar.getInstance();
+//        Calendar calFin = Calendar.getInstance();
+//        try {
+//            calDebut.setTime(dateFormat.parse(textFieldDateDebut.getText()));
+//            calFin.setTime(dateFormat.parse(textFieldDateFin.getText()));
+//        } catch (ParseException e1) {
+//            e1.printStackTrace();
+//        }
+//
+//        Utilisateur admin = DatabaseAccess.get(Utilisateur.class, 1);
+//
+//        String[] elementsPriorite = comboBoxPriorite.getSelectedItem().toString().split(" - ");
+//        List<Priorite> p = PrioriteAccess.get(elementsPriorite[1], Integer.valueOf(elementsPriorite[0]));
+//
+//        Double latitude = Double.valueOf(textFieldLatitude.getText());
+//        Double longitude = Double.valueOf(textFieldLongitude.getText());
+//
+//
+//        List<Statut> statut = StatutAccess.get(Statut_.TRAITE);
+//        EvenementAccess.save(rubriqueEnfant,admin,textFieldNom.getText(),adresse,latitude,longitude,calDebut,calFin,textAreaDetails.getText(),p.get(0),statut.get(0));
+
         String nomEnfant = comboBoxRubrique.getSelectedItem().toString();
-        String rubriqueParent = null;
-        List<RubriqueEnfant> rubriqueEnfantList = RubriqueEnfantAccess.get("", nomEnfant);
-        RubriqueEnfant rubriqueEnfant = rubriqueEnfantList.get(0);
-
-        // controle si rue est dans la base de donnée
-        List<Rue> rues = RueAccess.get(textFieldRue.getText());
-        Rue rue;
-        // test effecuté car rue n'est pas une liste déroulante
-        if(rues == null || rues.isEmpty()) // rue n'existe pas
-        {
-            rue = new Rue(textFieldRue.getText()); // nouvelle rue
-        }
-        else
-        {
-            rue = rues.get(0); // recuperation rue dans la base de données
-        }
-
-        // recuperation npa
-        List<Npa> npa = NpaAccess.get(comboBoxNpa.getSelectedItem().toString());
-        // creation rue
-        Adresse adresse = new Adresse(rue, textFieldNumRue.getText(), npa.get(0));
-
-        // convertion dates en calendar
+        String nomEvenement = textFieldNom.getText();
+        String nomRue = textFieldRue.getText();
+        String numeroRue = textFieldNumRue.getText();
+        String npa = comboBoxNpa.getSelectedItem().toString();
+        Double latitude = Double.valueOf(textFieldLatitude.getText());
+        Double longitude = Double.valueOf(textFieldLongitude.getText());
         Calendar calDebut = Calendar.getInstance();
         Calendar calFin = Calendar.getInstance();
+        String details = textAreaDetails.getText();
+
         try {
             calDebut.setTime(dateFormat.parse(textFieldDateDebut.getText()));
             calFin.setTime(dateFormat.parse(textFieldDateFin.getText()));
         } catch (ParseException e1) {
             e1.printStackTrace();
         }
-
-        Utilisateur admin = DatabaseAccess.get(Utilisateur.class, 1);
-
         String[] elementsPriorite = comboBoxPriorite.getSelectedItem().toString().split(" - ");
-        List<Priorite> p = PrioriteAccess.get(elementsPriorite[1], Integer.valueOf(elementsPriorite[0]));
 
-        Double latitude = Double.valueOf(textFieldLatitude.getText());
-        Double longitude = Double.valueOf(textFieldLongitude.getText());
-
-
-        List<Statut> statut = StatutAccess.get(Statut_.TRAITE);
-        EvenementAccess.save(rubriqueEnfant,admin,textFieldNom.getText(),adresse,latitude,longitude,calDebut,calFin,textAreaDetails.getText(),p.get(0),statut.get(0));
+        // TODO<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+        EvenementAccess.save(nomEnfant, 1, nomEvenement, nomRue, numeroRue, npa, latitude, longitude, calDebut, calFin, details, elementsPriorite[1], Integer.valueOf(elementsPriorite[0]), Statut_.TRAITE);
+        // TODO<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
     }
 
     /**
