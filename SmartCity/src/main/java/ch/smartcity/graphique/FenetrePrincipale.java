@@ -33,11 +33,13 @@ public class FenetrePrincipale {
     private final JTextField textRubriques = new JTextField();
     private final JCheckBox chckbxAccidents = new JCheckBox("Accidents");
     private final JCheckBox chckbxTravaux = new JCheckBox("Travaux");
+    private final JCheckBox chckbxManifestations = new JCheckBox("Manifestations");
+    private final JCheckBox chckbxRenovation = new JCheckBox("Rénovations");
+    private final JCheckBox chckbxConstruction = new JCheckBox("Constructions");
     private final JLabel labelManifestations = new JLabel("MANIFESTATIONS");
     private final JLabel labelChantiers = new JLabel("CHANTIERS");
-    private final JCheckBox chckbxRenovation = new JCheckBox("Rénovations");
 
-    private final JCheckBox chckbxConstruction = new JCheckBox("Constructions");
+
     private final JPanel panelMenu = new JPanel();
     private final JLabel lblNbrNotification = new JLabel("Notifications");
     private final JPanel panelLogo = new JPanel();
@@ -223,6 +225,11 @@ public class FenetrePrincipale {
                 dateSelectionne = Calendar.getInstance();
                 dateSelectionne.setTime(valDate);
 
+                rafraichirCarte();
+
+
+
+
             }
 
         });
@@ -260,7 +267,7 @@ public class FenetrePrincipale {
 
         panelRubriques.add(chckbxConstruction);
 
-        JCheckBox chckbxManifestations = new JCheckBox("Manifestations");
+
         chckbxManifestations.setBounds(20, 189, 156, 23);
         panelRubriques.add(chckbxManifestations);
 
@@ -384,5 +391,20 @@ public class FenetrePrincipale {
         }
 
         return evenements;
+    }
+
+    private void rafraichirCheckBox(JCheckBox checkBox) {
+        if (checkBox.isSelected()) {
+            checkBox.doClick();
+            checkBox.doClick();
+        }
+    }
+
+    private void rafraichirCarte() {
+        rafraichirCheckBox(chckbxAccidents);
+        rafraichirCheckBox(chckbxTravaux);
+        rafraichirCheckBox(chckbxManifestations);
+        rafraichirCheckBox(chckbxRenovation);
+        rafraichirCheckBox(chckbxConstruction);
     }
 }
