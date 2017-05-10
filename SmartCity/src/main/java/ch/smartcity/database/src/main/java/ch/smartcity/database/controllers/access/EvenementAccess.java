@@ -50,17 +50,19 @@ public class EvenementAccess {
     }
 
     public static List<Evenement> getActif() {
-        return getActif(null, Calendar.getInstance(), Statut_.TRAITE);
+        return getActif(null, null, Calendar.getInstance(), Statut_.TRAITE);
     }
 
     public static List<Evenement> getActif(String nomRubriqueEnfant,
-                                           Calendar date,
+                                           Calendar debut,
+                                           Calendar fin,
                                            String nomStatut) {
-        if (date != null) {
-            date.set(Calendar.HOUR_OF_DAY, date.getMaximum(Calendar.HOUR_OF_DAY));
-            date.set(Calendar.MINUTE, date.getMaximum(Calendar.MINUTE));
-            date.set(Calendar.SECOND, date.getMaximum(Calendar.SECOND));
-            date.set(Calendar.MILLISECOND, date.getMaximum(Calendar.MILLISECOND));
+        if (debut != null) {
+            setTime(debut, false);
+        }
+
+        if (fin != null) {
+            setTime(fin, true);
         }
 
         List<Evenement> evenementList = null;
@@ -88,8 +90,8 @@ public class EvenementAccess {
                         null,
                         null,
                         null,
-                        date,
-                        date,
+                        debut,
+                        fin,
                         "",
                         null,
                         statutList.get(0),
@@ -110,7 +112,11 @@ public class EvenementAccess {
     }
 
     public static List<Evenement> getEnAttente() {
-        return getActif(null, Calendar.getInstance(), Statut_.EN_ATTENTE);
+        return getActif(
+                null,
+                null,
+                Calendar.getInstance(),
+                Statut_.EN_ATTENTE);
     }
 
     public static List<Evenement> getByRubriqueEnfant(String nomRubriqueEnfant) {
@@ -257,7 +263,7 @@ public class EvenementAccess {
             }
 
             if (fin != null) {
-                predicateList.add(criteriaBuilder.greaterThan(
+                predicateList.add(criteriaBuilder.greaterThanOrEqualTo(
                         evenementRoot.get(Evenement_.fin),
                         fin));
             }
@@ -666,6 +672,20 @@ public class EvenementAccess {
         numeroNpa = adresse != null ? adresse.getNpa().getNumeroNpa() : null;
         nomPriorite = priorite != null ? priorite.getNomPriorite() : null;
         nomStatut = statut != null ? statut.getNomStatut() : null;
+    }
+
+    private static void setTime(Calendar calendar, boolean isMinimumValue) {
+        if (isMinimumValue) {
+            calendar.set(Calendar.HOUR_OF_DAY, calendar.getMinimum(Calendar.HOUR_OF_DAY));
+            calendar.set(Calendar.MINUTE, calendar.getMinimum(Calendar.MINUTE));
+            calendar.set(Calendar.SECOND, calendar.getMinimum(Calendar.SECOND));
+            calendar.set(Calendar.MILLISECOND, calendar.getMinimum(Calendar.MILLISECOND));
+        } else {
+            calendar.set(Calendar.HOUR_OF_DAY, calendar.getMaximum(Calendar.HOUR_OF_DAY));
+            calendar.set(Calendar.MINUTE, calendar.getMaximum(Calendar.MINUTE));
+            calendar.set(Calendar.SECOND, calendar.getMaximum(Calendar.SECOND));
+            calendar.set(Calendar.MILLISECOND, calendar.getMaximum(Calendar.MILLISECOND));
+        }
     }
 
     private static class SingletonHolder {

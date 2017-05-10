@@ -3,10 +3,8 @@ package ch.smartcity.database;
 import ch.smartcity.database.controllers.DatabaseAccess;
 import ch.smartcity.database.controllers.access.EvenementAccess;
 import ch.smartcity.database.models.Evenement;
-import ch.smartcity.database.models.Statut_;
 import org.hibernate.HibernateException;
 
-import java.util.Calendar;
 import java.util.List;
 
 public class Database {
@@ -28,15 +26,6 @@ public class Database {
         try {
             System.out.println("Tests\n=======================================================");
             List<Evenement> list = EvenementAccess.getActif();
-            System.out.println(list);
-            System.out.println("=======================================================\n");
-            list = EvenementAccess.getActif("accidents", Calendar.getInstance(), Statut_.TRAITE);
-            System.out.println(list);
-            System.out.println("=======================================================\n");
-            list = EvenementAccess.getEnAttente();
-            System.out.println(list);
-            System.out.println("=======================================================\n");
-            list = EvenementAccess.getByRubriqueEnfant("travaux");
             System.out.println(list);
             System.out.println("=======================================================\n");
 

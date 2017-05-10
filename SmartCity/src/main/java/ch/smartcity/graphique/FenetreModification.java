@@ -1,6 +1,5 @@
 package ch.smartcity.graphique;
 
-import ch.smartcity.database.Database;
 import ch.smartcity.database.controllers.DatabaseAccess;
 import ch.smartcity.database.controllers.access.EvenementAccess;
 import ch.smartcity.database.controllers.access.StatutAccess;
@@ -267,8 +266,7 @@ public class FenetreModification {
                         ajouterEvenement();
 
 
-                    }
-                    else // evenement deja exsistant
+                    } else // evenement deja exsistant
                     {
                         modifierEvenement();
                     }
@@ -622,8 +620,6 @@ public class FenetreModification {
 //        EvenementAccess.save(rubriqueEnfant,admin,textFieldNom.getText(),adresse,latitude,longitude,calDebut,calFin,textAreaDetails.getText(),p.get(0),statut.get(0));
 
 
-
-
         String nomEnfant = comboBoxRubrique.getSelectedItem().toString();
         String nomEvenement = textFieldNom.getText();
         String nomRue = textFieldRue.getText();
@@ -644,6 +640,7 @@ public class FenetreModification {
         String[] elementsPriorite = comboBoxPriorite.getSelectedItem().toString().split(" - "); // separe niveau et nom de la priorité
 
         // controle si l evenement exsite deja
+
         List<Evenement> evenementsExsistants = EvenementAccess.get(nomEnfant,null,nomEvenement,nomRue,numeroRue,npa,latitude,longitude,calDebut,calFin,details,elementsPriorite[1],null,null);
         if(evenementsExsistants == null || evenementsExsistants.isEmpty()) // n'exsiste pas
         {
@@ -659,7 +656,6 @@ public class FenetreModification {
             int confirmed = JOptionPane.showConfirmDialog(null,
                     "Evenement déjà dans la base de donnée", "Evénement présent",
                     JOptionPane.DEFAULT_OPTION);
-
         }
 
     }
@@ -837,14 +833,13 @@ public class FenetreModification {
         Date dateDebut = null;
         Date dateFin = null;
         try {
-                dateDebut = dateFormat.parse(textFieldDateDebut.getText());
-                dateFin = dateFormat.parse(textFieldDateFin.getText());
+            dateDebut = dateFormat.parse(textFieldDateDebut.getText());
+            dateFin = dateFormat.parse(textFieldDateFin.getText());
         } catch (ParseException e) {
             e.printStackTrace();
         }
 
-        if(dateFin.before(dateAujourdhui) || dateFin.before(dateDebut) || dateFin.equals(dateDebut))
-        {
+        if (dateFin.before(dateAujourdhui) || dateFin.before(dateDebut) || dateFin.equals(dateDebut)) {
             return false;
         }
         return true;
