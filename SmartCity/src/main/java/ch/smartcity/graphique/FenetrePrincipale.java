@@ -31,6 +31,8 @@ public class FenetrePrincipale {
     private final JLabel lblNbrNotification = new JLabel("Notifications");
     private final JPanel panelLogo = new JPanel();
     private final JTextArea txtrDescription = new JTextArea();
+
+    private JList listEvenementsEnAttente;
     public JFrame fenetre;
     JPanel panelPrincipal = new JPanel();
     JPanel panelCarte = new JPanel();
@@ -135,15 +137,33 @@ public class FenetrePrincipale {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-
-
         panelCarte.add(carte.createCenterPanel());
-
         panelPrincipal.add(panelCarte);
+
+
+
         panelNotifications.setBackground(Color.LIGHT_GRAY);
         panelNotifications.setBounds(700, 5, 782, 195);
+
         panelPrincipal.add(panelNotifications);
-        panelNotifications.setLayout(null);
+        panelNotifications.setLayout(new CardLayout(0, 0));
+
+        listEvenementsEnAttente = new JList();
+
+        //TODO remplir liste avec evenements en attente
+        /*Exemple de comment remplir la liste*/
+        String[] values = new String[] {"evenement 1", "evenement 2"};
+        DefaultListModel model = new DefaultListModel();
+        for(String v : values)
+        {
+            model.addElement(v);
+        }
+        listEvenementsEnAttente.setModel(model);
+
+
+        panelNotifications.add(listEvenementsEnAttente, "name_56412892408382");
+
+
         panelCalendrier.setBackground(Color.DARK_GRAY);
         panelCalendrier.setBounds(1482, 5, 408, 195);
 
