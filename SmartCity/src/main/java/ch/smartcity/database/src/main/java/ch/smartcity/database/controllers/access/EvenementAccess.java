@@ -50,38 +50,84 @@ public class EvenementAccess {
     }
 
     public static List<Evenement> getActif() {
-        return getByFinStatut(Calendar.getInstance(), Statut_.TRAITE);
+        return getActif(null, Calendar.getInstance(), Statut_.TRAITE);
     }
 
-    public static List<Evenement> getByFin(Calendar fin) {
-        return getByFinStatut(fin, Statut_.TRAITE);
-    }
+    public static List<Evenement> getActif(String nomRubriqueEnfant,
+                                           Calendar date,
+                                           String nomStatut) {
+        if (date != null) {
+            date.set(Calendar.HOUR_OF_DAY, date.getMaximum(Calendar.HOUR_OF_DAY));
+            date.set(Calendar.MINUTE, date.getMaximum(Calendar.MINUTE));
+            date.set(Calendar.SECOND, date.getMaximum(Calendar.SECOND));
+            date.set(Calendar.MILLISECOND, date.getMaximum(Calendar.MILLISECOND));
+        }
 
-    public static List<Evenement> getByStatut(String nomStatut) {
-        return getByFinStatut(Calendar.getInstance(), nomStatut);
-    }
-
-    public static List<Evenement> getByFinStatut(Calendar fin, String nomStatut) {
         List<Evenement> evenementList = null;
-        List<Statut> statutList = StatutAccess.get(nomStatut);
+        RubriqueEnfant rubriqueEnfant = null;
+        boolean success = true;
 
-        if (statutList != null && statutList.size() == 1) {
-            evenementList = get(
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    fin,
+        if (nomRubriqueEnfant != null && !nomRubriqueEnfant.isEmpty()) {
+            List<RubriqueEnfant> rubriqueEnfantList = RubriqueEnfantAccess.get(
                     "",
-                    null,
-                    statutList.get(0),
-                    null);
+                    nomRubriqueEnfant);
+            success = rubriqueEnfantList != null && rubriqueEnfantList.size() == 1;
+            if (success) {
+                rubriqueEnfant = rubriqueEnfantList.get(0);
+            }
+        }
+
+        if (success) {
+            List<Statut> statutList = StatutAccess.get(nomStatut);
+            success = statutList != null && statutList.size() == 1;
+            if (success) {
+                evenementList = get(
+                        rubriqueEnfant,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        date,
+                        date,
+                        "",
+                        null,
+                        statutList.get(0),
+                        null);
+            }
+        }
+
+        if (success) {
+            getLogger().info(getConfigurationManager()
+                    .getString("databaseAccess.successInSubQuery"));
+
+        } else {
+            getLogger().info(getConfigurationManager()
+                    .getString("databaseAccess.errorInSubQuery"));
         }
 
         return evenementList;
+    }
+
+    public static List<Evenement> getEnAttente() {
+        return getActif(null, Calendar.getInstance(), Statut_.EN_ATTENTE);
+    }
+
+    public static List<Evenement> getByRubriqueEnfant(String nomRubriqueEnfant) {
+        return get(nomRubriqueEnfant,
+                "",
+                "",
+                "",
+                "",
+                "",
+                null,
+                null,
+                null,
+                null,
+                "",
+                "",
+                "",
+                null);
     }
 
     public static List<Evenement> get(RubriqueEnfant rubriqueEnfant,
@@ -205,13 +251,13 @@ public class EvenementAccess {
             }
 
             if (debut != null) {
-                predicateList.add(criteriaBuilder.greaterThanOrEqualTo(
+                predicateList.add(criteriaBuilder.lessThanOrEqualTo(
                         evenementRoot.get(Evenement_.debut),
                         debut));
             }
 
             if (fin != null) {
-                predicateList.add(criteriaBuilder.greaterThanOrEqualTo(
+                predicateList.add(criteriaBuilder.greaterThan(
                         evenementRoot.get(Evenement_.fin),
                         fin));
             }

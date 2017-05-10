@@ -372,7 +372,10 @@ public class FenetreModification {
         List<String> previews;
         if (context == 0) // ajout/modif TODO: constantes
         {
-            evenementList = EvenementAccess.getByFin(Calendar.getInstance());
+            //TODO MODIFICATIONS LOAN <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+            evenementList = EvenementAccess.getActif();
+            //TODO MODIFICATIONS LOAN <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
             //TODO trier la liste par rapport au IDs
 
             previews = previewEvenement(evenementList); // previsualisation des evenements
@@ -382,7 +385,10 @@ public class FenetreModification {
         } else // en attente
         {
 
-            evenementList = EvenementAccess.getByStatut(Statut_.EN_ATTENTE); // recupere tout les evenements en attente
+            //TODO MODIFICATIONS LOAN <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+            evenementList = EvenementAccess.getEnAttente(); // recupere tout les evenements en attente
+            //TODO MODIFICATIONS LOAN <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
             //TODO trier la liste par rapport aux ids
 
             previews = previewEvenement(evenementList); // previsualisation des evenements
