@@ -225,10 +225,40 @@ public class FenetrePrincipale {
                 dateSelectionne = Calendar.getInstance();
                 dateSelectionne.setTime(valDate);
 
-                rafraichirCarte();
+                if (chckbxAccidents.isSelected()) {
+                    allEvents.removeAll(listeAccidents);
+                    listeAccidents = wrapperEvenement(EvenementAccess.getActif("accidents", dateSelectionne, Statut_.TRAITE));
+                    allEvents.addAll(listeAccidents);
+                    carte.updateEvenement((ArrayList<Event>) allEvents);
+                }
 
+                if (chckbxTravaux.isSelected()) {
+                    allEvents.removeAll(listeTravaux);
+                    listeTravaux = wrapperEvenement(EvenementAccess.getActif("travaux", dateSelectionne, Statut_.TRAITE));
+                    allEvents.addAll(listeTravaux);
+                    carte.updateEvenement((ArrayList<Event>) allEvents);
+                }
 
+                if (chckbxManifestations.isSelected()) {
+                    allEvents.removeAll(listeManifestations);
+                    listeManifestations = wrapperEvenement(EvenementAccess.getActif("manifestations", dateSelectionne, Statut_.TRAITE));
+                    allEvents.addAll(listeManifestations);
+                    carte.updateEvenement((ArrayList<Event>) allEvents);
+                }
 
+                if (chckbxRenovation.isSelected()) {
+                    allEvents.removeAll(listeRenovations);
+                    listeRenovations = wrapperEvenement(EvenementAccess.getActif("rénovations", dateSelectionne, Statut_.TRAITE));
+                    allEvents.addAll(listeRenovations);
+                    carte.updateEvenement((ArrayList<Event>) allEvents);
+                }
+
+                if (chckbxConstruction.isSelected()) {
+                    allEvents.removeAll(listeConstructions);
+                    listeConstructions = wrapperEvenement(EvenementAccess.getActif("constructions", dateSelectionne, Statut_.TRAITE));
+                    allEvents.addAll(listeConstructions);
+                    carte.updateEvenement((ArrayList<Event>) allEvents);
+                }
 
             }
 
@@ -293,18 +323,16 @@ public class FenetrePrincipale {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                AbstractButton abstractButton = (AbstractButton) e.getSource();
-                boolean selected = abstractButton.getModel().isSelected();
 
-                if (selected) {
-
-                    listeAccidents = wrapperEvement(EvenementAccess.getActif("accidents", dateSelectionne, Statut_.TRAITE));
-                    allEvents.addAll(listeAccidents);
+                if (((AbstractButton) e.getSource()).isSelected()) {
+                    allEvents.addAll(listeAccidents = wrapperEvenement(EvenementAccess.getActif("accidents", dateSelectionne, Statut_.TRAITE)));
                     carte.updateEvenement((ArrayList<Event>) allEvents);
                 } else {
                     allEvents.removeAll(listeAccidents);
                     carte.updateEvenement((ArrayList<Event>) allEvents);
                 }
+
+
             }
         });
 
@@ -312,11 +340,8 @@ public class FenetrePrincipale {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                AbstractButton abstractButton = (AbstractButton) e.getSource();
-                boolean selected = abstractButton.getModel().isSelected();
-
-                if (selected) {
-                    allEvents.addAll(listeTravaux = wrapperEvement(EvenementAccess.getActif("travaux", dateSelectionne, Statut_.TRAITE)));
+                if (((AbstractButton) e.getSource()).isSelected()) {
+                    allEvents.addAll(listeTravaux = wrapperEvenement(EvenementAccess.getActif("travaux", dateSelectionne, Statut_.TRAITE)));
                     carte.updateEvenement((ArrayList<Event>) allEvents);
                 } else {
                     allEvents.removeAll(listeTravaux);
@@ -329,11 +354,8 @@ public class FenetrePrincipale {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                AbstractButton abstractButton = (AbstractButton) e.getSource();
-                boolean selected = abstractButton.getModel().isSelected();
-
-                if (selected) {
-                    listeManifestations = wrapperEvement(EvenementAccess.getActif("manifestations", dateSelectionne, Statut_.TRAITE));
+                if (((AbstractButton) e.getSource()).isSelected()) {
+                    listeManifestations = wrapperEvenement(EvenementAccess.getActif("manifestations", dateSelectionne, Statut_.TRAITE));
                     allEvents.addAll(listeManifestations);
                     carte.updateEvenement((ArrayList<Event>) allEvents);
                 } else {
@@ -347,11 +369,8 @@ public class FenetrePrincipale {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                AbstractButton abstractButton = (AbstractButton) e.getSource();
-                boolean selected = abstractButton.getModel().isSelected();
-
-                if (selected) {
-                    listeRenovations = wrapperEvement(EvenementAccess.getActif("rénovations", dateSelectionne, Statut_.TRAITE));
+                if (((AbstractButton) e.getSource()).isSelected()) {
+                    listeRenovations = wrapperEvenement(EvenementAccess.getActif("rénovations", dateSelectionne, Statut_.TRAITE));
                     allEvents.addAll(listeRenovations);
                     carte.updateEvenement((ArrayList<Event>) allEvents);
                 } else {
@@ -365,11 +384,8 @@ public class FenetrePrincipale {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                AbstractButton abstractButton = (AbstractButton) e.getSource();
-                boolean selected = abstractButton.getModel().isSelected();
-
-                if (selected) {
-                    listeConstructions = wrapperEvement(
+                if (((AbstractButton) e.getSource()).isSelected()) {
+                    listeConstructions = wrapperEvenement(
                             EvenementAccess.getActif("constructions", dateSelectionne, Statut_.TRAITE));
                     allEvents.addAll(listeConstructions);
                     carte.updateEvenement((ArrayList<Event>) allEvents);
@@ -382,7 +398,7 @@ public class FenetrePrincipale {
 
     }
 
-    private ArrayList<Event> wrapperEvement(List<Evenement> listeEvenement) {
+    private ArrayList<Event> wrapperEvenement(List<Evenement> listeEvenement) {
         ArrayList<Event> evenements = new ArrayList<>();
 
         for (Evenement e : listeEvenement) {
@@ -393,18 +409,4 @@ public class FenetrePrincipale {
         return evenements;
     }
 
-    private void rafraichirCheckBox(JCheckBox checkBox) {
-        if (checkBox.isSelected()) {
-            checkBox.doClick();
-            checkBox.doClick();
-        }
-    }
-
-    private void rafraichirCarte() {
-        rafraichirCheckBox(chckbxAccidents);
-        rafraichirCheckBox(chckbxTravaux);
-        rafraichirCheckBox(chckbxManifestations);
-        rafraichirCheckBox(chckbxRenovation);
-        rafraichirCheckBox(chckbxConstruction);
-    }
 }
