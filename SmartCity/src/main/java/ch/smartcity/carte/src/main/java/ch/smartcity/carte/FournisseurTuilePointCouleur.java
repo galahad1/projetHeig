@@ -33,9 +33,9 @@ public final class FournisseurTuilePointCouleur implements FournisseurTuile {
     public Tuile getTuile(int zoom, int x, int y) {
         // création d'une tuile
         BufferedImage image = new BufferedImage(TAILLE_TUILE, TAILLE_TUILE, BufferedImage.TYPE_INT_ARGB);
-
         Graphics2D g = image.createGraphics();
 
+        String nomAffichage;
         int rayon = 5;
         for (Event e : evenements) {
             g.setColor(couleur[e.getCategorie()]);
@@ -48,20 +48,22 @@ public final class FournisseurTuilePointCouleur implements FournisseurTuile {
             g.draw(ellipse);
 
             g.setColor(Color.white);
-            g.setFont(new Font(Font.SERIF, 1, 15));
+            g.setFont(new Font(Font.SERIF, 1, 17));
+
+            nomAffichage = e.getId() + ": " + e.getNom();
             // permet d'avoir un bord blanc autour de l'écriture
-            g.drawString(e.getNom(), e.getPosition().toOSM(zoom).arrondiX() - TAILLE_TUILE * x - 6,
+            g.drawString(nomAffichage, e.getPosition().toOSM(zoom).arrondiX() - TAILLE_TUILE * x - 6,
                     e.getPosition().toOSM(zoom).arrondiY() - TAILLE_TUILE * y - 9);
-            g.drawString(e.getNom(), e.getPosition().toOSM(zoom).arrondiX() - TAILLE_TUILE * x - 6,
+            g.drawString(nomAffichage, e.getPosition().toOSM(zoom).arrondiX() - TAILLE_TUILE * x - 6,
                     e.getPosition().toOSM(zoom).arrondiY() - TAILLE_TUILE * y - 7);
-            g.drawString(e.getNom(), e.getPosition().toOSM(zoom).arrondiX() - TAILLE_TUILE * x - 4,
+            g.drawString(nomAffichage, e.getPosition().toOSM(zoom).arrondiX() - TAILLE_TUILE * x - 4,
                     e.getPosition().toOSM(zoom).arrondiY() - TAILLE_TUILE * y - 9);
-            g.drawString(e.getNom(), e.getPosition().toOSM(zoom).arrondiX() - TAILLE_TUILE * x - 4,
+            g.drawString(nomAffichage, e.getPosition().toOSM(zoom).arrondiX() - TAILLE_TUILE * x - 4,
                     e.getPosition().toOSM(zoom).arrondiY() - TAILLE_TUILE * y - 7);
+            //puis écrit le fond en noir
             g.setColor(Color.black);
-            g.drawString(e.getNom(), e.getPosition().toOSM(zoom).arrondiX() - TAILLE_TUILE * x - 5,
+            g.drawString(nomAffichage, e.getPosition().toOSM(zoom).arrondiX() - TAILLE_TUILE * x - 5,
                     e.getPosition().toOSM(zoom).arrondiY() - TAILLE_TUILE * y - 8);
-            ;
         }
 
         return new Tuile(zoom, x, y, image);

@@ -31,7 +31,6 @@ public class FenetrePrincipale {
     private static final int CONTEXTE_EN_ATTENTE = 1;
     private final JPanel panelCalendrier = new JPanel();
     private final JTextField textRubriques = new JTextField();
-
     private final JCheckBox chckbxAccidents = new JCheckBox("Accidents");
     private final JCheckBox chckbxTravaux = new JCheckBox("Travaux");
     private final JCheckBox chckbxManifestations = new JCheckBox("Manifestations");
@@ -45,24 +44,26 @@ public class FenetrePrincipale {
     private final JPanel panelMenu = new JPanel();
     private final JLabel lblNbrNotification = new JLabel("Notifications");
     private final JPanel panelLogo = new JPanel();
-    private final JTextArea txtrDescription = new JTextArea();
-    public JFrame fenetre;
-    JPanel panelRubriques = new JPanel();
+    public JFrame fenetre = new JFrame();
+    StringBuilder descriptionsEvents = new StringBuilder();
     JPanel panelPrincipal = new JPanel();
     JPanel panelCarte = new JPanel();
     JPanel panelNotifications = new JPanel();
     JButton btnAjouter = new JButton("Ajouter/Modifier");
     JButton btnPdf = new JButton("PDF");
     JButton btnEnAttente = new JButton("En attente");
-    // création dynamique des checkboxes des doléances
-    // TODO
-
     // récupération d'un nombre de requetes a traiter
     // TODO
     GroupLayout gl_panelMenu = new GroupLayout(panelMenu);
-    JScrollPane scrollPaneDescription = new JScrollPane();
-    JCalendar calendrier = new JCalendar();
-    private JList listEvenementsEnAttente;
+    private JTextArea txtrDescription = new JTextArea();
+    private JPanel panelRubriques = new JPanel();
+    private JScrollPane scrollPaneDescription = new JScrollPane();
+
+    //rubrique de selections événements
+    private JScrollPane scrollPaneRubriques = new JScrollPane();
+
+    private JCalendar calendrier = new JCalendar();
+    private JList listEvenementsEnAttente = new JList();
     private Carte carte = null;
     //liste totale des différents événements
     private List<Event> allEvents = new ArrayList<>();
@@ -112,11 +113,11 @@ public class FenetrePrincipale {
                                         .addComponent(btnPdf))
                                 .addContainerGap())
         );
-        fenetre = new JFrame();
+
+        //FENETRE PRINCIPALE
         fenetre.setTitle("SmartCity");
         fenetre.setResizable(false);
         fenetre.setBounds(0, 0, 1900, 1000);
-
         //pop up de confirmation avant de quitter la fenetre
         fenetre.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         fenetre.addWindowListener(new WindowAdapter() {
@@ -132,6 +133,7 @@ public class FenetrePrincipale {
         });
         fenetre.getContentPane().setLayout(null);
 
+        //BOUTONS
         btnAjouter.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 FenetreModification fenetre2 = new FenetreModification(CONTEXTE_AJOUTER);
@@ -151,9 +153,15 @@ public class FenetrePrincipale {
         fenetre.getContentPane().add(panelPrincipal);
         panelPrincipal.setBackground(Color.WHITE);
         panelPrincipal.setLayout(null);
-        panelCarte.setBounds(700, 200, 1190, 765);
-        //panelCarte.setBackground(Color.GRAY);
 
+        panelPrincipal.add(panelCalendrier);
+        panelMenu.setBounds(5, 119, 695, 81);
+
+        panelPrincipal.add(panelMenu);
+        panelMenu.setLayout(gl_panelMenu);
+
+        //CARTE
+        panelCarte.setBounds(700, 200, 1190, 765);
         panelCarte.setLayout(new BorderLayout());
 
         try {
@@ -163,16 +171,15 @@ public class FenetrePrincipale {
             e.printStackTrace();
         }
 
-
         panelCarte.add(carte.createCenterPanel());
 
         panelPrincipal.add(panelCarte);
+
+        //NOTIFICATIONS
         panelNotifications.setBackground(Color.LIGHT_GRAY);
         panelNotifications.setBounds(700, 5, 782, 195);
         panelPrincipal.add(panelNotifications);
         panelNotifications.setLayout(new CardLayout(0, 0));
-
-        listEvenementsEnAttente = new JList();
 
         //TODO remplir liste avec evenements en attente
         /*Exemple de comment remplir la liste*/
@@ -183,29 +190,9 @@ public class FenetrePrincipale {
             model.addElement(v);
         }
         listEvenementsEnAttente.setModel(model);
-
-
         panelNotifications.add(listEvenementsEnAttente, "name_56412892408382");
 
-
-        panelCalendrier.setBackground(Color.DARK_GRAY);
-        panelCalendrier.setBounds(1482, 5, 408, 195);
-
-        panelPrincipal.add(panelCalendrier);
-        panelMenu.setBounds(5, 119, 695, 81);
-
-        panelPrincipal.add(panelMenu);
-        panelMenu.setLayout(gl_panelMenu);
-
-        scrollPaneDescription.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-        scrollPaneDescription.setViewportBorder(UIManager.getBorder("Button.border"));
-        scrollPaneDescription.setBounds(222, 260, 478, 705);
-        panelPrincipal.add(scrollPaneDescription);
-        txtrDescription.setEditable(false);
-        txtrDescription.setText("Description");
-
-        scrollPaneDescription.setViewportView(txtrDescription);
-
+        //DESCRIPTION TITRE GRIS
         textDescription.setText("Description");
         textDescription.setHorizontalAlignment(SwingConstants.CENTER);
         textDescription.setFont(new Font("Dialog", Font.BOLD, 18));
@@ -214,10 +201,23 @@ public class FenetrePrincipale {
         textDescription.setBackground(Color.LIGHT_GRAY);
         textDescription.setBounds(222, 200, 478, 62);
         panelPrincipal.add(textDescription);
+
+        //Description des événements selectionné
+        scrollPaneDescription.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+        scrollPaneDescription.setViewportBorder(UIManager.getBorder("Button.border"));
+        scrollPaneDescription.setBounds(222, 260, 478, 705);
+        panelPrincipal.add(scrollPaneDescription);
+        txtrDescription.setEditable(false);
+
+
+        scrollPaneDescription.setViewportView(txtrDescription);
+
+
+        //CALENDRIER
+        panelCalendrier.setBackground(Color.DARK_GRAY);
+        panelCalendrier.setBounds(1482, 5, 408, 195);
         panelCalendrier.setLayout(new CardLayout(0, 0));
-
         panelCalendrier.add(calendrier, "name_9865352109015");
-
         calendrier.getDayChooser().setAlwaysFireDayProperty(true);
         calendrier.getDayChooser().addPropertyChangeListener("day", new PropertyChangeListener() {
 
@@ -228,53 +228,55 @@ public class FenetrePrincipale {
                 dateSelectionne = Calendar.getInstance();
                 dateSelectionne.setTime(valDate);
 
+                //TODO mettre a jour description aussi
+
                 if (chckbxAccidents.isSelected()) {
                     allEvents.removeAll(listeAccidents);
                     listeAccidents = wrapperEvenement(EvenementAccess.getActif("accidents", dateSelectionne, Statut_.TRAITE));
                     allEvents.addAll(listeAccidents);
-                    carte.updateEvenement((ArrayList<Event>) allEvents);
+                    miseAJourAffichage();
                 }
 
                 if (chckbxTravaux.isSelected()) {
                     allEvents.removeAll(listeTravaux);
                     listeTravaux = wrapperEvenement(EvenementAccess.getActif("travaux", dateSelectionne, Statut_.TRAITE));
                     allEvents.addAll(listeTravaux);
-                    carte.updateEvenement((ArrayList<Event>) allEvents);
+                    miseAJourAffichage();
                 }
 
                 if (chckbxManifestations.isSelected()) {
                     allEvents.removeAll(listeManifestations);
                     listeManifestations = wrapperEvenement(EvenementAccess.getActif("manifestations", dateSelectionne, Statut_.TRAITE));
                     allEvents.addAll(listeManifestations);
-                    carte.updateEvenement((ArrayList<Event>) allEvents);
+                    miseAJourAffichage();
                 }
 
                 if (chckbxRenovation.isSelected()) {
                     allEvents.removeAll(listeRenovations);
                     listeRenovations = wrapperEvenement(EvenementAccess.getActif("rénovations", dateSelectionne, Statut_.TRAITE));
                     allEvents.addAll(listeRenovations);
-                    carte.updateEvenement((ArrayList<Event>) allEvents);
+                    miseAJourAffichage();
                 }
 
                 if (chckbxConstruction.isSelected()) {
                     allEvents.removeAll(listeConstructions);
                     listeConstructions = wrapperEvenement(EvenementAccess.getActif("constructions", dateSelectionne, Statut_.TRAITE));
                     allEvents.addAll(listeConstructions);
-                    carte.updateEvenement((ArrayList<Event>) allEvents);
+                    miseAJourAffichage();
                 }
 
                 if (chckboxDoleances.isSelected()) {
                     allEvents.removeAll(listeDoleances);
                     listeDoleances = wrapperEvenement(EvenementAccess.getActif("doléances", dateSelectionne, Statut_.TRAITE));
                     allEvents.addAll(listeDoleances);
-                    carte.updateEvenement((ArrayList<Event>) allEvents);
+                    miseAJourAffichage();
                 }
 
             }
 
         });
 
-        JScrollPane scrollPaneRubriques = new JScrollPane();
+
         scrollPaneRubriques.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         scrollPaneRubriques.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPaneRubriques.setBounds(5, 260, 218, 705);
@@ -342,16 +344,14 @@ public class FenetrePrincipale {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-
                 if (((AbstractButton) e.getSource()).isSelected()) {
-                    allEvents.addAll(listeAccidents = wrapperEvenement(EvenementAccess.getActif("accidents", dateSelectionne, Statut_.TRAITE)));
-                    carte.updateEvenement((ArrayList<Event>) allEvents);
+                    listeAccidents = wrapperEvenement(
+                            EvenementAccess.getActif("accidents", dateSelectionne, Statut_.TRAITE));
+                    allEvents.addAll(listeAccidents);
                 } else {
                     allEvents.removeAll(listeAccidents);
-                    carte.updateEvenement((ArrayList<Event>) allEvents);
                 }
-
-
+                miseAJourAffichage();
             }
         });
 
@@ -360,12 +360,13 @@ public class FenetrePrincipale {
             public void actionPerformed(ActionEvent e) {
 
                 if (((AbstractButton) e.getSource()).isSelected()) {
-                    allEvents.addAll(listeTravaux = wrapperEvenement(EvenementAccess.getActif("travaux", dateSelectionne, Statut_.TRAITE)));
-                    carte.updateEvenement((ArrayList<Event>) allEvents);
+                    listeTravaux = wrapperEvenement(
+                            EvenementAccess.getActif("travaux", dateSelectionne, Statut_.TRAITE));
+                    allEvents.addAll(listeTravaux);
                 } else {
                     allEvents.removeAll(listeTravaux);
-                    carte.updateEvenement((ArrayList<Event>) allEvents);
                 }
+                miseAJourAffichage();
             }
         });
 
@@ -374,13 +375,13 @@ public class FenetrePrincipale {
             public void actionPerformed(ActionEvent e) {
 
                 if (((AbstractButton) e.getSource()).isSelected()) {
-                    listeManifestations = wrapperEvenement(EvenementAccess.getActif("manifestations", dateSelectionne, Statut_.TRAITE));
+                    listeManifestations = wrapperEvenement(
+                            EvenementAccess.getActif("manifestations", dateSelectionne, Statut_.TRAITE));
                     allEvents.addAll(listeManifestations);
-                    carte.updateEvenement((ArrayList<Event>) allEvents);
                 } else {
                     allEvents.removeAll(listeManifestations);
-                    carte.updateEvenement((ArrayList<Event>) allEvents);
                 }
+                miseAJourAffichage();
             }
         });
 
@@ -389,13 +390,13 @@ public class FenetrePrincipale {
             public void actionPerformed(ActionEvent e) {
 
                 if (((AbstractButton) e.getSource()).isSelected()) {
-                    listeRenovations = wrapperEvenement(EvenementAccess.getActif("rénovations", dateSelectionne, Statut_.TRAITE));
+                    listeRenovations = wrapperEvenement(
+                            EvenementAccess.getActif("rénovations", dateSelectionne, Statut_.TRAITE));
                     allEvents.addAll(listeRenovations);
-                    carte.updateEvenement((ArrayList<Event>) allEvents);
                 } else {
                     allEvents.removeAll(listeRenovations);
-                    carte.updateEvenement((ArrayList<Event>) allEvents);
                 }
+                miseAJourAffichage();
             }
         });
 
@@ -407,11 +408,10 @@ public class FenetrePrincipale {
                     listeConstructions = wrapperEvenement(
                             EvenementAccess.getActif("constructions", dateSelectionne, Statut_.TRAITE));
                     allEvents.addAll(listeConstructions);
-                    carte.updateEvenement((ArrayList<Event>) allEvents);
                 } else {
                     allEvents.removeAll(listeConstructions);
-                    carte.updateEvenement((ArrayList<Event>) allEvents);
                 }
+                miseAJourAffichage();
             }
         });
 
@@ -423,11 +423,10 @@ public class FenetrePrincipale {
                     listeDoleances = wrapperEvenement(
                             EvenementAccess.getActif("doléances", dateSelectionne, Statut_.TRAITE));
                     allEvents.addAll(listeDoleances);
-                    carte.updateEvenement((ArrayList<Event>) allEvents);
                 } else {
                     allEvents.removeAll(listeDoleances);
-                    carte.updateEvenement((ArrayList<Event>) allEvents);
                 }
+                miseAJourAffichage();
             }
         });
 
@@ -436,12 +435,27 @@ public class FenetrePrincipale {
     private ArrayList<Event> wrapperEvenement(List<Evenement> listeEvenement) {
         ArrayList<Event> evenements = new ArrayList<>();
 
+        //construit les nouveaux objets Event en rapport avec la carte
         for (Evenement e : listeEvenement) {
             PointWGS84 point = new PointWGS84(e.getLatitude(), e.getLongitude());
-            evenements.add(new Event(e.getNomEvenement(), point, e.getRubriqueEnfant().getIdRubriqueEnfant()));
+            evenements.add(new Event(e.getIdEvenement(), e.getPriorite().getNomPriorite(), e.getNomEvenement(),
+                    e.getDebut(), e.getFin(), e.getAdresse(), e.getDetails(), point,
+                    e.getRubriqueEnfant().getIdRubriqueEnfant()));
         }
 
         return evenements;
+    }
+
+    private void miseAJourAffichage() {
+        //mise jour de la carte
+        carte.updateEvenement((ArrayList<Event>) allEvents);
+
+        //mise a jour de la description
+        descriptionsEvents.setLength(0);
+        for (Event evenement : allEvents) {
+            descriptionsEvents.append(evenement.toString());
+        }
+        txtrDescription.setText(String.valueOf(descriptionsEvents));
     }
 
 }
