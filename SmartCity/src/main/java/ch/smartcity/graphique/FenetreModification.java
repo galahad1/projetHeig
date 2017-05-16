@@ -102,7 +102,7 @@ public class FenetreModification {
         fenetre.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         fenetre.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
-                rafraichireCarte();
+                //TODO rafraichireCarte();, voir pour appeler methode de la fenetre principale
                 fenetre.dispose();
             }
         });
@@ -373,7 +373,7 @@ public class FenetreModification {
                 if (index != 0) // un evenement de la base de donnée
                 {
 
-                    if (context == 1)  //TODO; constante
+                    if (context == Context.CONTEXTE_EN_ATTENTE)
                     {
                         etatChamps(true); // deverouille les champs
                     }
@@ -406,7 +406,7 @@ public class FenetreModification {
                     textFieldDateFin.setText(date);
                     textAreaDetails.setText(evenement.getDetails());
 
-                } else if (context == 1 && index == 0) // TODO: constantes
+                } else if (context == Context.CONTEXTE_EN_ATTENTE && index == 0) // TODO: constantes
                 {
                     // verouille les champs afin de forcer l utilisateur a modifier un evenement qui est en attente
                     etatChamps(false);
@@ -475,7 +475,7 @@ public class FenetreModification {
         btnFermer.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
 
-                rafraichireCarte();
+                //TODO rafraichireCarte();
                 fenetre.dispose();
             }
         });
@@ -483,12 +483,12 @@ public class FenetreModification {
         panelModification.add(btnFermer);
 
 
-        if (context == 0) //TODO constantes
+        if (context == Context.CONTEXTE_AJOUTER)
         {
             fenetre.setTitle(TITRE_MODIFICATION);
             boutonRefuser.setVisible(false);
             boutonRefuser.setEnabled(false);
-        } else if (context == 1) //TODO constantes
+        } else if (context == Context.CONTEXTE_EN_ATTENTE) //TODO constantes
         {
             fenetre.setTitle(TITRE_EN_ATTENTE);
             boutonSupprimer.setVisible(false);
@@ -499,12 +499,6 @@ public class FenetreModification {
 
 
     } // fin initialize
-
-    private void rafraichireCarte() {
-
-        //TODO simuler decochage et recochage de toutes les checkboxs pour refresh l affichage de la carte
-
-    }
 
     /**
      * charge les evenements dans la liste ainsi que les preview
@@ -884,8 +878,6 @@ public class FenetreModification {
             String date = dateFormat.format(c.getTime());
             str += date + " / ";
             c = e.getFin();
-            //TODO: mettre not null pour date de fin dans mysql
-            // et supprimer ce test
             if (c == null) {
                 str += " null ";
             } else {

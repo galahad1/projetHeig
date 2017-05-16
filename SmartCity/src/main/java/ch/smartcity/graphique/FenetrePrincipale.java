@@ -27,8 +27,6 @@ import java.util.List;
 
 public class FenetrePrincipale {
 
-    private static final int CONTEXTE_AJOUTER = 0;
-    private static final int CONTEXTE_EN_ATTENTE = 1;
     private final JPanel panelCalendrier = new JPanel();
     private final JTextField textRubriques = new JTextField();
     private final JCheckBox chckbxAccidents = new JCheckBox("Accidents");
@@ -129,7 +127,7 @@ public class FenetrePrincipale {
 
         btnAjouter.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                FenetreModification fenetre2 = new FenetreModification(CONTEXTE_AJOUTER);
+                FenetreModification fenetre2 = new FenetreModification(Context.CONTEXTE_AJOUTER);
                 fenetre2.fenetre.setVisible(true);
             }
         });
@@ -137,7 +135,7 @@ public class FenetrePrincipale {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                FenetreModification fenetre2 = new FenetreModification(CONTEXTE_EN_ATTENTE);
+                FenetreModification fenetre2 = new FenetreModification(Context.CONTEXTE_EN_ATTENTE);
                 fenetre2.fenetre.setVisible(true);
 
             }
