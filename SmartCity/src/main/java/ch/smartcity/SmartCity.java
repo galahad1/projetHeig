@@ -9,9 +9,6 @@ public class SmartCity {
         FenetrePrincipale fenetre = new FenetrePrincipale();
         fenetre.fenetre.setVisible(true);
 
-        final int contexte_EnAttente = 1;
-        final int contexte_Ajouter = 0;
-
 //      FenetreModification fenetre2 = new FenetreModification(1);
 //      fenetre2.fenetre.setVisible(true);
 

@@ -1,8 +1,7 @@
 package ch.smartcity.graphique;
 
 import ch.smartcity.database.controllers.DatabaseAccess;
-import ch.smartcity.database.controllers.access.EvenementAccess;
-import ch.smartcity.database.controllers.access.StatutAccess;
+import ch.smartcity.database.controllers.access.*;
 import ch.smartcity.database.models.*;
 import com.toedter.calendar.JCalendar;
 
@@ -102,7 +101,7 @@ public class FenetreModification {
         fenetre.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         fenetre.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
-                rafraichireCarte();
+                //TODO rafraichireCarte();, voir pour appeler methode de la fenetre principale
                 fenetre.dispose();
             }
         });
@@ -263,17 +262,11 @@ public class FenetreModification {
 
                     if(comboBoxEvenements.getSelectedIndex() == 0) // nouvel evenement
                     {
-
                         ajouterEvenement();
-
-
                     } else // evenement deja exsistant
                     {
                         modifierEvenement();
                     }
-
-                    //TODO pop up ellement ajouter avec succes pendant environ 5 secondes, puis ferme la popup
-
                     chargementListeEvenements(context); // mise a jour de la liste
                     videChamps();
 
@@ -288,9 +281,13 @@ public class FenetreModification {
         boutonRefuser.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
 
-                refuserEvenement(); // statut en refuser et change date de fin pour etre en etat supprimmer
-                chargementListeEvenements(context); // mise a jour de la liste
-                videChamps();
+                if(comboBoxEvenements.getSelectedIndex() != 0)
+                {
+                    refuserEvenement(); // statut en refuser et change date de fin pour etre en etat supprimmer
+                    chargementListeEvenements(context); // mise a jour de la liste
+                    videChamps();
+                }
+
             }
         });
         boutonRefuser.setBounds(59, 470, 117, 25);
@@ -305,6 +302,10 @@ public class FenetreModification {
                     DatabaseAccess.delete(evenementSelectionne); // supprime de la base de donnée
                     chargementListeEvenements(context); // mise a jour de la liste
                     videChamps();
+
+                    int confirmed = JOptionPane.showConfirmDialog(null,
+                            "Evenement supprimé avec succès", "Evénement supprimé",
+                            JOptionPane.DEFAULT_OPTION);
                 }
 
             }
@@ -367,20 +368,18 @@ public class FenetreModification {
 
 
                 int index = comboBoxEvenements.getSelectedIndex();
-                System.out.println(index);
 
                 // TODO : constante context
                 if (index != 0) // un evenement de la base de donnée
                 {
 
-                    if (context == 1)  //TODO; constante
+                    if (context == Constantes.CONTEXTE_EN_ATTENTE)
                     {
                         etatChamps(true); // deverouille les champs
                     }
 
                     // recupration de l evenement
                     Evenement evenement = evenementList.get(index - 1);
-                    System.out.println(evenement);
                     setEvenementSelectionne(evenement); // evenement dans le champs
 
                     // remplissage des champs
@@ -394,7 +393,6 @@ public class FenetreModification {
                     // et tester ajout dynamique de la rubrique doleances
                     comboBoxRubrique.setSelectedIndex(evenement.getRubriqueEnfant().getIdRubriqueEnfant() - 1);
                     int i = getIndexNpa(evenement.getAdresse().getNpa());
-                    System.out.println(i);
                     comboBoxNpa.setSelectedIndex(i);
                     comboBoxPriorite.setSelectedIndex(evenement.getPriorite().getNiveau());
 
@@ -406,7 +404,7 @@ public class FenetreModification {
                     textFieldDateFin.setText(date);
                     textAreaDetails.setText(evenement.getDetails());
 
-                } else if (context == 1 && index == 0) // TODO: constantes
+                } else if (context == Constantes.CONTEXTE_EN_ATTENTE && index == 0) // TODO: constantes
                 {
                     // verouille les champs afin de forcer l utilisateur a modifier un evenement qui est en attente
                     etatChamps(false);
@@ -475,7 +473,7 @@ public class FenetreModification {
         btnFermer.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
 
-                rafraichireCarte();
+                //TODO rafraichireCarte();
                 fenetre.dispose();
             }
         });
@@ -483,12 +481,12 @@ public class FenetreModification {
         panelModification.add(btnFermer);
 
 
-        if (context == 0) //TODO constantes
+        if (context == Constantes.CONTEXTE_AJOUTER)
         {
             fenetre.setTitle(TITRE_MODIFICATION);
             boutonRefuser.setVisible(false);
             boutonRefuser.setEnabled(false);
-        } else if (context == 1) //TODO constantes
+        } else if (context == Constantes.CONTEXTE_EN_ATTENTE) //TODO constantes
         {
             fenetre.setTitle(TITRE_EN_ATTENTE);
             boutonSupprimer.setVisible(false);
@@ -499,12 +497,6 @@ public class FenetreModification {
 
 
     } // fin initialize
-
-    private void rafraichireCarte() {
-
-        //TODO simuler decochage et recochage de toutes les checkboxs pour refresh l affichage de la carte
-
-    }
 
     /**
      * charge les evenements dans la liste ainsi que les preview
@@ -550,11 +542,9 @@ public class FenetreModification {
      */
     private void refuserEvenement() {
 
-        List<Statut> statuts = StatutAccess.get(evenementSelectionne.getStatut().getNomStatut());
+        evenementSelectionne.setStatut( StatutAccess.get(Statut_.REFUSE).get(0)); // statur refuser
 
-        evenementSelectionne.setStatut(statuts.get(0));
-
-        DatabaseAccess.update(evenementSelectionne); // met a jour l evenemnt avec le statut refuse
+        EvenementAccess.update(evenementSelectionne.getIdEvenement(),null,null,null,null,null,null,null,null,null,null, evenementSelectionne.getStatut()); // met a jour l evenemnt avec le statut refuse
         DatabaseAccess.delete(evenementSelectionne); // change date de fin
 
     }
@@ -563,22 +553,78 @@ public class FenetreModification {
 
         //TODO modifier evenement de la base de données
 
+
+        String nomEnfant = comboBoxRubrique.getSelectedItem().toString();
+        String nomEvenement = textFieldNom.getText();
+        String nomRue = textFieldRue.getText();
+        String numeroRue = textFieldNumRue.getText();
+        String npa = comboBoxNpa.getSelectedItem().toString();
+        Double latitude = Double.valueOf(textFieldLatitude.getText());
+        Double longitude = Double.valueOf(textFieldLongitude.getText());
+        Calendar calDebut = Calendar.getInstance();
+        Calendar calFin = Calendar.getInstance();
+        String details = textAreaDetails.getText();
+
         // voir tout les champs qui ont ete modifier
+        Evenement evenementBase = getEvenementSelectionne();
 
-        // attention, les evenements peuvent etre dans l etat en attente, dans ce cas il faut modifier
-        // ce champs car c'est l administrateur qui le valide ici.
+        Npa newNpa;
+        List<Npa> listNewNpa = NpaAccess.get(npa);
+        if(listNewNpa == null || listNewNpa.isEmpty())
+        {
+            newNpa = new Npa(npa); // créer
+        }
+        else
+        {
+            newNpa = evenementBase.getAdresse().getNpa(); // prend celui existant dans la DB
+        }
 
-        // il faut voir quel champs à été modifier et changer a chaque fois
 
-        // evenement.update(.....) pour chaque champs
+        Rue newRue;
+        List<Rue> listNewRue = RueAccess.get(nomRue);
+        if(listNewRue == null || listNewRue.isEmpty())
+        {
+            newRue = new Rue(nomRue);
+        }
+        else
+        {
+            newRue = evenementBase.getAdresse().getRue();
+        }
 
-        System.out.println("modification de l'evenement");
 
-        /*
+        Adresse newAdresse;
+        List<Adresse> listNewAdresse = AdresseAccess.get(newRue,numeroRue,newNpa);
+        if(listNewAdresse == null || listNewAdresse.isEmpty())
+        {
+            newAdresse = new Adresse(newRue,numeroRue,newNpa);
+        }
+        else
+        {
+            newAdresse = evenementBase.getAdresse();
+        }
+
+
+        RubriqueEnfant newRubrique = RubriqueEnfantAccess.get("", nomEnfant).get(0);
+        Statut newStatut = StatutAccess.get(Statut_.TRAITE).get(0);
+        String[] elementsPriorite = comboBoxPriorite.getSelectedItem().toString().split(" - "); // separe niveau et nom de la priorité
+        Priorite newPriorite = PrioriteAccess.get(elementsPriorite[1], Integer.valueOf(elementsPriorite[0])).get(0);
+
+
+        try {
+            calDebut.setTime(dateFormat.parse(textFieldDateDebut.getText()));
+            calFin.setTime(dateFormat.parse(textFieldDateFin.getText()));
+        } catch (ParseException e1) {
+            e1.printStackTrace();
+        }
+
+
+        EvenementAccess.update(evenementBase.getIdEvenement(),newRubrique,null,nomEvenement,newAdresse,latitude,longitude,calDebut,calFin,details,newPriorite,newStatut);
+
+
         int confirmed = JOptionPane.showConfirmDialog(null,
                 "Evenement modifié avec succès", "Evénement modifié",
                 JOptionPane.DEFAULT_OPTION);
-        */
+
     }
 
     private void ajouterEvenement() {
@@ -884,8 +930,6 @@ public class FenetreModification {
             String date = dateFormat.format(c.getTime());
             str += date + " / ";
             c = e.getFin();
-            //TODO: mettre not null pour date de fin dans mysql
-            // et supprimer ce test
             if (c == null) {
                 str += " null ";
             } else {
