@@ -13,6 +13,8 @@ import java.util.Random;
 
 public class GenerateurGraphique {
 
+    private static final int NB_GRAPHES = 2;
+
     // !! TODO: LOAN : Vérifier le bon fonctionnement des modifications !!
     public final static String CHEMIN_IMAGE = System.getProperty("user.home") + File.separator
             + "Documents" + File.separator + "Smartcity" + File.separator
@@ -21,11 +23,11 @@ public class GenerateurGraphique {
     public GenerateurGraphique() throws URISyntaxException, IOException {
 
         Random generateurGraphe = new Random();
-        int i = generateurGraphe.nextInt(2);
+        int i = generateurGraphe.nextInt(NB_GRAPHES);
 
         JFreeChart chart;
 
-        if (i == 0) {
+        if (i % NB_GRAPHES == 0) {
             chart = GraphiqueCirculaire.cree();
         } else {
             chart = GraphiqueEnBarres.cree();
