@@ -31,20 +31,23 @@ public class FenetrePrincipale {
     private static final int CONTEXTE_EN_ATTENTE = 1;
     private final JPanel panelCalendrier = new JPanel();
     private final JTextField textRubriques = new JTextField();
+
     private final JCheckBox chckbxAccidents = new JCheckBox("Accidents");
     private final JCheckBox chckbxTravaux = new JCheckBox("Travaux");
     private final JCheckBox chckbxManifestations = new JCheckBox("Manifestations");
     private final JCheckBox chckbxRenovation = new JCheckBox("Rénovations");
     private final JCheckBox chckbxConstruction = new JCheckBox("Constructions");
+    private final JCheckBox chckboxDoleances = new JCheckBox("Doléances");
+    private final JLabel labelTrafic = new JLabel("TRAFIC");
     private final JLabel labelManifestations = new JLabel("MANIFESTATIONS");
     private final JLabel labelChantiers = new JLabel("CHANTIERS");
-
-
+    private final JLabel labelDoleances = new JLabel("DOLEANCES");
     private final JPanel panelMenu = new JPanel();
     private final JLabel lblNbrNotification = new JLabel("Notifications");
     private final JPanel panelLogo = new JPanel();
     private final JTextArea txtrDescription = new JTextArea();
     public JFrame fenetre;
+    JPanel panelRubriques = new JPanel();
     JPanel panelPrincipal = new JPanel();
     JPanel panelCarte = new JPanel();
     JPanel panelNotifications = new JPanel();
@@ -53,8 +56,7 @@ public class FenetrePrincipale {
     JButton btnEnAttente = new JButton("En attente");
     // création dynamique des checkboxes des doléances
     // TODO
-    JPanel panelRubriques = new JPanel();
-    JLabel labelTrafic = new JLabel("TRAFIC");
+
     // récupération d'un nombre de requetes a traiter
     // TODO
     GroupLayout gl_panelMenu = new GroupLayout(panelMenu);
@@ -69,6 +71,7 @@ public class FenetrePrincipale {
     private List<Event> listeManifestations = new ArrayList<>();
     private List<Event> listeRenovations = new ArrayList<>();
     private List<Event> listeConstructions = new ArrayList<>();
+    private List<Event> listeDoleances = new ArrayList<>();
 
     private Calendar dateSelectionne;
 
@@ -260,6 +263,13 @@ public class FenetrePrincipale {
                     carte.updateEvenement((ArrayList<Event>) allEvents);
                 }
 
+                if (chckboxDoleances.isSelected()) {
+                    allEvents.removeAll(listeDoleances);
+                    listeDoleances = wrapperEvenement(EvenementAccess.getActif("doléances", dateSelectionne, Statut_.TRAITE));
+                    allEvents.addAll(listeDoleances);
+                    carte.updateEvenement((ArrayList<Event>) allEvents);
+                }
+
             }
 
         });
@@ -272,39 +282,46 @@ public class FenetrePrincipale {
         scrollPaneRubriques.setViewportView(panelRubriques);
         panelRubriques.setLayout(null);
 
-
+        //TRAFIC et ses checkbox accidents et travaux
         labelTrafic.setFont(new Font("Dialog", Font.BOLD, 16));
         labelTrafic.setBounds(12, 37, 107, 29);
         panelRubriques.add(labelTrafic);
+
         chckbxAccidents.setBounds(20, 74, 190, 23);
-
         panelRubriques.add(chckbxAccidents);
-        chckbxTravaux.setBounds(20, 102, 129, 23);
 
+        chckbxTravaux.setBounds(20, 102, 190, 23);
         panelRubriques.add(chckbxTravaux);
+
+        //MANIFESTATION et sa checkbox
         labelManifestations.setFont(new Font("Dialog", Font.BOLD, 16));
         labelManifestations.setBounds(12, 152, 164, 29);
-
         panelRubriques.add(labelManifestations);
-        labelChantiers.setFont(new Font("Dialog", Font.BOLD, 16));
-        labelChantiers.setBounds(12, 230, 107, 29);
 
-        panelRubriques.add(labelChantiers);
-        chckbxRenovation.setBounds(20, 267, 129, 23);
-
-        panelRubriques.add(chckbxRenovation);
-        chckbxConstruction.setBounds(20, 294, 129, 23);
-
-        panelRubriques.add(chckbxConstruction);
-
-
-        chckbxManifestations.setBounds(20, 189, 156, 23);
+        chckbxManifestations.setBounds(20, 189, 190, 23);
         panelRubriques.add(chckbxManifestations);
 
-        JLabel lblDoleances = new JLabel("DOLEANCES");
-        lblDoleances.setFont(new Font("Dialog", Font.BOLD, 16));
-        lblDoleances.setBounds(20, 338, 107, 29);
-        panelRubriques.add(lblDoleances);
+
+        //CHANTIERS et ses checkbox renovation et construction
+        labelChantiers.setFont(new Font("Dialog", Font.BOLD, 16));
+        labelChantiers.setBounds(12, 230, 107, 29);
+        panelRubriques.add(labelChantiers);
+
+        chckbxRenovation.setBounds(20, 267, 129, 23);
+        panelRubriques.add(chckbxRenovation);
+
+        chckbxConstruction.setBounds(20, 294, 129, 23);
+        panelRubriques.add(chckbxConstruction);
+
+        // DOLEANCES et sa checkbox
+        labelDoleances.setFont(new Font("Dialog", Font.BOLD, 16));
+        labelDoleances.setBounds(12, 338, 107, 29);
+        panelRubriques.add(labelDoleances);
+
+        chckboxDoleances.setBounds(20, 375, 129, 23);
+        panelRubriques.add(chckboxDoleances);
+
+
         textRubriques.setBounds(5, 200, 218, 62);
         panelPrincipal.add(textRubriques);
         textRubriques.setHorizontalAlignment(SwingConstants.CENTER);
@@ -313,6 +330,8 @@ public class FenetrePrincipale {
         textRubriques.setEditable(false);
         textRubriques.setColumns(6);
         textRubriques.setBackground(Color.LIGHT_GRAY);
+
+
         panelLogo.setBackground(Color.GRAY);
         panelLogo.setBounds(5, 5, 695, 114);
 
@@ -391,6 +410,22 @@ public class FenetrePrincipale {
                     carte.updateEvenement((ArrayList<Event>) allEvents);
                 } else {
                     allEvents.removeAll(listeConstructions);
+                    carte.updateEvenement((ArrayList<Event>) allEvents);
+                }
+            }
+        });
+
+        chckboxDoleances.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                if (((AbstractButton) e.getSource()).isSelected()) {
+                    listeDoleances = wrapperEvenement(
+                            EvenementAccess.getActif("doléances", dateSelectionne, Statut_.TRAITE));
+                    allEvents.addAll(listeDoleances);
+                    carte.updateEvenement((ArrayList<Event>) allEvents);
+                } else {
+                    allEvents.removeAll(listeDoleances);
                     carte.updateEvenement((ArrayList<Event>) allEvents);
                 }
             }
