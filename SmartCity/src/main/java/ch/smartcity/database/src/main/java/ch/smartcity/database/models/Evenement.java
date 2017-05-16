@@ -64,11 +64,22 @@ public class Evenement implements Serializable {
         this.adresse = adresse;
         this.latitude = latitude;
         this.longitude = longitude;
+        setMinimumTime(debut);
         this.debut = debut;
+        setMinimumTime(fin);
         this.fin = fin;
         this.details = details.toLowerCase();
         this.priorite = priorite;
         this.statut = statut;
+    }
+
+    private static void setMinimumTime(Calendar calendar) {
+        if (calendar != null) {
+            calendar.set(Calendar.HOUR_OF_DAY, calendar.getMinimum(Calendar.HOUR_OF_DAY));
+            calendar.set(Calendar.MINUTE, calendar.getMinimum(Calendar.MINUTE));
+            calendar.set(Calendar.SECOND, calendar.getMinimum(Calendar.SECOND));
+            calendar.set(Calendar.MILLISECOND, calendar.getMinimum(Calendar.MILLISECOND));
+        }
     }
 
     public Integer getIdEvenement() {
@@ -100,7 +111,7 @@ public class Evenement implements Serializable {
     }
 
     public void setNomEvenement(String nomEvenement) {
-        this.nomEvenement = nomEvenement;
+        this.nomEvenement = nomEvenement.toLowerCase();
     }
 
     public Adresse getAdresse() {
@@ -132,6 +143,7 @@ public class Evenement implements Serializable {
     }
 
     public void setDebut(Calendar debut) {
+        setMinimumTime(debut);
         this.debut = debut;
     }
 
@@ -140,6 +152,7 @@ public class Evenement implements Serializable {
     }
 
     public void setFin(Calendar fin) {
+        setMinimumTime(fin);
         this.fin = fin;
     }
 
@@ -148,7 +161,7 @@ public class Evenement implements Serializable {
     }
 
     public void setDetails(String details) {
-        this.details = details;
+        this.details = details.toLowerCase();
     }
 
     public Priorite getPriorite() {

@@ -63,14 +63,6 @@ public class EvenementAccess {
                                            Calendar debut,
                                            Calendar fin,
                                            String nomStatut) {
-        if (debut != null) {
-            setTime(debut, false);
-        }
-
-        if (fin != null) {
-            setTime(fin, true);
-        }
-
         List<Evenement> evenementList = null;
         RubriqueEnfant rubriqueEnfant = null;
         boolean success = true;
@@ -246,12 +238,14 @@ public class EvenementAccess {
             }
 
             if (debut != null) {
+                setMinimumTime(debut);
                 predicateList.add(criteriaBuilder.lessThanOrEqualTo(
                         evenementRoot.get(Evenement_.debut),
                         debut));
             }
 
             if (fin != null) {
+                setMinimumTime(fin);
                 predicateList.add(criteriaBuilder.greaterThanOrEqualTo(
                         evenementRoot.get(Evenement_.fin),
                         fin));
@@ -663,17 +657,12 @@ public class EvenementAccess {
         nomStatut = statut != null ? statut.getNomStatut() : null;
     }
 
-    private static void setTime(Calendar calendar, boolean isMinimumValue) {
-        if (isMinimumValue) {
+    private static void setMinimumTime(Calendar calendar) {
+        if (calendar != null) {
             calendar.set(Calendar.HOUR_OF_DAY, calendar.getMinimum(Calendar.HOUR_OF_DAY));
             calendar.set(Calendar.MINUTE, calendar.getMinimum(Calendar.MINUTE));
             calendar.set(Calendar.SECOND, calendar.getMinimum(Calendar.SECOND));
             calendar.set(Calendar.MILLISECOND, calendar.getMinimum(Calendar.MILLISECOND));
-        } else {
-            calendar.set(Calendar.HOUR_OF_DAY, calendar.getMaximum(Calendar.HOUR_OF_DAY));
-            calendar.set(Calendar.MINUTE, calendar.getMaximum(Calendar.MINUTE));
-            calendar.set(Calendar.SECOND, calendar.getMaximum(Calendar.SECOND));
-            calendar.set(Calendar.MILLISECOND, calendar.getMaximum(Calendar.MILLISECOND));
         }
     }
 

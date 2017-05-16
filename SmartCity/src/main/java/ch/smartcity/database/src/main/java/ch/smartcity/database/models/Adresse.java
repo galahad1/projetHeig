@@ -47,7 +47,7 @@ public class Adresse implements Serializable {
     }
 
     public void setNumeroDeRue(String numeroDeRue) {
-        this.numeroDeRue = numeroDeRue;
+        this.numeroDeRue = numeroDeRue.toLowerCase();
     }
 
     public Npa getNpa() {

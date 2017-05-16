@@ -19,7 +19,7 @@ public class Priorite implements Serializable {
     }
 
     public Priorite(String nomPriorite, int niveau) {
-        this.nomPriorite = nomPriorite;
+        this.nomPriorite = nomPriorite.toLowerCase();
         this.niveau = niveau;
     }
 
@@ -36,7 +36,7 @@ public class Priorite implements Serializable {
     }
 
     public void setNomPriorite(String nomPriorite) {
-        this.nomPriorite = nomPriorite;
+        this.nomPriorite = nomPriorite.toLowerCase();
     }
 
     public int getNiveau() {
