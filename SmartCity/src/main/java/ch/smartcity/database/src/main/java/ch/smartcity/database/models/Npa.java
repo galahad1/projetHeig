@@ -81,10 +81,6 @@ public class Npa implements Serializable {
 
     @Override
     public String toString() {
-        return "Npa{" +
-                "idNpa=" + idNpa +
-                ", numeroNpa='" + numeroNpa + '\'' +
-                ", derniereMiseAJour=" + derniereMiseAJour.getTime() +
-                '}';
+        return numeroNpa;
     }
 }

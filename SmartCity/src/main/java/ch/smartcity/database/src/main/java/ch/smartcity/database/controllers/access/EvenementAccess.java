@@ -49,44 +49,72 @@ public class EvenementAccess {
         return getInstance().hibernate;
     }
 
-    public static List<Evenement> getByFin(Calendar fin) {
-        return get(null,
-                null,
-                "",
-                null,
-                null,
-                null,
-                null,
-                fin,
-                null,
-                null,
-                null,
-                null);
+    public static List<Evenement> getActif() {
+        return getActif(null, null, Calendar.getInstance(), Statut_.TRAITE);
     }
 
-    public static List<Evenement> getByStatut(String nomStatut) {
-        List<Evenement> evenementList = null;
-        List<Statut> statutList = StatutAccess.get(nomStatut);
+    public static List<Evenement> getActif(String nomRubriqueEnfant,
+                                           Calendar date,
+                                           String nomStatut) {
+        return getActif(nomRubriqueEnfant, date, date, nomStatut);
+    }
 
-        if (statutList != null && statutList.size() == 1) {
-            evenementList = get(
+    public static List<Evenement> getActif(String nomRubriqueEnfant,
+                                           Calendar debut,
+                                           Calendar fin,
+                                           String nomStatut) {
+        List<Evenement> evenementList = null;
+        RubriqueEnfant rubriqueEnfant = null;
+        boolean success = true;
+
+        if (nomRubriqueEnfant != null && !nomRubriqueEnfant.isEmpty()) {
+            List<RubriqueEnfant> rubriqueEnfantList = RubriqueEnfantAccess.get(
                     "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    null,
-                    null,
-                    null,
-                    null,
-                    "",
-                    "",
-                    nomStatut,
-                    null);
+                    nomRubriqueEnfant);
+            success = rubriqueEnfantList != null && rubriqueEnfantList.size() == 1;
+            if (success) {
+                rubriqueEnfant = rubriqueEnfantList.get(0);
+            }
+        }
+
+        if (success) {
+            List<Statut> statutList = StatutAccess.get(nomStatut);
+            success = statutList != null && statutList.size() == 1;
+            if (success) {
+                evenementList = get(
+                        rubriqueEnfant,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        debut,
+                        fin,
+                        "",
+                        null,
+                        statutList.get(0),
+                        null);
+            }
+        }
+
+        if (success) {
+            getLogger().info(getConfigurationManager()
+                    .getString("databaseAccess.successInSubQuery"));
+
+        } else {
+            getLogger().info(getConfigurationManager()
+                    .getString("databaseAccess.errorInSubQuery"));
         }
 
         return evenementList;
+    }
+
+    public static List<Evenement> getEnAttente() {
+        return getActif(
+                null,
+                null,
+                Calendar.getInstance(),
+                Statut_.EN_ATTENTE);
     }
 
     public static List<Evenement> get(RubriqueEnfant rubriqueEnfant,
@@ -210,12 +238,14 @@ public class EvenementAccess {
             }
 
             if (debut != null) {
-                predicateList.add(criteriaBuilder.greaterThanOrEqualTo(
+                setMinimumTime(debut);
+                predicateList.add(criteriaBuilder.lessThanOrEqualTo(
                         evenementRoot.get(Evenement_.debut),
                         debut));
             }
 
             if (fin != null) {
+                setMinimumTime(fin);
                 predicateList.add(criteriaBuilder.greaterThanOrEqualTo(
                         evenementRoot.get(Evenement_.fin),
                         fin));
@@ -260,6 +290,105 @@ public class EvenementAccess {
                 Evenement.class.getSimpleName()));
 
         return evenementList;
+    }
+
+    public static void save(String nomRubriqueEnfant,
+                            Integer idUtilisateur,
+                            String nomEvenement,
+                            String nomRue,
+                            String numeroDeRue,
+                            String numeroNpa,
+                            Double latitude,
+                            Double longitude,
+                            Calendar debut,
+                            Calendar fin,
+                            String details,
+                            String nomPriorite,
+                            Integer niveauPriorite,
+                            String nomStatut) {
+        List<RubriqueEnfant> rubriqueEnfantList = RubriqueEnfantAccess
+                .get("", nomRubriqueEnfant);
+
+        boolean success = rubriqueEnfantList != null && rubriqueEnfantList.size() <= 1;
+        if (success) {
+            RubriqueEnfant rubriqueEnfant = rubriqueEnfantList.get(0);
+
+            Utilisateur administrator = DatabaseAccess.get(Utilisateur.class, idUtilisateur);
+            success = administrator != null;
+            if (success) {
+
+                List<Rue> rueList = RueAccess.get(nomRue);
+                success = rueList != null && rueList.size() <= 1;
+                if (success) {
+                    Rue rue = new Rue(nomRue);
+
+                    if (rueList.size() == 1) {
+                        rue = rueList.get(0);
+                    }
+
+                    List<Npa> npaList = NpaAccess.get(numeroNpa);
+                    success = npaList != null && npaList.size() <= 1;
+                    if (success) {
+                        Npa npa = new Npa(numeroNpa);
+
+                        if (npaList.size() == 1) {
+                            npa = npaList.get(0);
+                        }
+
+                        List<Adresse> adresseList = AdresseAccess.get(rue, numeroDeRue, npa);
+                        success = adresseList != null && adresseList.size() <= 1;
+                        if (success) {
+                            Adresse adresse = new Adresse(rue, numeroDeRue, npa);
+
+                            if (adresseList.size() == 1) {
+                                adresse = adresseList.get(0);
+                            }
+
+                            List<Priorite> prioriteList = PrioriteAccess.get(nomPriorite, niveauPriorite);
+                            success = prioriteList != null && prioriteList.size() <= 1;
+                            if (success) {
+                                Priorite priorite = new Priorite(nomPriorite, niveauPriorite);
+
+                                if (prioriteList.size() == 1) {
+                                    priorite = prioriteList.get(0);
+                                }
+
+                                List<Statut> statutList = StatutAccess.get(nomStatut);
+                                success = statutList != null && statutList.size() <= 1;
+                                if (success) {
+                                    Statut statut = new Statut(nomStatut);
+
+                                    if (statutList.size() == 1) {
+                                        statut = statutList.get(0);
+                                    }
+
+                                    save(rubriqueEnfant,
+                                            administrator,
+                                            nomEvenement,
+                                            adresse,
+                                            latitude,
+                                            longitude,
+                                            debut,
+                                            fin,
+                                            details,
+                                            priorite,
+                                            statut);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        if (success) {
+            getLogger().info(getConfigurationManager()
+                    .getString("databaseAccess.successInSubQuery"));
+
+        } else {
+            getLogger().info(getConfigurationManager()
+                    .getString("databaseAccess.errorInSubQuery"));
+        }
     }
 
     public static void save(RubriqueEnfant rubriqueEnfant,
@@ -388,6 +517,13 @@ public class EvenementAccess {
 
             DatabaseAccess.update(evenementList);
         }
+    }
+
+    public static void delete(Evenement evenement) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DAY_OF_YEAR, -1);
+        evenement.setFin(calendar);
+        DatabaseAccess.update(evenement);
     }
 
     public static void delete(RubriqueEnfant rubriqueEnfant,
@@ -519,6 +655,15 @@ public class EvenementAccess {
         numeroNpa = adresse != null ? adresse.getNpa().getNumeroNpa() : null;
         nomPriorite = priorite != null ? priorite.getNomPriorite() : null;
         nomStatut = statut != null ? statut.getNomStatut() : null;
+    }
+
+    private static void setMinimumTime(Calendar calendar) {
+        if (calendar != null) {
+            calendar.set(Calendar.HOUR_OF_DAY, calendar.getMinimum(Calendar.HOUR_OF_DAY));
+            calendar.set(Calendar.MINUTE, calendar.getMinimum(Calendar.MINUTE));
+            calendar.set(Calendar.SECOND, calendar.getMinimum(Calendar.SECOND));
+            calendar.set(Calendar.MILLISECOND, calendar.getMinimum(Calendar.MILLISECOND));
+        }
     }
 
     private static class SingletonHolder {

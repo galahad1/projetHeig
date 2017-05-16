@@ -3,7 +3,6 @@ package ch.smartcity.database.controllers;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-import org.hibernate.resource.transaction.spi.TransactionStatus;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -251,7 +250,7 @@ public class DatabaseAccess {
     private static void transactionMessage(Transaction transaction) {
         String key;
 
-        if (transaction != null && transaction.getStatus().equals(TransactionStatus.COMMITTED)) {
+        if (transaction != null) {
             key = "databaseAccess.transactionCommitted";
         } else {
             key = "databaseAccess.transactionRollbacked";
