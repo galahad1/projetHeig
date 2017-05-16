@@ -4,10 +4,8 @@ import ch.smartcity.database.controllers.DatabaseAccess;
 import ch.smartcity.database.controllers.access.*;
 import ch.smartcity.database.models.*;
 import com.toedter.calendar.JCalendar;
-import org.omg.PortableServer.LIFESPAN_POLICY_ID;
 
 import javax.swing.*;
-import javax.swing.text.Style;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -370,20 +368,18 @@ public class FenetreModification {
 
 
                 int index = comboBoxEvenements.getSelectedIndex();
-                System.out.println(index);
 
                 // TODO : constante context
                 if (index != 0) // un evenement de la base de donnée
                 {
 
-                    if (context == Context.CONTEXTE_EN_ATTENTE)
+                    if (context == Constantes.CONTEXTE_EN_ATTENTE)
                     {
                         etatChamps(true); // deverouille les champs
                     }
 
                     // recupration de l evenement
                     Evenement evenement = evenementList.get(index - 1);
-                    System.out.println(evenement);
                     setEvenementSelectionne(evenement); // evenement dans le champs
 
                     // remplissage des champs
@@ -397,7 +393,6 @@ public class FenetreModification {
                     // et tester ajout dynamique de la rubrique doleances
                     comboBoxRubrique.setSelectedIndex(evenement.getRubriqueEnfant().getIdRubriqueEnfant() - 1);
                     int i = getIndexNpa(evenement.getAdresse().getNpa());
-                    System.out.println(i);
                     comboBoxNpa.setSelectedIndex(i);
                     comboBoxPriorite.setSelectedIndex(evenement.getPriorite().getNiveau());
 
@@ -409,7 +404,7 @@ public class FenetreModification {
                     textFieldDateFin.setText(date);
                     textAreaDetails.setText(evenement.getDetails());
 
-                } else if (context == Context.CONTEXTE_EN_ATTENTE && index == 0) // TODO: constantes
+                } else if (context == Constantes.CONTEXTE_EN_ATTENTE && index == 0) // TODO: constantes
                 {
                     // verouille les champs afin de forcer l utilisateur a modifier un evenement qui est en attente
                     etatChamps(false);
@@ -486,12 +481,12 @@ public class FenetreModification {
         panelModification.add(btnFermer);
 
 
-        if (context == Context.CONTEXTE_AJOUTER)
+        if (context == Constantes.CONTEXTE_AJOUTER)
         {
             fenetre.setTitle(TITRE_MODIFICATION);
             boutonRefuser.setVisible(false);
             boutonRefuser.setEnabled(false);
-        } else if (context == Context.CONTEXTE_EN_ATTENTE) //TODO constantes
+        } else if (context == Constantes.CONTEXTE_EN_ATTENTE) //TODO constantes
         {
             fenetre.setTitle(TITRE_EN_ATTENTE);
             boutonSupprimer.setVisible(false);
@@ -557,7 +552,6 @@ public class FenetreModification {
     private void modifierEvenement() {
 
         //TODO modifier evenement de la base de données
-        System.out.println("modification de l'evenement");
 
 
         String nomEnfant = comboBoxRubrique.getSelectedItem().toString();
@@ -570,12 +564,6 @@ public class FenetreModification {
         Calendar calDebut = Calendar.getInstance();
         Calendar calFin = Calendar.getInstance();
         String details = textAreaDetails.getText();
-
-
-
-
-        System.out.println(getEvenementSelectionne()); //ok
-
 
         // voir tout les champs qui ont ete modifier
         Evenement evenementBase = getEvenementSelectionne();

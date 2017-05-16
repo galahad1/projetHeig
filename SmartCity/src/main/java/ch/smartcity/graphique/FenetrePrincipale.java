@@ -132,7 +132,7 @@ public class FenetrePrincipale {
 
         btnAjouter.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                FenetreModification fenetre2 = new FenetreModification(Context.CONTEXTE_AJOUTER);
+                FenetreModification fenetre2 = new FenetreModification(Constantes.CONTEXTE_AJOUTER);
                 fenetre2.fenetre.setVisible(true);
             }
         });
@@ -140,7 +140,7 @@ public class FenetrePrincipale {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                FenetreModification fenetre2 = new FenetreModification(Context.CONTEXTE_EN_ATTENTE);
+                FenetreModification fenetre2 = new FenetreModification(Constantes.CONTEXTE_EN_ATTENTE);
                 fenetre2.fenetre.setVisible(true);
 
             }
