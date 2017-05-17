@@ -181,11 +181,13 @@ public class FenetrePrincipale {
 
         //TODO remplir liste avec evenements en attente
         /*Exemple de comment remplir la liste*/
-        List<Evenement> list = EvenementAccess.getEnAttente();
-        String[] values = new String[] {"evenement 1", "evenement 2"};
+        List<String> list = Utils.previewEvenement(EvenementAccess.getEnAttente());
         DefaultListModel model = new DefaultListModel();
-        for(String v : values)
+        for(String v : list)
         {
+            if(v.substring(0,1) == "3") {
+                model.addElement(v);
+            }
             model.addElement(v);
         }
         listEvenementsEnAttente.setModel(model);

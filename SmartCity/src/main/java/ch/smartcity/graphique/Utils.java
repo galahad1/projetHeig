@@ -37,6 +37,7 @@ public final class Utils {
         // parcours la liste des evenements
         for (Evenement e : liste) {
             String str = "";
+            str += e.getPriorite() + " / ";
             str += e.getIdEvenement() + " / ";
             str += e.getNomEvenement() + " / ";
 
