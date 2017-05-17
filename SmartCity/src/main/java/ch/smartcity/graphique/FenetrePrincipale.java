@@ -181,6 +181,7 @@ public class FenetrePrincipale {
 
         //TODO remplir liste avec evenements en attente
         /*Exemple de comment remplir la liste*/
+        List<Evenement> list = EvenementAccess.getEnAttente();
         String[] values = new String[] {"evenement 1", "evenement 2"};
         DefaultListModel model = new DefaultListModel();
         for(String v : values)
