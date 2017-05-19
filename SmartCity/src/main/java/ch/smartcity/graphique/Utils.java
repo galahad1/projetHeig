@@ -23,10 +23,10 @@ public final class Utils {
 
 
     /**
+     * Recoit une liste d'événement afin d'en afficher une prévisualisation
+     * comprenant moins de détails que l'evenement complet
      * @param liste liste d'evenement
      * @return liste des previews des evenements
-     * @brief Recoit une liste d'événement afin d'en afficher une prévisualisation
-     * comprenant moins de détails que l'evenement complet
      */
     public static List<String> previewEvenement(List<Evenement> liste) {
         ArrayList<String> preview = new ArrayList<>();
@@ -37,17 +37,16 @@ public final class Utils {
         // parcours la liste des evenements
         for (Evenement e : liste) {
             String str = "";
-            str += e.getPriorite() + " / ";
             str += e.getIdEvenement() + " / ";
             str += e.getNomEvenement() + " / ";
-
             // adresse
             Adresse a = e.getAdresse();
             str += a.getRue().getNomRue() + " " + a.getNumeroDeRue() + " / ";
 
+            // priorité
+            str += e.getPriorite() + " / ";
             // dates
             Calendar c = e.getDebut();
-            //System.out.println(c);
             String date = dateFormat.format(c.getTime());
             str += date + " / ";
             c = e.getFin();

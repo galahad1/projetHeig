@@ -628,52 +628,6 @@ public class FenetreModification {
     }
 
     private void ajouterEvenement() {
-//        // recuperation rubrique enfant dans la base de donnée
-//        String nomEnfant = comboBoxRubrique.getSelectedItem().toString();
-//        String rubriqueParent = null;
-//        List<RubriqueEnfant> rubriqueEnfantList = RubriqueEnfantAccess.get("", nomEnfant);
-//        RubriqueEnfant rubriqueEnfant = rubriqueEnfantList.get(0);
-//
-//        // controle si rue est dans la base de donnée
-//        List<Rue> rues = RueAccess.get(textFieldRue.getText());
-//        Rue rue;
-//        // test effecuté car rue n'est pas une liste déroulante
-//        if(rues == null || rues.isEmpty()) // rue n'existe pas
-//        {
-//            rue = new Rue(textFieldRue.getText()); // nouvelle rue
-//        }
-//        else
-//        {
-//            rue = rues.get(0); // recuperation rue dans la base de données
-//        }
-//
-//        // recuperation npa
-//        List<Npa> npa = NpaAccess.get(comboBoxNpa.getSelectedItem().toString());
-//        // creation rue
-//        Adresse adresse = new Adresse(rue, textFieldNumRue.getText(), npa.get(0));
-//
-//        // convertion dates en calendar
-//        Calendar calDebut = Calendar.getInstance();
-//        Calendar calFin = Calendar.getInstance();
-//        try {
-//            calDebut.setTime(dateFormat.parse(textFieldDateDebut.getText()));
-//            calFin.setTime(dateFormat.parse(textFieldDateFin.getText()));
-//        } catch (ParseException e1) {
-//            e1.printStackTrace();
-//        }
-//
-//        Utilisateur admin = DatabaseAccess.get(Utilisateur.class, 1);
-//
-//        String[] elementsPriorite = comboBoxPriorite.getSelectedItem().toString().split(" - ");
-//        List<Priorite> p = PrioriteAccess.get(elementsPriorite[1], Integer.valueOf(elementsPriorite[0]));
-//
-//        Double latitude = Double.valueOf(textFieldLatitude.getText());
-//        Double longitude = Double.valueOf(textFieldLongitude.getText());
-//
-//
-//        List<Statut> statut = StatutAccess.get(Statut_.TRAITE);
-//        EvenementAccess.save(rubriqueEnfant,admin,textFieldNom.getText(),adresse,latitude,longitude,calDebut,calFin,textAreaDetails.getText(),p.get(0),statut.get(0));
-
 
         String nomEnfant = comboBoxRubrique.getSelectedItem().toString();
         String nomEvenement = textFieldNom.getText();
@@ -702,13 +656,13 @@ public class FenetreModification {
 
             EvenementAccess.save(nomEnfant, 1, nomEvenement, nomRue, numeroRue, npa, latitude, longitude, calDebut, calFin, details, elementsPriorite[1], Integer.valueOf(elementsPriorite[0]), Statut_.TRAITE);
             System.out.println("evenement ajouté");
-            int confirmed = JOptionPane.showConfirmDialog(null,
+            JOptionPane.showConfirmDialog(null,
                     "Evenement ajouté avec succès", "Evénement ajouté",
                     JOptionPane.DEFAULT_OPTION);
         }
         else
         {
-            int confirmed = JOptionPane.showConfirmDialog(null,
+            JOptionPane.showConfirmDialog(null,
                     "Evenement déjà dans la base de donnée", "Evénement présent",
                     JOptionPane.DEFAULT_OPTION);
         }

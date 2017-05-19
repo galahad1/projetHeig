@@ -19,6 +19,6 @@ public class SmartCity {
 //		fenetre.fenetre.setEnabled(true);
 
 //        Database.main(null);
-        GenerateurPDF.main(null);
+  //      GenerateurPDF.main(null);
     }
 }
