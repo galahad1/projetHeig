@@ -1,5 +1,6 @@
 package ch.smartcity.graphique;
 
+import ch.smartcity.database.controllers.access.EvenementAccess;
 import ch.smartcity.database.models.Adresse;
 import ch.smartcity.database.models.Evenement;
 import com.sun.xml.internal.bind.v2.TODO;
@@ -59,5 +60,14 @@ public final class Utils {
             preview.add(str); // ajout a la liste
         }
         return preview;
+    }
+    public static List<String> refreshListAcess (List<String> liste) {
+        for(int i = 0; i < liste.size(); i++){
+            liste.remove(i);
+        }
+        List<String> list = Utils.previewEvenement(EvenementAccess.getEnAttente());
+        return list;
+
+
     }
 }
