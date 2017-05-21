@@ -2,7 +2,6 @@ package ch.smartcity.pdf;
 
 import ch.smartcity.database.controllers.access.EvenementAccess;
 import ch.smartcity.database.models.Evenement;
-import ch.smartcity.database.models.RubriqueEnfant_;
 import ch.smartcity.pdf.graphiques.GenerateurGraphique;
 import com.itextpdf.io.font.FontConstants;
 import com.itextpdf.io.image.ImageDataFactory;
@@ -30,16 +29,22 @@ import java.util.List;
 
 public class GenerateurPDF {
 
-    public static final String DEST;
-    public static final URL LOGO;
-    // private String nomRapport = getFromDataBaseName();
+   // public final String DEST;
+    public static URL LOGO;
     private static String LIEU = "Lausanne";
     private static int numero = 0;
 
-    static {
-        DEST = System.getProperty("user.home") + File.separator + "Documents" + File.separator
-                + "Smartcity" + File.separator + "PDF" + File.separator + "rapport" + ++numero + ".pdf";
+   // static {
 
+
+    //}
+
+    /* FIXME : Le main doit disparaitre */
+    //public static void main(String[] args) throws Exception {
+    public static void cree(String nomEvenement, Calendar date) throws Exception {
+
+        String DEST = System.getProperty("user.home") + File.separator + "Documents" + File.separator
+                + "Smartcity" + File.separator + "PDF" + File.separator + "rapport" + ++numero + ".pdf";
         try {
             LOGO = GenerateurPDF.class.getClassLoader()
                     .getResource("ch/smartcity/pdf/resources/logo.png");
@@ -47,18 +52,10 @@ public class GenerateurPDF {
             e.printStackTrace();
             throw new ExceptionInInitializerError(e);
         }
-    }
-
-    /* FIXME : Le main doit disparaitre */
-    public static void main(String[] args) throws Exception {
-
-
-        String nomEvenement = "travaux";
-        Calendar dateEvenement = Calendar.getInstance();
 
         /* Creation of a PDF */
         try {
-            new GenerateurPDF().createPdf(DEST, nomEvenement, dateEvenement);
+            new GenerateurPDF().createPdf(DEST, nomEvenement, date);
         } catch (IOException e) {
             System.out.println("Error while creating PDF");
             System.out.println(e.getMessage());
@@ -115,13 +112,9 @@ public class GenerateurPDF {
         lieuDate.setTextAlignment(TextAlignment.RIGHT);
         page1.addCell(lieuDate);
 
-        List<Evenement> evenements = EvenementAccess.get(RubriqueEnfant_.TRAVAUX, "", "", "",
+        List<Evenement> evenements = EvenementAccess.get(nomEvenement, "", "", "",
                 "", "", null, null, null, null, "", "",
                 "", null);
-
-
-        System.out.println("Taille : " + evenements.size());
-
 
         /* Ajout des evenements du jour */
         List<Evenement> evenementAujourdhui = new ArrayList<>();
@@ -189,7 +182,6 @@ public class GenerateurPDF {
         calStat.set(Calendar.YEAR, Calendar.getInstance().get(Calendar.YEAR));
 
         for (Evenement e : evenements) {
-            System.out.println(e.getDebut().getTime().getTime() + "  " + calStat.getTime().getTime());
             if (e.getDebut().compareTo(calStat) == -1) {
                 evenements.remove(e);
             }

@@ -6,6 +6,7 @@ import ch.smartcity.carte.PointWGS84;
 import ch.smartcity.database.controllers.access.EvenementAccess;
 import ch.smartcity.database.models.Evenement;
 import ch.smartcity.database.models.Statut_;
+import ch.smartcity.pdf.GenerateurPDF;
 import com.toedter.calendar.JCalendar;
 
 import javax.swing.*;
@@ -143,6 +144,43 @@ public class FenetrePrincipale {
             public void actionPerformed(ActionEvent e) {
                 FenetreModification fenetre2 = new FenetreModification(Constantes.CONTEXTE_EN_ATTENTE);
                 fenetre2.fenetre.setVisible(true);
+
+            }
+        });
+
+        btnPdf.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                List<String> eventName = new ArrayList<>();
+                if (chckbxAccidents.isSelected()) {
+                    eventName.add("accidents");
+                }
+                if (chckbxTravaux.isSelected()) {
+                    eventName.add("travaux");
+                }
+                if (chckbxManifestations.isSelected()) {
+                    eventName.add("manifestations");
+                }
+                if (chckbxRenovation.isSelected()) {
+                    eventName.add("rénovations");
+                }
+                if (chckbxConstruction.isSelected()) {
+                    eventName.add("constructions");
+                }
+                if (chckboxDoleances.isSelected()) {
+                    eventName.add("doléances");
+                }
+
+                for (String s : eventName) {
+                    try {
+                        GenerateurPDF.cree(s, dateSelectionne);
+                    } catch (Exception exception) {
+                        System.out.println(exception.getMessage());
+                        // popup erreur
+                    }
+                    System.out.println("PDF généré !");
+                }
 
             }
         });
