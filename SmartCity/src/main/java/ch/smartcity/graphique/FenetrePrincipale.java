@@ -19,10 +19,9 @@ import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
+import java.util.*;
 import java.util.List;
+import java.util.Timer;
 
 
 public class FenetrePrincipale {
@@ -179,19 +178,16 @@ public class FenetrePrincipale {
         panelPrincipal.add(panelNotifications);
         panelNotifications.setLayout(new CardLayout(0, 0));
 
-        //TODO remplir liste avec evenements en attente
-        /*Exemple de comment remplir la liste*/
-        List<String> list = Utils.previewEvenement(EvenementAccess.getEnAttente());
-        DefaultListModel model = new DefaultListModel();
-        for(String v : list)
-        {
-            if(v.substring(0,1) == "3") {
-                model.addElement(v);
-            }
-            model.addElement(v);
-        }
-        listEvenementsEnAttente.setModel(model);
-        panelNotifications.add(listEvenementsEnAttente, "name_56412892408382");
+        //List<String> list = Utils.previewEvenement(EvenementAccess.getEnAttente());
+        Timer timer = new Timer();
+        MiseAjour tache = new MiseAjour(Utils.previewEvenement(EvenementAccess.getEnAttente()),listEvenementsEnAttente);
+
+        timer.scheduleAtFixedRate(tache, 2*60*100, 2*10*1000);
+        tache.run();
+        List<String> list = tache.getListe();
+        JList newListe = tache.getJliste();
+
+        panelNotifications.add(newListe, "name_56412892408382");
 
         //DESCRIPTION TITRE GRIS
         textDescription.setText("Description");
