@@ -37,17 +37,19 @@ public class FenetreModification {
     private static final String REGEX_ALPHA_NUMERIQUE = "[a-zA-ZÀ-ÿ0-9 \\-']*";
     private static final String REGEX_NUMERIQUE = "[0-9]*";
 
-    //TODO verifier regexe latitude et longitude
-    private static final String REGEX_LATITUDE = "^(\\+|-)?(?:90(?:(?:\\.0{1,6})?)|(?:[0-9]|[1-8][0-9])(?:(?:\\.[0-9]{1,6})?))$";
-    private static final String REGEX_LONGITUDE = "^(\\+|-)?(?:180(?:(?:\\.0{1,6})?)|(?:[0-9]|[1-9][0-9]|1[0-7][0-9])(?:(?:\\.[0-9]{1,6})?))$";
+    // résumé ragex latitude : optionnel signe '+' ou '-' puis nombre entre 0 et 90 compris, avec max 6 décimales. '0' superflus interdits.
+    // (optionnel +/-), puis 90{optionnel .00000} OU [ (de 0 à 9) ou (de 10 à 89)] {et optionnel .dddddd}
+    private static final String REGEX_LATITUDE = "^[\\+-]?(?:90(?:(?:\\.0{1,6})?)|(?:[0-9]|[1-8][0-9])(?:(?:\\.[0-9]{1,6})?))$";
+    // pour la longitude, comme latitude mais entre 0 et 180 compris
+    private static final String REGEX_LONGITUDE = "^[\\+-]?(?:180(?:(?:\\.0{1,6})?)|(?:[0-9]|[1-9][0-9]|1[0-7][0-9])(?:(?:\\.[0-9]{1,6})?))$";
     private static final String REGEX_DATE = "^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\d\\d$";
 
     // messages d'erreurs
     private static final String MESSAGE_ERREUR_NOM = "- Nom doit être constitué de lettre et de chiffres et avoir une taille maximum de " + TAILLE_MAX_NOM + " caractères\n";
     private static final String MESSAGE_ERREUR_RUE = "- Rue doit être constitué de lettre et de chiffres et avoir une taille maximum de " + TAILLE_MAX_RUE + " caractères\n";
     private static final String MESSAGE_ERREUR_NUMERO_RUE = "- N°Rue doit être constitué de chiffres uniquement et avoir une taille maximum de " + TAILLE_MAX_NUMERO_RUE + " caractères\n";
-    private static final String MESSAGE_ERREUR_LATITUDE = "- Latitude doit avoir le format degrés signés\n";
-    private static final String MESSAGE_ERREUR_LONGITUDE = "- Longitude doit avoir le format degrés signés\n";
+    private static final String MESSAGE_ERREUR_LATITUDE = "- Latitude doit avoir le format degrés signés et au plus 6 décimales\n";
+    private static final String MESSAGE_ERREUR_LONGITUDE = "- Longitude doit avoir le format degrés signés et au plus 6 décimales\n";
     private static final String MESSAGE_ERREUR_DETAILS = "- Détails doivent avoir une taille maxmimum de: " + TAILLE_MAX_DETAILS + " caractères\n";
     private static final String MESSAGE_ERREUR_DATE = "- La date doit être du format jj/mm/aaaa et la date de fin doit être postérieur à la date de début et à la date d'aujourd'hui\n";
 
