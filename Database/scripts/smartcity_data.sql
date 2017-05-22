@@ -150,9 +150,9 @@ INSERT INTO `smartcity`.`Evenement`
 (`idRubriqueEnfant`,`idUtilisateur`,`nomEvenement`,`idAdresse`,`latitude`,`longitude`, `debut`, `fin`, `details`,`idPriorite`,`idStatut`) VALUES 
 (1,1,'accidents entrée autoroute bloqué',1,46.52304, 6.58939, '2017-05-02', '2017-05-03', 'Une voiture s\'est encastrée dans un bus',4,2),
 (1,1,'accidents tunnel Malley fermé',1,46.52651, 6.60319, '2017-03-02', '2017-03-04', 'Deux voitures ont fait un frontal, le tunnel est fermé',4,2),
-(2,1,'travaux rond-point',1,46.51665, 6.61917, '2017-05-02', '2017-05-03','construction d\'un rond-point, trafic ralenti',4,2),
-(2,1,'travaux Malley',1,46.51665, 6.61917, '2017-05-01', '2017-05-20','Les canalisations doivent être refaites',4,2),
-(2,1,'travaux Buissigny',1,46.51665, 6.61917, '2017-04-02', '2017-04-04','construction d\'un rond-point, trafic ralenti',4,2),
+(2,1,'travaux rond-point',1,46.51665, 6.61917, '2017-05-02', '2017-05-30','Construction d\'un nouveau rond-point. Le trafic est ralenti. Les travaux dureront tout le mois. Les conducteurs vont devoir s\'armer de patience.',4,2),
+(2,1,'travaux Malley',1,46.51665, 6.61917, '2017-05-02', '2017-06-20','Les canalisations doivent être refaites. Les travaux seront effectés de nuit, des nuisances sonores noctures pourraient donc déranger les personnes avec un sommeil léger.',4,2),
+(2,1,'travaux Buissigny',1,46.51665, 6.61917, '2017-05-02', '2017-05-04','Des travaux sont en cours à la gare de Buissigny. Des retards et des suppresions de trains sont à prévoir. Rester vigileants.',4,2),
 (2,1,'travaux Ouchy',1,46.51665, 6.61917, '2017-04-02', '2017-04-04','construction d\'un rond-point, trafic ralenti',4,2),
 (2,1,'travaux Dapples',1,46.51665, 6.61917, '2017-03-02', '2017-03-03','construction d\'un rond-point, trafic ralenti',4,2),
 (2,1,'travaux Beaulieu',1,46.51665, 6.61917, '2017-03-02', '2017-03-03','construction d\'un rond-point, trafic ralenti',4,2),

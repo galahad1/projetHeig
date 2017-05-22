@@ -29,22 +29,15 @@ import java.util.List;
 
 public class GenerateurPDF {
 
-   // public final String DEST;
-    public static URL LOGO;
     private static String LIEU = "Lausanne";
-    private static int numero = 0;
+    private static URL LOGO;
 
-   // static {
-
-
-    //}
-
-    /* FIXME : Le main doit disparaitre */
-    //public static void main(String[] args) throws Exception {
     public static void cree(String nomEvenement, Calendar date) throws Exception {
 
         String DEST = System.getProperty("user.home") + File.separator + "Documents" + File.separator
-                + "Smartcity" + File.separator + "PDF" + File.separator + "rapport" + ++numero + ".pdf";
+                + "Smartcity" + File.separator + "PDF" + File.separator + "rapport_" + nomEvenement
+                + ".pdf";
+
         try {
             LOGO = GenerateurPDF.class.getClassLoader()
                     .getResource("ch/smartcity/pdf/resources/logo.png");
@@ -77,8 +70,6 @@ public class GenerateurPDF {
         PdfDocument pdf = new PdfDocument(new PdfWriter(dest));
         PageSize pagesize = PageSize.A4;
 
-        int nb_pages = 0;
-
         Document document = new Document(pdf, pagesize);
 
         /* Informations principales sur le PDF */
@@ -105,9 +96,8 @@ public class GenerateurPDF {
         page1.addHeaderCell(tete);
 
         /* DATE ET LIEU */
-        DateTimeFormatter date = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-        LocalDate now = LocalDate.now();
-        Cell lieuDate = new Cell().add(LIEU + ", le " + date.format(now));
+        SimpleDateFormat date = new SimpleDateFormat("dd.MM.yyyy");
+        Cell lieuDate = new Cell().add(LIEU + ", le " + date.format(dateEvenement.getTime()));
         lieuDate.setBorder(null);
         lieuDate.setTextAlignment(TextAlignment.RIGHT);
         page1.addCell(lieuDate);
@@ -116,12 +106,27 @@ public class GenerateurPDF {
                 "", "", null, null, null, null, "", "",
                 "", null);
 
+        if (evenements == null || evenements.size() == 0) {
+            Cell erreur = new Cell().add("Aucunes données pour cet événement ! ");
+            page1.addCell(erreur);
+            document.add(page1);
+            document.close();
+            return;
+        }
+
         /* Ajout des evenements du jour */
         List<Evenement> evenementAujourdhui = new ArrayList<>();
+        int statParMois[] = new int[12];
         for (Evenement e : evenements) {
-            if (e.getDebut().compareTo(dateEvenement) == 0 || e.getFin().compareTo(dateEvenement) == 0) {
+            Calendar d = e.getDebut();
+            if (d.compareTo(dateEvenement) == 0 || e.getFin().compareTo(dateEvenement) == 0) {
                 evenementAujourdhui.add(e);
             }
+            ++statParMois[d.getTime().getMonth()];
+        }
+
+        for (int i = 0; i < statParMois.length; ++i) {
+            System.out.print(statParMois[i] + " ");
         }
 
         /* TITRE */
@@ -153,7 +158,6 @@ public class GenerateurPDF {
 
         }
 
-        // FIXME: gérer le nombre de pages !
         document.add(page1);
         document.add(new AreaBreak());
 
@@ -162,12 +166,13 @@ public class GenerateurPDF {
         Table page2 = new Table(1);
 
         /* STATISTIQUE */
-        // FIXME : changer travaux en variable
+
         Cell information = new Cell().add("Statistiques des " + nomEvenement + " en ville de " + LIEU);
         information.setBorder(null);
         information.setFont(PdfFontFactory.createFont(FontConstants.TIMES_BOLD));
 
-        GenerateurGraphique graphe = new GenerateurGraphique();
+
+        GenerateurGraphique graphe = new GenerateurGraphique(statParMois);
         Image image = new Image(ImageDataFactory.create(graphe.CHEMIN_IMAGE));
         //image.setAutoScale(true);
         image.scaleAbsolute(350, 250);

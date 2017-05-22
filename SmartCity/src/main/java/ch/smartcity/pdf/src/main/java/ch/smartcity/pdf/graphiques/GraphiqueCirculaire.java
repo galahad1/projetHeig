@@ -22,26 +22,19 @@ public class GraphiqueCirculaire {
      *
      * @return une instance représentant un graphique circulaire
      */
-    public static JFreeChart cree() {
-
-        double[] valeurs = {7, 15, 6, 1, 21, 10, 4, 3, 9, 11, 5, 10};
-
-        double total = 0;
-        for (int i = 0; i < valeurs.length; i++) {
-            total += valeurs[i];
-        }
+    public static JFreeChart cree(int[] stats) {
 
         DefaultPieDataset pie = new DefaultPieDataset();
 
-        for (int i = 0; i < valeurs.length; ++i) {
-            pie.setValue(Mois.values()[i], valeurs[i]);
+        for (int i = 0; i < stats.length; ++i) {
+            if (stats[i] != 0)
+                pie.setValue(Mois.values()[i], stats[i]);
         }
 
         JFreeChart chart = ChartFactory.createPieChart("", pie, false, false, false);
         PiePlot plot = (PiePlot) chart.getPlot();
         plot.setBackgroundPaint(null);
 
-        //plot.setLabelGenerator(null);
         plot.setOutlineVisible(false);
 
         StandardPieSectionLabelGenerator label
@@ -53,7 +46,7 @@ public class GraphiqueCirculaire {
         plot.setLabelBackgroundPaint(Color.WHITE);
 
         for (int i = 0; i < Mois.values().length; ++i) {
-            plot.setExplodePercent(Mois.values()[i], 0.05);
+            plot.setExplodePercent(Mois.values()[i], 0.01);
         }
 
         plot.setSectionPaint(1, new Color(0x6FB9F2));

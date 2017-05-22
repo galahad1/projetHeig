@@ -32,17 +32,17 @@ public class GraphiqueEnBarres {
      *
      * @return une instance représentant un graphique en barre
      */
-    public static JFreeChart cree() {
+    public static JFreeChart cree(int[] stats) {
 
         DefaultCategoryDataset ds = new DefaultCategoryDataset();
 
-        double[] valeurs = {7, 15, 6, 1, 21, 10, 4, 3, 9, 11, 5, 10};
-
         /* Insère les valeurs selons les dates */
         DefaultPieDataset pie = new DefaultPieDataset();
-        for (int i = 0; i < valeurs.length; i++) {
-            pie.setValue(Mois.values()[i].toString().substring(0, 3), valeurs[i]);
-            ds.setValue(valeurs[i], "", Mois.values()[i].toString().substring(0, 3));
+        for (int i = 0; i < stats.length; i++) {
+            if (stats[i] != 0) {
+                pie.setValue(Mois.values()[i].toString().substring(0, 3), stats[i]);
+                ds.setValue(stats[i], "", Mois.values()[i].toString().substring(0, 3));
+            }
         }
 
         /* Création graphique du diagramme */
