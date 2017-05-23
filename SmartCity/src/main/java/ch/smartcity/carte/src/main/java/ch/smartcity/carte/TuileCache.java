@@ -10,7 +10,7 @@ import java.util.Map;
  * @author Jérémie Zanone
  */
 public final class TuileCache {
-    private final int TAILLE_MAX = 5000; // nombre de tuile en cache
+    private static final int TAILLE_MAX = 1000; // nombre de tuiles en cache
     private LinkedHashMap<Long, Tuile> cache = new LinkedHashMap<Long, Tuile>() {
         private static final long serialVersionUID = 1L;
 
@@ -27,7 +27,7 @@ public final class TuileCache {
      * @param zoom  Niveau de zoom de la carte pour la tuile
      * @param x     Coordonnée x de la tuile
      * @param y     Coordonnée y de la tuile
-     * @param tuile La tuile é mémoriser
+     * @param tuile La tuile à placer dans le HashMap
      */
     public void put(int zoom, int x, int y, Tuile tuile) {
         cache.put(getCleCoordonnee(zoom, x, y), tuile);
@@ -49,12 +49,13 @@ public final class TuileCache {
         return cache.get(getCleCoordonnee(zoom, x, y));
     }
 
-    // Encode les coordonnées en un seul long, 2 chiffres pour le zoom, 7
-    // chiffres pour la coordonnée x et autant pour la coordonnées y
-    //
+
 
     /**
-     * Permet de retrouver la clé de la tuile selon les coordonées
+     * Permet de retrouver la clé de la tuile selon les coordonées et le zoom
+     * Encode les coordonnées en un seul long, 2 chiffres pour le zoom, 7
+     * chiffres pour la coordonnée x et autant pour la coordonnées y
+     * pour en faire une clé du HashMap
      *
      * @param zoom
      * @param x

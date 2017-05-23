@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.net.URL;
 
 /**
- * Représente un fournisseur de tuiles qui obtient ces derniéres depuis un
+ * Représente un fournisseur de tuiles qui obtient ces dernières depuis un
  * serveur utilisant les conventions de nommage des tuiles du projet
  * OpenStreetMap
  *

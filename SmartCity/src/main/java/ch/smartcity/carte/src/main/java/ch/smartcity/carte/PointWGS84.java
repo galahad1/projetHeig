@@ -10,10 +10,18 @@ import static java.lang.Math.*;
 
 public final class PointWGS84 {
 
-    private final double latitude;
-    private final double longitude;
+    private final double latitude;    // degrés décimaux
+    private final double longitude;   // degrés décimaux
 
 
+    /**
+     * Construit un point WGS84 grâce aux degrés decémiaux des coordonnées.
+     *
+     * @param latitude  en degrés décimaux
+     * @param longitude en degrés décimaux
+     * @throws IllegalArgumentException Si les degrés donnés ne sont pas compris dans les bornes
+     *                                  du système de coordonnées
+     */
     public PointWGS84(double latitude, double longitude) {
         if (latitude < -90 || latitude > 90)
             throw new IllegalArgumentException();
@@ -26,6 +34,11 @@ public final class PointWGS84 {
         this.latitude = Math.toRadians(latitude);
     }
 
+    /**
+     * Permet de transformer un point WGS84 en point OSM spécifique a une tuile
+     * @param zoom zoom voulu du point OSM
+     * @return le point OSM
+     */
     public PointOSM toOSM(int zoom) {
         if (zoom < 0)
             throw new IllegalArgumentException();

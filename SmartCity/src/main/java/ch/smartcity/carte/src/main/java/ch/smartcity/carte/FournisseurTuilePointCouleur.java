@@ -6,7 +6,7 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 /**
- * Représente un fournisseur de tuile contenant des points de couleurs selon
+ * Représente un fournisseur de tuiles contenant des points de couleurs selon
  * l'emplacement d'événements
  *
  * @author Wojciech Myskorowski
@@ -19,12 +19,13 @@ public final class FournisseurTuilePointCouleur implements FournisseurTuile {
     private Color[] couleur = {Color.RED, Color.ORANGE, Color.YELLOW, Color.GREEN, Color.CYAN, Color.BLUE,
             Color.MAGENTA};
 
+
     /**
      * Crée un fournisseur de tuile isochrone avec l'arbre des trajets, la table
      * des couleurs et la vitesse de marche donnés
      *
-     * @param
-     **/
+     * @param evenements liste des événements à afficher sur la tuile
+     */
     public FournisseurTuilePointCouleur(ArrayList<Event> evenements) {
         this.evenements = evenements;
     }

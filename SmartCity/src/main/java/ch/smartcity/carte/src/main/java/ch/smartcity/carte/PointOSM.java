@@ -19,9 +19,9 @@ public final class PointOSM {
     /**
      * Construit un point de coordonnées x et y au niveau de zoom donné.
      *
-     * @param zoom, x, y
-     *              Le niveau de zoom du systéme de coordonnées OSM et les coordonnées x,y
-     * @throws IllegalArgumentException Si le zoom est négatif ou si l'une des deux coordonnées n'est pas dans l'intervalle admissible
+     * @param zoom, x, y Le niveau de zoom du système de coordonnées OSM et les coordonnées x,y
+     * @throws IllegalArgumentException Si le zoom est négatif ou si l'une des deux coordonnées
+     *          n'est pas dans l'intervalle admissible
      */
     public PointOSM(int zoom, double x, double y) {
         double max = maxXY(zoom);

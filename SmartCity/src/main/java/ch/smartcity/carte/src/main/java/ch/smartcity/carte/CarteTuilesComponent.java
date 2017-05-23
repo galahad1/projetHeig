@@ -15,7 +15,7 @@ import java.util.List;
 public final class CarteTuilesComponent extends JComponent {
 
     private static final long serialVersionUID = 1L;
-    private final int TAILLE_TUILE = 256;
+    private static final int TAILLE_TUILE = 256;
     private int zoom;
     private List<FournisseurTuile> fournisseurTuiles;
 
@@ -23,8 +23,8 @@ public final class CarteTuilesComponent extends JComponent {
      * Crée un composant Swing capable d'afficher une carte en tuiles
      *
      * @param zoom Le niveau de zoom de la carte
-     * @throws IllegalArgumentException Léve l'exeption si le niveau de zoom est inférieur é 10 ou
-     *                                  supérieur é 19.
+     * @throws IllegalArgumentException Léve l'exeption si le niveau de zoom est inférieur à 10 ou
+     *                                  supérieur à 19.
      */
     CarteTuilesComponent(int zoom) {
         if (zoom < 10 || zoom > 19) {
@@ -34,11 +34,6 @@ public final class CarteTuilesComponent extends JComponent {
         fournisseurTuiles = new ArrayList<>();
     }
 
-    /**
-     * Retourne le niveau de zoom de la carte
-     *
-     * @return Le niveau de zoom de la carte
-     */
     public int zoom() {
         return zoom;
     }
@@ -92,10 +87,10 @@ public final class CarteTuilesComponent extends JComponent {
         for (FournisseurTuile fournisseurTuile : fournisseurTuiles) {
             for (int x = baseX; x < maxX; x += TAILLE_TUILE) {
                 for (int y = baseY; y < maxY; y += TAILLE_TUILE) {
-                    int tilePosX = x / TAILLE_TUILE;
-                    int tilePosY = y / TAILLE_TUILE;
-                    Tuile t = fournisseurTuile.getTuile(zoom, tilePosX, tilePosY);
-                    g0.drawImage(t.image(), x, y, null);
+                    int tuilePosX = x / TAILLE_TUILE;
+                    int tuilePosY = y / TAILLE_TUILE;
+                    Tuile tuile = fournisseurTuile.getTuile(zoom, tuilePosX, tuilePosY);
+                    g0.drawImage(tuile.image(), x, y, null);
 
                 }
             }

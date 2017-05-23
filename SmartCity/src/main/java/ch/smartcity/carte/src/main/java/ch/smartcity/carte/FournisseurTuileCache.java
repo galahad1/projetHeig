@@ -13,9 +13,9 @@ public final class FournisseurTuileCache implements FournisseurTuile {
     private final FournisseurTuile fournisseurTuile;
 
     /**
-     * Construit un transformateur de fournisseur de tuiles
+     * Constructeur qui transforme un fournisseur de tuiles en fournisseurTuileCache
      *
-     * @param fournisseurTuile Le fournisseur de tuile é transformer
+     * @param fournisseurTuile Le fournisseur de tuiles à transformer
      */
     public FournisseurTuileCache(FournisseurTuile fournisseurTuile) {
         this.tuileCache = new TuileCache();

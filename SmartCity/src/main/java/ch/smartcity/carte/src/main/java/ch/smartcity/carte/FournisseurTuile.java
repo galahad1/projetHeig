@@ -1,7 +1,7 @@
 package ch.smartcity.carte;
 
 /**
- * Représente un fournisseur de tuile
+ * Représente un fournisseur de tuiles
  *
  * @author Wojciech Myskorowski
  * @author Jérémie Zanone

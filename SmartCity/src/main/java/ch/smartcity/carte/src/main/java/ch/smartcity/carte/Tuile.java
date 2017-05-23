@@ -33,13 +33,13 @@ public final class Tuile {
 
         ColorModel cm = image.getColorModel();
         WritableRaster raster = image.copyData(null);
-        this.image = new BufferedImage(cm, raster, cm.isAlphaPremultiplied(), null);     // copie profonde de l'image
-
+        // copie profonde de l'image
+        this.image = new BufferedImage(cm, raster, cm.isAlphaPremultiplied(), null);
     }
 
 
     /**
-     * Retourne l'image correspondant é la tuile
+     * Retourne l'image correspondant à la tuile
      *
      * @return L'image de la tuile
      */

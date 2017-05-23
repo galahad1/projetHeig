@@ -328,8 +328,9 @@ public class FenetrePrincipale {
 
         });
 
+        //LOGO PROGRAMME
         ImageIcon imageIcon = new ImageIcon(new ImageIcon(getClass().getClassLoader().getResource("ch/smartcity/graphique/logo.png"))
-                .getImage().getScaledInstance(668, 75, Image.SCALE_DEFAULT));
+                .getImage());
         JLabel label = new JLabel("", JLabel.CENTER);
         label.setIcon(imageIcon);
         panelLogo.add(label, BorderLayout.CENTER);
