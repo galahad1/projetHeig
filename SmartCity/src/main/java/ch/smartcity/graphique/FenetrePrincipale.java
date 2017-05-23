@@ -75,6 +75,7 @@ public class FenetrePrincipale {
     private Calendar dateSelectionne;
 
     private JTextField textDescription = new JTextField();
+    private JTextField textNotifications = new JTextField();
 
     /**
      * Create the application.
@@ -210,9 +211,19 @@ public class FenetrePrincipale {
 
         panelPrincipal.add(panelCarte);
 
+        //titre Notifications
+        textNotifications.setText("Notifications en attente de validation");
+        textNotifications.setHorizontalAlignment(SwingConstants.CENTER);
+        textNotifications.setFont(new Font("Dialog", Font.BOLD, 18));
+        textNotifications.setEditable(false);
+        textNotifications.setColumns(6);
+        textNotifications.setBackground(Color.LIGHT_GRAY);
+        textNotifications.setBounds(700, 5, 782, 40);
+        panelPrincipal.add(textNotifications);
+
         //NOTIFICATIONS
         panelNotifications.setBackground(Color.LIGHT_GRAY);
-        panelNotifications.setBounds(700, 5, 782, 195);
+        panelNotifications.setBounds(700, 45, 782, 155);
         panelPrincipal.add(panelNotifications);
         panelNotifications.setLayout(new CardLayout(0, 0));
 

@@ -16,7 +16,7 @@ import static java.util.Collections.shuffle;
  */
 
 public class MiseAjour extends TimerTask {
-    private final int maxElement = 10;
+    private final int maxElement = 9;
     private List<String> liste;
     private JList notif;
     private JLabel nbNotif;
