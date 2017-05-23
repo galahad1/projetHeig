@@ -106,14 +106,6 @@ public class GenerateurPDF {
                 "", "", null, null, null, null, "", "",
                 "", null);
 
-        if (evenements == null || evenements.size() == 0) {
-            Cell erreur = new Cell().add("Aucunes données pour cet événement ! ");
-            page1.addCell(erreur);
-            document.add(page1);
-            document.close();
-            return;
-        }
-
         /* Ajout des evenements du jour */
         List<Evenement> evenementAujourdhui = new ArrayList<>();
         int statParMois[] = new int[12];
@@ -125,9 +117,6 @@ public class GenerateurPDF {
             ++statParMois[d.getTime().getMonth()];
         }
 
-        for (int i = 0; i < statParMois.length; ++i) {
-            System.out.print(statParMois[i] + " ");
-        }
 
         /* TITRE */
         Cell titre = new Cell().add("Avis de " + nomEvenement);
@@ -138,6 +127,14 @@ public class GenerateurPDF {
         titre.setMarginBottom(25);
         page1.addCell(titre);
 
+        if (evenementAujourdhui.size() == 0) {
+            Cell erreur = new Cell().add("Aucunes données pour cet événement ! ");
+            erreur.setBorder(null);
+            page1.addCell(erreur);
+            document.add(page1);
+            document.close();
+            return;
+        }
 
         SimpleDateFormat formatDate = new SimpleDateFormat("dd.MM.yyyy");
         for (Evenement e : evenementAujourdhui) {
@@ -197,7 +194,7 @@ public class GenerateurPDF {
 
         // FIXME faire en sorte que ce soit générique (enum ?)
         switch (nomEvenement) {
-            case "Accidents" :
+            case "accidents" :
                 /* Nb accidents par rues principales */
                 String ruesPrincipales[] = {"Le Flon", "Maupas", "Ouchy", "Beaulieu"};
                 compteur = 0;
@@ -237,7 +234,7 @@ public class GenerateurPDF {
                 page2.addCell(statsDuree);
 
                 break;
-            case "construction" :
+            case "constructions" :
             case "rénovations" :
 
                 moyenne = 0;
@@ -255,9 +252,13 @@ public class GenerateurPDF {
 
                 break;
             case "manifestations" :
-                Evenement evenementCourrant = null;
-                Cell statsComms = new Cell().add("Il y a eu " +
-                        evenementCourrant.getCommentaireSet().size() + " commentaires au sujet de cette manifestation.\n");
+                int nbCommentaires = 0;
+                for (Evenement e : evenementAujourdhui) {
+                    nbCommentaires += e.getCommentaireSet().size();
+                }
+
+                Cell statsComms = new Cell().add("Il y a eu " + nbCommentaires
+                        + " commentaires au sujet des manifestations d'ajourd'hui.\n");
                 statsComms.setBorder(null);
                 page2.addCell(statsComms);
         }
