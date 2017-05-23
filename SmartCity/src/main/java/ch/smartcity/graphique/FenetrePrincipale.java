@@ -312,8 +312,10 @@ public class FenetrePrincipale {
 
         });
 
-        ImageIcon image = new ImageIcon(getClass().getClassLoader().getResource("ch/smartcity/graphique/logo.jpg"));
-        JLabel label = new JLabel("", image, JLabel.CENTER);
+        ImageIcon imageIcon = new ImageIcon(new ImageIcon(getClass().getClassLoader().getResource("ch/smartcity/graphique/logo.png"))
+                .getImage().getScaledInstance(668, 75, Image.SCALE_DEFAULT));
+        JLabel label = new JLabel("", JLabel.CENTER);
+        label.setIcon(imageIcon);
         panelLogo.add(label, BorderLayout.CENTER);
         panelLogo.setBackground(Color.white);
         panelLogo.repaint();
