@@ -42,6 +42,7 @@ public class FenetrePrincipale {
     private final JPanel panelMenu = new JPanel();
     private final JLabel lblNbrNotification = new JLabel("Notifications");
     private final JPanel panelLogo = new JPanel();
+
     public JFrame fenetre = new JFrame();
     StringBuilder descriptionsEvents = new StringBuilder();
     JPanel panelPrincipal = new JPanel();
@@ -50,8 +51,7 @@ public class FenetrePrincipale {
     JButton btnAjouter = new JButton("Ajouter/Modifier");
     JButton btnPdf = new JButton("PDF");
     JButton btnEnAttente = new JButton("En attente");
-    // récupération d'un nombre de requetes a traiter
-    // TODO
+
     GroupLayout gl_panelMenu = new GroupLayout(panelMenu);
     private JTextArea txtrDescription = new JTextArea();
     private JPanel panelRubriques = new JPanel();
@@ -218,12 +218,13 @@ public class FenetrePrincipale {
 
         //List<String> list = Utils.previewEvenement(EvenementAccess.getEnAttente());
         Timer timer = new Timer();
-        MiseAjour tache = new MiseAjour(Utils.previewEvenement(EvenementAccess.getEnAttente()),listEvenementsEnAttente);
+        MiseAjour tache = new MiseAjour(Utils.previewEvenement(EvenementAccess.getEnAttente()), listEvenementsEnAttente, lblNbrNotification);
 
         timer.scheduleAtFixedRate(tache, 2*60*100, 2*10*1000);
         tache.run();
         List<String> list = tache.getListe();
         JList newListe = tache.getJliste();
+        JLabel lblNbrNotification = tache.getNombrePanel();
 
         panelNotifications.add(newListe, "name_56412892408382");
 
@@ -311,7 +312,14 @@ public class FenetrePrincipale {
 
         });
 
+        ImageIcon image = new ImageIcon(getClass().getClassLoader().getResource("ch/smartcity/graphique/logo.jpg"));
+        JLabel label = new JLabel("", image, JLabel.CENTER);
+        panelLogo.add(label, BorderLayout.CENTER);
+        panelLogo.setBackground(Color.white);
+        panelLogo.repaint();
 
+
+        //add(picLabel);
         scrollPaneRubriques.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         scrollPaneRubriques.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPaneRubriques.setBounds(5, 260, 218, 705);
@@ -369,7 +377,7 @@ public class FenetrePrincipale {
         textRubriques.setBackground(Color.LIGHT_GRAY);
 
 
-        panelLogo.setBackground(Color.GRAY);
+        //panelLogo.setBackground(Color.GRAY);
         panelLogo.setBounds(5, 5, 695, 114);
 
         panelPrincipal.add(panelLogo);

@@ -16,7 +16,6 @@ import java.beans.PropertyChangeListener;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -59,6 +58,7 @@ public class FenetreModification {
     DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
     JComboBox<String> comboBoxEvenements;
     JComboBox<String> comboBoxPriorite;
+    List<Evenement> evenementList;
     private JTextField textFieldNom;
     private JTextField textFieldRue;
     private JTextField textFieldNumRue;
@@ -80,8 +80,6 @@ public class FenetreModification {
     private JComboBox<String> comboBoxNpa;
     private JComboBox<String> comboBoxRubrique;
     private Evenement evenementSelectionne = null;
-
-    List<Evenement> evenementList;
     /**
      * Create the application.
      */
@@ -656,7 +654,7 @@ public class FenetreModification {
         if(evenementsExsistants == null || evenementsExsistants.isEmpty()) // n'exsiste pas
         {
 
-            EvenementAccess.save(nomEnfant, 1, nomEvenement, nomRue, numeroRue, npa, latitude, longitude, calDebut, calFin, details, elementsPriorite[1], Integer.valueOf(elementsPriorite[0]), Statut_.TRAITE);
+            EvenementAccess.save(nomEnfant, 1, nomEvenement, nomRue, numeroRue, npa, latitude, longitude, calDebut, calFin, details, elementsPriorite[1], Integer.valueOf(elementsPriorite[0]), Statut_.EN_ATTENTE);
             System.out.println("evenement ajouté");
             JOptionPane.showConfirmDialog(null,
                     "Evenement ajouté avec succès", "Evénement ajouté",

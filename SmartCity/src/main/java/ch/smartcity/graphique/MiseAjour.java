@@ -7,6 +7,8 @@ import java.awt.*;
 import java.util.List;
 import java.util.TimerTask;
 
+import static java.util.Collections.shuffle;
+
 /**
  * Modélise un timer qui permet de mettre à jour une liste dans un panel
  *
@@ -15,12 +17,15 @@ import java.util.TimerTask;
  */
 
 public class MiseAjour extends TimerTask {
+    private final int maxElement = 10;
     private List<String> liste;
     private JList notif;
+    private JLabel nbNotif;
 
-    public MiseAjour(List<String> listnoftif, JList notif) {
+    public MiseAjour(List<String> listnoftif, JList notif, JLabel nbNotif) {
         liste = listnoftif;
         this.notif = notif;
+        this.nbNotif = nbNotif;
     }
 
     @Override
@@ -32,10 +37,12 @@ public class MiseAjour extends TimerTask {
         }
         DefaultListModel model = new DefaultListModel();
 
+        if (liste.size() > maxElement) {
+            shuffle(liste);
+        }
         for(String v : liste)
         {
-            JLabel ligne = new JLabel(v);
-            //model.addElement(v);
+            JTextField ligne = new JTextField(v);
             String s = ligne.getText().substring(0, 1);
             if (s.equals("1")) {
                 ligne.setForeground(Color.GREEN);
@@ -45,10 +52,18 @@ public class MiseAjour extends TimerTask {
                 ligne.setForeground(Color.BLUE);
             } else {
                 ligne.setForeground(Color.RED);
+                ligne.setBackground(Color.RED);
             }
 
-            model.addElement(ligne.getText());
+            if (model.getSize() <= maxElement) {
+                model.addElement(ligne.getText());
+            }
+
         }
+        int nombreNotification = liste.size();
+        nbNotif.setText(nombreNotification + " Notifications");
+        nbNotif.repaint();
+        notif.setForeground(Color.RED);
         notif.setModel(model);
         notif.repaint();
     }
@@ -65,5 +80,11 @@ public class MiseAjour extends TimerTask {
      * retourne la Jlist des notifcations
      * @return une Jlist
      */
-    public  JList getJliste() {return notif;}
+    public JList getJliste() {
+        return notif;
+    }
+
+    public JLabel getNombrePanel() {
+        return nbNotif;
+    }
 }
