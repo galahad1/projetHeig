@@ -88,6 +88,15 @@ public class FenetrePrincipale {
      * Initialize the contents of the frame.
      */
     private void initialize() {
+        Timer timer = new Timer();
+        MiseAjour tache = new MiseAjour(Utils.previewEvenement(EvenementAccess.getEnAttente()), listEvenementsEnAttente, lblNbrNotification);
+
+        timer.scheduleAtFixedRate(tache, 2 * 60 * 100, 2 * 10 * 1000);
+        tache.run();
+        List<String> list = tache.getListe();
+        JList newListe = tache.getJliste();
+        JLabel lblNbrNotification = tache.getNombrePanel();
+
         gl_panelMenu.setHorizontalGroup(
                 gl_panelMenu.createParallelGroup(Alignment.TRAILING)
                         .addGroup(gl_panelMenu.createSequentialGroup()
@@ -126,7 +135,11 @@ public class FenetrePrincipale {
                         JOptionPane.YES_NO_OPTION);
 
                 if (confirmed == JOptionPane.YES_OPTION) {
+                    timer.cancel();
+                    timer.purge();
+                    tache.cancel();
                     fenetre.dispose();
+
                 }
             }
         });
@@ -227,15 +240,7 @@ public class FenetrePrincipale {
         panelPrincipal.add(panelNotifications);
         panelNotifications.setLayout(new CardLayout(0, 0));
 
-        //List<String> list = Utils.previewEvenement(EvenementAccess.getEnAttente());
-        Timer timer = new Timer();
-        MiseAjour tache = new MiseAjour(Utils.previewEvenement(EvenementAccess.getEnAttente()), listEvenementsEnAttente, lblNbrNotification);
 
-        timer.scheduleAtFixedRate(tache, 2 * 60 * 100, 2 * 10 * 1000);
-        tache.run();
-        List<String> list = tache.getListe();
-        JList newListe = tache.getJliste();
-        JLabel lblNbrNotification = tache.getNombrePanel();
 
         panelNotifications.add(newListe, "name_56412892408382");
 
