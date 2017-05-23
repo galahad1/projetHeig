@@ -35,7 +35,6 @@ public final class PointOSM {
     }
 
     /**
-     *
      * @param zoom Le niveau de zoom du systéme de coordonnées OSM.
      * @return retourne la taille de l'image de la carte du monde au niveau de zoom donné.
      * @throws IllegalArgumentException Si le zoom est négatif.
@@ -87,7 +86,6 @@ public final class PointOSM {
     public int arrondiY() {
         return (int) round(y);
     }
-
 
 
 }

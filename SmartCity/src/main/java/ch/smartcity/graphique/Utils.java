@@ -3,7 +3,6 @@ package ch.smartcity.graphique;
 import ch.smartcity.database.controllers.access.EvenementAccess;
 import ch.smartcity.database.models.Adresse;
 import ch.smartcity.database.models.Evenement;
-import com.sun.xml.internal.bind.v2.TODO;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -17,15 +16,17 @@ import java.util.List;
 public final class Utils {
 
     //TODO mettre dans config ressources
-    private static DateFormat  dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+    private static DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
 
-    private Utils() {}
+    private Utils() {
+    }
 
 
     /**
      * Recoit une liste d'événement afin d'en afficher une prévisualisation
      * comprenant moins de détails que l'evenement complet
+     *
      * @param liste liste d'evenement
      * @return liste des previews des evenements
      */
@@ -61,8 +62,9 @@ public final class Utils {
         }
         return preview;
     }
-    public static List<String> refreshListAcess (List<String> liste) {
-        for(int i = 0; i < liste.size(); i++){
+
+    public static List<String> refreshListAcess(List<String> liste) {
+        for (int i = 0; i < liste.size(); i++) {
             liste.remove(i);
         }
         List<String> list = Utils.previewEvenement(EvenementAccess.getEnAttente());

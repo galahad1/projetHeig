@@ -13,11 +13,10 @@ import java.util.Random;
 
 public class GenerateurGraphique {
 
-    private static final int NB_GRAPHES = 2;
-
     public final static String CHEMIN_IMAGE = System.getProperty("user.home") + File.separator
             + "Documents" + File.separator + "Smartcity" + File.separator
             + "Images" + File.separator + "image.png";
+    private static final int NB_GRAPHES = 2;
 
     public GenerateurGraphique(int[] stats) throws URISyntaxException, IOException {
 

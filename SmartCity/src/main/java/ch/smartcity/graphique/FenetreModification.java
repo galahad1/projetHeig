@@ -80,6 +80,7 @@ public class FenetreModification {
     private JComboBox<String> comboBoxNpa;
     private JComboBox<String> comboBoxRubrique;
     private Evenement evenementSelectionne = null;
+
     /**
      * Create the application.
      */
@@ -175,7 +176,7 @@ public class FenetreModification {
         List<Npa> listNpa = DatabaseAccess.get(Npa.class);
 
         String[] npas = new String[listNpa.size()];
-        for(int i = 0; i < npas.length ; i++) {
+        for (int i = 0; i < npas.length; i++) {
             npas[i] = listNpa.get(i).toString();
         }
 
@@ -191,8 +192,7 @@ public class FenetreModification {
 
         List<Priorite> listPriorite = DatabaseAccess.get(Priorite.class);
         String[] priorites = new String[listPriorite.size()];
-        for(int i = 0; i < priorites.length; i++)
-        {
+        for (int i = 0; i < priorites.length; i++) {
             priorites[i] = listPriorite.get(i).toString();
         }
 
@@ -205,8 +205,7 @@ public class FenetreModification {
         List<RubriqueEnfant> listRubriqueEnfant = DatabaseAccess.get(RubriqueEnfant.class);
 
         String[] rubriques = new String[listRubriqueEnfant.size()];
-        for(int i = 0; i < rubriques.length ; i++)
-        {
+        for (int i = 0; i < rubriques.length; i++) {
             rubriques[i] = listRubriqueEnfant.get(i).toString();
         }
         comboBoxRubrique.setModel(new DefaultComboBoxModel<String>(rubriques));
@@ -260,7 +259,7 @@ public class FenetreModification {
                 if (controleSaisie()) {
                     System.out.println("Evenement valide");
 
-                    if(comboBoxEvenements.getSelectedIndex() == 0) // nouvel evenement
+                    if (comboBoxEvenements.getSelectedIndex() == 0) // nouvel evenement
                     {
                         ajouterEvenement();
                     } else // evenement deja exsistant
@@ -281,8 +280,7 @@ public class FenetreModification {
         boutonRefuser.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
 
-                if(comboBoxEvenements.getSelectedIndex() != 0)
-                {
+                if (comboBoxEvenements.getSelectedIndex() != 0) {
                     refuserEvenement(); // statut en refuser et change date de fin pour etre en etat supprimmer
                     chargementListeEvenements(context); // mise a jour de la liste
                     videChamps();
@@ -297,8 +295,7 @@ public class FenetreModification {
         boutonSupprimer.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
 
-                if(evenementSelectionne != null && comboBoxEvenements.getSelectedIndex() != 0)
-                {
+                if (evenementSelectionne != null && comboBoxEvenements.getSelectedIndex() != 0) {
                     DatabaseAccess.delete(evenementSelectionne); // supprime de la base de donnée
                     chargementListeEvenements(context); // mise a jour de la liste
                     videChamps();
@@ -373,8 +370,7 @@ public class FenetreModification {
                 if (index != 0) // un evenement de la base de donnée
                 {
 
-                    if (context == Constantes.CONTEXTE_EN_ATTENTE)
-                    {
+                    if (context == Constantes.CONTEXTE_EN_ATTENTE) {
                         etatChamps(true); // deverouille les champs
                     }
 
@@ -481,8 +477,7 @@ public class FenetreModification {
         panelModification.add(btnFermer);
 
 
-        if (context == Constantes.CONTEXTE_AJOUTER)
-        {
+        if (context == Constantes.CONTEXTE_AJOUTER) {
             fenetre.setTitle(TITRE_MODIFICATION);
             boutonRefuser.setVisible(false);
             boutonRefuser.setEnabled(false);
@@ -500,6 +495,7 @@ public class FenetreModification {
 
     /**
      * charge les evenements dans la liste ainsi que les preview
+     *
      * @param context
      */
     private void chargementListeEvenements(int context) {
@@ -542,9 +538,9 @@ public class FenetreModification {
      */
     private void refuserEvenement() {
 
-        evenementSelectionne.setStatut( StatutAccess.get(Statut_.REFUSE).get(0)); // statur refuser
+        evenementSelectionne.setStatut(StatutAccess.get(Statut_.REFUSE).get(0)); // statur refuser
 
-        EvenementAccess.update(evenementSelectionne.getIdEvenement(),null,null,null,null,null,null,null,null,null,null, evenementSelectionne.getStatut()); // met a jour l evenemnt avec le statut refuse
+        EvenementAccess.update(evenementSelectionne.getIdEvenement(), null, null, null, null, null, null, null, null, null, null, evenementSelectionne.getStatut()); // met a jour l evenemnt avec le statut refuse
         DatabaseAccess.delete(evenementSelectionne); // change date de fin
 
     }
@@ -570,36 +566,27 @@ public class FenetreModification {
 
         Npa newNpa;
         List<Npa> listNewNpa = NpaAccess.get(npa);
-        if(listNewNpa == null || listNewNpa.isEmpty())
-        {
+        if (listNewNpa == null || listNewNpa.isEmpty()) {
             newNpa = new Npa(npa); // créer
-        }
-        else
-        {
+        } else {
             newNpa = evenementBase.getAdresse().getNpa(); // prend celui existant dans la DB
         }
 
 
         Rue newRue;
         List<Rue> listNewRue = RueAccess.get(nomRue);
-        if(listNewRue == null || listNewRue.isEmpty())
-        {
+        if (listNewRue == null || listNewRue.isEmpty()) {
             newRue = new Rue(nomRue);
-        }
-        else
-        {
+        } else {
             newRue = evenementBase.getAdresse().getRue();
         }
 
 
         Adresse newAdresse;
-        List<Adresse> listNewAdresse = AdresseAccess.get(newRue,numeroRue,newNpa);
-        if(listNewAdresse == null || listNewAdresse.isEmpty())
-        {
-            newAdresse = new Adresse(newRue,numeroRue,newNpa);
-        }
-        else
-        {
+        List<Adresse> listNewAdresse = AdresseAccess.get(newRue, numeroRue, newNpa);
+        if (listNewAdresse == null || listNewAdresse.isEmpty()) {
+            newAdresse = new Adresse(newRue, numeroRue, newNpa);
+        } else {
             newAdresse = evenementBase.getAdresse();
         }
 
@@ -618,7 +605,7 @@ public class FenetreModification {
         }
 
 
-        EvenementAccess.update(evenementBase.getIdEvenement(),newRubrique,null,nomEvenement,newAdresse,latitude,longitude,calDebut,calFin,details,newPriorite,newStatut);
+        EvenementAccess.update(evenementBase.getIdEvenement(), newRubrique, null, nomEvenement, newAdresse, latitude, longitude, calDebut, calFin, details, newPriorite, newStatut);
 
 
         int confirmed = JOptionPane.showConfirmDialog(null,
@@ -650,8 +637,8 @@ public class FenetreModification {
 
         // controle si l evenement exsite deja
 
-        List<Evenement> evenementsExsistants = EvenementAccess.get(nomEnfant,null,nomEvenement,nomRue,numeroRue,npa,latitude,longitude,calDebut,calFin,details,elementsPriorite[1],null,null);
-        if(evenementsExsistants == null || evenementsExsistants.isEmpty()) // n'exsiste pas
+        List<Evenement> evenementsExsistants = EvenementAccess.get(nomEnfant, null, nomEvenement, nomRue, numeroRue, npa, latitude, longitude, calDebut, calFin, details, elementsPriorite[1], null, null);
+        if (evenementsExsistants == null || evenementsExsistants.isEmpty()) // n'exsiste pas
         {
 
             EvenementAccess.save(nomEnfant, 1, nomEvenement, nomRue, numeroRue, npa, latitude, longitude, calDebut, calFin, details, elementsPriorite[1], Integer.valueOf(elementsPriorite[0]), Statut_.EN_ATTENTE);
@@ -659,9 +646,7 @@ public class FenetreModification {
             JOptionPane.showConfirmDialog(null,
                     "Evenement ajouté avec succès", "Evénement ajouté",
                     JOptionPane.DEFAULT_OPTION);
-        }
-        else
-        {
+        } else {
             JOptionPane.showConfirmDialog(null,
                     "Evenement déjà dans la base de donnée", "Evénement présent",
                     JOptionPane.DEFAULT_OPTION);
@@ -855,7 +840,6 @@ public class FenetreModification {
 
 
     }
-
 
 
     public void etatChamps(boolean b) {

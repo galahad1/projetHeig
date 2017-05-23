@@ -21,8 +21,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -194,7 +192,7 @@ public class GenerateurPDF {
 
         // FIXME faire en sorte que ce soit générique (enum ?)
         switch (nomEvenement) {
-            case "accidents" :
+            case "accidents":
                 /* Nb accidents par rues principales */
                 String ruesPrincipales[] = {"Le Flon", "Maupas", "Ouchy", "Beaulieu"};
                 compteur = 0;
@@ -209,7 +207,7 @@ public class GenerateurPDF {
                     page2.addCell(statsRues);
                 }
                 break;
-            case  "travaux" :
+            case "travaux":
                 compteur = 0;
                 for (Evenement e : evenements) {
                     if (e.getFin().compareTo(dateEvenement) <= 0) {
@@ -225,7 +223,7 @@ public class GenerateurPDF {
                     moyenne += e.getFin().getTime().getTime() - e.getDebut().getTime().getTime();
                 }
 
-                moyenne /=  evenements.size();
+                moyenne /= evenements.size();
 
                 long jours = moyenne / (24 * 60 * 60 * 1000);
 
@@ -234,15 +232,15 @@ public class GenerateurPDF {
                 page2.addCell(statsDuree);
 
                 break;
-            case "constructions" :
-            case "rénovations" :
+            case "constructions":
+            case "rénovations":
 
                 moyenne = 0;
                 for (Evenement e : evenements) {
                     moyenne += e.getFin().getTime().getTime() - e.getDebut().getTime().getTime();
                 }
 
-                moyenne /=  evenements.size();
+                moyenne /= evenements.size();
 
                 jours = moyenne / (24 * 60 * 60 * 1000);
 
@@ -251,7 +249,7 @@ public class GenerateurPDF {
                 page2.addCell(statsDuree2);
 
                 break;
-            case "manifestations" :
+            case "manifestations":
                 int nbCommentaires = 0;
                 for (Evenement e : evenementAujourdhui) {
                     nbCommentaires += e.getCommentaireSet().size();
@@ -262,7 +260,6 @@ public class GenerateurPDF {
                 statsComms.setBorder(null);
                 page2.addCell(statsComms);
         }
-
 
 
         document.add(page2);

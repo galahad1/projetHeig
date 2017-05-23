@@ -13,7 +13,6 @@ import static java.util.Collections.shuffle;
  * Modélise un timer qui permet de mettre à jour une liste dans un panel
  *
  * @author Wojciech Myskorowski
- *
  */
 
 public class MiseAjour extends TimerTask {
@@ -40,8 +39,7 @@ public class MiseAjour extends TimerTask {
         if (liste.size() > maxElement) {
             shuffle(liste);
         }
-        for(String v : liste)
-        {
+        for (String v : liste) {
             JTextField ligne = new JTextField(v);
             String s = ligne.getText().substring(0, 1);
             if (s.equals("1")) {
@@ -70,14 +68,16 @@ public class MiseAjour extends TimerTask {
 
     /**
      * retourne la liste des notification
+     *
      * @return liste des notifcations
      */
     public List<String> getListe() {
-        return  liste;
+        return liste;
     }
 
     /**
      * retourne la Jlist des notifcations
+     *
      * @return une Jlist
      */
     public JList getJliste() {

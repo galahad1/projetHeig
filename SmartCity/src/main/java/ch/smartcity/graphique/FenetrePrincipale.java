@@ -125,7 +125,7 @@ public class FenetrePrincipale {
                         JOptionPane.YES_NO_OPTION);
 
                 if (confirmed == JOptionPane.YES_OPTION) {
-                fenetre.dispose();
+                    fenetre.dispose();
                 }
             }
         });
@@ -220,7 +220,7 @@ public class FenetrePrincipale {
         Timer timer = new Timer();
         MiseAjour tache = new MiseAjour(Utils.previewEvenement(EvenementAccess.getEnAttente()), listEvenementsEnAttente, lblNbrNotification);
 
-        timer.scheduleAtFixedRate(tache, 2*60*100, 2*10*1000);
+        timer.scheduleAtFixedRate(tache, 2 * 60 * 100, 2 * 10 * 1000);
         tache.run();
         List<String> list = tache.getListe();
         JList newListe = tache.getJliste();
