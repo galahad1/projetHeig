@@ -270,6 +270,7 @@ public class FenetrePrincipale {
         panelCalendrier.setBounds(1482, 5, 408, 195);
         panelCalendrier.setLayout(new CardLayout(0, 0));
         panelCalendrier.add(calendrier, "name_9865352109015");
+        dateSelectionne = Calendar.getInstance();
         calendrier.getDayChooser().setAlwaysFireDayProperty(true);
         calendrier.getDayChooser().addPropertyChangeListener("day", new PropertyChangeListener() {
 
@@ -277,7 +278,6 @@ public class FenetrePrincipale {
             public void propertyChange(PropertyChangeEvent evt) {
 
                 Date valDate = calendrier.getDate();
-                dateSelectionne = Calendar.getInstance();
                 dateSelectionne.setTime(valDate);
 
                 //TODO mettre a jour description aussi
