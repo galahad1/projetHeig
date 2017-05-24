@@ -17,6 +17,7 @@ import com.itextpdf.layout.element.Image;
 import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.property.TextAlignment;
 
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -47,6 +48,9 @@ public class GenerateurPDF {
         /* Creation of a PDF */
         try {
             new GenerateurPDF().createPdf(DEST, nomEvenement, date);
+            Desktop.getDesktop().open(new File(System.getProperty("user.home") +
+                    File.separator + "Documents" + File.separator
+                    + "Smartcity" + File.separator + "PDF" + File.separator));
         } catch (IOException e) {
             System.out.println("Error while creating PDF");
             System.out.println(e.getMessage());
