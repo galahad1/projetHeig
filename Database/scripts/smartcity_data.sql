@@ -148,11 +148,13 @@ COMMIT;
 SET AUTOCOMMIT=0;
 INSERT INTO `smartcity`.`Evenement` 
 (`idRubriqueEnfant`,`idUtilisateur`,`nomEvenement`,`idAdresse`,`latitude`,`longitude`, `details`,`idPriorite`,`idStatut`) VALUES 
-(1,1,'Accidents entrée autoroute bloqué',1,46.52304, 6.58939, 'Une voiture s\'est encastrée dans un bus',4,2),
-(1,1,'Accidents tunnel Malley fermé',1,46.52651, 6.60319, 'Deux voitures ont fait un frontal, le tunnel est fermé',4,2),
-(2,1,'Travaux rond-point',1,46.51665, 6.61917, 'Construction d\'un nouveau rond-point. Le trafic est ralenti. Les travaux dureront tout le mois. Les conducteurs vont devoir s\'armer de patience.',4,2),
-(2,1,'Travaux Malley',1,46.51665, 6.61917, 'Les canalisations doivent être refaites. Les travaux seront effectés de nuit, des nuisances sonores noctures pourraient donc déranger les personnes avec un sommeil léger.',4,2),
-(2,1,'Travaux Buissigny',1,46.51665, 6.61917, 'Des travaux sont en cours à la gare de Buissigny. Des retards et des suppresions de trains sont à prévoir. Rester vigileants.',4,2),
+(1,1,'Accidents entrée autoroute bloqué',1,46.52304, 6.58939, 'Une voiture s\'est encastrée dans un bus',5,2),
+(1,1,'Accidents tunnel Malley fermé',1,46.52651, 6.60319, 'Deux voitures ont fait un frontal, le tunnel est fermé',5,2),
+
+(2,1,'Travaux rond-point',1,46.51665, 6.61917, 'Construction d\'un nouveau rond-point. Le trafic est ralenti. Les travaux dureront tout le mois. Les conducteurs vont devoir s\'armer de patience.',1,2),
+(2,1,'Travaux canalisations Malley',1,46.52773, 6.60227, 'Les canalisations doivent être refaites. Les travaux seront effectés de nuit, des nuisances sonores noctures pourraient donc déranger les personnes avec un sommeil léger.',2,2),
+(2,1,'Travaux Bussigny',1,46.54758, 6.55193, 'Des travaux sont en cours à la gare de Bussigny. Des retards et des suppresions de trains sont à prévoir. Rester vigileants.',4,2),
+
 (2,1,'Travaux Ouchy',1,46.51665, 6.61917, 'Construction d\'un rond-point, trafic ralenti',4,2),
 (2,1,'Travaux Dapples',1,46.51665, 6.61917, 'Construction d\'un rond-point, trafic ralenti',4,2),
 (2,1,'Travaux Beaulieu',1,46.51665, 6.61917, 'Construction d\'un rond-point, trafic ralenti',4,2),
@@ -163,13 +165,15 @@ INSERT INTO `smartcity`.`Evenement`
 (2,1,'Travaux t2',1,46.51665, 6.61917, 'Construction d\'un rond-point, trafic ralenti',4,2),
 (2,1,'Travaux t3',1,46.51665, 6.61917, 'Construction d\'un rond-point, trafic ralenti',4,2),
 (2,1,'Travaux t4',1,46.51665, 6.61917, 'Construction d\'un rond-point, trafic ralenti',4,2),
-(2,1,'Travaux t5',1,46.51665, 6.61917, 'Construction d\'un rond-point, trafic ralenti',4,2),
-(2,1,'Travaux t6',1,46.51665, 6.61917, 'Construction d\'un rond-point, trafic ralenti',4,2),
-(2,1,'Travaux t7',1,46.51665, 6.61917, 'Construction d\'un rond-point, trafic ralenti',4,2),
+(2,1,'Travaux t5',1,46.51665, 6.61917, 'Construction d\'un rond-point, trafic ralenti',4,1),
+(2,1,'Travaux t6',1,46.51665, 6.61917, 'Construction d\'un rond-point, trafic ralenti',4,1),
+(2,1,'Travaux t7',1,46.51665, 6.61917, 'Construction d\'un rond-point, trafic ralenti',4,1),
+
 (3,1,'Manifestation WWF',1,46.52073, 6.63069, 'Un camps avec des tentes ont été installé par les manifestants. La circulation n\'a pas été perturbée. Sauvez les pandas !',2,2),
-(3,1,'Manifestation piscine pour tous',1,46.52073, 6.63069, 'La piscine municipale de Renens est ouverte à tous et toutes gratuitement pour toute la journée.',1,2),
-(3,1,'Manifestation concert',1,46.52073, 6.63069, 'Un concert est organisé à Ouchy. Plusieurs artistes vont chanter et danser toute la nuit. Venez nombreux !',1,2),
-(3,1,'Manifestation m1',1,46.52073, 6.63069,'',1,2),
+(3,1,'Manifestation piscine pour tous',1,46.53027, 6.58497, 'La piscine municipale de Renens est ouverte à tous et toutes gratuitement pour toute la journée.',1,2),
+(3,1,'Manifestation concert',1,46.50691, 6.62516, 'Un concert est organisé à Ouchy. Plusieurs artistes vont chanter et danser toute la nuit. Venez nombreux !',1,2),
+(3,1,'Manifestation Anti Donald Trump',1,46.52225, 6.63056,'Un cortège passera en ville pour manifester contre le président des USA',5,2),
+
 (3,1,'Manifestation m2',1,46.52073, 6.63069, '',1,2),
 (3,1,'Manifestation m3',1,46.52073, 6.63069, '',1,2),
 (3,1,'Manifestation m4',1,46.52073, 6.63069, '',1,2),
@@ -184,14 +188,18 @@ INSERT INTO `smartcity`.`Evenement`
 (3,1,'Manifestation m13',1,46.52073, 6.63069, '',1,2),
 (3,1,'Manifestation m14',1,46.52073, 6.63069, '',1,2),
 (3,1,'Manifestation m15',1,46.52073, 6.63069, '',1,2),
-(3,1,'Manifestation m16',1,46.52073, 6.63069, '',1,2),
-(3,1,'Manifestation m17',1,46.52073, 6.63069, '',1,2),
-(3,1,'Manifestation m18',1,46.52073, 6.63069, '',1,2),
-(3,1,'Manifestation m19',1,46.52073, 6.63069, '',1,2),
-(3,1,'Manifestation m20',1,46.52073, 6.63069, '',1,2),
-(4,1,'rénovation de la façade de la gare',1,46.51717, 6.62923, 'Endroit bruyant',4,1),
-(5,1,'Construction d\'un nouveau batiment',1,46.50987, 6.6373, 'Construction d\'un batiment pour le minage de bitcoin',4,1),
-(6,1,'Doléance banc cassé',1,46.51716, 6.60333, 'Le banc en bois a été scié en deux',4,1);
+(3,1,'Manifestation m16',1,46.52073, 6.63069, '',1,1),
+(3,1,'Manifestation m17',1,46.52073, 6.63069, '',1,1),
+(3,1,'Manifestation m18',1,46.52073, 6.63069, '',1,1),
+(3,1,'Manifestation m19',1,46.52073, 6.63069, '',1,1),
+(3,1,'Manifestation m20',1,46.52073, 6.63069, '',1,1),
+
+(4,1,'Rénovation de la façade de la gare',1,46.51717, 6.62923, 'Endroit bruyant',2,2),
+
+(5,1,'Construction d\'un nouveau batiment',1,46.50987, 6.6373, 'Construction d\'un batiment pour le minage de bitcoin',2,2),
+
+(6,1,'Doléance banc cassé',1,46.51716, 6.60333, 'Le banc en bois a été scié en deux',2,2),
+(6,1,'Doléance cabine téléphone HS',1,46.52322, 6.63256, 'Une personne mal intentionnée a arraché le téléphone de la cabine',2,2);
 COMMIT;
 
 -- -----------------------------------------------------
