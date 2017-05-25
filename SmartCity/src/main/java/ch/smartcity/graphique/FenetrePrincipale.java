@@ -267,60 +267,51 @@ public class FenetrePrincipale {
             //TODO mettre a jour description aussi
 
             if (chckbxAccidents.isSelected()) {
-                new Thread(() -> {
-                    allEvents.removeAll(listeAccidents);
-                    listeAccidents = wrapperEvenement(EvenementAccess
-                            .getActif("accidents", dateSelectionne, Statut_.TRAITE));
-                    allEvents.addAll(listeAccidents);
-                    miseAJourAffichage();
-                }).start();
+                allEvents.removeAll(listeAccidents);
+                listeAccidents = wrapperEvenement(EvenementAccess
+                        .getActif("accidents", dateSelectionne, Statut_.TRAITE));
+                allEvents.addAll(listeAccidents);
+                miseAJourAffichage();
             }
 
             if (chckbxTravaux.isSelected()) {
-                new Thread(() -> {
-                    allEvents.removeAll(listeTravaux);
-                    listeTravaux = wrapperEvenement(EvenementAccess
-                            .getActif("travaux", dateSelectionne, Statut_.TRAITE));
-                    allEvents.addAll(listeTravaux);
-                    miseAJourAffichage();
-                }).start();
+                allEvents.removeAll(listeTravaux);
+                listeTravaux = wrapperEvenement(EvenementAccess
+                        .getActif("travaux", dateSelectionne, Statut_.TRAITE));
+                allEvents.addAll(listeTravaux);
+                miseAJourAffichage();
             }
 
             if (chckbxManifestations.isSelected()) {
-                new Thread(() -> {
-                    allEvents.removeAll(listeManifestations);
-                    listeManifestations = wrapperEvenement(EvenementAccess
-                            .getActif("manifestations", dateSelectionne, Statut_.TRAITE));
-                    allEvents.addAll(listeManifestations);
-                    miseAJourAffichage();
-                }).start();
+                allEvents.removeAll(listeManifestations);
+                listeManifestations = wrapperEvenement(EvenementAccess
+                        .getActif("manifestations", dateSelectionne, Statut_.TRAITE));
+                allEvents.addAll(listeManifestations);
+                miseAJourAffichage();
             }
 
             if (chckbxRenovation.isSelected()) {
-                new Thread(() -> {
-                    allEvents.removeAll(listeRenovations);
-                    listeRenovations = wrapperEvenement(EvenementAccess.getActif("rénovations", dateSelectionne, Statut_.TRAITE));
-                    allEvents.addAll(listeRenovations);
-                    miseAJourAffichage();
-                }).start();
+                allEvents.removeAll(listeRenovations);
+                listeRenovations = wrapperEvenement(EvenementAccess
+                        .getActif("rénovations", dateSelectionne, Statut_.TRAITE));
+                allEvents.addAll(listeRenovations);
+                miseAJourAffichage();
             }
 
             if (chckbxConstruction.isSelected()) {
-                new Thread(() -> {
-                    allEvents.removeAll(listeConstructions);
-                    listeConstructions = wrapperEvenement(EvenementAccess.getActif("constructions", dateSelectionne, Statut_.TRAITE));
-                    allEvents.addAll(listeConstructions);
-                    miseAJourAffichage();
-                }).start();
+                allEvents.removeAll(listeConstructions);
+                listeConstructions = wrapperEvenement(EvenementAccess
+                        .getActif("constructions", dateSelectionne, Statut_.TRAITE));
+                allEvents.addAll(listeConstructions);
+                miseAJourAffichage();
             }
 
             if (chckboxDoleances.isSelected()) {
-                new Thread(() -> {
-                    allEvents.removeAll(listeDoleances);
-                    listeDoleances = wrapperEvenement(EvenementAccess.getActif("doléances", dateSelectionne, Statut_.TRAITE));
-                    allEvents.addAll(listeDoleances);
-                    miseAJourAffichage();
-                }).start();
+                allEvents.removeAll(listeDoleances);
+                listeDoleances = wrapperEvenement(EvenementAccess
+                        .getActif("doléances", dateSelectionne, Statut_.TRAITE));
+                allEvents.addAll(listeDoleances);
+                miseAJourAffichage();
             }
         });
 
@@ -475,16 +466,14 @@ public class FenetrePrincipale {
     }
 
     private void miseAJourAffichage() {
-        new Thread(() -> {
-            //mise jour de la carte
-            carte.updateEvenement((ArrayList<Event>) allEvents);
+        //mise jour de la carte
+        carte.updateEvenement((ArrayList<Event>) allEvents);
 
-            //mise a jour de la description
-            descriptionsEvents.setLength(0);
-            for (Event evenement : allEvents) {
-                descriptionsEvents.append(evenement.toString());
-            }
-            txtrDescription.setText(String.valueOf(descriptionsEvents));
-        }).start();
+        //mise a jour de la description
+        descriptionsEvents.setLength(0);
+        for (Event evenement : allEvents) {
+            descriptionsEvents.append(evenement.toString());
+        }
+        txtrDescription.setText(String.valueOf(descriptionsEvents));
     }
 }
