@@ -16,6 +16,7 @@ import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
+import java.net.URL;
 import java.util.*;
 import java.util.List;
 import java.util.Timer;
@@ -263,15 +264,16 @@ public class FenetrePrincipale {
         calendrier.getDayChooser().addPropertyChangeListener("day", e -> {
             Date valDate = calendrier.getDate();
             dateSelectionne.setTime(valDate);
-
-            //TODO mettre a jour description aussi
-
             recuperationEvenements();
         });
 
         //LOGO PROGRAMME
-        ImageIcon imageIcon = new ImageIcon(new ImageIcon(getClass().getClassLoader()
-                .getResource("ch/smartcity/graphique/logo.png")).getImage());
+
+        URL imageIconURL = getClass().getClassLoader().getResource("ch/smartcity/graphique/logo.png");
+        ImageIcon imageIcon = null;
+        if (imageIconURL != null) {
+            imageIcon = new ImageIcon(new ImageIcon(imageIconURL).getImage());
+        }
         JLabel label = new JLabel("", JLabel.CENTER);
         label.setIcon(imageIcon);
         panelLogo.add(label, BorderLayout.CENTER);
@@ -434,7 +436,7 @@ public class FenetrePrincipale {
         txtrDescription.setText(String.valueOf(descriptionsEvents));
     }
 
-    protected void recuperationEvenements() {
+     void recuperationEvenements() {
 
         System.out.println("recuperation evenemnt");
 

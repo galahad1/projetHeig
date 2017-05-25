@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-public final class Utils {
+final class Utils {
 
     private static DateFormat dateFormat = new SimpleDateFormat(ConfigurationManager.getInstance().getString("date.format"));
 
@@ -27,7 +27,7 @@ public final class Utils {
      * @param liste liste d'evenement
      * @return liste des previews des evenements
      */
-    public static List<String> previewEvenement(List<Evenement> liste) {
+    static List<String> previewEvenement(List<Evenement> liste) {
         ArrayList<String> preview = new ArrayList<>();
         if (liste == null || liste.isEmpty()) {
             return preview;
@@ -60,7 +60,7 @@ public final class Utils {
         return preview;
     }
 
-    public static List<String> refreshListAcess(List<String> liste) {
+    static List<String> refreshListAcess(List<String> liste) {
         for (int i = 0; i < liste.size(); i++) {
             liste.remove(i);
         }
@@ -73,7 +73,7 @@ public final class Utils {
      * @return
      * @brief
      */
-    public static boolean controlSaisie(String texte, String regex) {
+     static boolean controlSaisie(String texte, String regex) {
 
         if (texte.isEmpty() || !texte.matches(regex)) {
             return false;
@@ -88,7 +88,7 @@ public final class Utils {
      * @return
      * @brief
      */
-    public static boolean controlSaisie(String texte, int taillemax) {
+     static boolean controlSaisie(String texte, int taillemax) {
 
         return !(texte.isEmpty() || texte.length() > taillemax);
     }
@@ -100,7 +100,7 @@ public final class Utils {
      * @return
      * @brief
      */
-    public static boolean controleSaisie(String texte, int tailleMax, String regex) {
+     static boolean controleSaisie(String texte, int tailleMax, String regex) {
 
         // controle taille
         if (texte.length() > tailleMax || texte.isEmpty()) {

@@ -19,7 +19,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-public class FenetreModification {
+class FenetreModification {
 
     private ConfigurationManager configurationManager = ConfigurationManager.getInstance();
 
@@ -59,7 +59,7 @@ public class FenetreModification {
     /**
      * Create the application.
      */
-    public FenetreModification(int contexte, FenetrePrincipale appelant) {
+    FenetreModification(int contexte, FenetrePrincipale appelant) {
         initialize(contexte, appelant);
     }
 
@@ -76,8 +76,6 @@ public class FenetreModification {
         fenetre.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         fenetre.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
-                //TODO rafraichireCarte();, voir pour appeler methode de la fenetre principale
-
                 fenetre.dispose();
             }
         });
@@ -432,11 +430,7 @@ public class FenetreModification {
 
         JButton btnFermer = new JButton("Fermer");
         // ferme la fenetre lorsque le bouton est appuie
-        btnFermer.addActionListener(e -> {
-
-            //TODO rafraichireCarte();
-            fenetre.dispose();
-        });
+        btnFermer.addActionListener(e -> fenetre.dispose());
         btnFermer.setBounds(12, 12, 117, 25);
         panelModification.add(btnFermer);
 
@@ -512,7 +506,7 @@ public class FenetreModification {
         Calendar calDebut = Calendar.getInstance();
         Calendar calFin = Calendar.getInstance();
         String details = textAreaDetails.getText();
-        
+
         // voir tout les champs qui ont ete modifier
         Evenement evenementBase = getEvenementSelectionne();
 
