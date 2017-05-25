@@ -583,8 +583,7 @@ class FenetreModification {
                 elementsPriorite[1],
                 null,
                 null);
-        if (evenementsExsistants == null || evenementsExsistants.isEmpty()) // n'exsiste pas
-        {
+        if (evenementsExsistants == null || evenementsExsistants.isEmpty()) { // n'exsiste pas
             EvenementAccess.save(nomEnfant,
                     1,
                     nomEvenement,
@@ -720,7 +719,6 @@ class FenetreModification {
 
             panelErreurSaisie.setVisible(false);
             panelErreurSaisie.setEnabled(false);
-
         } else {
             ErreurSaisiePane.setEnabled(true);
             ErreurSaisiePane.setVisible(true);
