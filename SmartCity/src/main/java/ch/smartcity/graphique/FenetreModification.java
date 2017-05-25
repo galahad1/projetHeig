@@ -321,7 +321,7 @@ public class FenetreModification {
                 String date = dateFormat.format(valDate);
 
                 // remplis le champs date debut si celui-ci n'est pas valide, sinon remplit la date de fin
-                if (!controlSaisie(textFieldDateDebut.getText(), REGEX_DATE)) // date debut
+                if (!Utils.controlSaisie(textFieldDateDebut.getText(), REGEX_DATE)) // date debut
                 {
                     textFieldDateDebut.setText(date);
                 } else if (!controlSaisieDateFin(textFieldDateFin.getText(), REGEX_DATE)) // date fin

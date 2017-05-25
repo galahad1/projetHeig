@@ -1,6 +1,6 @@
 package ch.smartcity.graphique;
 
-import ch.smartcity.database.controllers.ConfigurationManager;
+import ch.smartcity.graphique.controllers.ConfigurationManager;
 import ch.smartcity.database.controllers.access.EvenementAccess;
 import ch.smartcity.database.models.Adresse;
 import ch.smartcity.database.models.Evenement;
@@ -110,7 +110,7 @@ public final class Utils {
      * @return
      * @brief
      */
-    public static static boolean controleSaisie(String texte, int tailleMax, String regex) {
+    public static boolean controleSaisie(String texte, int tailleMax, String regex) {
 
         // controle taille
         if (texte.length() > tailleMax || texte.isEmpty()) {
