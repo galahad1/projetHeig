@@ -11,9 +11,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-/**
- * Created by wojtek on 17.05.17.
- */
 public final class Utils {
 
     private static DateFormat dateFormat = new SimpleDateFormat(ConfigurationManager.getInstance().getString("date.format"));
@@ -67,10 +64,7 @@ public final class Utils {
         for (int i = 0; i < liste.size(); i++) {
             liste.remove(i);
         }
-        List<String> list = Utils.previewEvenement(EvenementAccess.getEnAttente());
-        return list;
-
-
+        return Utils.previewEvenement(EvenementAccess.getEnAttente());
     }
 
     /**
@@ -96,11 +90,7 @@ public final class Utils {
      */
     public static boolean controlSaisie(String texte, int taillemax) {
 
-        if (texte.isEmpty() || texte.length() > taillemax) {
-            return false;
-        }
-
-        return true;
+        return !(texte.isEmpty() || texte.length() > taillemax);
     }
 
     /**
@@ -117,10 +107,6 @@ public final class Utils {
             return false;
         }
         // controle lettres et chiffres
-        if (!texte.matches(regex)) {
-            return false;
-        }
-
-        return true;
+        return texte.matches(regex);
     }
 }
