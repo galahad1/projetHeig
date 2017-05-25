@@ -50,7 +50,6 @@ public final class TuileCache {
     }
 
 
-
     /**
      * Permet de retrouver la clé de la tuile selon les coordonées et le zoom
      * Encode les coordonnées en un seul long, 2 chiffres pour le zoom, 7

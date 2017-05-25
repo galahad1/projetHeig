@@ -17,13 +17,15 @@ import static java.util.Collections.shuffle;
  */
 
 public class ThreadMiseAjourNotifications extends TimerTask {
-    private final int maxElement = 9;
+
+    private static final int MAX_ELEMENT = 9;
+
     private List<String> liste;
     private JList notif;
     private JLabel nbNotif;
 
-    public ThreadMiseAjourNotifications(List<String> listnoftif, JList notif, JLabel nbNotif) {
-        liste = listnoftif;
+    public ThreadMiseAjourNotifications(List<String> liste, JList notif, JLabel nbNotif) {
+        this.liste = liste;
         this.notif = notif;
         this.nbNotif = nbNotif;
     }
@@ -31,24 +33,24 @@ public class ThreadMiseAjourNotifications extends TimerTask {
     @Override
     public void run() {
         liste.clear();
+        liste.addAll(Utils.refreshListAcess(Utils.previewEvenement(EvenementAccess.getEnAttente())));
 
-        for (String s : Utils.refreshListAcess(Utils.previewEvenement(EvenementAccess.getEnAttente()))) {
-            liste.add(s);
-        }
         DefaultListModel model = new DefaultListModel();
 
-        if (liste.size() > maxElement) {
+        if (liste.size() > MAX_ELEMENT) {
             shuffle(liste);
         }
+
         for (String v : liste) {
             JTextField ligne = new JTextField(v);
 
             ligne.setBackground(Color.RED);
 
-            if (model.getSize() <= maxElement) {
+            if (model.getSize() <= MAX_ELEMENT) {
                 model.addElement(ligne.getText());
             }
         }
+
         int nombreNotification = liste.size();
         nbNotif.setText(nombreNotification + " Notifications");
         nbNotif.repaint();

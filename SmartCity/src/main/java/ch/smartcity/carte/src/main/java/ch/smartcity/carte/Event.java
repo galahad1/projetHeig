@@ -25,15 +25,15 @@ public final class Event {
     /**
      * Construit un événement avec les informations venant de la base de données
      *
-     * @param id id de l'événement dans la base de données
-     * @param priorite définit l'impacte de l'événement
-     * @param nom   le nom de l'événement
-     * @param debut date de début
-     * @param fin   date de fin
-     * @param adresse adresse de l'événement
+     * @param id          id de l'événement dans la base de données
+     * @param priorite    définit l'impacte de l'événement
+     * @param nom         le nom de l'événement
+     * @param debut       date de début
+     * @param fin         date de fin
+     * @param adresse     adresse de l'événement
      * @param description détails sur l'événement
-     * @param position  coordonnées de l'événement
-     * @param categorie rubrique qui concerne l'événement
+     * @param position    coordonnées de l'événement
+     * @param categorie   rubrique qui concerne l'événement
      */
     public Event(int id, String priorite, String nom, Calendar debut, Calendar fin, Adresse adresse,
                  String description, PointWGS84 position, int categorie) {

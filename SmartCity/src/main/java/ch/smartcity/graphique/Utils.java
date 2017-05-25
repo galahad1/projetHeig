@@ -16,9 +16,6 @@ final class Utils {
     private static DateFormat dateFormat = new SimpleDateFormat(ConfigurationManager.getInstance()
             .getString("date.format"));
 
-    private Utils() {
-    }
-
     /**
      * Recoit une liste d'événement afin d'en afficher une prévisualisation
      * comprenant moins de détails que l'evenement complet
@@ -38,6 +35,7 @@ final class Utils {
             String str = "";
             str += e.getIdEvenement() + " / ";
             str += e.getNomEvenement() + " / ";
+
             // adresse
             Adresse a = e.getAdresse();
             str += a.getRue().getNomRue() + " " + a.getNumeroDeRue() + " / ";

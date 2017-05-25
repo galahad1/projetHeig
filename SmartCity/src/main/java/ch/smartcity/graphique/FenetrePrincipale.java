@@ -142,11 +142,9 @@ public class FenetrePrincipale {
         fenetre.getContentPane().setLayout(null);
 
         //BOUTONS
-
         btnAjouter.addActionListener(e -> {
             FenetreModification fenetre2 = new FenetreModification(Contexte.CONTEXTE_AJOUTER, this);
             fenetre2.fenetre.setVisible(true);
-
         });
 
         btnEnAttente.addActionListener(e -> {
@@ -269,9 +267,11 @@ public class FenetrePrincipale {
         //LOGO PROGRAMME
         URL imageIconURL = getClass().getClassLoader().getResource("ch/smartcity/graphique/logo.png");
         ImageIcon imageIcon = null;
+
         if (imageIconURL != null) {
             imageIcon = new ImageIcon(new ImageIcon(imageIconURL).getImage());
         }
+
         JLabel label = new JLabel("", JLabel.CENTER);
         label.setIcon(imageIcon);
         panelLogo.add(label, BorderLayout.CENTER);

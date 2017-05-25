@@ -1,6 +1,5 @@
 package ch.smartcity.graphique.controllers;
 
-
 import java.util.Locale;
 import java.util.ResourceBundle;
 

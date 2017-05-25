@@ -24,12 +24,16 @@ class FenetreModification {
     // controle des caractères de la saisie
     private static final String REGEX_ALPHA_NUMERIQUE = "[a-zA-ZÀ-ÿ0-9 \\-']*";
     private static final String REGEX_NUMERIQUE = "[0-9]*";
-    private static final String REGEX_LATITUDE = "^[\\+-]?(?:90(?:(?:\\.0{1,6})?)|(?:[0-9]|[1-8][0-9])(?:(?:\\.[0-9]{1,6})?))$";
-    private static final String REGEX_LONGITUDE = "^[\\+-]?(?:180(?:(?:\\.0{1,6})?)|(?:[0-9]|[1-9][0-9]|1[0-7][0-9])(?:(?:\\.[0-9]{1,6})?))$";
-    private static final String REGEX_DATE = "^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\d\\d$";
+    private static final String REGEX_LATITUDE =
+            "^[\\+-]?(?:90(?:(?:\\.0{1,6})?)|(?:[0-9]|[1-8][0-9])(?:(?:\\.[0-9]{1,6})?))$";
+    private static final String REGEX_LONGITUDE =
+            "^[\\+-]?(?:180(?:(?:\\.0{1,6})?)|(?:[0-9]|[1-9][0-9]|1[0-7][0-9])(?:(?:\\.[0-9]{1,6})?))$";
+    private static final String REGEX_DATE =
+            "^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\d\\d$";
     JFrame fenetre;
     private ConfigurationManager configurationManager = ConfigurationManager.getInstance();
-    private DateFormat dateFormat = new SimpleDateFormat(configurationManager.getString("date.format"));
+    private DateFormat dateFormat = new SimpleDateFormat(configurationManager
+            .getString("date.format"));
     private JComboBox<String> comboBoxEvenements;
     private JComboBox<String> comboBoxPriorite;
     private JTextField textFieldNom;
@@ -168,7 +172,6 @@ class FenetreModification {
             priorites[i] = listPriorite.get(i).toString();
         }
 
-
         comboBoxPriorite.setModel(new DefaultComboBoxModel<>(priorites));
         comboBoxPriorite.setBounds(539, 79, 183, 37);
         panelAjoutEvenement.add(comboBoxPriorite);
@@ -225,7 +228,6 @@ class FenetreModification {
 
         JButton boutonValider = new JButton("Valider");
         boutonValider.addActionListener(e -> {
-
             if (controleSaisie()) {
                 System.out.println("Evenement valide");
 
@@ -236,33 +238,30 @@ class FenetreModification {
                 {
                     modifierEvenement();
                 }
+
                 chargementListeEvenements(context); // mise a jour de la liste
                 videChamps();
-                appelant.recuperationEvenements(); // mise a jour de la liste des evenements de la fenetre appelante
-
+                // mise a jour de la liste des evenements de la fenetre appelante
+                appelant.recuperationEvenements();
             }
-
         });
         boutonValider.setBounds(59, 412, 117, 25);
         panelAjoutEvenement.add(boutonValider);
 
-
         JButton boutonRefuser = new JButton("Refuser");
         boutonRefuser.addActionListener(e -> {
-
             if (comboBoxEvenements.getSelectedIndex() != 0) {
-                refuserEvenement(); // statut en refuser et change date de fin pour etre en etat supprimmer
+                // statut en refuser et change date de fin pour etre en etat supprimmer
+                refuserEvenement();
                 chargementListeEvenements(context); // mise a jour de la liste
                 videChamps();
             }
-
         });
         boutonRefuser.setBounds(59, 470, 117, 25);
         panelAjoutEvenement.add(boutonRefuser);
 
         JButton boutonSupprimer = new JButton("Supprimer");
         boutonSupprimer.addActionListener(e -> {
-
             if (evenementSelectionne != null && comboBoxEvenements.getSelectedIndex() != 0) {
                 DatabaseAccess.delete(evenementSelectionne); // supprime de la base de donnée
                 chargementListeEvenements(context); // mise a jour de la liste
@@ -272,9 +271,7 @@ class FenetreModification {
                         "Evenement supprimé avec succès", "Evénement supprimé",
                         JOptionPane.DEFAULT_OPTION);
                 appelant.recuperationEvenements();
-
             }
-
         });
         boutonSupprimer.setBounds(213, 412, 117, 25);
         panelAjoutEvenement.add(boutonSupprimer);
@@ -290,7 +287,6 @@ class FenetreModification {
         panelErreurSaisie.setEnabled(false);
         panelErreurSaisie.setVisible(false);
 
-
         panelModification.add(comboBoxEvenements);
 
         JPanel panelCalendrier = new JPanel();
@@ -302,7 +298,6 @@ class FenetreModification {
         final JCalendar calendrier = new JCalendar();
         calendrier.getDayChooser().setAlwaysFireDayProperty(true);
         calendrier.getDayChooser().addPropertyChangeListener("day", evt -> {
-
             Date valDate = calendrier.getDate();
             String date = dateFormat.format(valDate);
 
@@ -310,8 +305,7 @@ class FenetreModification {
             if (!Utils.controlSaisie(textFieldDateDebut.getText(), REGEX_DATE)) // date debut
             {
                 textFieldDateDebut.setText(date);
-            } else if (!controlSaisieDateFin(textFieldDateFin.getText(), REGEX_DATE)) // date fin
-            {
+            } else if (!controlSaisieDateFin(textFieldDateFin.getText(), REGEX_DATE)) { // date fin
                 textFieldDateFin.setText(date);
             }
         });
@@ -323,14 +317,11 @@ class FenetreModification {
 
         // lorsque l'on choisi un evenement dans la liste, on remplis les champs
         comboBoxEvenements.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
-
                 int index = comboBoxEvenements.getSelectedIndex();
                 if (index != 0) // un evenement de la base de donnée
                 {
-
                     if (context == Contexte.CONTEXTE_EN_ATTENTE) {
                         etatChamps(true); // deverouille les champs
                     }
@@ -345,7 +336,8 @@ class FenetreModification {
                     textFieldNumRue.setText(evenement.getAdresse().getNumeroDeRue());
                     textFieldLatitude.setText(evenement.getLatitude().toString());
                     textFieldLongitude.setText(evenement.getLongitude().toString());
-                    comboBoxRubrique.setSelectedIndex(evenement.getRubriqueEnfant().getIdRubriqueEnfant() - 1);
+                    comboBoxRubrique.setSelectedIndex(evenement.getRubriqueEnfant()
+                            .getIdRubriqueEnfant() - 1);
                     int i = getIndexNpa(evenement.getAdresse().getNpa());
                     comboBoxNpa.setSelectedIndex(i);
                     comboBoxPriorite.setSelectedIndex(evenement.getPriorite().getNiveau());
@@ -359,17 +351,16 @@ class FenetreModification {
                     textAreaDetails.setText(evenement.getDetails());
 
                 } else if (context == Contexte.CONTEXTE_EN_ATTENTE) {
-                    // verouille les champs afin de forcer l utilisateur a modifier un evenement qui est en attente
+                    // verouille les champs afin de forcer l utilisateur a modifier un evenement
+                    // qui est en attente
                     etatChamps(false); // verouille les champs
                     videChamps();
                 } else { // aucun événement sélectionné
                     videChamps();
                 }
-
             }
 
             private int getIndexNpa(Npa npa) {
-
                 String n = npa.getNumeroNpa();
                 int index;
                 switch (n) {
@@ -420,25 +411,21 @@ class FenetreModification {
             }
         });
 
-
         JButton btnFermer = new JButton("Fermer");
         // ferme la fenetre lorsque le bouton est appuie
         btnFermer.addActionListener(e -> fenetre.dispose());
         btnFermer.setBounds(12, 12, 117, 25);
         panelModification.add(btnFermer);
 
-
         if (context == Contexte.CONTEXTE_AJOUTER) {
             fenetre.setTitle(configurationManager.getString("graphique.titreModification"));
             boutonRefuser.setVisible(false);
             boutonRefuser.setEnabled(false);
-        } else // en attente
-        {
+        } else { // en attente
             fenetre.setTitle(configurationManager.getString("graphique.titreEnAttente"));
             boutonSupprimer.setVisible(false);
             boutonSupprimer.setEnabled(false);
         }
-
 
     } // fin initialize
 
@@ -448,47 +435,48 @@ class FenetreModification {
      * @param context
      */
     private void chargementListeEvenements(int context) {
-
         List<String> previews;
 
-        if (context == Contexte.CONTEXTE_AJOUTER) // ajout/modification
-        {
+        if (context == Contexte.CONTEXTE_AJOUTER) { // ajout/modification
             evenementList = EvenementAccess.getActif();
 
             previews = Utils.previewEvenement(evenementList); // previsualisation des evenements
 
-
             previews.add(0, "Ajouter un événement");
-        } else // en attente
-        {
-
+        } else {  // en attente
             evenementList = EvenementAccess.getEnAttente(); // recupere tout les evenements en attente
 
             previews = Utils.previewEvenement(evenementList); // previsualisation des evenements
 
             previews.add(0, "Selectionner");
             etatChamps(false);
-
         }
 
         comboBoxEvenements.setModel(new DefaultComboBoxModel<>(previews.toArray(new String[0])));
-
     }
 
     /**
      * Refuse l'evenement et supprimer l'evenement
      */
     private void refuserEvenement() {
-
         evenementSelectionne.setStatut(StatutAccess.get(Statut_.REFUSE).get(0)); // statur refuser
 
-        EvenementAccess.update(evenementSelectionne.getIdEvenement(), null, null, null, null, null, null, null, null, null, null, evenementSelectionne.getStatut()); // met a jour l evenemnt avec le statut refuse
+        EvenementAccess.update(evenementSelectionne.getIdEvenement(),
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                evenementSelectionne.getStatut()); // met a jour l evenemnt avec le statut refuse
         DatabaseAccess.delete(evenementSelectionne); // change date de fin
-
     }
 
     private void modifierEvenement() {
-
         String nomEnfant = comboBoxRubrique.getSelectedItem().toString();
         String nomEvenement = textFieldNom.getText();
         String nomRue = textFieldRue.getText();
@@ -523,12 +511,14 @@ class FenetreModification {
             newAdresse = listNewAdresse.get(0);
         }
 
-
         RubriqueEnfant newRubrique = RubriqueEnfantAccess.get("", nomEnfant).get(0);
         Statut newStatut = StatutAccess.get(Statut_.TRAITE).get(0);
-        String[] elementsPriorite = comboBoxPriorite.getSelectedItem().toString().split(" - "); // separe niveau et nom de la priorité
-        Priorite newPriorite = PrioriteAccess.get(elementsPriorite[1], Integer.valueOf(elementsPriorite[0])).get(0);
 
+        // separe niveau et nom de la priorité
+        String[] elementsPriorite = comboBoxPriorite.getSelectedItem().toString().split(" - ");
+        Priorite newPriorite = PrioriteAccess.get(
+                elementsPriorite[1],
+                Integer.valueOf(elementsPriorite[0])).get(0);
 
         try {
             calDebut.setTime(dateFormat.parse(textFieldDateDebut.getText()));
@@ -537,18 +527,25 @@ class FenetreModification {
             e1.printStackTrace();
         }
 
-
-        EvenementAccess.update(evenementBase.getIdEvenement(), newRubrique, null, nomEvenement, newAdresse, latitude, longitude, calDebut, calFin, details, newPriorite, newStatut);
-
+        EvenementAccess.update(evenementBase.getIdEvenement(),
+                newRubrique,
+                null,
+                nomEvenement,
+                newAdresse,
+                latitude,
+                longitude,
+                calDebut,
+                calFin,
+                details,
+                newPriorite,
+                newStatut);
 
         JOptionPane.showConfirmDialog(null,
                 "Evenement modifié avec succès", "Evénement modifié",
                 JOptionPane.DEFAULT_OPTION);
-
     }
 
     private void ajouterEvenement() {
-
         String nomEnfant = comboBoxRubrique.getSelectedItem().toString();
         String nomEvenement = textFieldNom.getText();
         String nomRue = textFieldRue.getText();
@@ -566,15 +563,42 @@ class FenetreModification {
         } catch (ParseException e1) {
             e1.printStackTrace();
         }
-        String[] elementsPriorite = comboBoxPriorite.getSelectedItem().toString().split(" - "); // separe niveau et nom de la priorité
+
+        // separe niveau et nom de la priorité
+        String[] elementsPriorite = comboBoxPriorite.getSelectedItem().toString().split(" - ");
 
         // controle si l evenement exsite deja
 
-        List<Evenement> evenementsExsistants = EvenementAccess.get(nomEnfant, null, nomEvenement, nomRue, numeroRue, npa, latitude, longitude, calDebut, calFin, details, elementsPriorite[1], null, null);
+        List<Evenement> evenementsExsistants = EvenementAccess.get(nomEnfant,
+                null,
+                nomEvenement,
+                nomRue,
+                numeroRue,
+                npa,
+                latitude,
+                longitude,
+                calDebut,
+                calFin,
+                details,
+                elementsPriorite[1],
+                null,
+                null);
         if (evenementsExsistants == null || evenementsExsistants.isEmpty()) // n'exsiste pas
         {
-
-            EvenementAccess.save(nomEnfant, 1, nomEvenement, nomRue, numeroRue, npa, latitude, longitude, calDebut, calFin, details, elementsPriorite[1], Integer.valueOf(elementsPriorite[0]), Statut_.TRAITE);
+            EvenementAccess.save(nomEnfant,
+                    1,
+                    nomEvenement,
+                    nomRue,
+                    numeroRue,
+                    npa,
+                    latitude,
+                    longitude,
+                    calDebut,
+                    calFin,
+                    details,
+                    elementsPriorite[1],
+                    Integer.valueOf(elementsPriorite[0]),
+                    Statut_.TRAITE);
             System.out.println("evenement ajouté");
             JOptionPane.showConfirmDialog(null,
                     "Evenement ajouté avec succès", "Evénement ajouté",
@@ -584,7 +608,6 @@ class FenetreModification {
                     "Evenement déjà dans la base de donnée", "Evénement présent",
                     JOptionPane.DEFAULT_OPTION);
         }
-
     }
 
     /**
@@ -595,7 +618,8 @@ class FenetreModification {
     private boolean controleSaisie() {
 
         // nettoyage labels rubriques et messages d'erreur de saisie
-        ErreurSaisiePane.setText(configurationManager.getString("erreur.saisie")); // entete des messages d'erreurs de saisie
+        // entete des messages d'erreurs de saisie
+        ErreurSaisiePane.setText(configurationManager.getString("erreur.saisie"));
 
         labelNom.setForeground(Color.BLACK);
         labelRue.setForeground(Color.BLACK);
@@ -609,69 +633,88 @@ class FenetreModification {
         boolean valide = true;
 
         // controle du nom de l'evenement
-        if (!Utils.controleSaisie(textFieldNom.getText(), Integer.valueOf(configurationManager.getString("tailleMax.nom")), REGEX_ALPHA_NUMERIQUE)) {
+        if (!Utils.controleSaisie(
+                textFieldNom.getText(),
+                Integer.valueOf(configurationManager.getString("tailleMax.nom")),
+                REGEX_ALPHA_NUMERIQUE)) {
+
             // saisie incorrect, affichage du nom de la rubrique en rouge
             labelNom.setForeground(Color.RED);
-            ErreurSaisiePane.setText(ErreurSaisiePane.getText() + configurationManager.getString("erreur.nom"));
-
+            ErreurSaisiePane.setText(ErreurSaisiePane.getText()
+                    + configurationManager.getString("erreur.nom"));
 
             valide = false;
         }
 
         // controle de la rue
-        if (!Utils.controleSaisie(textFieldRue.getText(), Integer.valueOf(configurationManager.getString("tailleMax.rue")), REGEX_ALPHA_NUMERIQUE)) {
+        if (!Utils.controleSaisie(
+                textFieldRue.getText(),
+                Integer.valueOf(configurationManager.getString("tailleMax.rue")),
+                REGEX_ALPHA_NUMERIQUE)) {
+
             // saisie incorrect
             labelRue.setForeground(Color.RED);
-            ErreurSaisiePane.setText(ErreurSaisiePane.getText() + configurationManager.getString("erreur.rue"));
+            ErreurSaisiePane.setText(ErreurSaisiePane.getText()
+                    + configurationManager.getString("erreur.rue"));
             valide = false;
         }
 
         //controle numero rue
-        if (!Utils.controleSaisie(textFieldNumRue.getText(), Integer.valueOf(configurationManager.getString("tailleMax.numeroRue")), REGEX_NUMERIQUE)) {
+        if (!Utils.controleSaisie(
+                textFieldNumRue.getText(),
+                Integer.valueOf(configurationManager.getString("tailleMax.numeroRue")),
+                REGEX_NUMERIQUE)) {
+
             labelNumRue.setForeground(Color.RED);
-            ErreurSaisiePane.setText(ErreurSaisiePane.getText() + configurationManager.getString("erreur.numeroRue"));
+            ErreurSaisiePane.setText(ErreurSaisiePane.getText()
+                    + configurationManager.getString("erreur.numeroRue"));
             valide = false;
         }
 
         // controle latitude
         if (!Utils.controlSaisie(textFieldLatitude.getText(), REGEX_LATITUDE)) {
             labelLatitude.setForeground(Color.RED);
-            ErreurSaisiePane.setText(ErreurSaisiePane.getText() + configurationManager.getString("erreur.latitude"));
+            ErreurSaisiePane.setText(ErreurSaisiePane.getText()
+                    + configurationManager.getString("erreur.latitude"));
             valide = false;
         }
 
         // controle longitude
         if (!Utils.controlSaisie(textFieldLongitude.getText(), REGEX_LONGITUDE)) {
             labelLongitude.setForeground(Color.RED);
-            ErreurSaisiePane.setText(ErreurSaisiePane.getText() + configurationManager.getString("erreur.longitude"));
+            ErreurSaisiePane.setText(ErreurSaisiePane.getText()
+                    + configurationManager.getString("erreur.longitude"));
             valide = false;
         }
 
         // controle details
-        if (!Utils.controlSaisie(textAreaDetails.getText(), Integer.valueOf(configurationManager.getString("tailleMax.details")))) {
+        if (!Utils.controlSaisie(
+                textAreaDetails.getText(),
+                Integer.valueOf(configurationManager.getString("tailleMax.details")))) {
             labelDetails.setForeground(Color.RED);
-            ErreurSaisiePane.setText(ErreurSaisiePane.getText() + configurationManager.getString("erreur.details"));
+            ErreurSaisiePane.setText(ErreurSaisiePane.getText()
+                    + configurationManager.getString("erreur.details"));
             valide = false;
         }
 
         // controle date de debut
         if (!Utils.controlSaisie(textFieldDateDebut.getText(), REGEX_DATE)) {
             labelDateDebut.setForeground(Color.RED);
-            ErreurSaisiePane.setText(ErreurSaisiePane.getText() + configurationManager.getString("erreur.date"));
+            ErreurSaisiePane.setText(ErreurSaisiePane.getText()
+                    + configurationManager.getString("erreur.date"));
             valide = false;
         }
 
         // controle date de fin
         if (!controlSaisieDateFin(textFieldDateFin.getText(), REGEX_DATE)) {
             labelDateFin.setForeground(Color.RED);
-            ErreurSaisiePane.setText(ErreurSaisiePane.getText() + configurationManager.getString("erreur.date"));
+            ErreurSaisiePane.setText(ErreurSaisiePane.getText()
+                    + configurationManager.getString("erreur.date"));
             valide = false;
         }
 
-
         if (valide) // saisie valide fermeture du panel de mauvaise saisie
         {
-
             ErreurSaisiePane.setEnabled(false);
             //ErreurSaisiePane.setText(ENTETE_ERREUR_SAISIE); // nettoye les messages d'erreurs
 
@@ -695,16 +738,15 @@ class FenetreModification {
      * @brief
      */
     private boolean controlSaisieDateFin(String texte, String regex) {
-        if (!Utils.controlSaisie(textFieldDateDebut.getText(), REGEX_DATE
-        )) // date de debut non valide, on ne peut pas tester la date de fin
-        {
+
+        // date de debut non valide, on ne peut pas tester la date de fin
+        if (!Utils.controlSaisie(textFieldDateDebut.getText(), REGEX_DATE)) {
             return false;
         }
 
         if (texte.isEmpty() || !texte.matches(regex)) {
             return false;
         }
-
 
         Date dateAujourdhui = new Date();
         Date dateDebut = null;
@@ -716,15 +758,14 @@ class FenetreModification {
             e.printStackTrace();
         }
 
-        if (dateFin.before(dateAujourdhui) || dateFin.before(dateDebut) || dateFin.equals(dateDebut)) {
-            return false;
-        }
-        return true;
-
-
+        return dateFin != null
+                && dateDebut != null
+                && !(dateFin.before(dateAujourdhui)
+                || dateFin.before(dateDebut)
+                || dateFin.equals(dateDebut));
     }
 
-    public void etatChamps(boolean b) {
+    private void etatChamps(boolean b) {
         textFieldNom.setEditable(b);
         textFieldRue.setEditable(b);
         textFieldNumRue.setEditable(b);
@@ -739,7 +780,7 @@ class FenetreModification {
 
     }
 
-    public void videChamps() {
+    private void videChamps() {
         textFieldNom.setText("");
         textFieldRue.setText("");
         textFieldNumRue.setText("");
@@ -750,14 +791,13 @@ class FenetreModification {
         textFieldDateDebut.setText("jj/mm/aaaa");
         textFieldDateFin.setText("jj/mm/aaaa");
         textAreaDetails.setText("");
-
     }
 
-    public Evenement getEvenementSelectionne() {
+    private Evenement getEvenementSelectionne() {
         return evenementSelectionne;
     }
 
-    public void setEvenementSelectionne(Evenement evenementSelectionne) {
+    private void setEvenementSelectionne(Evenement evenementSelectionne) {
         this.evenementSelectionne = evenementSelectionne;
     }
 }
