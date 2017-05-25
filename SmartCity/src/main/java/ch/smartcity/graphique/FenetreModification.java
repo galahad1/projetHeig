@@ -230,24 +230,21 @@ public class FenetreModification {
         scrollPaneDetails.setViewportView(textAreaDetails);
 
         JButton boutonValider = new JButton("Valider");
-        boutonValider.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
+        boutonValider.addActionListener(e -> {
 
+            if (controleSaisie()) {
+                System.out.println("Evenement valide");
 
-                if (controleSaisie()) {
-                    System.out.println("Evenement valide");
-
-                    if(comboBoxEvenements.getSelectedIndex() == 0) // nouvel evenement
-                    {
-                        ajouterEvenement();
-                    } else // evenement deja exsistant
-                    {
-                        modifierEvenement();
-                    }
-                    chargementListeEvenements(context); // mise a jour de la liste
-                    videChamps();
-
+                if(comboBoxEvenements.getSelectedIndex() == 0) // nouvel evenement
+                {
+                    ajouterEvenement();
+                } else // evenement deja exsistant
+                {
+                    modifierEvenement();
                 }
+                chargementListeEvenements(context); // mise a jour de la liste
+                videChamps();
+
             }
         });
         boutonValider.setBounds(59, 412, 117, 25);
@@ -255,37 +252,33 @@ public class FenetreModification {
 
 
         JButton boutonRefuser = new JButton("Refuser");
-        boutonRefuser.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
+        boutonRefuser.addActionListener(e -> {
 
-                if(comboBoxEvenements.getSelectedIndex() != 0)
-                {
-                    refuserEvenement(); // statut en refuser et change date de fin pour etre en etat supprimmer
-                    chargementListeEvenements(context); // mise a jour de la liste
-                    videChamps();
-                }
-
+            if(comboBoxEvenements.getSelectedIndex() != 0)
+            {
+                refuserEvenement(); // statut en refuser et change date de fin pour etre en etat supprimmer
+                chargementListeEvenements(context); // mise a jour de la liste
+                videChamps();
             }
+
         });
         boutonRefuser.setBounds(59, 470, 117, 25);
         panelAjoutEvenement.add(boutonRefuser);
 
         JButton boutonSupprimer = new JButton("Supprimer");
-        boutonSupprimer.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
+        boutonSupprimer.addActionListener(e -> {
 
-                if(evenementSelectionne != null && comboBoxEvenements.getSelectedIndex() != 0)
-                {
-                    DatabaseAccess.delete(evenementSelectionne); // supprime de la base de donnée
-                    chargementListeEvenements(context); // mise a jour de la liste
-                    videChamps();
+            if(evenementSelectionne != null && comboBoxEvenements.getSelectedIndex() != 0)
+            {
+                DatabaseAccess.delete(evenementSelectionne); // supprime de la base de donnée
+                chargementListeEvenements(context); // mise a jour de la liste
+                videChamps();
 
-                    int confirmed = JOptionPane.showConfirmDialog(null,
-                            "Evenement supprimé avec succès", "Evénement supprimé",
-                            JOptionPane.DEFAULT_OPTION);
-                }
-
+                JOptionPane.showConfirmDialog(null,
+                    "Evenement supprimé avec succès", "Evénement supprimé",
+                    JOptionPane.DEFAULT_OPTION);
             }
+
         });
         boutonSupprimer.setBounds(213, 412, 117, 25);
         panelAjoutEvenement.add(boutonSupprimer);
@@ -312,24 +305,19 @@ public class FenetreModification {
 
         final JCalendar calendrier = new JCalendar();
         calendrier.getDayChooser().setAlwaysFireDayProperty(true);
-        calendrier.getDayChooser().addPropertyChangeListener("day", new PropertyChangeListener() {
+        calendrier.getDayChooser().addPropertyChangeListener("day", evt -> {
 
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
+            Date valDate = calendrier.getDate();
+            String date = dateFormat.format(valDate);
 
-                Date valDate = calendrier.getDate();
-                String date = dateFormat.format(valDate);
-
-                // remplis le champs date debut si celui-ci n'est pas valide, sinon remplit la date de fin
-                if (!Utils.controlSaisie(textFieldDateDebut.getText(), REGEX_DATE)) // date debut
-                {
-                    textFieldDateDebut.setText(date);
-                } else if (!controlSaisieDateFin(textFieldDateFin.getText(), REGEX_DATE)) // date fin
-                {
-                    textFieldDateFin.setText(date);
-                }
+            // remplis le champs date debut si celui-ci n'est pas valide, sinon remplit la date de fin
+            if (!Utils.controlSaisie(textFieldDateDebut.getText(), REGEX_DATE)) // date debut
+            {
+                textFieldDateDebut.setText(date);
+            } else if (!controlSaisieDateFin(textFieldDateFin.getText(), REGEX_DATE)) // date fin
+            {
+                textFieldDateFin.setText(date);
             }
-
         });
 
         panelCalendrier.add(calendrier, "name_15195119934482");
@@ -337,7 +325,7 @@ public class FenetreModification {
         // init liste des evenements
         chargementListeEvenements(context);
 
-        // lorsque l'on choisi un evenement dans la liste, on remplis les chapms
+        // lorsque l'on choisi un evenement dans la liste, on remplis les champs
         comboBoxEvenements.addActionListener(new ActionListener() {
 
             @Override
@@ -375,12 +363,12 @@ public class FenetreModification {
                     textFieldDateFin.setText(date);
                     textAreaDetails.setText(evenement.getDetails());
 
-                } else if (context == Contexte.CONTEXTE_EN_ATTENTE && index == 0)
+                } else if (context == Contexte.CONTEXTE_EN_ATTENTE)
                 {
                     // verouille les champs afin de forcer l utilisateur a modifier un evenement qui est en attente
-                    etatChamps(false);
+                    etatChamps(false); // verouille les champs
                     videChamps();
-                } else {
+                } else { // aucun événement sélectionné
                     videChamps();
                 }
 
@@ -441,12 +429,10 @@ public class FenetreModification {
 
         JButton btnFermer = new JButton("Fermer");
         // ferme la fenetre lorsque le bouton est appuie
-        btnFermer.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
+        btnFermer.addActionListener(e -> {
 
-                //TODO rafraichireCarte();
-                fenetre.dispose();
-            }
+            //TODO rafraichireCarte();
+            fenetre.dispose();
         });
         btnFermer.setBounds(12, 12, 117, 25);
         panelModification.add(btnFermer);
