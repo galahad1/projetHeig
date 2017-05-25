@@ -1,5 +1,6 @@
 package ch.smartcity.graphique;
 
+import ch.smartcity.database.controllers.ConfigurationManager;
 import ch.smartcity.database.controllers.access.EvenementAccess;
 import ch.smartcity.database.models.Adresse;
 import ch.smartcity.database.models.Evenement;
@@ -15,8 +16,7 @@ import java.util.List;
  */
 public final class Utils {
 
-    //TODO mettre dans config ressources
-    private static DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+    private static DateFormat dateFormat = new SimpleDateFormat(ConfigurationManager.getInstance().getString("date.format"));
 
 
     private Utils() {
@@ -71,5 +71,56 @@ public final class Utils {
         return list;
 
 
+    }
+
+    /**
+     * @param texte
+     * @param regex
+     * @return
+     * @brief
+     */
+    public static boolean controlSaisie(String texte, String regex) {
+
+        if (texte.isEmpty() || !texte.matches(regex)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * @param texte
+     * @param taillemax
+     * @return
+     * @brief
+     */
+    public static boolean controlSaisie(String texte, int taillemax) {
+
+        if (texte.isEmpty() || texte.length() > taillemax) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * @param texte
+     * @param tailleMax
+     * @param regex
+     * @return
+     * @brief
+     */
+    public static static boolean controleSaisie(String texte, int tailleMax, String regex) {
+
+        // controle taille
+        if (texte.length() > tailleMax || texte.isEmpty()) {
+            return false;
+        }
+        // controle lettres et chiffres
+        if (!texte.matches(regex)) {
+            return false;
+        }
+
+        return true;
     }
 }

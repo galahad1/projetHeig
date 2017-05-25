@@ -639,7 +639,7 @@ public class FenetreModification {
         boolean valide = true;
 
         // controle du nom de l'evenement
-        if (!controleSaisie(textFieldNom.getText(), Integer.valueOf(configurationManager.getString("tailleMax.nom")), REGEX_ALPHA_NUMERIQUE)) {
+        if (!Utils.controleSaisie(textFieldNom.getText(), Integer.valueOf(configurationManager.getString("tailleMax.nom")), REGEX_ALPHA_NUMERIQUE)) {
             // saisie incorrect, affichage du nom de la rubrique en rouge
             labelNom.setForeground(Color.RED);
             ErreurSaisiePane.setText(ErreurSaisiePane.getText() + configurationManager.getString("erreur.nom"));
@@ -649,7 +649,7 @@ public class FenetreModification {
         }
 
         // controle de la rue
-        if (!controleSaisie(textFieldRue.getText(),  Integer.valueOf(configurationManager.getString("tailleMax.rue")), REGEX_ALPHA_NUMERIQUE)) {
+        if (!Utils.controleSaisie(textFieldRue.getText(),  Integer.valueOf(configurationManager.getString("tailleMax.rue")), REGEX_ALPHA_NUMERIQUE)) {
             // saisie incorrect
             labelRue.setForeground(Color.RED);
             ErreurSaisiePane.setText(ErreurSaisiePane.getText() + configurationManager.getString("erreur.rue"));
@@ -657,35 +657,35 @@ public class FenetreModification {
         }
 
         //controle numero rue
-        if (!controleSaisie(textFieldNumRue.getText(), Integer.valueOf(configurationManager.getString("tailleMax.numeroRue")), REGEX_NUMERIQUE)) {
+        if (!Utils.controleSaisie(textFieldNumRue.getText(), Integer.valueOf(configurationManager.getString("tailleMax.numeroRue")), REGEX_NUMERIQUE)) {
             labelNumRue.setForeground(Color.RED);
             ErreurSaisiePane.setText(ErreurSaisiePane.getText() + configurationManager.getString("erreur.numeroRue"));
             valide = false;
         }
 
         // controle latitude
-        if (!controlSaisie(textFieldLatitude.getText(), REGEX_LATITUDE)) {
+        if (!Utils.controlSaisie(textFieldLatitude.getText(), REGEX_LATITUDE)) {
             labelLatitude.setForeground(Color.RED);
             ErreurSaisiePane.setText(ErreurSaisiePane.getText() + configurationManager.getString("erreur.latitude"));
             valide = false;
         }
 
         // controle longitude
-        if (!controlSaisie(textFieldLongitude.getText(), REGEX_LONGITUDE)) {
+        if (!Utils.controlSaisie(textFieldLongitude.getText(), REGEX_LONGITUDE)) {
             labelLongitude.setForeground(Color.RED);
             ErreurSaisiePane.setText(ErreurSaisiePane.getText() + configurationManager.getString("erreur.longitude"));
             valide = false;
         }
 
         // controle details
-        if (!controlSaisie(textAreaDetails.getText(), Integer.valueOf(configurationManager.getString("tailleMax.details")))) {
+        if (!Utils.controlSaisie(textAreaDetails.getText(), Integer.valueOf(configurationManager.getString("tailleMax.details")))) {
             labelDetails.setForeground(Color.RED);
             ErreurSaisiePane.setText(ErreurSaisiePane.getText() + configurationManager.getString("erreur.details"));
             valide = false;
         }
 
         // controle date de debut
-        if (!controlSaisie(textFieldDateDebut.getText(), REGEX_DATE)) {
+        if (!Utils.controlSaisie(textFieldDateDebut.getText(), REGEX_DATE)) {
             labelDateDebut.setForeground(Color.RED);
             ErreurSaisiePane.setText(ErreurSaisiePane.getText() + configurationManager.getString("erreur.date"));
             valide = false;
@@ -724,59 +724,8 @@ public class FenetreModification {
      * @return
      * @brief
      */
-    private boolean controlSaisie(String texte, String regex) {
-
-        if (texte.isEmpty() || !texte.matches(regex)) {
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * @param texte
-     * @param taillemax
-     * @return
-     * @brief
-     */
-    private boolean controlSaisie(String texte, int taillemax) {
-
-        if (texte.isEmpty() || texte.length() > taillemax) {
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * @param texte
-     * @param tailleMax
-     * @param regex
-     * @return
-     * @brief
-     */
-    private boolean controleSaisie(String texte, int tailleMax, String regex) {
-
-        // controle taille
-        if (texte.length() > tailleMax || texte.isEmpty()) {
-            return false;
-        }
-        // controle lettres et chiffres
-        if (!texte.matches(regex)) {
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * @param texte
-     * @param regex
-     * @return
-     * @brief
-     */
     private boolean controlSaisieDateFin(String texte, String regex) {
-        if (!controlSaisie(textFieldDateDebut.getText(), REGEX_DATE
+        if (!Utils.controlSaisie(textFieldDateDebut.getText(), REGEX_DATE
         )) // date de debut non valide, on ne peut pas tester la date de fin
         {
             return false;
