@@ -1,5 +1,6 @@
 package ch.smartcity.graphique.controllers;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -27,7 +28,9 @@ public class ConfigurationManager {
     }
 
     public String getString(String key) {
-        return getResourceBundle().getString(key);
+        return new String(getResourceBundle().getString(key).getBytes(
+                StandardCharsets.ISO_8859_1),
+                StandardCharsets.UTF_8);
     }
 
     private static class SingletonHolder {

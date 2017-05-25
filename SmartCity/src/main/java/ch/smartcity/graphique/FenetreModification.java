@@ -639,7 +639,7 @@ class FenetreModification {
 
             // saisie incorrect, affichage du nom de la rubrique en rouge
             labelNom.setForeground(Color.RED);
-            ErreurSaisiePane.setText(ErreurSaisiePane.getText()
+            ErreurSaisiePane.setText(ErreurSaisiePane.getText() + "\n"
                     + configurationManager.getString("erreur.nom"));
 
             valide = false;
@@ -653,7 +653,7 @@ class FenetreModification {
 
             // saisie incorrect
             labelRue.setForeground(Color.RED);
-            ErreurSaisiePane.setText(ErreurSaisiePane.getText()
+            ErreurSaisiePane.setText(ErreurSaisiePane.getText() + "\n"
                     + configurationManager.getString("erreur.rue"));
             valide = false;
         }
@@ -665,7 +665,7 @@ class FenetreModification {
                 REGEX_NUMERIQUE)) {
 
             labelNumRue.setForeground(Color.RED);
-            ErreurSaisiePane.setText(ErreurSaisiePane.getText()
+            ErreurSaisiePane.setText(ErreurSaisiePane.getText() + "\n"
                     + configurationManager.getString("erreur.numeroRue"));
             valide = false;
         }
@@ -673,7 +673,7 @@ class FenetreModification {
         // controle latitude
         if (!Utils.controlSaisie(textFieldLatitude.getText(), REGEX_LATITUDE)) {
             labelLatitude.setForeground(Color.RED);
-            ErreurSaisiePane.setText(ErreurSaisiePane.getText()
+            ErreurSaisiePane.setText(ErreurSaisiePane.getText() + "\n"
                     + configurationManager.getString("erreur.latitude"));
             valide = false;
         }
@@ -681,7 +681,7 @@ class FenetreModification {
         // controle longitude
         if (!Utils.controlSaisie(textFieldLongitude.getText(), REGEX_LONGITUDE)) {
             labelLongitude.setForeground(Color.RED);
-            ErreurSaisiePane.setText(ErreurSaisiePane.getText()
+            ErreurSaisiePane.setText(ErreurSaisiePane.getText() + "\n"
                     + configurationManager.getString("erreur.longitude"));
             valide = false;
         }
@@ -691,7 +691,7 @@ class FenetreModification {
                 textAreaDetails.getText(),
                 Integer.valueOf(configurationManager.getString("tailleMax.details")))) {
             labelDetails.setForeground(Color.RED);
-            ErreurSaisiePane.setText(ErreurSaisiePane.getText()
+            ErreurSaisiePane.setText(ErreurSaisiePane.getText() + "\n"
                     + configurationManager.getString("erreur.details"));
             valide = false;
         }
@@ -699,7 +699,7 @@ class FenetreModification {
         // controle date de debut
         if (!Utils.controlSaisie(textFieldDateDebut.getText(), REGEX_DATE)) {
             labelDateDebut.setForeground(Color.RED);
-            ErreurSaisiePane.setText(ErreurSaisiePane.getText()
+            ErreurSaisiePane.setText(ErreurSaisiePane.getText() + "\n"
                     + configurationManager.getString("erreur.date"));
             valide = false;
         }
@@ -707,7 +707,7 @@ class FenetreModification {
         // controle date de fin
         if (!controlSaisieDateFin(textFieldDateFin.getText(), REGEX_DATE)) {
             labelDateFin.setForeground(Color.RED);
-            ErreurSaisiePane.setText(ErreurSaisiePane.getText()
+            ErreurSaisiePane.setText(ErreurSaisiePane.getText() + "\n"
                     + configurationManager.getString("erreur.date"));
             valide = false;
         }
