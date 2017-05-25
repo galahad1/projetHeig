@@ -526,7 +526,7 @@ public class FenetreModification {
         List<Rue> listNewRue = RueAccess.get(nomRue);
         System.out.println(listNewRue);
         if(listNewRue == null || listNewRue.isEmpty())
-        {
+        {   
             newRue = new Rue(nomRue);
         }
         else
