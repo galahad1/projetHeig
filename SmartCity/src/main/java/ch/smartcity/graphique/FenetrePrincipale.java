@@ -93,7 +93,6 @@ public class FenetrePrincipale {
 
         timer.scheduleAtFixedRate(tache, 2 * 60 * 100, 2 * 10 * 1000);
         tache.run();
-        List<String> list = tache.getListe();
         JList newListe = tache.getJliste();
         JLabel lblNbrNotification = tache.getNombrePanel();
 
@@ -109,6 +108,7 @@ public class FenetrePrincipale {
                                         .addComponent(btnEnAttente))
                                 .addContainerGap())
         );
+
         gl_panelMenu.setVerticalGroup(
                 gl_panelMenu.createParallelGroup(Alignment.TRAILING)
                         .addGroup(gl_panelMenu.createSequentialGroup()
@@ -153,7 +153,6 @@ public class FenetrePrincipale {
             }
         });
         btnEnAttente.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 FenetreModification fenetre2 = new FenetreModification(Constantes.CONTEXTE_EN_ATTENTE);
@@ -165,23 +164,27 @@ public class FenetrePrincipale {
         btnPdf.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
                 List<String> eventName = new ArrayList<>();
                 if (chckbxAccidents.isSelected()) {
                     eventName.add("accidents");
                 }
+
                 if (chckbxTravaux.isSelected()) {
                     eventName.add("travaux");
                 }
+
                 if (chckbxManifestations.isSelected()) {
                     eventName.add("manifestations");
                 }
+
                 if (chckbxRenovation.isSelected()) {
                     eventName.add("rénovations");
                 }
+
                 if (chckbxConstruction.isSelected()) {
                     eventName.add("constructions");
                 }
+
                 if (chckboxDoleances.isSelected()) {
                     eventName.add("doléances");
                 }
@@ -195,7 +198,6 @@ public class FenetrePrincipale {
                     }
                     System.out.println("PDF généré !");
                 }
-
             }
         });
         panelPrincipal.setBounds(0, 0, 1900, 1000);
@@ -213,14 +215,14 @@ public class FenetrePrincipale {
         panelCarte.setBounds(700, 200, 1190, 765);
         panelCarte.setLayout(new BorderLayout());
 
-        try {
-            carte = new Carte();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-
-        panelCarte.add(carte.createCenterPanel());
+        new Thread(() -> {
+            try {
+                carte = new Carte();
+                panelCarte.add(carte.createCenterPanel());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }).start();
 
         panelPrincipal.add(panelCarte);
 
@@ -239,8 +241,6 @@ public class FenetrePrincipale {
         panelNotifications.setBounds(700, 45, 782, 155);
         panelPrincipal.add(panelNotifications);
         panelNotifications.setLayout(new CardLayout(0, 0));
-
-
 
         panelNotifications.add(newListe, "name_56412892408382");
 
@@ -261,9 +261,7 @@ public class FenetrePrincipale {
         panelPrincipal.add(scrollPaneDescription);
         txtrDescription.setEditable(false);
 
-
         scrollPaneDescription.setViewportView(txtrDescription);
-
 
         //CALENDRIER
         panelCalendrier.setBackground(Color.DARK_GRAY);
@@ -273,10 +271,8 @@ public class FenetrePrincipale {
         dateSelectionne = Calendar.getInstance();
         calendrier.getDayChooser().setAlwaysFireDayProperty(true);
         calendrier.getDayChooser().addPropertyChangeListener("day", new PropertyChangeListener() {
-
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
-
                 Date valDate = calendrier.getDate();
                 dateSelectionne.setTime(valDate);
 
@@ -284,59 +280,68 @@ public class FenetrePrincipale {
 
                 if (chckbxAccidents.isSelected()) {
                     allEvents.removeAll(listeAccidents);
-                    listeAccidents = wrapperEvenement(EvenementAccess.getActif("accidents", dateSelectionne, Statut_.TRAITE));
+                    new Thread(() -> {
+                        listeAccidents = wrapperEvenement(EvenementAccess.getActif("accidents", dateSelectionne, Statut_.TRAITE));
+                    }).start();
                     allEvents.addAll(listeAccidents);
                     miseAJourAffichage();
                 }
 
                 if (chckbxTravaux.isSelected()) {
                     allEvents.removeAll(listeTravaux);
-                    listeTravaux = wrapperEvenement(EvenementAccess.getActif("travaux", dateSelectionne, Statut_.TRAITE));
+                    new Thread(() -> {
+                        listeTravaux = wrapperEvenement(EvenementAccess.getActif("travaux", dateSelectionne, Statut_.TRAITE));
+                    }).start();
                     allEvents.addAll(listeTravaux);
                     miseAJourAffichage();
                 }
 
                 if (chckbxManifestations.isSelected()) {
                     allEvents.removeAll(listeManifestations);
-                    listeManifestations = wrapperEvenement(EvenementAccess.getActif("manifestations", dateSelectionne, Statut_.TRAITE));
+                    new Thread(() -> {
+                        listeManifestations = wrapperEvenement(EvenementAccess.getActif("manifestations", dateSelectionne, Statut_.TRAITE));
+                    }).start();
                     allEvents.addAll(listeManifestations);
                     miseAJourAffichage();
                 }
 
                 if (chckbxRenovation.isSelected()) {
                     allEvents.removeAll(listeRenovations);
-                    listeRenovations = wrapperEvenement(EvenementAccess.getActif("rénovations", dateSelectionne, Statut_.TRAITE));
+                    new Thread(() -> {
+                        listeRenovations = wrapperEvenement(EvenementAccess.getActif("rénovations", dateSelectionne, Statut_.TRAITE));
+                    }).start();
                     allEvents.addAll(listeRenovations);
                     miseAJourAffichage();
                 }
 
                 if (chckbxConstruction.isSelected()) {
                     allEvents.removeAll(listeConstructions);
-                    listeConstructions = wrapperEvenement(EvenementAccess.getActif("constructions", dateSelectionne, Statut_.TRAITE));
+                    new Thread(() -> {
+                        listeConstructions = wrapperEvenement(EvenementAccess.getActif("constructions", dateSelectionne, Statut_.TRAITE));
+                    }).start();
                     allEvents.addAll(listeConstructions);
                     miseAJourAffichage();
                 }
 
                 if (chckboxDoleances.isSelected()) {
                     allEvents.removeAll(listeDoleances);
-                    listeDoleances = wrapperEvenement(EvenementAccess.getActif("doléances", dateSelectionne, Statut_.TRAITE));
+                    new Thread(() -> {
+                        listeDoleances = wrapperEvenement(EvenementAccess.getActif("doléances", dateSelectionne, Statut_.TRAITE));
+                    }).start();
                     allEvents.addAll(listeDoleances);
                     miseAJourAffichage();
                 }
-
             }
-
         });
 
         //LOGO PROGRAMME
-        ImageIcon imageIcon = new ImageIcon(new ImageIcon(getClass().getClassLoader().getResource("ch/smartcity/graphique/logo.png"))
-                .getImage());
+        ImageIcon imageIcon = new ImageIcon(new ImageIcon(getClass().getClassLoader()
+                .getResource("ch/smartcity/graphique/logo.png")).getImage());
         JLabel label = new JLabel("", JLabel.CENTER);
         label.setIcon(imageIcon);
         panelLogo.add(label, BorderLayout.CENTER);
         panelLogo.setBackground(Color.white);
         panelLogo.repaint();
-
 
         //add(picLabel);
         scrollPaneRubriques.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
@@ -365,7 +370,6 @@ public class FenetrePrincipale {
         chckbxManifestations.setBounds(20, 189, 190, 23);
         panelRubriques.add(chckbxManifestations);
 
-
         //CHANTIERS et ses checkbox renovation et construction
         labelChantiers.setFont(new Font("Dialog", Font.BOLD, 16));
         labelChantiers.setBounds(12, 230, 107, 29);
@@ -385,7 +389,6 @@ public class FenetrePrincipale {
         chckboxDoleances.setBounds(20, 375, 129, 23);
         panelRubriques.add(chckboxDoleances);
 
-
         textRubriques.setBounds(5, 200, 218, 62);
         panelPrincipal.add(textRubriques);
         textRubriques.setHorizontalAlignment(SwingConstants.CENTER);
@@ -395,17 +398,14 @@ public class FenetrePrincipale {
         textRubriques.setColumns(6);
         textRubriques.setBackground(Color.LIGHT_GRAY);
 
-
         //panelLogo.setBackground(Color.GRAY);
         panelLogo.setBounds(5, 5, 695, 114);
 
         panelPrincipal.add(panelLogo);
 
-
         chckbxAccidents.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
                 if (((AbstractButton) e.getSource()).isSelected()) {
                     listeAccidents = wrapperEvenement(
                             EvenementAccess.getActif("accidents", dateSelectionne, Statut_.TRAITE));
@@ -450,7 +450,6 @@ public class FenetrePrincipale {
         chckbxRenovation.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
                 if (((AbstractButton) e.getSource()).isSelected()) {
                     listeRenovations = wrapperEvenement(
                             EvenementAccess.getActif("rénovations", dateSelectionne, Statut_.TRAITE));
@@ -465,7 +464,6 @@ public class FenetrePrincipale {
         chckbxConstruction.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
                 if (((AbstractButton) e.getSource()).isSelected()) {
                     listeConstructions = wrapperEvenement(
                             EvenementAccess.getActif("constructions", dateSelectionne, Statut_.TRAITE));
@@ -480,7 +478,6 @@ public class FenetrePrincipale {
         chckboxDoleances.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
                 if (((AbstractButton) e.getSource()).isSelected()) {
                     listeDoleances = wrapperEvenement(
                             EvenementAccess.getActif("doléances", dateSelectionne, Statut_.TRAITE));
@@ -491,7 +488,6 @@ public class FenetrePrincipale {
                 miseAJourAffichage();
             }
         });
-
     }
 
     private ArrayList<Event> wrapperEvenement(List<Evenement> listeEvenement) {
@@ -519,5 +515,4 @@ public class FenetrePrincipale {
         }
         txtrDescription.setText(String.valueOf(descriptionsEvents));
     }
-
 }
