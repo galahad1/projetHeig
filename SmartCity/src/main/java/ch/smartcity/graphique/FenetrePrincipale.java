@@ -148,7 +148,7 @@ public class FenetrePrincipale {
         //BOUTONS
         btnAjouter.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                FenetreModification fenetre2 = new FenetreModification(Constantes.CONTEXTE_AJOUTER);
+                FenetreModification fenetre2 = new FenetreModification(Contexte.CONTEXTE_AJOUTER);
                 fenetre2.fenetre.setVisible(true);
             }
         });
@@ -156,7 +156,7 @@ public class FenetrePrincipale {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                FenetreModification fenetre2 = new FenetreModification(Constantes.CONTEXTE_EN_ATTENTE);
+                FenetreModification fenetre2 = new FenetreModification(Contexte.CONTEXTE_EN_ATTENTE);
                 fenetre2.fenetre.setVisible(true);
 
             }
@@ -508,7 +508,7 @@ public class FenetrePrincipale {
         return evenements;
     }
 
-    private void miseAJourAffichage() {
+     protected void miseAJourAffichage() {
         //mise jour de la carte
         carte.updateEvenement((ArrayList<Event>) allEvents);
 
