@@ -149,7 +149,6 @@ public class FenetrePrincipale {
 
         });
 
-
         btnEnAttente.addActionListener(e -> {
             FenetreModification fenetre2 = new FenetreModification(Contexte.CONTEXTE_EN_ATTENTE, this);
             fenetre2.fenetre.setVisible(true);
@@ -268,7 +267,6 @@ public class FenetrePrincipale {
         });
 
         //LOGO PROGRAMME
-
         URL imageIconURL = getClass().getClassLoader().getResource("ch/smartcity/graphique/logo.png");
         ImageIcon imageIcon = null;
         if (imageIconURL != null) {
@@ -340,7 +338,7 @@ public class FenetrePrincipale {
 
         panelPrincipal.add(panelLogo);
 
-        chckbxAccidents.addActionListener(e -> new Thread(() -> {
+        chckbxAccidents.addActionListener(e -> {
             if (((AbstractButton) e.getSource()).isSelected()) {
                 listeAccidents = wrapperEvenement(EvenementAccess
                         .getActif("accidents", dateSelectionne, Statut_.TRAITE));
@@ -349,9 +347,9 @@ public class FenetrePrincipale {
                 allEvents.removeAll(listeAccidents);
             }
             miseAJourAffichage();
-        }).start());
+        });
 
-        chckbxTravaux.addActionListener(e -> new Thread(() -> {
+        chckbxTravaux.addActionListener(e -> {
             if (((AbstractButton) e.getSource()).isSelected()) {
                 listeTravaux = wrapperEvenement(EvenementAccess
                         .getActif("travaux", dateSelectionne, Statut_.TRAITE));
@@ -360,9 +358,9 @@ public class FenetrePrincipale {
                 allEvents.removeAll(listeTravaux);
             }
             miseAJourAffichage();
-        }).start());
+        });
 
-        chckbxManifestations.addActionListener(e -> new Thread(() -> {
+        chckbxManifestations.addActionListener(e -> {
             if (((AbstractButton) e.getSource()).isSelected()) {
                 listeManifestations = wrapperEvenement(EvenementAccess
                         .getActif("manifestations", dateSelectionne, Statut_.TRAITE));
@@ -371,9 +369,9 @@ public class FenetrePrincipale {
                 allEvents.removeAll(listeManifestations);
             }
             miseAJourAffichage();
-        }).start());
+        });
 
-        chckbxRenovation.addActionListener(e -> new Thread(() -> {
+        chckbxRenovation.addActionListener(e -> {
             if (((AbstractButton) e.getSource()).isSelected()) {
                 listeRenovations = wrapperEvenement(EvenementAccess
                         .getActif("rénovations", dateSelectionne, Statut_.TRAITE));
@@ -382,9 +380,9 @@ public class FenetrePrincipale {
                 allEvents.removeAll(listeRenovations);
             }
             miseAJourAffichage();
-        }).start());
+        });
 
-        chckbxConstruction.addActionListener(e -> new Thread(() -> {
+        chckbxConstruction.addActionListener(e -> {
             if (((AbstractButton) e.getSource()).isSelected()) {
                 listeConstructions = wrapperEvenement(EvenementAccess
                         .getActif("constructions", dateSelectionne, Statut_.TRAITE));
@@ -393,9 +391,9 @@ public class FenetrePrincipale {
                 allEvents.removeAll(listeConstructions);
             }
             miseAJourAffichage();
-        }).start());
+        });
 
-        chckboxDoleances.addActionListener(e -> new Thread(() -> {
+        chckboxDoleances.addActionListener(e -> {
             if (((AbstractButton) e.getSource()).isSelected()) {
                 listeDoleances = wrapperEvenement(EvenementAccess
                         .getActif("doléances", dateSelectionne, Statut_.TRAITE));
@@ -404,11 +402,8 @@ public class FenetrePrincipale {
                 allEvents.removeAll(listeDoleances);
             }
             miseAJourAffichage();
-        }).start());
+        });
     }
-
-
-
 
     private ArrayList<Event> wrapperEvenement(List<Evenement> listeEvenement) {
         ArrayList<Event> evenements = new ArrayList<>();
@@ -436,9 +431,8 @@ public class FenetrePrincipale {
         txtrDescription.setText(String.valueOf(descriptionsEvents));
     }
 
-     void recuperationEvenements() {
-
-        System.out.println("recuperation evenemnt");
+    void recuperationEvenements() {
+        System.out.println("recuperation evenement");
 
         if (chckbxAccidents.isSelected()) {
             allEvents.removeAll(listeAccidents);
@@ -488,5 +482,4 @@ public class FenetrePrincipale {
             miseAJourAffichage();
         }
     }
-
 }

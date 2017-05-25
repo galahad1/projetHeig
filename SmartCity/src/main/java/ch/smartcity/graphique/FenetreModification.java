@@ -21,16 +21,14 @@ import java.util.List;
 
 class FenetreModification {
 
-    private ConfigurationManager configurationManager = ConfigurationManager.getInstance();
-
     // controle des caractères de la saisie
     private static final String REGEX_ALPHA_NUMERIQUE = "[a-zA-ZÀ-ÿ0-9 \\-']*";
     private static final String REGEX_NUMERIQUE = "[0-9]*";
     private static final String REGEX_LATITUDE = "^[\\+-]?(?:90(?:(?:\\.0{1,6})?)|(?:[0-9]|[1-8][0-9])(?:(?:\\.[0-9]{1,6})?))$";
     private static final String REGEX_LONGITUDE = "^[\\+-]?(?:180(?:(?:\\.0{1,6})?)|(?:[0-9]|[1-9][0-9]|1[0-7][0-9])(?:(?:\\.[0-9]{1,6})?))$";
     private static final String REGEX_DATE = "^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\d\\d$";
-
     JFrame fenetre;
+    private ConfigurationManager configurationManager = ConfigurationManager.getInstance();
     private DateFormat dateFormat = new SimpleDateFormat(configurationManager.getString("date.format"));
     private JComboBox<String> comboBoxEvenements;
     private JComboBox<String> comboBoxPriorite;
@@ -56,6 +54,7 @@ class FenetreModification {
     private JComboBox<String> comboBoxRubrique;
     private List<Evenement> evenementList;
     private Evenement evenementSelectionne = null;
+
     /**
      * Create the application.
      */
@@ -149,7 +148,7 @@ class FenetreModification {
         List<Npa> listNpa = DatabaseAccess.get(Npa.class);
 
         String[] npas = new String[listNpa.size()];
-        for(int i = 0; i < npas.length ; i++) {
+        for (int i = 0; i < npas.length; i++) {
             npas[i] = listNpa.get(i).toString();
         }
 
@@ -165,8 +164,7 @@ class FenetreModification {
 
         List<Priorite> listPriorite = DatabaseAccess.get(Priorite.class);
         String[] priorites = new String[listPriorite.size()];
-        for(int i = 0; i < priorites.length; i++)
-        {
+        for (int i = 0; i < priorites.length; i++) {
             priorites[i] = listPriorite.get(i).toString();
         }
 
@@ -179,8 +177,7 @@ class FenetreModification {
         List<RubriqueEnfant> listRubriqueEnfant = DatabaseAccess.get(RubriqueEnfant.class);
 
         String[] rubriques = new String[listRubriqueEnfant.size()];
-        for(int i = 0; i < rubriques.length ; i++)
-        {
+        for (int i = 0; i < rubriques.length; i++) {
             rubriques[i] = listRubriqueEnfant.get(i).toString();
         }
         comboBoxRubrique.setModel(new DefaultComboBoxModel<>(rubriques));
@@ -232,7 +229,7 @@ class FenetreModification {
             if (controleSaisie()) {
                 System.out.println("Evenement valide");
 
-                if(comboBoxEvenements.getSelectedIndex() == 0) // nouvel evenement
+                if (comboBoxEvenements.getSelectedIndex() == 0) // nouvel evenement
                 {
                     ajouterEvenement();
                 } else // evenement deja exsistant
@@ -253,8 +250,7 @@ class FenetreModification {
         JButton boutonRefuser = new JButton("Refuser");
         boutonRefuser.addActionListener(e -> {
 
-            if(comboBoxEvenements.getSelectedIndex() != 0)
-            {
+            if (comboBoxEvenements.getSelectedIndex() != 0) {
                 refuserEvenement(); // statut en refuser et change date de fin pour etre en etat supprimmer
                 chargementListeEvenements(context); // mise a jour de la liste
                 videChamps();
@@ -267,15 +263,14 @@ class FenetreModification {
         JButton boutonSupprimer = new JButton("Supprimer");
         boutonSupprimer.addActionListener(e -> {
 
-            if(evenementSelectionne != null && comboBoxEvenements.getSelectedIndex() != 0)
-            {
+            if (evenementSelectionne != null && comboBoxEvenements.getSelectedIndex() != 0) {
                 DatabaseAccess.delete(evenementSelectionne); // supprime de la base de donnée
                 chargementListeEvenements(context); // mise a jour de la liste
                 videChamps();
 
                 JOptionPane.showConfirmDialog(null,
-                    "Evenement supprimé avec succès", "Evénement supprimé",
-                    JOptionPane.DEFAULT_OPTION);
+                        "Evenement supprimé avec succès", "Evénement supprimé",
+                        JOptionPane.DEFAULT_OPTION);
                 appelant.recuperationEvenements();
 
             }
@@ -336,8 +331,7 @@ class FenetreModification {
                 if (index != 0) // un evenement de la base de donnée
                 {
 
-                    if (context == Contexte.CONTEXTE_EN_ATTENTE)
-                    {
+                    if (context == Contexte.CONTEXTE_EN_ATTENTE) {
                         etatChamps(true); // deverouille les champs
                     }
 
@@ -364,8 +358,7 @@ class FenetreModification {
                     textFieldDateFin.setText(date);
                     textAreaDetails.setText(evenement.getDetails());
 
-                } else if (context == Contexte.CONTEXTE_EN_ATTENTE)
-                {
+                } else if (context == Contexte.CONTEXTE_EN_ATTENTE) {
                     // verouille les champs afin de forcer l utilisateur a modifier un evenement qui est en attente
                     etatChamps(false); // verouille les champs
                     videChamps();
@@ -435,8 +428,7 @@ class FenetreModification {
         panelModification.add(btnFermer);
 
 
-        if (context == Contexte.CONTEXTE_AJOUTER)
-        {
+        if (context == Contexte.CONTEXTE_AJOUTER) {
             fenetre.setTitle(configurationManager.getString("graphique.titreModification"));
             boutonRefuser.setVisible(false);
             boutonRefuser.setEnabled(false);
@@ -452,6 +444,7 @@ class FenetreModification {
 
     /**
      * charge les evenements dans la liste ainsi que les preview
+     *
      * @param context
      */
     private void chargementListeEvenements(int context) {
@@ -487,9 +480,9 @@ class FenetreModification {
      */
     private void refuserEvenement() {
 
-        evenementSelectionne.setStatut( StatutAccess.get(Statut_.REFUSE).get(0)); // statur refuser
+        evenementSelectionne.setStatut(StatutAccess.get(Statut_.REFUSE).get(0)); // statur refuser
 
-        EvenementAccess.update(evenementSelectionne.getIdEvenement(),null,null,null,null,null,null,null,null,null,null, evenementSelectionne.getStatut()); // met a jour l evenemnt avec le statut refuse
+        EvenementAccess.update(evenementSelectionne.getIdEvenement(), null, null, null, null, null, null, null, null, null, null, evenementSelectionne.getStatut()); // met a jour l evenemnt avec le statut refuse
         DatabaseAccess.delete(evenementSelectionne); // change date de fin
 
     }
@@ -515,24 +508,18 @@ class FenetreModification {
         Rue newRue;
         List<Rue> listNewRue = RueAccess.get(nomRue);
         System.out.println(listNewRue);
-        if(listNewRue == null || listNewRue.isEmpty())
-        {
+        if (listNewRue == null || listNewRue.isEmpty()) {
             newRue = new Rue(nomRue);
-        }
-        else
-        {
+        } else {
             newRue = listNewRue.get(0);
         }
 
         Adresse newAdresse;
-        List<Adresse> listNewAdresse = AdresseAccess.get(newRue,numeroRue,newNpa);
+        List<Adresse> listNewAdresse = AdresseAccess.get(newRue, numeroRue, newNpa);
         System.out.println(listNewAdresse);
-        if(listNewAdresse == null || listNewAdresse.isEmpty())
-        {
-            newAdresse = new Adresse(newRue,numeroRue,newNpa);
-        }
-        else
-        {
+        if (listNewAdresse == null || listNewAdresse.isEmpty()) {
+            newAdresse = new Adresse(newRue, numeroRue, newNpa);
+        } else {
             newAdresse = listNewAdresse.get(0);
         }
 
@@ -551,12 +538,12 @@ class FenetreModification {
         }
 
 
-        EvenementAccess.update(evenementBase.getIdEvenement(),newRubrique,null,nomEvenement,newAdresse,latitude,longitude,calDebut,calFin,details,newPriorite,newStatut);
+        EvenementAccess.update(evenementBase.getIdEvenement(), newRubrique, null, nomEvenement, newAdresse, latitude, longitude, calDebut, calFin, details, newPriorite, newStatut);
 
 
         JOptionPane.showConfirmDialog(null,
-            "Evenement modifié avec succès", "Evénement modifié",
-            JOptionPane.DEFAULT_OPTION);
+                "Evenement modifié avec succès", "Evénement modifié",
+                JOptionPane.DEFAULT_OPTION);
 
     }
 
@@ -583,8 +570,8 @@ class FenetreModification {
 
         // controle si l evenement exsite deja
 
-        List<Evenement> evenementsExsistants = EvenementAccess.get(nomEnfant,null,nomEvenement,nomRue,numeroRue,npa,latitude,longitude,calDebut,calFin,details,elementsPriorite[1],null,null);
-        if(evenementsExsistants == null || evenementsExsistants.isEmpty()) // n'exsiste pas
+        List<Evenement> evenementsExsistants = EvenementAccess.get(nomEnfant, null, nomEvenement, nomRue, numeroRue, npa, latitude, longitude, calDebut, calFin, details, elementsPriorite[1], null, null);
+        if (evenementsExsistants == null || evenementsExsistants.isEmpty()) // n'exsiste pas
         {
 
             EvenementAccess.save(nomEnfant, 1, nomEvenement, nomRue, numeroRue, npa, latitude, longitude, calDebut, calFin, details, elementsPriorite[1], Integer.valueOf(elementsPriorite[0]), Statut_.TRAITE);
@@ -592,9 +579,7 @@ class FenetreModification {
             JOptionPane.showConfirmDialog(null,
                     "Evenement ajouté avec succès", "Evénement ajouté",
                     JOptionPane.DEFAULT_OPTION);
-        }
-        else
-        {
+        } else {
             JOptionPane.showConfirmDialog(null,
                     "Evenement déjà dans la base de donnée", "Evénement présent",
                     JOptionPane.DEFAULT_OPTION);
@@ -634,7 +619,7 @@ class FenetreModification {
         }
 
         // controle de la rue
-        if (!Utils.controleSaisie(textFieldRue.getText(),  Integer.valueOf(configurationManager.getString("tailleMax.rue")), REGEX_ALPHA_NUMERIQUE)) {
+        if (!Utils.controleSaisie(textFieldRue.getText(), Integer.valueOf(configurationManager.getString("tailleMax.rue")), REGEX_ALPHA_NUMERIQUE)) {
             // saisie incorrect
             labelRue.setForeground(Color.RED);
             ErreurSaisiePane.setText(ErreurSaisiePane.getText() + configurationManager.getString("erreur.rue"));
