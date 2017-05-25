@@ -143,14 +143,14 @@ public class FenetrePrincipale {
         //BOUTONS
 
         btnAjouter.addActionListener(e -> {
-            FenetreModification fenetre2 = new FenetreModification(Contexte.CONTEXTE_AJOUTER);
+            FenetreModification fenetre2 = new FenetreModification(Contexte.CONTEXTE_AJOUTER, this);
             fenetre2.fenetre.setVisible(true);
 
         });
 
 
         btnEnAttente.addActionListener(e -> {
-            FenetreModification fenetre2 = new FenetreModification(Contexte.CONTEXTE_EN_ATTENTE);
+            FenetreModification fenetre2 = new FenetreModification(Contexte.CONTEXTE_EN_ATTENTE, this);
             fenetre2.fenetre.setVisible(true);
         });
 
@@ -266,53 +266,7 @@ public class FenetrePrincipale {
 
             //TODO mettre a jour description aussi
 
-            if (chckbxAccidents.isSelected()) {
-                allEvents.removeAll(listeAccidents);
-                listeAccidents = wrapperEvenement(EvenementAccess
-                        .getActif("accidents", dateSelectionne, Statut_.TRAITE));
-                allEvents.addAll(listeAccidents);
-                miseAJourAffichage();
-            }
-
-            if (chckbxTravaux.isSelected()) {
-                allEvents.removeAll(listeTravaux);
-                listeTravaux = wrapperEvenement(EvenementAccess
-                        .getActif("travaux", dateSelectionne, Statut_.TRAITE));
-                allEvents.addAll(listeTravaux);
-                miseAJourAffichage();
-            }
-
-            if (chckbxManifestations.isSelected()) {
-                allEvents.removeAll(listeManifestations);
-                listeManifestations = wrapperEvenement(EvenementAccess
-                        .getActif("manifestations", dateSelectionne, Statut_.TRAITE));
-                allEvents.addAll(listeManifestations);
-                miseAJourAffichage();
-            }
-
-            if (chckbxRenovation.isSelected()) {
-                allEvents.removeAll(listeRenovations);
-                listeRenovations = wrapperEvenement(EvenementAccess
-                        .getActif("rénovations", dateSelectionne, Statut_.TRAITE));
-                allEvents.addAll(listeRenovations);
-                miseAJourAffichage();
-            }
-
-            if (chckbxConstruction.isSelected()) {
-                allEvents.removeAll(listeConstructions);
-                listeConstructions = wrapperEvenement(EvenementAccess
-                        .getActif("constructions", dateSelectionne, Statut_.TRAITE));
-                allEvents.addAll(listeConstructions);
-                miseAJourAffichage();
-            }
-
-            if (chckboxDoleances.isSelected()) {
-                allEvents.removeAll(listeDoleances);
-                listeDoleances = wrapperEvenement(EvenementAccess
-                        .getActif("doléances", dateSelectionne, Statut_.TRAITE));
-                allEvents.addAll(listeDoleances);
-                miseAJourAffichage();
-            }
+            recuperationEvenements();
         });
 
         //LOGO PROGRAMME
@@ -451,6 +405,9 @@ public class FenetrePrincipale {
         }).start());
     }
 
+
+
+
     private ArrayList<Event> wrapperEvenement(List<Evenement> listeEvenement) {
         ArrayList<Event> evenements = new ArrayList<>();
 
@@ -476,4 +433,58 @@ public class FenetrePrincipale {
         }
         txtrDescription.setText(String.valueOf(descriptionsEvents));
     }
+
+    protected void recuperationEvenements() {
+
+        System.out.println("recuperation evenemnt");
+
+        if (chckbxAccidents.isSelected()) {
+            allEvents.removeAll(listeAccidents);
+            listeAccidents = wrapperEvenement(EvenementAccess
+                    .getActif("accidents", dateSelectionne, Statut_.TRAITE));
+            allEvents.addAll(listeAccidents);
+            miseAJourAffichage();
+        }
+
+        if (chckbxTravaux.isSelected()) {
+            allEvents.removeAll(listeTravaux);
+            listeTravaux = wrapperEvenement(EvenementAccess
+                    .getActif("travaux", dateSelectionne, Statut_.TRAITE));
+            allEvents.addAll(listeTravaux);
+            miseAJourAffichage();
+        }
+
+        if (chckbxManifestations.isSelected()) {
+            allEvents.removeAll(listeManifestations);
+            listeManifestations = wrapperEvenement(EvenementAccess
+                    .getActif("manifestations", dateSelectionne, Statut_.TRAITE));
+            allEvents.addAll(listeManifestations);
+            miseAJourAffichage();
+        }
+
+        if (chckbxRenovation.isSelected()) {
+            allEvents.removeAll(listeRenovations);
+            listeRenovations = wrapperEvenement(EvenementAccess
+                    .getActif("rénovations", dateSelectionne, Statut_.TRAITE));
+            allEvents.addAll(listeRenovations);
+            miseAJourAffichage();
+        }
+
+        if (chckbxConstruction.isSelected()) {
+            allEvents.removeAll(listeConstructions);
+            listeConstructions = wrapperEvenement(EvenementAccess
+                    .getActif("constructions", dateSelectionne, Statut_.TRAITE));
+            allEvents.addAll(listeConstructions);
+            miseAJourAffichage();
+        }
+
+        if (chckboxDoleances.isSelected()) {
+            allEvents.removeAll(listeDoleances);
+            listeDoleances = wrapperEvenement(EvenementAccess
+                    .getActif("doléances", dateSelectionne, Statut_.TRAITE));
+            allEvents.addAll(listeDoleances);
+            miseAJourAffichage();
+        }
+    }
+
 }

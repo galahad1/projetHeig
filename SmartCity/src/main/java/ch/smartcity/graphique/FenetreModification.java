@@ -59,14 +59,14 @@ public class FenetreModification {
     /**
      * Create the application.
      */
-    public FenetreModification(int contexte) {
-        initialize(contexte);
+    public FenetreModification(int contexte, FenetrePrincipale appelant) {
+        initialize(contexte, appelant);
     }
 
     /**
      * Initialize the contents of the frame.
      */
-    private void initialize(int context) {
+    private void initialize(int context, FenetrePrincipale appelant) {
         fenetre = new JFrame();
         fenetre.setResizable(false);
         fenetre.setBounds(0, 0, 1200, 800);
@@ -77,6 +77,7 @@ public class FenetreModification {
         fenetre.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
                 //TODO rafraichireCarte();, voir pour appeler methode de la fenetre principale
+
                 fenetre.dispose();
             }
         });
@@ -242,8 +243,10 @@ public class FenetreModification {
                 }
                 chargementListeEvenements(context); // mise a jour de la liste
                 videChamps();
+                appelant.recuperationEvenements(); // mise a jour de la liste des evenements de la fenetre appelante
 
             }
+
         });
         boutonValider.setBounds(59, 412, 117, 25);
         panelAjoutEvenement.add(boutonValider);
@@ -275,6 +278,8 @@ public class FenetreModification {
                 JOptionPane.showConfirmDialog(null,
                     "Evenement supprimé avec succès", "Evénement supprimé",
                     JOptionPane.DEFAULT_OPTION);
+                appelant.recuperationEvenements();
+
             }
 
         });
@@ -507,26 +512,17 @@ public class FenetreModification {
         Calendar calDebut = Calendar.getInstance();
         Calendar calFin = Calendar.getInstance();
         String details = textAreaDetails.getText();
-
-        boolean modifAdresse = false;
-
+        
         // voir tout les champs qui ont ete modifier
         Evenement evenementBase = getEvenementSelectionne();
 
         Npa newNpa = NpaAccess.get(npa).get(0);
 
-
-
-        if(nomRue != evenementBase.getAdresse().getRue().getNomRue()) // nom de rue a changé
-        {
-
-        }
-
         Rue newRue;
         List<Rue> listNewRue = RueAccess.get(nomRue);
         System.out.println(listNewRue);
         if(listNewRue == null || listNewRue.isEmpty())
-        {   
+        {
             newRue = new Rue(nomRue);
         }
         else
