@@ -48,9 +48,7 @@ public class GenerateurPDF {
         /* Creation of a PDF */
         try {
             new GenerateurPDF().createPdf(DEST, nomEvenement, date);
-            Desktop.getDesktop().open(new File(System.getProperty("user.home") +
-                    File.separator + "Documents" + File.separator
-                    + "Smartcity" + File.separator + "PDF" + File.separator));
+            Desktop.getDesktop().open(new File(DEST).getParentFile());
         } catch (IOException e) {
             System.out.println("Error while creating PDF");
             System.out.println(e.getMessage());
