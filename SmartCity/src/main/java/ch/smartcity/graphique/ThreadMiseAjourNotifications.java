@@ -10,18 +10,19 @@ import java.util.TimerTask;
 import static java.util.Collections.shuffle;
 
 /**
- * Modélise un timer qui permet de mettre à jour une liste dans un panel
+ * Modélise un timer qui permet de mettre à jour la liste de notification dans un panel.
+ * Il s'agit de rafraichir la liste toute les x temps.
  *
  * @author Wojciech Myskorowski
  */
 
-public class MiseAjour extends TimerTask {
+public class ThreadMiseAjourNotifications extends TimerTask {
     private final int maxElement = 9;
     private List<String> liste;
     private JList notif;
     private JLabel nbNotif;
 
-    public MiseAjour(List<String> listnoftif, JList notif, JLabel nbNotif) {
+    public ThreadMiseAjourNotifications(List<String> listnoftif, JList notif, JLabel nbNotif) {
         liste = listnoftif;
         this.notif = notif;
         this.nbNotif = nbNotif;
@@ -41,22 +42,12 @@ public class MiseAjour extends TimerTask {
         }
         for (String v : liste) {
             JTextField ligne = new JTextField(v);
-            String s = ligne.getText().substring(0, 1);
-            if (s.equals("1")) {
-                ligne.setForeground(Color.GREEN);
-            } else if (s.equals("2")) {
-                ligne.setForeground(Color.DARK_GRAY);
-            } else if (s.equals("3")) {
-                ligne.setForeground(Color.BLUE);
-            } else {
-                ligne.setForeground(Color.RED);
-                ligne.setBackground(Color.RED);
-            }
+
+            ligne.setBackground(Color.RED);
 
             if (model.getSize() <= maxElement) {
                 model.addElement(ligne.getText());
             }
-
         }
         int nombreNotification = liste.size();
         nbNotif.setText(nombreNotification + " Notifications");

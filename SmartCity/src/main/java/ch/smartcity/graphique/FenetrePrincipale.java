@@ -84,7 +84,7 @@ public class FenetrePrincipale {
      */
     private void initialize() {
         Timer timer = new Timer();
-        MiseAjour tache = new MiseAjour(Utils.previewEvenement(EvenementAccess
+        ThreadMiseAjourNotifications tache = new ThreadMiseAjourNotifications(Utils.previewEvenement(EvenementAccess
                 .getEnAttente()), listEvenementsEnAttente, lblNbrNotification);
 
         timer.scheduleAtFixedRate(tache, 2 * 60 * 100, 2 * 10 * 1000);
