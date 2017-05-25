@@ -508,7 +508,7 @@ public class FenetrePrincipale {
         return evenements;
     }
 
-     protected void miseAJourAffichage() {
+     public void miseAJourAffichage() {
         //mise jour de la carte
         carte.updateEvenement((ArrayList<Event>) allEvents);
 
