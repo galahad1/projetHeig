@@ -508,31 +508,42 @@ public class FenetreModification {
         Calendar calFin = Calendar.getInstance();
         String details = textAreaDetails.getText();
 
+        boolean modifAdresse = false;
+
         // voir tout les champs qui ont ete modifier
         Evenement evenementBase = getEvenementSelectionne();
 
         Npa newNpa = NpaAccess.get(npa).get(0);
 
+
+
+        if(nomRue != evenementBase.getAdresse().getRue().getNomRue()) // nom de rue a changé
+        {
+
+        }
+
         Rue newRue;
         List<Rue> listNewRue = RueAccess.get(nomRue);
+        System.out.println(listNewRue);
         if(listNewRue == null || listNewRue.isEmpty())
         {
             newRue = new Rue(nomRue);
         }
         else
         {
-            newRue = evenementBase.getAdresse().getRue();
+            newRue = listNewRue.get(0);
         }
 
         Adresse newAdresse;
         List<Adresse> listNewAdresse = AdresseAccess.get(newRue,numeroRue,newNpa);
+        System.out.println(listNewAdresse);
         if(listNewAdresse == null || listNewAdresse.isEmpty())
         {
             newAdresse = new Adresse(newRue,numeroRue,newNpa);
         }
         else
         {
-            newAdresse = evenementBase.getAdresse();
+            newAdresse = listNewAdresse.get(0);
         }
 
 
