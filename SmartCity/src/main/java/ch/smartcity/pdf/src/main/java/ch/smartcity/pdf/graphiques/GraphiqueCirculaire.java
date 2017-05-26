@@ -1,3 +1,9 @@
+/**
+ * PROJET HEIG - VD SMARTCITY
+ * Classe : GraphiqueEnBarres
+ * <p>
+ * Descriptif : Classe qui génère un graphique circulaire
+ */
 package ch.smartcity.pdf.graphiques;
 
 import ch.smartcity.pdf.donnees.Mois;
@@ -10,22 +16,18 @@ import org.jfree.data.general.DefaultPieDataset;
 import java.awt.*;
 import java.text.DecimalFormat;
 
-public class GraphiqueCirculaire {
-
-    /* Constructeur privé */
-    private GraphiqueCirculaire() {
-    }
+class GraphiqueCirculaire {
 
     /**
-     * Fonction principale.
      * Crée un graphique circulaire
-     *
-     * @return une instance représentant un graphique circulaire
+     * @param stats les statistiques relatives au graphique
+     * @return un nouveau graphe
      */
-    public static JFreeChart cree(int[] stats) {
+    static JFreeChart cree(int[] stats) {
 
         DefaultPieDataset pie = new DefaultPieDataset();
 
+        /* Ajout des données */
         for (int i = 0; i < stats.length; ++i) {
             if (stats[i] != 0)
                 pie.setValue(Mois.values()[i], stats[i]);
@@ -60,4 +62,7 @@ public class GraphiqueCirculaire {
         return chart;
     }
 
+    /* Constructeur privé */
+    private GraphiqueCirculaire() {
+    }
 }
