@@ -16,50 +16,80 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+/**
+ * Fournit l'accès aux titres civils de la base de données
+ *
+ * @author Lassalle Loan
+ * @since 25.03.2017
+ */
 public class TitreCivilAccess {
 
+    /**
+     * Utilisé pour accéder aux fichiers de propriétés
+     */
     private final ConfigurationManager configurationManager;
+
+    /**
+     * Utilisé pour journaliser les actions effectuées
+     */
     private final Logger logger;
+
+    /**
+     * Utilisé pour la connexion à la base de données
+     */
     private final Hibernate hibernate;
+
+    /**
+     * Utilisé pour des accès génériques à la base de données
+     */
+    private final DatabaseAccess databaseAccess;
 
     private TitreCivilAccess() {
         configurationManager = ConfigurationManager.getInstance();
         logger = Logger.getLogger(getClass().getName());
         hibernate = Hibernate.getInstance();
+        databaseAccess = DatabaseAccess.getInstance();
     }
 
+    /**
+     * Fournit l'unique instance de la classe (singleton)
+     *
+     * @return unique instance de la classe
+     */
     public static TitreCivilAccess getInstance() {
         return SingletonHolder.instance;
     }
 
-    private static ConfigurationManager getConfigurationManager() {
-        return getInstance().configurationManager;
-    }
-
-    private static Logger getLogger() {
-        return getInstance().logger;
-    }
-
-    private static Hibernate getHibernate() {
-        return getInstance().hibernate;
-    }
-
-    public static List<TitreCivil> get(String titre, String abreviation) {
+    /**
+     * Obtient la liste des titres civils stockés au sein de la base de données en fonction des
+     * paramètres
+     * Chaque paramètre différent de null sera utilisé comme critère de recherche
+     *
+     * @param titre       titre des titres civils à obtenir
+     * @param abreviation abréviation des titres civils à obtenir
+     * @return liste des titres civils stockés au sein de la base de données en fonction des
+     * paramètres
+     */
+    public List<TitreCivil> get(String titre, String abreviation) {
         List<TitreCivil> titreCivilList = null;
 
         Session session = null;
         Transaction transaction = null;
 
         try {
-            session = getHibernate().openSession();
+            // Démarre une transaction pour la gestion d'erreur
+            session = hibernate.getSession();
             transaction = session.beginTransaction();
 
-            CriteriaBuilder criteriaBuilder = getHibernate().getCriteriaBuilder();
+            // Définit des critères de sélection pour la requête
+            CriteriaBuilder criteriaBuilder = hibernate.getCriteriaBuilder();
             CriteriaQuery<TitreCivil> criteriaQuery = criteriaBuilder
                     .createQuery(TitreCivil.class);
             Root<TitreCivil> titreCivilRoot = criteriaQuery.from(TitreCivil.class);
             List<Predicate> predicateList = new ArrayList<>();
 
+            // Définit seulement les critères de sélection pour la requête des paramètres non null
+            // et non vide
             if (titre != null && !titre.isEmpty()) {
                 predicateList.add(criteriaBuilder.equal(titreCivilRoot.get(
                         TitreCivil_.titre),
@@ -73,56 +103,102 @@ public class TitreCivilAccess {
             }
 
             criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
-            titreCivilList = getHibernate().createQuery(criteriaQuery).getResultList();
+            titreCivilList = hibernate.createQuery(criteriaQuery).getResultList();
 
             transaction.commit();
         } catch (Exception e) {
-            DatabaseAccess.rollback(e, transaction);
-        } finally {
-            DatabaseAccess.close(session);
+            databaseAccess.rollback(e, transaction);
         }
 
-        getLogger().info(String.format(
-                getConfigurationManager().getString("databaseAccess.results"),
+        databaseAccess.close(session);
+
+        // Journalise l'état de la transaction et le résultat
+        databaseAccess.transactionMessage(transaction);
+        logger.info(String.format(
+                configurationManager.getString("databaseAccess.results"),
                 titreCivilList != null ? titreCivilList.size() : 0,
                 TitreCivil.class.getSimpleName()));
 
         return titreCivilList;
     }
 
-    public static void save(String titre, String abreviation) {
-        DatabaseAccess.save(new TitreCivil(titre, abreviation));
+    /**
+     * Stocke le titre civil correspondant aux paramètres
+     *
+     * @param titre       titre du titre civil à stocker
+     * @param abreviation abréviation du titre civil à stocker
+     */
+    public void save(String titre, String abreviation) {
+        databaseAccess.save(new TitreCivil(titre, abreviation));
     }
 
-    public static void update(Integer idTitreCivil, String titre, String abreviation) {
-        TitreCivil titreCivil = DatabaseAccess.get(TitreCivil.class, idTitreCivil);
+    /**
+     * Met à jour le titre civil correspondant aux paramètres
+     *
+     * @param idTitreCivil identifiant du titre civil à mettre à jour
+     * @param titre        titre du titre civil à mettre à jour
+     * @param abreviation  abreviation du titre civil à mettre à jour
+     */
+    public void update(Integer idTitreCivil, String titre, String abreviation) {
+        TitreCivil titreCivil = databaseAccess.get(TitreCivil.class, idTitreCivil);
 
+        // Vérifie si la requête a abouti
         if (titreCivil != null) {
+
+            // Affecte les nouveaux attributs au titre civil
             setAll(titreCivil, titre, abreviation);
-            DatabaseAccess.update(titreCivil);
+            databaseAccess.update(titreCivil);
         }
     }
 
-    public static void update(String oldTitre,
-                              String oldAbreviation,
-                              String newTitre,
-                              String newAbreviation) {
+    /**
+     * Met à jour les titres civils correspondant aux paramètres préfixés de old en leur
+     * affectant les paramètres préfixés de new
+     * Chaque paramètre préfixés de old différent de null sera utilisé comme critère de recherche
+     * Chaque paramètre préfixés de new de valeurs null ne se mettre pas à jour
+     *
+     * @param oldTitre       ancien titre des titres civils à mettre à jour
+     * @param oldAbreviation ancienne abréviation des titres civils à mettre à jour
+     * @param newTitre       nouveau titre des titres civils à mettre à jour
+     * @param newAbreviation nouvelle abréviation des titres civils à mettre à jour
+     */
+    public void update(String oldTitre,
+                       String oldAbreviation,
+                       String newTitre,
+                       String newAbreviation) {
         List<TitreCivil> titreCivilList = get(oldTitre, oldAbreviation);
 
+        // Vérifie si la requête a abouti
         if (titreCivilList != null) {
+
+            // Affecte les nouveaux attributs aux titres civils
             for (TitreCivil titreCivil : titreCivilList) {
                 setAll(titreCivil, newTitre, newAbreviation);
             }
 
-            DatabaseAccess.update(titreCivilList);
+            databaseAccess.update(titreCivilList);
         }
     }
 
-    public static void delete(String titre, String abreviation) {
-        DatabaseAccess.delete(get(titre, abreviation));
+    /**
+     * Supprime les titres civils correspondant aux paramètres
+     * Chaque paramètre différent de null sera utilisé comme critère de recherche
+     *
+     * @param titre       titre des titres civils à supprimer
+     * @param abreviation abréviation des titres civils à supprimer
+     */
+    public void delete(String titre, String abreviation) {
+        databaseAccess.delete(get(titre, abreviation));
     }
 
-    private static void setAll(TitreCivil titreCivil, String titre, String abreviation) {
+    /**
+     * Affecte les paramètres du titre civil si ils ne sont pas null
+     *
+     * @param titreCivil  titre civil
+     * @param titre       titre du titre civil
+     * @param abreviation abréviation du titre civil
+     */
+    private void setAll(TitreCivil titreCivil, String titre, String abreviation) {
         if (titre != null) {
             titreCivil.setTitre(titre);
         }
@@ -132,6 +208,9 @@ public class TitreCivilAccess {
         }
     }
 
+    /**
+     * Utilisé pour créer un singleton de la classe
+     */
     private static class SingletonHolder {
         private static final TitreCivilAccess instance = new TitreCivilAccess();
     }

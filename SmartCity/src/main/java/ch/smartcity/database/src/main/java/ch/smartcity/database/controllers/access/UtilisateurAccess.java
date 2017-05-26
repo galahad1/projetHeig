@@ -13,56 +13,98 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.logging.Logger;
 
+/**
+ * Fournit l'accès aux utilisateurs de la base de données
+ *
+ * @author Lassalle Loan
+ * @since 25.03.2017
+ */
 public class UtilisateurAccess {
 
-    private static String titre;
-    private static String abreviation;
-    private static String nomSexe;
-    private static String nomPriorite;
-    private static String nomRue;
-    private static String numeroDeRue;
-    private static String numeroNpa;
-
+    /**
+     * Utilisé pour accéder aux fichiers de propriétés
+     */
     private final ConfigurationManager configurationManager;
+
+    /**
+     * Utilisé pour journaliser les actions effectuées
+     */
     private final Logger logger;
+
+    /**
+     * Utilisé pour la connexion à la base de données
+     */
     private final Hibernate hibernate;
+
+    /**
+     * Utilisé pour des accès génériques à la base de données
+     */
+    private final DatabaseAccess databaseAccess;
+
+    /**
+     * Utilisé pour définir les paramètres de la requête en fonction de la valeurs des paramètres
+     * d'un utilisateur
+     */
+    private String titre;
+    private String abreviation;
+    private String nomSexe;
+    private String nomPriorite;
+    private String nomRue;
+    private String numeroDeRue;
+    private String numeroNpa;
 
     private UtilisateurAccess() {
         configurationManager = ConfigurationManager.getInstance();
         logger = Logger.getLogger(getClass().getName());
         hibernate = Hibernate.getInstance();
+        databaseAccess = DatabaseAccess.getInstance();
     }
 
+    /**
+     * Fournit l'unique instance de la classe (singleton)
+     *
+     * @return unique instance de la classe
+     */
     public static UtilisateurAccess getInstance() {
         return SingletonHolder.instance;
     }
 
-    private static ConfigurationManager getConfigurationManager() {
-        return getInstance().configurationManager;
-    }
-
-    private static Logger getLogger() {
-        return getInstance().logger;
-    }
-
-    private static Hibernate getHibernate() {
-        return getInstance().hibernate;
-    }
-
-    public static List<Utilisateur> get(Boolean personnePhysique,
-                                        String avs,
-                                        TitreCivil titreCivil,
-                                        String nomUtilisateur,
-                                        String prenom,
-                                        Calendar dateDeNaissance,
-                                        Sexe sexe,
-                                        Nationalite nationalite,
-                                        Adresse adresse,
-                                        String email,
-                                        String pseudo,
-                                        String motDePasse,
-                                        String sel,
-                                        Calendar creation) {
+    /**
+     * Obtient la liste des utilisateurs au sein de la base de données en fonction des
+     * paramètres
+     * Chaque paramètre différent de null sera utilisé comme critère de recherche
+     *
+     * @param personnePhysique personnePhysique de l'utilisateur à obtenir
+     * @param avs              avs de l'utilisateur à obtenir
+     * @param titreCivil       titre civil de l'utilisateur à obtenir
+     * @param nomUtilisateur   nom de l'utilisateur à obtenir
+     * @param prenom           prénom de l'utilisateur à obtenir
+     * @param dateDeNaissance  date de naissance de l'utilisateur à obtenir
+     * @param sexe             sexe de l'utilisateur à obtenir
+     * @param nationalite      nationalité de l'utilisateur à obtenir
+     * @param adresse          adresse de l'utilisateur à obtenir
+     * @param email            email de l'utilisateur à obtenir
+     * @param pseudo           pseudo de l'utilisateur à obtenir
+     * @param motDePasse       mot de passe de l'utilisateur à obtenir
+     * @param sel              sel de l'utilisateur à obtenir
+     * @param creation         date de création de l'utilisateur à obtenir
+     * @return liste des utilisateurs au sein de la base de données en fonction des
+     * paramètres
+     */
+    public List<Utilisateur> get(Boolean personnePhysique,
+                                 String avs,
+                                 TitreCivil titreCivil,
+                                 String nomUtilisateur,
+                                 String prenom,
+                                 Calendar dateDeNaissance,
+                                 Sexe sexe,
+                                 Nationalite nationalite,
+                                 Adresse adresse,
+                                 String email,
+                                 String pseudo,
+                                 String motDePasse,
+                                 String sel,
+                                 Calendar creation) {
         checkNull(titreCivil, sexe, nationalite, adresse);
         return get(personnePhysique,
                 avs,
@@ -83,36 +125,64 @@ public class UtilisateurAccess {
                 creation);
     }
 
-
-    public static List<Utilisateur> get(Boolean personnePhysique,
-                                        String avs,
-                                        String titre,
-                                        String abreviation,
-                                        String nomUtilisateur,
-                                        String prenom,
-                                        Calendar dateDeNaissance,
-                                        String nomSexe,
-                                        String nomNationalite,
-                                        String nomRue,
-                                        String numeroDeRue,
-                                        String numeroNpa,
-                                        String email,
-                                        String pseudo,
-                                        String motDePasse,
-                                        String sel,
-                                        Calendar creation) {
+    /**
+     * Obtient la liste des utilisateurs stockés au sein de la base de données en fonction des
+     * paramètres
+     * Chaque paramètre différent de null sera utilisé comme critère de recherche
+     *
+     * @param personnePhysique personnePhysique des utilisateurs à obtenir
+     * @param avs              avs des utilisateurs à obtenir
+     * @param titre            titredu titre civil des utilisateurs à obtenir
+     * @param abreviation      abreviation des utilisateurs à obtenir
+     * @param nomUtilisateur   nom des utilisateurs à obtenir
+     * @param prenom           prénom des utilisateurs à obtenir
+     * @param dateDeNaissance  date de naissance des utilisateurs à obtenir
+     * @param nomSexe          nom du sexe des utilisateurs à obtenir
+     * @param nomNationalite   nom de la nationalité des utilisateurs à obtenir
+     * @param nomRue           nom de la rue de l'adresse des utilisateurs à obtenir
+     * @param numeroDeRue      numéro de la rue de l'adresse des utilisateurs à obtenir
+     * @param numeroNpa        numéro npa de l'adresse des utilisateurs à obtenir
+     * @param email            email des utilisateurs à obtenir
+     * @param pseudo           pseudo des utilisateurs à obtenir
+     * @param motDePasse       mot de passe des utilisateurs à obtenir
+     * @param sel              sel des utilisateurs à obtenir
+     * @param creation         date de création des utilisateurs à obtenir
+     * @return liste des utilisateurs stockés au sein de la base de données en fonction des
+     * paramètres
+     */
+    public List<Utilisateur> get(Boolean personnePhysique,
+                                 String avs,
+                                 String titre,
+                                 String abreviation,
+                                 String nomUtilisateur,
+                                 String prenom,
+                                 Calendar dateDeNaissance,
+                                 String nomSexe,
+                                 String nomNationalite,
+                                 String nomRue,
+                                 String numeroDeRue,
+                                 String numeroNpa,
+                                 String email,
+                                 String pseudo,
+                                 String motDePasse,
+                                 String sel,
+                                 Calendar creation) {
         List<Utilisateur> utilisateurList = null;
 
         Session session = null;
         Transaction transaction = null;
 
         try {
-            session = getHibernate().openSession();
+            // Démarre une transaction pour la gestion d'erreur
+            session = hibernate.getSession();
             transaction = session.beginTransaction();
 
-            CriteriaBuilder criteriaBuilder = getHibernate().getCriteriaBuilder();
+            // Définit des critères de sélection pour la requête
+            CriteriaBuilder criteriaBuilder = hibernate.getCriteriaBuilder();
             CriteriaQuery<Utilisateur> criteriaQuery = criteriaBuilder
                     .createQuery(Utilisateur.class);
+
+            // Liaison avec différentes tables
             Root<Utilisateur> utilisateurRoot = criteriaQuery.from(Utilisateur.class);
             Join<Utilisateur, TitreCivil> utilisateurTitreCivilJoin =
                     utilisateurRoot.join(Utilisateur_.titreCivil);
@@ -128,6 +198,8 @@ public class UtilisateurAccess {
                     utilisateurAdresseJoin.join(Adresse_.npa);
             List<Predicate> predicateList = new ArrayList<>();
 
+            // Définit seulement les critères de sélection pour la requête des paramètres non null
+            // et non vide
             if (personnePhysique != null) {
                 predicateList.add(criteriaBuilder.equal(
                         utilisateurRoot.get(Utilisateur_.personnePhysique),
@@ -231,31 +303,44 @@ public class UtilisateurAccess {
             }
 
             criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
-            utilisateurList = getHibernate().createQuery(criteriaQuery).getResultList();
+            utilisateurList = hibernate.createQuery(criteriaQuery).getResultList();
 
             transaction.commit();
         } catch (Exception e) {
-            DatabaseAccess.rollback(e, transaction);
-        } finally {
-            DatabaseAccess.close(session);
+            databaseAccess.rollback(e, transaction);
         }
 
-        getLogger().info(String.format(
-                getConfigurationManager().getString("databaseAccess.results"),
+        databaseAccess.close(session);
+
+        // Journalise l'état de la transaction et le résultat
+        databaseAccess.transactionMessage(transaction);
+        logger.info(String.format(
+                configurationManager.getString("databaseAccess.results"),
                 utilisateurList != null ? utilisateurList.size() : 0,
                 Utilisateur.class.getSimpleName()));
 
         return utilisateurList;
     }
 
-    public static void save(TitreCivil titreCivil,
-                            String nomUtilisateur,
-                            Adresse adresse,
-                            String email,
-                            String pseudo,
-                            String motDePasse,
-                            String sel) {
-        DatabaseAccess.save(new Utilisateur(
+    /**
+     * Stocke l'utilisateur définit par les paramètres
+     *
+     * @param titreCivil     titre civil de l'utilisateur à stocker
+     * @param nomUtilisateur nom de l'utilisateur à stocker
+     * @param adresse        adresse de l'utilisateur à stocker
+     * @param email          email de l'utilisateur à stocker
+     * @param pseudo         pseudo de l'utilisateur à stocker
+     * @param motDePasse     mot de passe de l'utilisateur à stocker
+     * @param sel            sel de l'utilisateur à stocker
+     */
+    public void save(TitreCivil titreCivil,
+                     String nomUtilisateur,
+                     Adresse adresse,
+                     String email,
+                     String pseudo,
+                     String motDePasse,
+                     String sel) {
+        databaseAccess.save(new Utilisateur(
                 titreCivil,
                 nomUtilisateur,
                 adresse,
@@ -265,21 +350,35 @@ public class UtilisateurAccess {
                 sel));
     }
 
-    public static void save(Boolean personnePhysique,
-                            String avs,
-                            TitreCivil titreCivil,
-                            String nomUtilisateur,
-                            String prenom,
-                            Calendar dateDeNaissance,
-                            Sexe sexe,
-                            Nationalite nationalite,
-                            Adresse adresse,
-                            String email,
-                            String pseudo,
-                            String motDePasse,
-                            String sel) {
-        DatabaseAccess.save(new Utilisateur(
-                personnePhysique,
+    /**
+     * Stocke l'utilisateur définit par les paramètres
+     *
+     * @param avs             avs de l'utilisateur à stocker
+     * @param titreCivil      titre civil de l'utilisateur à stocker
+     * @param nomUtilisateur  nom de l'utilisateur à stocker
+     * @param prenom          prénom de l'utilisateur à stocker
+     * @param dateDeNaissance date de naissance de l'utilisateur à stocker
+     * @param sexe            sexe de l'utilisateur à stocker
+     * @param nationalite     nationalité de l'utilisateur à stocker
+     * @param adresse         adresse de l'utilisateur à stocker
+     * @param email           email de l'utilisateur à stocker
+     * @param pseudo          pseudo de l'utilisateur à stocker
+     * @param motDePasse      mot de passe de l'utilisateur à stocker
+     * @param sel             sel de l'utilisateur à stocker
+     */
+    public void save(String avs,
+                     TitreCivil titreCivil,
+                     String nomUtilisateur,
+                     String prenom,
+                     Calendar dateDeNaissance,
+                     Sexe sexe,
+                     Nationalite nationalite,
+                     Adresse adresse,
+                     String email,
+                     String pseudo,
+                     String motDePasse,
+                     String sel) {
+        databaseAccess.save(new Utilisateur(true,
                 avs,
                 titreCivil,
                 nomUtilisateur,
@@ -294,23 +393,45 @@ public class UtilisateurAccess {
                 sel));
     }
 
-    public static void update(Integer idUtilisateur,
-                              Boolean personnePhysique,
-                              String avs,
-                              TitreCivil titreCivil,
-                              String nomUtilisateur,
-                              String prenom,
-                              Calendar dateDeNaissance,
-                              Sexe sexe,
-                              Adresse adresse,
-                              Nationalite nationalite,
-                              String email,
-                              String pseudo,
-                              String motDePasse,
-                              String sel) {
-        Utilisateur utilisateur = DatabaseAccess.get(Utilisateur.class, idUtilisateur);
+    /**
+     * Met à jour l'utilisateur correspondant aux paramètres
+     * Chaque paramètre de valeurs null ne se mettre pas à jour
+     *
+     * @param idUtilisateur    identifiant de l'utilisateur à mettre à jour
+     * @param personnePhysique personnePhysique de l'utilisateur à mettre à jour
+     * @param avs              avs de l'utilisateur à mettre à jour
+     * @param titreCivil       titre civil de l'utilisateur à mettre à jour
+     * @param nomUtilisateur   nom de l'utilisateur à mettre à jour
+     * @param prenom           prénom de l'utilisateur à mettre à jour
+     * @param dateDeNaissance  date de naissance de l'utilisateur à mettre à jour
+     * @param sexe             sexe de l'utilisateur à mettre à jour
+     * @param nationalite      nationalité de l'utilisateur à mettre à jour
+     * @param adresse          adresse de l'utilisateur à mettre à jour
+     * @param email            email de l'utilisateur à mettre à jour
+     * @param pseudo           pseudo de l'utilisateur à mettre à jour
+     * @param motDePasse       mot de passe de l'utilisateur à mettre à jour
+     * @param sel              sel de l'utilisateur à mettre à jour
+     */
+    public void update(Integer idUtilisateur,
+                       Boolean personnePhysique,
+                       String avs,
+                       TitreCivil titreCivil,
+                       String nomUtilisateur,
+                       String prenom,
+                       Calendar dateDeNaissance,
+                       Sexe sexe,
+                       Adresse adresse,
+                       Nationalite nationalite,
+                       String email,
+                       String pseudo,
+                       String motDePasse,
+                       String sel) {
+        Utilisateur utilisateur = databaseAccess.get(Utilisateur.class, idUtilisateur);
 
+        // Vérifie si la requête a abouti
         if (utilisateur != null) {
+
+            // Affecte les nouveaux attributs à l'utilisateur
             setAll(utilisateur,
                     personnePhysique,
                     avs,
@@ -325,37 +446,71 @@ public class UtilisateurAccess {
                     pseudo,
                     motDePasse,
                     sel);
-            DatabaseAccess.update(utilisateur);
+            databaseAccess.update(utilisateur);
         }
     }
 
-    public static void update(Boolean oldPersonnePhysique,
-                              String oldAvs,
-                              TitreCivil oldTitreCivil,
-                              String oldNomUtilisateur,
-                              String oldPrenom,
-                              Calendar oldDateDeNaissance,
-                              Sexe oldSexe,
-                              Nationalite oldNationalite,
-                              Adresse oldAdresse,
-                              String oldEmail,
-                              String oldPseudo,
-                              String oldMotDePasse,
-                              String oldSel,
-                              Calendar creation,
-                              Boolean newPersonnePhysique,
-                              String newAvs,
-                              TitreCivil newTitreCivil,
-                              String newNomUtilisateur,
-                              String newPrenom,
-                              Calendar newDateDeNaissance,
-                              Sexe newSexe,
-                              Nationalite newNationalite,
-                              Adresse newAdresse,
-                              String newEmail,
-                              String newPseudo,
-                              String newMotDePasse,
-                              String newSel) {
+    /**
+     * Met à jour les utilisateurs correspondant aux paramètres préfixés de old en leur
+     * affectant les paramètres préfixés de new
+     * Chaque paramètre préfixés de old différent de null sera utilisé comme critère de recherche
+     * Chaque paramètre préfixés de new de valeurs null ne se mettre pas à jour
+     *
+     * @param oldPersonnePhysique ancien personnnePhysique des utilisateurs à mettre à jour
+     * @param oldAvs              ancien avs des utilisateurs à mettre à jour
+     * @param oldTitreCivil       ancien des utilisateurs à mettre à jour
+     * @param oldNomUtilisateur   ancien nom des utilisateurs à mettre à jour
+     * @param oldPrenom           ancien prénom des utilisateurs à mettre à jour
+     * @param oldDateDeNaissance  ancienne date de naissance des utilisateurs à mettre à jour
+     * @param oldSexe             ancien sexe des utilisateurs à mettre à jour
+     * @param oldNationalite      ancienne nationalité des utilisateurs à mettre à jour
+     * @param oldAdresse          ancienne adresse des utilisateurs à mettre à jour
+     * @param oldEmail            ancien email des utilisateurs à mettre à jour
+     * @param oldPseudo           ancien pseudo des utilisateurs à mettre à jour
+     * @param oldMotDePasse       anicen mot de passe des utilisateurs à mettre à jour
+     * @param oldSel              ancien sel des utilisateurs à mettre à jour
+     * @param creation            date de création des utilisateurs à mettre à jour
+     * @param newPersonnePhysique nouvelle personnePhysique des utilisateurs à mettre à jour
+     * @param newAvs              nouveau avs des utilisateurs à mettre à jour
+     * @param newTitreCivil       nouveeau titre civil des utilisateurs à mettre à jour
+     * @param newNomUtilisateur   nouveau nom des utilisateurs à mettre à jour
+     * @param newPrenom           nouveau prénom des utilisateurs à mettre à jour
+     * @param newDateDeNaissance  nouvelle date de naissance des utilisateurs à mettre à jour
+     * @param newSexe             nouveau sexe des utilisateurs à mettre à jour
+     * @param newNationalite      nouvelle nationalité des utilisateurs à mettre à jour
+     * @param newAdresse          nouvelle adresse des utilisateurs à mettre à jour
+     * @param newEmail            nouvel email des utilisateurs à mettre à jour
+     * @param newPseudo           nouveau pseudo des utilisateurs à mettre à jour
+     * @param newMotDePasse       nouveau mot de passe des utilisateurs à mettre à jour
+     * @param newSel              nouveau sel des utilisateurs à mettre à jour
+     */
+    public void update(Boolean oldPersonnePhysique,
+                       String oldAvs,
+                       TitreCivil oldTitreCivil,
+                       String oldNomUtilisateur,
+                       String oldPrenom,
+                       Calendar oldDateDeNaissance,
+                       Sexe oldSexe,
+                       Nationalite oldNationalite,
+                       Adresse oldAdresse,
+                       String oldEmail,
+                       String oldPseudo,
+                       String oldMotDePasse,
+                       String oldSel,
+                       Calendar creation,
+                       Boolean newPersonnePhysique,
+                       String newAvs,
+                       TitreCivil newTitreCivil,
+                       String newNomUtilisateur,
+                       String newPrenom,
+                       Calendar newDateDeNaissance,
+                       Sexe newSexe,
+                       Nationalite newNationalite,
+                       Adresse newAdresse,
+                       String newEmail,
+                       String newPseudo,
+                       String newMotDePasse,
+                       String newSel) {
         List<Utilisateur> utilisateurList = get(
                 oldPersonnePhysique,
                 oldAvs,
@@ -372,7 +527,10 @@ public class UtilisateurAccess {
                 oldSel,
                 creation);
 
+        // Vérifie si la requête a abouti
         if (utilisateurList != null) {
+
+            // Affecte les nouveaux attributs aux utilisateurs
             for (Utilisateur utilisateur : utilisateurList) {
                 setAll(utilisateur,
                         newPersonnePhysique,
@@ -388,25 +546,46 @@ public class UtilisateurAccess {
                         newPseudo,
                         newMotDePasse,
                         newSel);
-                DatabaseAccess.update(utilisateurList);
+                databaseAccess.update(utilisateurList);
             }
         }
     }
 
-    public static void delete(Boolean personnePhysique,
-                              String avs,
-                              TitreCivil titreCivil,
-                              String nomUtilisateur,
-                              String prenom,
-                              Calendar dateDeNaissance,
-                              Sexe sexe,
-                              Nationalite nationalite,
-                              Adresse adresse,
-                              String email,
-                              String pseudo,
-                              String motDePasse,
-                              String sel,
-                              Calendar creation) {
+    /**
+     * Supprime les utilisateurs correspondant aux paramètres
+     * Chaque paramètre différent de null sera utilisé comme critère de recherche
+     *
+     * @param personnePhysique personnePhysique des utilisateurs à supprimer
+     * @param avs              avs des utilisateurs à supprimer
+     * @param titreCivil       titre civil des utilisateurs à supprimer
+     * @param nomUtilisateur   nom des utilisateurs à supprimer
+     * @param prenom           prénom des utilisateurs à supprimer
+     * @param dateDeNaissance  date de naissance des utilisateurs à supprimer
+     * @param sexe             sexe des utilisateurs à supprimer
+     * @param nationalite      nationalité des utilisateurs à supprimer
+     * @param adresse          adresse des utilisateurs à supprimer
+     * @param email            email des utilisateurs à supprimer
+     * @param pseudo           pseudo des utilisateurs à supprimer
+     * @param motDePasse       mot de passe des utilisateurs à supprimer
+     * @param sel              sel des utilisateurs à supprimer
+     */
+    public void delete(Boolean personnePhysique,
+                       String avs,
+                       TitreCivil titreCivil,
+                       String nomUtilisateur,
+                       String prenom,
+                       Calendar dateDeNaissance,
+                       Sexe sexe,
+                       Nationalite nationalite,
+                       Adresse adresse,
+                       String email,
+                       String pseudo,
+                       String motDePasse,
+                       String sel,
+                       Calendar creation) {
+
+        // Définit les paramètres de la requête en fonction de la valeurs des paramètres de
+        // l'utilisateur
         checkNull(titreCivil, sexe, nationalite, adresse);
         delete(personnePhysique,
                 avs,
@@ -427,24 +606,46 @@ public class UtilisateurAccess {
                 creation);
     }
 
-    public static void delete(Boolean personnePhysique,
-                              String avs,
-                              String titre,
-                              String abreviation,
-                              String nomUtilisateur,
-                              String prenom,
-                              Calendar dateDeNaissance,
-                              String nomSexe,
-                              String nomNationalite,
-                              String nomRue,
-                              String numeroDeRue,
-                              String numeroNpa,
-                              String email,
-                              String pseudo,
-                              String motDePasse,
-                              String sel,
-                              Calendar creation) {
-        DatabaseAccess.delete(get(
+    /**
+     * Supprime les utilisateurs correspondant aux paramètres
+     * Chaque paramètre différent de null sera utilisé comme critère de recherche
+     *
+     * @param personnePhysique personnePhysique des utilisateurs à supprimer
+     * @param avs              avs des utilisateurs à supprimer
+     * @param titre            titredu titre civil des utilisateurs à supprimer
+     * @param abreviation      abreviation des utilisateurs à supprimer
+     * @param nomUtilisateur   nom des utilisateurs à supprimer
+     * @param prenom           prénom des utilisateurs à supprimer
+     * @param dateDeNaissance  date de naissance des utilisateurs à supprimer
+     * @param nomSexe          nom du sexe des utilisateurs à supprimer
+     * @param nomNationalite   nom de la nationalité des utilisateurs à supprimer
+     * @param nomRue           nom de la rue de l'adresse des utilisateurs à supprimer
+     * @param numeroDeRue      numéro de la rue de l'adresse des utilisateurs à supprimer
+     * @param numeroNpa        numéro npa de l'adresse des utilisateurs à supprimer
+     * @param email            email des utilisateurs à supprimer
+     * @param pseudo           pseudo des utilisateurs à supprimer
+     * @param motDePasse       mot de passe des utilisateurs à supprimer
+     * @param sel              sel des utilisateurs à supprimer
+     * @param creation         date de création des utilisateurs à supprimer
+     */
+    public void delete(Boolean personnePhysique,
+                       String avs,
+                       String titre,
+                       String abreviation,
+                       String nomUtilisateur,
+                       String prenom,
+                       Calendar dateDeNaissance,
+                       String nomSexe,
+                       String nomNationalite,
+                       String nomRue,
+                       String numeroDeRue,
+                       String numeroNpa,
+                       String email,
+                       String pseudo,
+                       String motDePasse,
+                       String sel,
+                       Calendar creation) {
+        databaseAccess.delete(get(
                 personnePhysique,
                 avs,
                 titre,
@@ -464,47 +665,38 @@ public class UtilisateurAccess {
                 creation));
     }
 
-    public static void save(String avs,
-                            TitreCivil titreCivil,
-                            String nomUtilisateur,
-                            String prenom,
-                            Calendar dateDeNaissance,
-                            Sexe sexe,
-                            Nationalite nationalite,
-                            Adresse adresse,
-                            String email,
-                            String pseudo,
-                            String motDePasse,
-                            String sel) {
-        DatabaseAccess.save(new Utilisateur(true,
-                avs,
-                titreCivil,
-                nomUtilisateur,
-                prenom,
-                dateDeNaissance,
-                sexe,
-                nationalite,
-                adresse,
-                email,
-                pseudo,
-                motDePasse,
-                sel));
-    }
-
-    private static void setAll(Utilisateur utilisateur,
-                               Boolean personnePhysique,
-                               String avs,
-                               TitreCivil titreCivil,
-                               String nomUtilisateur,
-                               String prenom,
-                               Calendar dateDeNaissance,
-                               Sexe sexe,
-                               Nationalite nationalite,
-                               Adresse adresse,
-                               String email,
-                               String pseudo,
-                               String motDePasse,
-                               String sel) {
+    /**
+     * Affecte les paramètres de l'utilisateur si ils ne sont pas null
+     *
+     * @param utilisateur      utilisateur dont il faut définir les paramètres
+     * @param personnePhysique personnePhysique de l'utilisateur
+     * @param avs              avs de l'utilisateur
+     * @param titreCivil       titre civil de l'utilisateur
+     * @param nomUtilisateur   nom de l'utilisateur
+     * @param prenom           prénom de l'utilisateur
+     * @param dateDeNaissance  date de naissance de l'utilisateur
+     * @param sexe             sexe de l'utilisateur
+     * @param nationalite      nationalité de l'utilisateur
+     * @param adresse          adresse de l'utilisateur
+     * @param email            email de l'utilisateur
+     * @param pseudo           pseudo de l'utilisateur
+     * @param motDePasse       mot de passe de l'utilisateur
+     * @param sel              sel de l'utilisateur
+     */
+    private void setAll(Utilisateur utilisateur,
+                        Boolean personnePhysique,
+                        String avs,
+                        TitreCivil titreCivil,
+                        String nomUtilisateur,
+                        String prenom,
+                        Calendar dateDeNaissance,
+                        Sexe sexe,
+                        Nationalite nationalite,
+                        Adresse adresse,
+                        String email,
+                        String pseudo,
+                        String motDePasse,
+                        String sel) {
         if (personnePhysique != null) {
             utilisateur.setPersonnePhysique(personnePhysique);
         }
@@ -558,10 +750,19 @@ public class UtilisateurAccess {
         }
     }
 
-    private static void checkNull(TitreCivil titreCivil,
-                                  Sexe sexe,
-                                  Nationalite nationalite,
-                                  Adresse adresse) {
+    /**
+     * Définit les paramètres de la requête en fonction de la valeurs des paramètres de
+     * l'utilisateur
+     *
+     * @param titreCivil  titre civil à vérifier
+     * @param sexe        sexe à vérifier
+     * @param nationalite nationalié à vérifier
+     * @param adresse     adresse à vérifier
+     */
+    private void checkNull(TitreCivil titreCivil,
+                           Sexe sexe,
+                           Nationalite nationalite,
+                           Adresse adresse) {
         titre = titreCivil != null ? titreCivil.getTitre() : null;
         abreviation = titreCivil != null ? titreCivil.getAbreviation() : null;
         nomSexe = sexe != null ? sexe.getNomSexe() : null;
@@ -571,6 +772,9 @@ public class UtilisateurAccess {
         numeroNpa = adresse != null ? adresse.getNpa().getNumeroNpa() : null;
     }
 
+    /**
+     * Utilisé pour créer un singleton de la classe
+     */
     private static class SingletonHolder {
         private static final UtilisateurAccess instance = new UtilisateurAccess();
     }

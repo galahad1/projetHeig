@@ -13,62 +13,112 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.logging.Logger;
 
+/**
+ * Fournit l'accès aux commentaires de la base de données
+ *
+ * @author Lassalle Loan
+ * @since 25.03.2017
+ */
 public class CommentaireAccess {
 
-    private static String nomEvenement;
-    private static String nomUtilisateur;
-
+    /**
+     * Utilisé pour accéder aux fichiers de propriétés
+     */
     private final ConfigurationManager configurationManager;
+
+    /**
+     * Utilisé pour journaliser les actions effectuées
+     */
     private final Logger logger;
+
+    /**
+     * Utilisé pour la connexion à la base de données
+     */
     private final Hibernate hibernate;
+
+    /**
+     * Utilisé pour des accès génériques à la base de données
+     */
+    private final DatabaseAccess databaseAccess;
+
+    /**
+     * Utilisé pour définir les paramètres de la requête en fonction de la valeurs des paramètres
+     * d'un commentaire
+     */
+    private String nomEvenement;
+    private String nomUtilisateur;
 
     private CommentaireAccess() {
         configurationManager = ConfigurationManager.getInstance();
         logger = Logger.getLogger(getClass().getName());
         hibernate = Hibernate.getInstance();
+        databaseAccess = DatabaseAccess.getInstance();
     }
 
+    /**
+     * Fournit l'unique instance de la classe (singleton)
+     *
+     * @return unique instance de la classe
+     */
     public static CommentaireAccess getInstance() {
         return SingletonHolder.instance;
     }
 
-    private static ConfigurationManager getConfigurationManager() {
-        return getInstance().configurationManager;
-    }
+    /**
+     * Obtient la liste des commentaires stockés au sein de la base de données en fonction des
+     * paramètres
+     * Chaque paramètre différent de null sera utilisé comme critère de recherche
+     *
+     * @param evenement   événement des commentaires à obtenir
+     * @param utilisateur utilisateur des commentaires à obtenir
+     * @param commentaire commentaire texte des commentaires à obtenir
+     * @param creation    date de création des commentaires à otbenir
+     * @return liste des commentaires stockés au sein de la base de données en fonction
+     * des paramètres
+     */
+    public List<Commentaire> get(Evenement evenement,
+                                 Utilisateur utilisateur,
+                                 String commentaire,
+                                 Calendar creation) {
 
-    private static Logger getLogger() {
-        return getInstance().logger;
-    }
-
-    private static Hibernate getHibernate() {
-        return getInstance().hibernate;
-    }
-
-    public static List<Commentaire> get(Evenement evenement,
-                                        Utilisateur utilisateur,
-                                        String commentaire,
-                                        Calendar creation) {
+        // Définit les paramètres de la requête en fonction de la valeurs des paramètres du
+        // commentaire
         checkNull(evenement, utilisateur);
         return get(nomEvenement, nomUtilisateur, commentaire, creation);
     }
 
-    public static List<Commentaire> get(String nomEvenement,
-                                        String nomUtilisateur,
-                                        String commentaire,
-                                        Calendar creation) {
+    /**
+     * Obtient la liste des commentaires stockés au sein de la base de données en fonction des
+     * paramètres
+     * Chaque paramètre différent de null sera utilisé comme critère de recherche
+     *
+     * @param nomEvenement   nom de l'événement des commentaires à obtenir
+     * @param nomUtilisateur nom de l'utilisateur des commentaires à obtenir
+     * @param commentaire    commentaire texte des commentaires à obtenir
+     * @param creation       date de création des commentaires à otbenir
+     * @return liste des commentaires stockés au sein de la base de données en fonction
+     * des paramètres
+     */
+    public List<Commentaire> get(String nomEvenement,
+                                 String nomUtilisateur,
+                                 String commentaire,
+                                 Calendar creation) {
         List<Commentaire> commentaireList = null;
 
         Session session = null;
         Transaction transaction = null;
 
         try {
-            session = getHibernate().openSession();
+            // Démarre une transaction pour la gestion d'erreur
+            session = hibernate.getSession();
             transaction = session.beginTransaction();
 
-            CriteriaBuilder criteriaBuilder = getHibernate().getCriteriaBuilder();
+            // Définit des critères de sélection pour la requête
+            CriteriaBuilder criteriaBuilder = hibernate.getCriteriaBuilder();
             CriteriaQuery<Commentaire> criteriaQuery = criteriaBuilder
                     .createQuery(Commentaire.class);
 
+            // Liaison avec différentes tables
             Root<Commentaire> commentaireRoot = criteriaQuery.from(Commentaire.class);
             Join<Commentaire, IdCommentaire> commentaireIdCommentaireJoin =
                     commentaireRoot.join(Commentaire_.idCommentaire);
@@ -78,6 +128,8 @@ public class CommentaireAccess {
                     commentaireIdCommentaireJoin.join(IdCommentaire_.utilisateur);
             List<Predicate> predicateList = new ArrayList<>();
 
+            // Définit seulement les critères de sélection pour la requête des paramètres non null
+            // et non vide
             if (nomEvenement != null && !nomEvenement.isEmpty()) {
                 predicateList.add(criteriaBuilder.equal(
                         idCommentaireEvenementJoin.get(Evenement_.nomEvenement),
@@ -92,106 +144,184 @@ public class CommentaireAccess {
 
             if (commentaire != null && !commentaire.isEmpty()) {
                 predicateList.add(criteriaBuilder.equal(
-                        commentaireRoot.get(Commentaire_.commentaire), commentaire.toLowerCase()));
+                        commentaireRoot.get(Commentaire_.commentaire),
+                        commentaire.toLowerCase()));
             }
 
             if (creation != null) {
                 predicateList.add(criteriaBuilder.greaterThanOrEqualTo(
-                        commentaireRoot.get(Commentaire_.creation), creation));
+                        commentaireRoot.get(Commentaire_.creation),
+                        creation));
             }
 
             criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
-            commentaireList = getHibernate().createQuery(criteriaQuery).getResultList();
+            commentaireList = hibernate.createQuery(criteriaQuery).getResultList();
 
             transaction.commit();
         } catch (Exception e) {
-            DatabaseAccess.rollback(e, transaction);
-        } finally {
-            DatabaseAccess.close(session);
+            databaseAccess.rollback(e, transaction);
         }
 
-        getLogger().info(String.format(
-                getConfigurationManager().getString("databaseAccess.results"),
+        databaseAccess.close(session);
+
+        // Journalise l'état de la transaction et le résultat
+        databaseAccess.transactionMessage(transaction);
+        logger.info(String.format(
+                configurationManager.getString("databaseAccess.results"),
                 commentaireList != null ? commentaireList.size() : 0,
                 Commentaire.class.getSimpleName()));
 
         return commentaireList;
     }
 
-    public static void save(Evenement evenement, Utilisateur utilisateur, String commentaire) {
-        DatabaseAccess.save(new Commentaire(new IdCommentaire(evenement, utilisateur), commentaire));
+    /**
+     * Stocke le commentaire définit par les paramètres
+     *
+     * @param evenement   événement du commentaire à stocker
+     * @param utilisateur utilisateur du commentaire à stocker
+     * @param commentaire commentaire texte du commentaire à stocker
+     */
+    public void save(Evenement evenement, Utilisateur utilisateur, String commentaire) {
+        databaseAccess.save(new Commentaire(new IdCommentaire(evenement, utilisateur), commentaire));
     }
 
-    public static void update(Integer idCommentaire,
-                              Evenement evenement,
-                              Utilisateur utilisateur,
-                              String commentaire) {
-        Commentaire objCommentaire = DatabaseAccess.get(Commentaire.class, idCommentaire);
+    /**
+     * Met à jour le commentaire correspondant aux paramètres
+     * Chaque paramètre de valeurs null ne se mettre pas à jour
+     *
+     * @param idCommentaire identifiant du commentaire à mettre à jour
+     * @param evenement     événement du commentaire à mettre à jour
+     * @param utilisateur   utilisateur du commentaire à mettre à jour
+     * @param commentaire   commentaire texte du commentaire à mettre à jour
+     */
+    public void update(Integer idCommentaire,
+                       Evenement evenement,
+                       Utilisateur utilisateur,
+                       String commentaire) {
+        Commentaire objCommentaire = databaseAccess.get(Commentaire.class, idCommentaire);
 
+        // Vérifie si la requête a abouti
         if (objCommentaire != null) {
+
+            // Affecte les nouveaux attributs au commentaire
             setAll(objCommentaire, evenement, utilisateur, commentaire);
-            DatabaseAccess.update(objCommentaire);
+            databaseAccess.update(objCommentaire);
         }
     }
 
-    public static void update(Evenement oldEvenement,
-                              Utilisateur oldUtilisateur,
-                              String oldCommentaire,
-                              Calendar creation,
-                              Evenement newEvenement,
-                              Utilisateur newUtilisateur,
-                              String newCommentaire) {
+    /**
+     * Met à jour les commentairess correspondant aux paramètres préfixés de old en leur affectant
+     * les paramètres préfixés de new
+     * Chaque paramètre préfixés de old différent de null sera utilisé comme critère de recherche
+     * Chaque paramètre préfixés de new de valeurs null ne se mettre pas à jour
+     *
+     * @param oldEvenement   ancien événement des commentaires à mettre à jour
+     * @param oldUtilisateur ancien utilisateur des commentaires à mettre à jour
+     * @param oldCommentaire ancien commentaire texte des commentaires à mettre à jour
+     * @param creation       date de création des commentaires à mettre à jour
+     * @param newEvenement   nouveau événement des commentaires à mettre à jour
+     * @param newUtilisateur nouveau utilisateur des commentaires à mettre à jour
+     * @param newCommentaire nouveau commentaire texte des commentaires à mettre à jour
+     */
+    public void update(Evenement oldEvenement,
+                       Utilisateur oldUtilisateur,
+                       String oldCommentaire,
+                       Calendar creation,
+                       Evenement newEvenement,
+                       Utilisateur newUtilisateur,
+                       String newCommentaire) {
         List<Commentaire> commentaireList = get(oldEvenement,
                 oldUtilisateur,
                 oldCommentaire,
                 creation);
 
+        // Vérifie si la requête a abouti
         if (commentaireList != null) {
+
+            // Affecte les nouveaux attributs aux commentaires
             for (Commentaire commentaire : commentaireList) {
                 setAll(commentaire, newEvenement, newUtilisateur, newCommentaire);
             }
 
-            DatabaseAccess.update(commentaireList);
+            databaseAccess.update(commentaireList);
         }
     }
 
-    public static void delete(Evenement evenement,
-                              Utilisateur utilisateur,
-                              String commentaire,
-                              Calendar creation) {
+    /**
+     * Supprime les commentaires correspondant aux paramètres
+     * Chaque paramètre différent de null sera utilisé comme critère de recherche
+     *
+     * @param evenement   événement des commentaires à supprimer
+     * @param utilisateur utilisateur des commentaires à supprimer
+     * @param commentaire commentaire texte des commentaires à supprimer
+     * @param creation    date de création des commentaires à supprimer
+     */
+    public void delete(Evenement evenement,
+                       Utilisateur utilisateur,
+                       String commentaire,
+                       Calendar creation) {
+
+        // Définit les paramètres de la requête en fonction de la valeurs des paramètres du
+        // commentaire
         checkNull(evenement, utilisateur);
         delete(nomEvenement, nomUtilisateur, commentaire, creation);
     }
 
-    public static void delete(String nomEvenement,
-                              String nomUtilisateur,
-                              String commentaire,
-                              Calendar creation) {
-        DatabaseAccess.delete(get(nomEvenement, nomUtilisateur, commentaire, creation));
+    /**
+     * Supprime les commentaires correspondant aux paramètres
+     * Chaque paramètre différent de null sera utilisé comme critère de recherche
+     *
+     * @param nomEvenement   nom de l'événement des commentaires à supprimer
+     * @param nomUtilisateur nom de l'utilisateur des commentaires à supprimer
+     * @param commentaire    commentaire texte des commentaires à supprimer
+     * @param creation       date de création des commentaires à supprimer
+     */
+    public void delete(String nomEvenement,
+                       String nomUtilisateur,
+                       String commentaire,
+                       Calendar creation) {
+        databaseAccess.delete(get(nomEvenement, nomUtilisateur, commentaire, creation));
     }
 
-    private static void setAll(Commentaire objCommentaire,
-                               Evenement evenement,
-                               Utilisateur utilisateur,
-                               String commentaire) {
+    /**
+     * Affecte les paramètres au commentaire si ils ne sont pas null
+     *
+     * @param commentaire    commentaire dont il faut définir les paramètres
+     * @param evenement      événement du commenaire
+     * @param utilisateur    utilisateur du commenaire
+     * @param strCommentaire commentaire texte du commenaire
+     */
+    private void setAll(Commentaire commentaire,
+                        Evenement evenement,
+                        Utilisateur utilisateur,
+                        String strCommentaire) {
         if (evenement != null) {
-            objCommentaire.setEvenement(evenement);
+            commentaire.setEvenement(evenement);
         }
 
         if (utilisateur != null) {
-            objCommentaire.setUtilisateur(utilisateur);
+            commentaire.setUtilisateur(utilisateur);
         }
 
-        if (commentaire != null) {
-            objCommentaire.setCommentaire(commentaire);
+        if (strCommentaire != null) {
+            commentaire.setCommentaire(strCommentaire);
         }
     }
 
-    private static void checkNull(Evenement evenement, Utilisateur utilisateur) {
+    /**
+     * Définit les paramètres de la requête en fonction de la valeurs des paramètres du commentaire
+     *
+     * @param evenement   evenement à vérifier
+     * @param utilisateur utilisateur à vérifier
+     */
+    private void checkNull(Evenement evenement, Utilisateur utilisateur) {
         nomEvenement = evenement != null ? evenement.getNomEvenement() : null;
         nomUtilisateur = utilisateur != null ? utilisateur.getNomUtilisateur() : null;
     }
 
+    /**
+     * Utilisé pour créer un singleton de la classe
+     */
     private static class SingletonHolder {
         private static final CommentaireAccess instance = new CommentaireAccess();
     }

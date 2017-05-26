@@ -16,50 +16,77 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+/**
+ * Fournit l'accès aux rues de la base de données
+ *
+ * @author Lassalle Loan
+ * @since 25.03.2017
+ */
 public class RueAccess {
 
+    /**
+     * Utilisé pour accéder aux fichiers de propriétés
+     */
     private final ConfigurationManager configurationManager;
+
+    /**
+     * Utilisé pour journaliser les actions effectuées
+     */
     private final Logger logger;
+
+    /**
+     * Utilisé pour la connexion à la base de données
+     */
     private final Hibernate hibernate;
+
+    /**
+     * Utilisé pour des accès génériques à la base de données
+     */
+    private final DatabaseAccess databaseAccess;
 
     private RueAccess() {
         configurationManager = ConfigurationManager.getInstance();
         logger = Logger.getLogger(getClass().getName());
         hibernate = Hibernate.getInstance();
+        databaseAccess = DatabaseAccess.getInstance();
     }
 
+    /**
+     * Fournit l'unique instance de la classe (singleton)
+     *
+     * @return unique instance de la classe
+     */
     public static RueAccess getInstance() {
         return SingletonHolder.instance;
     }
 
-    private static ConfigurationManager getConfigurationManager() {
-        return getInstance().configurationManager;
-    }
-
-    private static Logger getLogger() {
-        return getInstance().logger;
-    }
-
-    private static Hibernate getHibernate() {
-        return getInstance().hibernate;
-    }
-
-    public static List<Rue> get(String nomRue) {
+    /**
+     * Obtient la liste des rues stockées au sein de la base de données en fonction des paramètres
+     * Chaque paramètre différent de null sera utilisé comme critère de recherche
+     *
+     * @param nomRue nom des rues à obtenir
+     * @return liste des rues stockées au sein de la base de données en fonction des paramètres
+     */
+    public List<Rue> get(String nomRue) {
         List<Rue> rueList = null;
 
         Session session = null;
         Transaction transaction = null;
 
         try {
-            session = getHibernate().openSession();
+            // Démarre une transaction pour la gestion d'erreur
+            session = hibernate.getSession();
             transaction = session.beginTransaction();
 
-            CriteriaBuilder criteriaBuilder = getHibernate().getCriteriaBuilder();
+            // Définit des critères de sélection pour la requête
+            CriteriaBuilder criteriaBuilder = hibernate.getCriteriaBuilder();
             CriteriaQuery<Rue> criteriaQuery = criteriaBuilder
                     .createQuery(Rue.class);
             Root<Rue> rueRoot = criteriaQuery.from(Rue.class);
             List<Predicate> predicateList = new ArrayList<>();
 
+            // Définit seulement les critères de sélection pour la requête des paramètres non null
+            // et non vide
             if (nomRue != null && !nomRue.isEmpty()) {
                 predicateList.add(criteriaBuilder.equal(rueRoot.get(
                         Rue_.nomRue),
@@ -67,58 +94,101 @@ public class RueAccess {
             }
 
             criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
-            rueList = getHibernate().createQuery(criteriaQuery).getResultList();
+            rueList = hibernate.createQuery(criteriaQuery).getResultList();
 
             transaction.commit();
         } catch (Exception e) {
-            DatabaseAccess.rollback(e, transaction);
-        } finally {
-            DatabaseAccess.close(session);
+            databaseAccess.rollback(e, transaction);
         }
 
-        getLogger().info(String.format(
-                getConfigurationManager().getString("databaseAccess.results"),
+        databaseAccess.close(session);
+
+        // Journalise l'état de la transaction et le résultat
+        databaseAccess.transactionMessage(transaction);
+        logger.info(String.format(
+                configurationManager.getString("databaseAccess.results"),
                 rueList != null ? rueList.size() : 0,
                 Rue.class.getSimpleName()));
 
         return rueList;
     }
 
-    public static void save(String nomRue) {
-        DatabaseAccess.save(new Rue(nomRue));
+    /**
+     * Stocke la rue définit par les paramètres
+     *
+     * @param nomRue nom de la rue à stocker
+     */
+    public void save(String nomRue) {
+        databaseAccess.save(new Rue(nomRue));
     }
 
-    public static void update(Integer idRue, String nomRue) {
-        Rue rue = DatabaseAccess.get(Rue.class, idRue);
+    /**
+     * Met à jour la rue correspondant aux paramètres
+     *
+     * @param idRue  identifiant de la rue à mettre à jour
+     * @param nomRue nom de la rue à mettre à jour
+     */
+    public void update(Integer idRue, String nomRue) {
+        Rue rue = databaseAccess.get(Rue.class, idRue);
 
+        // Vérifie si la requête a abouti
         if (rue != null) {
+
+            // Affecte les nouveaux attributs à la rue
             setAll(rue, nomRue);
-            DatabaseAccess.update(rue);
+            databaseAccess.update(rue);
         }
     }
 
-    public static void update(String oldNomRue, String newNomRue) {
+    /**
+     * Met à jour les rues correspondant aux paramètres préfixés de old en leur
+     * affectant les paramètres préfixés de new
+     * Chaque paramètre préfixés de old différent de null sera utilisé comme critère de recherche
+     * Chaque paramètre préfixés de new de valeurs null ne se mettre pas à jour
+     *
+     * @param oldNomRue ancien nom des rues à mettre à jour
+     * @param newNomRue nouveau nom des rues à mettre à jour
+     */
+    public void update(String oldNomRue, String newNomRue) {
         List<Rue> rueList = get(oldNomRue);
 
+        // Vérifie si la requête a abouti
         if (rueList != null) {
+
+            // Affecte les nouveaux attributs aux rues
             for (Rue rue : rueList) {
                 setAll(rue, newNomRue);
             }
 
-            DatabaseAccess.update(rueList);
+            databaseAccess.update(rueList);
         }
     }
 
-    public static void delete(String nomRue) {
-        DatabaseAccess.delete(get(nomRue));
+    /**
+     * Supprime les rues correspondant aux paramètres
+     * Chaque paramètre différent de null sera utilisé comme critère de recherche
+     *
+     * @param nomRue nom des rues à supprimer
+     */
+    public void delete(String nomRue) {
+        databaseAccess.delete(get(nomRue));
     }
 
-    private static void setAll(Rue rue, String nomRue) {
+    /**
+     * Affecte les paramètres de la rue si ils ne sont pas null
+     *
+     * @param rue    rue
+     * @param nomRue nom de la rue
+     */
+    private void setAll(Rue rue, String nomRue) {
         if (nomRue != null) {
             rue.setNomRue(nomRue);
         }
     }
 
+    /**
+     * Utilisé pour créer un singleton de la classe
+     */
     private static class SingletonHolder {
         private static final RueAccess instance = new RueAccess();
     }

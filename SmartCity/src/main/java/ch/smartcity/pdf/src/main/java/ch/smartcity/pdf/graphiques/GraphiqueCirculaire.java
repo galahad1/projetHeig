@@ -10,22 +10,29 @@ import org.jfree.data.general.DefaultPieDataset;
 import java.awt.*;
 import java.text.DecimalFormat;
 
-public class GraphiqueCirculaire {
+/**
+ * Classe qui génère un graphique circulaire
+ *
+ * @author Luana Martelli
+ */
+class GraphiqueCirculaire {
 
     /* Constructeur privé */
     private GraphiqueCirculaire() {
     }
 
     /**
-     * Fonction principale.
      * Crée un graphique circulaire
      *
-     * @return une instance représentant un graphique circulaire
+     * @param stats les statistiques relatives au graphique
+     * @return un nouveau graphe
      */
-    public static JFreeChart cree(int[] stats) {
+    @SuppressWarnings("deprecation")
+    static JFreeChart cree(int[] stats) {
 
         DefaultPieDataset pie = new DefaultPieDataset();
 
+        /* Ajout des données */
         for (int i = 0; i < stats.length; ++i) {
             if (stats[i] != 0)
                 pie.setValue(Mois.values()[i], stats[i]);
@@ -59,5 +66,4 @@ public class GraphiqueCirculaire {
 
         return chart;
     }
-
 }

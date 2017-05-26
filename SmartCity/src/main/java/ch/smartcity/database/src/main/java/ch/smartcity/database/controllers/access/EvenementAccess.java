@@ -13,74 +13,169 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.logging.Logger;
 
+/**
+ * Fournit l'accès aux événements de la base de données
+ *
+ * @author Lassalle Loan
+ * @since 25.03.2017
+ */
 public class EvenementAccess {
 
-    private static String nomRubriqueEnfant;
-    private static String nomUtilisateur;
-    private static String nomRue;
-    private static String numeroDeRue;
-    private static String numeroNpa;
-    private static String nomPriorite;
-    private static String nomStatut;
-
+    /**
+     * Utilisé pour accéder aux fichiers de propriétés
+     */
     private final ConfigurationManager configurationManager;
+
+    /**
+     * Utilisé pour journaliser les actions effectuées
+     */
     private final Logger logger;
+
+    /**
+     * Utilisé pour la connexion à la base de données
+     */
     private final Hibernate hibernate;
+
+    /**
+     * Utilisé pour des accès génériques à la base de données
+     */
+    private final DatabaseAccess databaseAccess;
+
+    /**
+     * Utilisé pour définir les paramètres de la requête en fonction de la valeurs des paramètres
+     * d'un événement
+     */
+    private String nomRubriqueEnfant;
+    private String nomUtilisateur;
+    private String nomRue;
+    private String numeroDeRue;
+    private String numeroNpa;
+    private String nomPriorite;
+    private String nomStatut;
 
     private EvenementAccess() {
         configurationManager = ConfigurationManager.getInstance();
         logger = Logger.getLogger(getClass().getName());
         hibernate = Hibernate.getInstance();
+        databaseAccess = DatabaseAccess.getInstance();
     }
 
+    /**
+     * Fournit l'unique instance de la classe (singleton)
+     *
+     * @return unique instance de la classe
+     */
     public static EvenementAccess getInstance() {
         return SingletonHolder.instance;
     }
 
-    private static ConfigurationManager getConfigurationManager() {
-        return getInstance().configurationManager;
+    /**
+     * Obtient la liste des événements actif, c'est à dire, les événements possédant le statut
+     * Statut_.TRAITE et une date de fin inférieure ou égale à la date courante
+     *
+     * @return liste des événements actif en fonction des paramètres de sélection
+     */
+    public List<Evenement> getActif() {
+        return get(null, null, Calendar.getInstance(), Statut_.TRAITE);
     }
 
-    private static Logger getLogger() {
-        return getInstance().logger;
+    /**
+     * Obtient la liste des événements actif, c'est à dire, les événements possédant un nom de la
+     * rubrique enfant fournit, une date de fin inférieure ou égale à la date fournit et le statut
+     * Statut_.TRAITE
+     *
+     * @param nomRubriqueEnfant nom de la rubrique enfant des événements à obtenir
+     * @param date              date de référence des événements à obtenir
+     * @return liste des événements actif en fonction des paramètres de sélection
+     */
+    public List<Evenement> getActif(String nomRubriqueEnfant, Calendar date) {
+        return get(nomRubriqueEnfant, date, date, Statut_.TRAITE);
     }
 
-    private static Hibernate getHibernate() {
-        return getInstance().hibernate;
+    /**
+     * Obtient la liste des événements attente, c'est à dire, les événements possédant le statut
+     * Statut_.EN_ATTENTE et une date de fin inférieure ou égale à la date courante
+     *
+     * @return liste des événements en attente en fonction des paramètres de sélection
+     */
+    public List<Evenement> getEnAttente() {
+        return get(null, null, Calendar.getInstance(), Statut_.EN_ATTENTE);
     }
 
-    public static List<Evenement> getActif() {
-        return getActif(null, null, Calendar.getInstance(), Statut_.TRAITE);
+    /**
+     * Obtient la liste des événements en attente, c'est à dire, les événements possédant un nom de la
+     * rubrique enfant fournit, une date de fin inférieure ou égale à la date fournit et le statut
+     * Statut_.EN_ATTENTE
+     *
+     * @param nomRubriqueEnfant nom de la rubrique enfant des événements à obtenir
+     * @param date              date de référence des événements à obtenir
+     * @return liste des événements en attente en fonction des paramètres de sélection
+     */
+    public List<Evenement> getEnAttente(String nomRubriqueEnfant, Calendar date) {
+        return get(nomRubriqueEnfant, date, date, Statut_.EN_ATTENTE);
     }
 
-    public static List<Evenement> getActif(String nomRubriqueEnfant,
-                                           Calendar date,
-                                           String nomStatut) {
-        return getActif(nomRubriqueEnfant, date, date, nomStatut);
+    /**
+     * Obtient la liste des événements stockés au sein de la base de données en fonction des
+     * paramètres
+     *
+     * @param nomEvenement nom des événements à obtenir
+     * @return liste des événements stockés au sein de la base de données en fonction des
+     * paramètres
+     */
+    public List<Evenement> get(String nomEvenement) {
+        return get(null,
+                null,
+                nomEvenement,
+                null,
+                null,
+                null,
+                null,
+                null,
+                "",
+                null,
+                null,
+                null);
     }
 
-    public static List<Evenement> getActif(String nomRubriqueEnfant,
-                                           Calendar debut,
-                                           Calendar fin,
-                                           String nomStatut) {
+    /**
+     * Obtient la liste des événements stockés au sein de la base de données en fonction des
+     * paramètres
+     *
+     * @param nomRubriqueEnfant nom de la rubrique enfant des événements à obtenir
+     * @param debut             date de début des événements à obtenir
+     * @param fin               date de fin des événements à obtenir
+     * @param nomStatut         nom du statut des événements à obtenir
+     * @return la liste des événements en fonction des paramètres de sélection
+     */
+    public List<Evenement> get(String nomRubriqueEnfant,
+                               Calendar debut,
+                               Calendar fin,
+                               String nomStatut) {
         List<Evenement> evenementList = null;
         RubriqueEnfant rubriqueEnfant = null;
         boolean success = true;
 
+        // Obtient la rubrique enfant correspondant au paramètres de sélection
         if (nomRubriqueEnfant != null && !nomRubriqueEnfant.isEmpty()) {
-            List<RubriqueEnfant> rubriqueEnfantList = RubriqueEnfantAccess.get(
-                    "",
-                    nomRubriqueEnfant);
+            List<RubriqueEnfant> rubriqueEnfantList = RubriqueEnfantAccess.getInstance()
+                    .get("", nomRubriqueEnfant);
             success = rubriqueEnfantList != null && rubriqueEnfantList.size() == 1;
+
             if (success) {
                 rubriqueEnfant = rubriqueEnfantList.get(0);
             }
         }
 
         if (success) {
-            List<Statut> statutList = StatutAccess.get(nomStatut);
+
+            // Obtient le statut correspondant au paramètres de sélection
+            List<Statut> statutList = StatutAccess.getInstance().get(nomStatut);
             success = statutList != null && statutList.size() == 1;
+
             if (success) {
+
+                // Obtient l'événement correspondant au paramètres de sélection
                 evenementList = get(
                         rubriqueEnfant,
                         null,
@@ -97,38 +192,46 @@ public class EvenementAccess {
             }
         }
 
-        if (success) {
-            getLogger().info(getConfigurationManager()
-                    .getString("databaseAccess.successInSubQuery"));
-
-        } else {
-            getLogger().info(getConfigurationManager()
-                    .getString("databaseAccess.errorInSubQuery"));
-        }
+        // Journalisation de l'exécution
+        logSuccess(success);
 
         return evenementList;
     }
 
-    public static List<Evenement> getEnAttente() {
-        return getActif(
-                null,
-                null,
-                Calendar.getInstance(),
-                Statut_.EN_ATTENTE);
-    }
+    /**
+     * Obtient la liste des événements stockés au sein de la base de données en fonction des
+     * paramètres
+     * Chaque paramètre différent de null sera utilisé comme critère de recherche
+     *
+     * @param rubriqueEnfant rubrique enfant des événements à obtenir
+     * @param utilisateur    utilisateur des événements à obtenir
+     * @param nomEvenement   nom d'événement des événements à obtenir
+     * @param adresse        adresse des événements à obtenir
+     * @param latitude       latitude des événements à obtenir
+     * @param longitude      longitude des événements à obtenir
+     * @param debut          date de début des événements à obtenir
+     * @param fin            date de fin des événements à obtenir
+     * @param details        détails des événements à obtenir
+     * @param priorite       priorité des événements à obtenir
+     * @param statut         statut des événements à obtenir
+     * @param creation       date de création des événements à obtenir
+     * @return liste des événements stockés au sein de la base de données en fonction des paramètres
+     */
+    public List<Evenement> get(RubriqueEnfant rubriqueEnfant,
+                               Utilisateur utilisateur,
+                               String nomEvenement,
+                               Adresse adresse,
+                               Double latitude,
+                               Double longitude,
+                               Calendar debut,
+                               Calendar fin,
+                               String details,
+                               Priorite priorite,
+                               Statut statut,
+                               Calendar creation) {
 
-    public static List<Evenement> get(RubriqueEnfant rubriqueEnfant,
-                                      Utilisateur utilisateur,
-                                      String nomEvenement,
-                                      Adresse adresse,
-                                      Double latitude,
-                                      Double longitude,
-                                      Calendar debut,
-                                      Calendar fin,
-                                      String details,
-                                      Priorite priorite,
-                                      Statut statut,
-                                      Calendar creation) {
+        // Définit les paramètres de la requête en fonction de la valeurs des paramètres de
+        // l'événement
         checkNull(rubriqueEnfant, utilisateur, adresse, priorite, statut);
         return get(nomRubriqueEnfant,
                 nomUtilisateur,
@@ -146,32 +249,56 @@ public class EvenementAccess {
                 creation);
     }
 
-    public static List<Evenement> get(String nomRubriqueEnfant,
-                                      String nomUtilisateur,
-                                      String nomEvenement,
-                                      String nomRue,
-                                      String numeroDeRue,
-                                      String numeroNpa,
-                                      Double latitude,
-                                      Double longitude,
-                                      Calendar debut,
-                                      Calendar fin,
-                                      String details,
-                                      String nomPriorite,
-                                      String nomStatut,
-                                      Calendar creation) {
+    /**
+     * Obtient la liste des événements stockés au sein de la base de données en fonction des
+     * paramètres
+     * Chaque paramètre différent de null sera utilisé comme critère de recherche
+     *
+     * @param nomRubriqueEnfant nom de la rubrique enfant des événements à obtenir
+     * @param nomUtilisateur    nom de l'utilisateur des événements à obtenir
+     * @param nomEvenement      nom d'événement des événements à obtenir
+     * @param nomRue            nom de la rue de l'adresse des événements à obtenir
+     * @param numeroDeRue       numéro de rue de l'adresse des événements à obtenir
+     * @param numeroNpa         numéro npa de l'adresse des événements à obtenir
+     * @param latitude          latitude des événements à obtenir
+     * @param longitude         longitude des événements à obtenir
+     * @param debut             date de début des événements à obtenir
+     * @param fin               date de fin des événements à obtenir
+     * @param details           détails des événements à obtenir
+     * @param nomPriorite       nom de la priorité des événements à obtenir
+     * @param nomStatut         nom du statut des événements à obtenir
+     * @param creation          date de création des événements à obtenir
+     * @return liste des événements stockés au sein de la base de données en fonction des paramètres
+     */
+    public List<Evenement> get(String nomRubriqueEnfant,
+                               String nomUtilisateur,
+                               String nomEvenement,
+                               String nomRue,
+                               String numeroDeRue,
+                               String numeroNpa,
+                               Double latitude,
+                               Double longitude,
+                               Calendar debut,
+                               Calendar fin,
+                               String details,
+                               String nomPriorite,
+                               String nomStatut,
+                               Calendar creation) {
         List<Evenement> evenementList = null;
 
         Session session = null;
         Transaction transaction = null;
 
         try {
-            session = getHibernate().openSession();
+            // Démarre une transaction pour la gestion d'erreur
+            session = hibernate.getSession();
             transaction = session.beginTransaction();
 
-            CriteriaBuilder criteriaBuilder = getHibernate().getCriteriaBuilder();
+            // Définit des critères de sélection pour la requête
+            CriteriaBuilder criteriaBuilder = hibernate.getCriteriaBuilder();
             CriteriaQuery<Evenement> criteriaQuery = criteriaBuilder.createQuery(Evenement.class);
 
+            // Liaison avec différentes tables
             Root<Evenement> evenementRoot = criteriaQuery.from(Evenement.class);
             Join<Evenement, RubriqueEnfant> evenementRubriqueEnfantJoin =
                     evenementRoot.join(Evenement_.rubriqueEnfant);
@@ -189,6 +316,8 @@ public class EvenementAccess {
                     evenementRoot.join(Evenement_.statut);
             List<Predicate> predicateList = new ArrayList<>();
 
+            // Définit seulement les critères de sélection pour la requête des paramètres non null
+            // et non vide
             if (nomRubriqueEnfant != null && !nomRubriqueEnfant.isEmpty()) {
                 predicateList.add(criteriaBuilder.equal(
                         evenementRubriqueEnfantJoin.get(RubriqueEnfant_.nomRubriqueEnfant),
@@ -275,50 +404,78 @@ public class EvenementAccess {
             }
 
             criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
-            evenementList = getHibernate().createQuery(criteriaQuery).getResultList();
+            evenementList = hibernate.createQuery(criteriaQuery).getResultList();
 
             transaction.commit();
         } catch (Exception e) {
-            DatabaseAccess.rollback(e, transaction);
-        } finally {
-            DatabaseAccess.close(session);
+            databaseAccess.rollback(e, transaction);
         }
 
-        getLogger().info(String.format(
-                getConfigurationManager().getString("databaseAccess.results"),
+        databaseAccess.close(session);
+
+        // Journalise l'état de la transaction et le résultat
+        databaseAccess.transactionMessage(transaction);
+        logger.info(String.format(
+                configurationManager.getString("databaseAccess.results"),
                 evenementList != null ? evenementList.size() : 0,
                 Evenement.class.getSimpleName()));
 
         return evenementList;
     }
 
-    public static void save(String nomRubriqueEnfant,
-                            Integer idUtilisateur,
-                            String nomEvenement,
-                            String nomRue,
-                            String numeroDeRue,
-                            String numeroNpa,
-                            Double latitude,
-                            Double longitude,
-                            Calendar debut,
-                            Calendar fin,
-                            String details,
-                            String nomPriorite,
-                            Integer niveauPriorite,
-                            String nomStatut) {
-        List<RubriqueEnfant> rubriqueEnfantList = RubriqueEnfantAccess
-                .get("", nomRubriqueEnfant);
+    /**
+     * Stocke l'événement définit par les paramètres
+     *
+     * @param nomRubriqueEnfant nom de la rubrique enfant de l'événement à stocker
+     * @param idUtilisateur     identifiant de l'utilisateur de l'événement à stocker
+     * @param nomEvenement      nom d'événement de l'événement à stocker
+     * @param nomRue            nom de la rue de l'adresse de l'événement à stocker
+     * @param numeroDeRue       numéro de rue de l'adresse de l'événement à stocker
+     * @param numeroNpa         numéro npa de l'adresse de l'événement à stocker
+     * @param latitude          latitude de l'événement à stocker
+     * @param longitude         longitude de l'événement à stocker
+     * @param debut             date de début de l'événement à stocker
+     * @param fin               date de fin de l'événement à stocker
+     * @param details           détails de l'événement à stocker
+     * @param nomPriorite       nom de la priorité de l'événement à stocker
+     * @param nomStatut         nom du statut de l'événement à stocker
+     */
+    public void save(String nomRubriqueEnfant,
+                     Integer idUtilisateur,
+                     String nomEvenement,
+                     String nomRue,
+                     String numeroDeRue,
+                     String numeroNpa,
+                     Double latitude,
+                     Double longitude,
+                     Calendar debut,
+                     Calendar fin,
+                     String details,
+                     String nomPriorite,
+                     Integer niveauPriorite,
+                     String nomStatut) {
 
-        boolean success = rubriqueEnfantList != null && rubriqueEnfantList.size() <= 1;
+        // Obtient la rubrique enfant désirée
+        List<RubriqueEnfant> rubriqueEnfantList = RubriqueEnfantAccess.getInstance().get(
+                "",
+                nomRubriqueEnfant);
+
+        boolean success = rubriqueEnfantList != null && rubriqueEnfantList.size() == 1;
         if (success) {
             RubriqueEnfant rubriqueEnfant = rubriqueEnfantList.get(0);
 
-            Utilisateur administrator = DatabaseAccess.get(Utilisateur.class, idUtilisateur);
-            success = administrator != null;
+            // Obtient l'utilisateur désiré
+            Utilisateur utilisateur = databaseAccess.get(Utilisateur.class, idUtilisateur);
+            success = utilisateur != null;
+
+            // Vérifie si la requête a abouti
             if (success) {
 
-                List<Rue> rueList = RueAccess.get(nomRue);
+                // Obtient la rue désirée
+                List<Rue> rueList = RueAccess.getInstance().get(nomRue);
                 success = rueList != null && rueList.size() <= 1;
+
+                // Vérifie si la requête a abouti
                 if (success) {
                     Rue rue = new Rue(nomRue);
 
@@ -326,8 +483,11 @@ public class EvenementAccess {
                         rue = rueList.get(0);
                     }
 
-                    List<Npa> npaList = NpaAccess.get(numeroNpa);
+                    // Obtient le npa désiré
+                    List<Npa> npaList = NpaAccess.getInstance().get(numeroNpa);
                     success = npaList != null && npaList.size() <= 1;
+
+                    // Vérifie si la requête a abouti
                     if (success) {
                         Npa npa = new Npa(numeroNpa);
 
@@ -335,8 +495,12 @@ public class EvenementAccess {
                             npa = npaList.get(0);
                         }
 
-                        List<Adresse> adresseList = AdresseAccess.get(rue, numeroDeRue, npa);
+                        // Obtient l'adresse désirée
+                        List<Adresse> adresseList = AdresseAccess.getInstance()
+                                .get(rue, numeroDeRue, npa);
                         success = adresseList != null && adresseList.size() <= 1;
+
+                        // Vérifie si la requête a abouti
                         if (success) {
                             Adresse adresse = new Adresse(rue, numeroDeRue, npa);
 
@@ -344,8 +508,12 @@ public class EvenementAccess {
                                 adresse = adresseList.get(0);
                             }
 
-                            List<Priorite> prioriteList = PrioriteAccess.get(nomPriorite, niveauPriorite);
+                            // Obtient la priorité désirée
+                            List<Priorite> prioriteList = PrioriteAccess.getInstance()
+                                    .get(nomPriorite, niveauPriorite);
                             success = prioriteList != null && prioriteList.size() <= 1;
+
+                            // Vérifie si la requête a abouti
                             if (success) {
                                 Priorite priorite = new Priorite(nomPriorite, niveauPriorite);
 
@@ -353,8 +521,11 @@ public class EvenementAccess {
                                     priorite = prioriteList.get(0);
                                 }
 
-                                List<Statut> statutList = StatutAccess.get(nomStatut);
+                                // Obtient le statut désiré
+                                List<Statut> statutList = StatutAccess.getInstance().get(nomStatut);
                                 success = statutList != null && statutList.size() <= 1;
+
+                                // Vérifie si la requête a abouti
                                 if (success) {
                                     Statut statut = new Statut(nomStatut);
 
@@ -363,7 +534,7 @@ public class EvenementAccess {
                                     }
 
                                     save(rubriqueEnfant,
-                                            administrator,
+                                            utilisateur,
                                             nomEvenement,
                                             adresse,
                                             latitude,
@@ -381,23 +552,26 @@ public class EvenementAccess {
             }
         }
 
-        if (success) {
-            getLogger().info(getConfigurationManager()
-                    .getString("databaseAccess.successInSubQuery"));
-
-        } else {
-            getLogger().info(getConfigurationManager()
-                    .getString("databaseAccess.errorInSubQuery"));
-        }
+        logSuccess(success);
     }
 
-    public static void save(RubriqueEnfant rubriqueEnfant,
-                            Utilisateur utilisateur,
-                            String nomEvenement,
-                            Calendar debut,
-                            Priorite priorite,
-                            Statut statut) {
-        DatabaseAccess.save(new Evenement(
+    /**
+     * Stocke l'événement définit par les paramètres
+     *
+     * @param rubriqueEnfant rubrique enfant de l'événement à stocker
+     * @param utilisateur    utilisateur de l'événement à stocker
+     * @param nomEvenement   nom d'événement de l'événement à stocker
+     * @param debut          date de début de l'événement à stocker
+     * @param priorite       priorité de l'événement à stocker
+     * @param statut         statut de l'événement à stocker
+     */
+    public void save(RubriqueEnfant rubriqueEnfant,
+                     Utilisateur utilisateur,
+                     String nomEvenement,
+                     Calendar debut,
+                     Priorite priorite,
+                     Statut statut) {
+        databaseAccess.save(new Evenement(
                 rubriqueEnfant,
                 utilisateur,
                 nomEvenement,
@@ -406,18 +580,33 @@ public class EvenementAccess {
                 statut));
     }
 
-    public static void save(RubriqueEnfant rubriqueEnfant,
-                            Utilisateur utilisateur,
-                            String nomEvenement,
-                            Adresse adresse,
-                            Double latitude,
-                            Double longitude,
-                            Calendar debut,
-                            Calendar fin,
-                            String details,
-                            Priorite priorite,
-                            Statut statut) {
-        DatabaseAccess.save(new Evenement(
+    /**
+     * Stocke l'événement définit par les paramètres
+     *
+     * @param rubriqueEnfant rubrique enfant de l'événement à stocker
+     * @param utilisateur    utilisateur de l'événement à stocker
+     * @param nomEvenement   nom d'événement de l'événement à stocker
+     * @param adresse        adresse de l'événement à stocker
+     * @param latitude       latitude de l'événement à stocker
+     * @param longitude      longitude de l'événement à stocker
+     * @param debut          date de début de l'événement à stocker
+     * @param fin            date de fin de l'événement à stocker
+     * @param details        détails de l'événement à stocker
+     * @param priorite       priorité de l'événement à stocker
+     * @param statut         statut de l'événement à stocker
+     */
+    public void save(RubriqueEnfant rubriqueEnfant,
+                     Utilisateur utilisateur,
+                     String nomEvenement,
+                     Adresse adresse,
+                     Double latitude,
+                     Double longitude,
+                     Calendar debut,
+                     Calendar fin,
+                     String details,
+                     Priorite priorite,
+                     Statut statut) {
+        databaseAccess.save(new Evenement(
                 rubriqueEnfant,
                 utilisateur,
                 nomEvenement,
@@ -431,21 +620,61 @@ public class EvenementAccess {
                 statut));
     }
 
-    public static void update(Integer idEvenement,
-                              RubriqueEnfant rubriqueEnfant,
-                              Utilisateur utilisateur,
-                              String nomEvenement,
-                              Adresse adresse,
-                              Double latitude,
-                              Double longitude,
-                              Calendar debut,
-                              Calendar fin,
-                              String details,
-                              Priorite priorite,
-                              Statut statut) {
-        Evenement evenement = DatabaseAccess.get(Evenement.class, idEvenement);
+    /**
+     * Met à jour l'événement correspondant aux paramètres
+     *
+     * @param evenement événement à mettre à jour
+     */
+    public void update(Evenement evenement) {
+        update(evenement.getIdEvenement(),
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                evenement.getStatut());
+    }
 
+    /**
+     * Met à jour l'événement correspondant aux paramètres
+     * Chaque paramètre de valeurs null ne se mettre pas à jour
+     *
+     * @param idEvenement    identifiant de l'événement à mettre à jour
+     * @param rubriqueEnfant rubrique enfant des événements à mettre à jour
+     * @param utilisateur    utilisateur des événements à mettre à jour
+     * @param nomEvenement   nom d'événement des événements à mettre à jour
+     * @param adresse        adresse des événements à mettre à jour
+     * @param latitude       latitude des événements à mettre à jour
+     * @param longitude      longitude des événements à mettre à jour
+     * @param debut          date de début des événements à mettre à jour
+     * @param fin            date de fin des événements à mettre à jour
+     * @param details        détails des événements à mettre à jour
+     * @param priorite       priorité des événements à mettre à jour
+     * @param statut         statut des événements à mettre à jour
+     */
+    public void update(Integer idEvenement,
+                       RubriqueEnfant rubriqueEnfant,
+                       Utilisateur utilisateur,
+                       String nomEvenement,
+                       Adresse adresse,
+                       Double latitude,
+                       Double longitude,
+                       Calendar debut,
+                       Calendar fin,
+                       String details,
+                       Priorite priorite,
+                       Statut statut) {
+        Evenement evenement = databaseAccess.get(Evenement.class, idEvenement);
+
+        // Vérifie si la requête a abouti
         if (evenement != null) {
+
+            // Affecte les nouveaux attributs à l'événement
             setAll(evenement,
                     rubriqueEnfant,
                     utilisateur,
@@ -458,33 +687,63 @@ public class EvenementAccess {
                     details,
                     priorite,
                     statut);
-            DatabaseAccess.update(evenement);
+            databaseAccess.update(evenement);
         }
     }
 
-    public static void update(RubriqueEnfant oldRubriqueEnfant,
-                              Utilisateur oldUtilisateur,
-                              String oldNomEvenement,
-                              Adresse oldAdresse,
-                              Double oldLatitude,
-                              Double oldLongitude,
-                              Calendar oldDebut,
-                              Calendar oldFin,
-                              String oldDetails,
-                              Priorite oldPriorite,
-                              Statut oldStatut,
-                              Calendar creation,
-                              RubriqueEnfant newRubriqueEnfant,
-                              Utilisateur newUtilisateur,
-                              String newNomEvenement,
-                              Adresse newAdresse,
-                              Double newLatitude,
-                              Double newLongitude,
-                              Calendar newDebut,
-                              Calendar newFin,
-                              String newDetails,
-                              Priorite newPriorite,
-                              Statut newStatut) {
+    /**
+     * Met à jour les événements correspondant aux paramètres préfixés de old en leur
+     * affectant les paramètres préfixés de new
+     * Chaque paramètre préfixés de old différent de null sera utilisé comme critère de recherche
+     * Chaque paramètre préfixés de new de valeurs null ne se mettre pas à jour
+     *
+     * @param oldRubriqueEnfant ancienne rubrique enfant des événements à mettre à jour
+     * @param oldUtilisateur    ancien nom d'utilisateur des événements à mettre à jour
+     * @param oldNomEvenement   ancien nom d'événement des événements à mettre à jour
+     * @param oldAdresse        ancienne adresse des événements à mettre à jour
+     * @param oldLatitude       ancienne latitude des événements à mettre à jour
+     * @param oldLongitude      ancienne longitude des événements à mettre à jour
+     * @param oldDebut          ancienne date de début des événements à mettre à jour
+     * @param oldFin            ancienne date de fin des événements à mettre à jour
+     * @param oldDetails        ancien détails des événements à mettre à jour
+     * @param oldPriorite       ancienne priorité des événements à mettre à jour
+     * @param oldStatut         ancien statut des événements à mettre à jour
+     * @param creation          ancienne date de création des événements à mettre à jour
+     * @param newRubriqueEnfant nouvelle rubrique enfant des événements à mettre à jour
+     * @param newUtilisateur    nouveau nom d'utilisateur des événements à mettre à jour
+     * @param newNomEvenement   nouveau nom d'événement des événements à mettre à jour
+     * @param newAdresse        nouvelle adresse des événements à mettre à jour
+     * @param newLatitude       nouvelle latitude des événements à mettre à jour
+     * @param newLongitude      nouvelle longitude des événements à mettre à jour
+     * @param newDebut          nouvelle date de début des événements à mettre à jour
+     * @param newFin            nouvelle date de fin des événements à mettre à jour
+     * @param newDetails        nouveaux détails des événements à mettre à jour
+     * @param newPriorite       nouvelle priorité des événements à mettre à jour
+     * @param newStatut         nouveau statut des événements à mettre à jour
+     */
+    public void update(RubriqueEnfant oldRubriqueEnfant,
+                       Utilisateur oldUtilisateur,
+                       String oldNomEvenement,
+                       Adresse oldAdresse,
+                       Double oldLatitude,
+                       Double oldLongitude,
+                       Calendar oldDebut,
+                       Calendar oldFin,
+                       String oldDetails,
+                       Priorite oldPriorite,
+                       Statut oldStatut,
+                       Calendar creation,
+                       RubriqueEnfant newRubriqueEnfant,
+                       Utilisateur newUtilisateur,
+                       String newNomEvenement,
+                       Adresse newAdresse,
+                       Double newLatitude,
+                       Double newLongitude,
+                       Calendar newDebut,
+                       Calendar newFin,
+                       String newDetails,
+                       Priorite newPriorite,
+                       Statut newStatut) {
         List<Evenement> evenementList = get(
                 oldRubriqueEnfant,
                 oldUtilisateur,
@@ -499,7 +758,10 @@ public class EvenementAccess {
                 oldStatut,
                 creation);
 
+        // Vérifie si la requête a abouti
         if (evenementList != null) {
+
+            // Affecte les nouveaux attributs aux événements
             for (Evenement evenement : evenementList) {
                 setAll(evenement,
                         newRubriqueEnfant,
@@ -515,29 +777,55 @@ public class EvenementAccess {
                         newStatut);
             }
 
-            DatabaseAccess.update(evenementList);
+            databaseAccess.update(evenementList);
         }
     }
 
-    public static void delete(Evenement evenement) {
+    /**
+     * Supprime l'événement en paramètres, c'est à dire, ne sera plus visible comme actif
+     *
+     * @param evenement événement à supprimer
+     */
+    public void delete(Evenement evenement) {
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.DAY_OF_YEAR, -1);
         evenement.setFin(calendar);
-        DatabaseAccess.update(evenement);
+        databaseAccess.update(evenement);
     }
 
-    public static void delete(RubriqueEnfant rubriqueEnfant,
-                              Utilisateur utilisateur,
-                              String nomEvenement,
-                              Adresse adresse,
-                              Double latitude,
-                              Double longitude,
-                              Calendar debut,
-                              Calendar fin,
-                              String details,
-                              Priorite priorite,
-                              Statut statut,
-                              Calendar creation) {
+    /**
+     * Supprime les événements correspondant aux paramètres
+     * Chaque paramètre différent de null sera utilisé comme critère de recherche
+     *
+     * @param rubriqueEnfant rubrique enfant des événements à supprimer
+     * @param utilisateur    utilisateur des événements à supprimer
+     * @param nomEvenement   nom des événement des événements à supprimer
+     * @param adresse        adresse des événements à supprimer
+     * @param latitude       latitude des événements à supprimer
+     * @param longitude      longitude des événements à supprimer
+     * @param debut          date de début des événements à supprimer
+     * @param fin            date de fin des événements à supprimer
+     * @param details        détails des événements à supprimer
+     * @param priorite       nom de la priorité des événements à supprimer
+     * @param statut         nom du statut des événements à supprimer
+     * @param creation       date de création des événements à supprimer
+     */
+    public void delete(RubriqueEnfant rubriqueEnfant,
+                       Utilisateur utilisateur,
+                       String nomEvenement,
+                       Adresse adresse,
+                       Double latitude,
+                       Double longitude,
+                       Calendar debut,
+                       Calendar fin,
+                       String details,
+                       Priorite priorite,
+                       Statut statut,
+                       Calendar creation) {
+
+
+        // Définit les paramètres de la requête en fonction de la valeurs des paramètres de
+        // l'événement
         checkNull(rubriqueEnfant, utilisateur, adresse, priorite, statut);
         delete(nomRubriqueEnfant,
                 nomUtilisateur,
@@ -555,21 +843,39 @@ public class EvenementAccess {
                 creation);
     }
 
-    public static void delete(String nomRubriqueEnfant,
-                              String nomUtilisateur,
-                              String nomEvenement,
-                              String nomRue,
-                              String numeroDeRue,
-                              String numeroNpa,
-                              Double latitude,
-                              Double longitude,
-                              Calendar debut,
-                              Calendar fin,
-                              String details,
-                              String nomPriorite,
-                              String nomStatut,
-                              Calendar creation) {
-        DatabaseAccess.delete(get(
+    /**
+     * Supprime les événements correspondant aux paramètres
+     * Chaque paramètre différent de null sera utilisé comme critère de recherche
+     *
+     * @param nomRubriqueEnfant nom de la rubrique enfant des événements à supprimer
+     * @param nomUtilisateur    nom de l'utilisateur des événements à supprimer
+     * @param nomEvenement      nom des événements à supprimer
+     * @param nomRue            nom de la rue de l'adresse des événements à supprimer
+     * @param numeroDeRue       numéro de rue de l'adresse des événements à supprimer
+     * @param numeroNpa         numéro npa de l'adresse des événements à supprimer
+     * @param latitude          latitude des événements à supprimer
+     * @param longitude         longitude des événements à supprimer
+     * @param debut             date de début des événements à supprimer
+     * @param fin               date de fin des événements à supprimer
+     * @param details           détails des événements à supprimer
+     * @param nomPriorite       nom de la priorité des événements à supprimer
+     * @param nomStatut         nom du statut des événements à supprimer
+     */
+    public void delete(String nomRubriqueEnfant,
+                       String nomUtilisateur,
+                       String nomEvenement,
+                       String nomRue,
+                       String numeroDeRue,
+                       String numeroNpa,
+                       Double latitude,
+                       Double longitude,
+                       Calendar debut,
+                       Calendar fin,
+                       String details,
+                       String nomPriorite,
+                       String nomStatut,
+                       Calendar creation) {
+        databaseAccess.delete(get(
                 nomRubriqueEnfant,
                 nomUtilisateur,
                 nomEvenement,
@@ -586,18 +892,34 @@ public class EvenementAccess {
                 creation));
     }
 
-    private static void setAll(Evenement evenement,
-                               RubriqueEnfant rubriqueEnfant,
-                               Utilisateur utilisateur,
-                               String nomEvenement,
-                               Adresse adresse,
-                               Double latitude,
-                               Double longitude,
-                               Calendar debut,
-                               Calendar fin,
-                               String details,
-                               Priorite priorite,
-                               Statut statut) {
+    /**
+     * Affecte les paramètres de l'événement si ils ne sont pas null
+     *
+     * @param evenement      événement dont il faut définir les paramètres
+     * @param rubriqueEnfant rubrique enfant de l'événement
+     * @param utilisateur    utilisateur de l'événement
+     * @param nomEvenement   nom de l'événement
+     * @param adresse        adresse de l'événement
+     * @param latitude       latitude de l'événement
+     * @param longitude      longitude de l'événement
+     * @param debut          date début de l'événement
+     * @param fin            date de fin de l'événement
+     * @param details        détails de l'événement
+     * @param priorite       priorite de l'événement
+     * @param statut         statut de l'événement
+     */
+    private void setAll(Evenement evenement,
+                        RubriqueEnfant rubriqueEnfant,
+                        Utilisateur utilisateur,
+                        String nomEvenement,
+                        Adresse adresse,
+                        Double latitude,
+                        Double longitude,
+                        Calendar debut,
+                        Calendar fin,
+                        String details,
+                        Priorite priorite,
+                        Statut statut) {
         if (rubriqueEnfant != null) {
             evenement.setRubriqueEnfant(rubriqueEnfant);
         }
@@ -643,11 +965,20 @@ public class EvenementAccess {
         }
     }
 
-    private static void checkNull(RubriqueEnfant rubriqueEnfant,
-                                  Utilisateur utilisateur,
-                                  Adresse adresse,
-                                  Priorite priorite,
-                                  Statut statut) {
+    /**
+     * Définit les paramètres de la requête en fonction de la valeurs des paramètres de l'événement
+     *
+     * @param rubriqueEnfant rubrique enfant à vérifier
+     * @param utilisateur    utilisateur à vérifier
+     * @param adresse        adresse à vérifier
+     * @param priorite       priorite à vérifier
+     * @param statut         statut à vérifier
+     */
+    private void checkNull(RubriqueEnfant rubriqueEnfant,
+                           Utilisateur utilisateur,
+                           Adresse adresse,
+                           Priorite priorite,
+                           Statut statut) {
         nomRubriqueEnfant = rubriqueEnfant != null ? rubriqueEnfant.getNomRubriqueEnfant() : null;
         nomUtilisateur = utilisateur != null ? utilisateur.getNomUtilisateur() : null;
         nomRue = adresse != null ? adresse.getRue().getNomRue() : null;
@@ -657,7 +988,12 @@ public class EvenementAccess {
         nomStatut = statut != null ? statut.getNomStatut() : null;
     }
 
-    private static void setMinimumTime(Calendar calendar) {
+    /**
+     * Définit le minimum du temps d'une date
+     *
+     * @param calendar date dont il faut définir le temps au minimum
+     */
+    private void setMinimumTime(Calendar calendar) {
         if (calendar != null) {
             calendar.set(Calendar.HOUR_OF_DAY, calendar.getMinimum(Calendar.HOUR_OF_DAY));
             calendar.set(Calendar.MINUTE, calendar.getMinimum(Calendar.MINUTE));
@@ -666,6 +1002,22 @@ public class EvenementAccess {
         }
     }
 
+    /**
+     * Journalise l'exécution
+     *
+     * @param success état de réussite de l'exécution
+     */
+    private void logSuccess(boolean success) {
+        if (success) {
+            logger.info(configurationManager.getString("databaseAccess.successInSubQuery"));
+        } else {
+            logger.info(configurationManager.getString("databaseAccess.errorInSubQuery"));
+        }
+    }
+
+    /**
+     * Utilisé pour créer un singleton de la classe
+     */
     private static class SingletonHolder {
         private static final EvenementAccess instance = new EvenementAccess();
     }
