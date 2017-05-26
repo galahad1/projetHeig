@@ -1,9 +1,3 @@
-/**
- * PROJET HEIG - VD SMARTCITY
- * Classe : GraphiqueEnBarres
- * <p>
- * Descriptif : Cette classe cree un graphique en barre. Toutes les informations sont extraites de la base de données
- */
 package ch.smartcity.pdf.graphiques;
 
 import ch.smartcity.pdf.donnees.Mois;
@@ -19,6 +13,11 @@ import org.jfree.data.general.DefaultPieDataset;
 
 import java.awt.*;
 
+/**
+ * Cette classe cree un graphique en barre. Toutes les informations sont extraites de la base de données
+ *
+ * @author Luana Martelli
+ */
 class GraphiqueEnBarres {
 
     /**

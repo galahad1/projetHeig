@@ -1,9 +1,3 @@
-/**
- * PROJET HEIG - VD SMARTCITY
- * Classe : GraphiqueEnBarres
- * <p>
- * Descriptif : Classe qui génère un PDF
- */
 package ch.smartcity.pdf;
 
 import ch.smartcity.database.controllers.access.EvenementAccess;
@@ -32,9 +26,14 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+/**
+ * Classe qui génère un PDF
+ *
+ * @author Luana Martelli
+ */
 public class GenerateurPDF {
 
-    private static String LIEU = "Lausanne";
+    private static final String LIEU = "Lausanne";
     private static URL LOGO;
 
     /**

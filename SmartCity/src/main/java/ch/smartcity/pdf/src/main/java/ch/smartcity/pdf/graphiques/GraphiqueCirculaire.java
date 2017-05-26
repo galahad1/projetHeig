@@ -1,9 +1,3 @@
-/**
- * PROJET HEIG - VD SMARTCITY
- * Classe : GraphiqueEnBarres
- * <p>
- * Descriptif : Classe qui génère un graphique circulaire
- */
 package ch.smartcity.pdf.graphiques;
 
 import ch.smartcity.pdf.donnees.Mois;
@@ -16,6 +10,11 @@ import org.jfree.data.general.DefaultPieDataset;
 import java.awt.*;
 import java.text.DecimalFormat;
 
+/**
+ * Classe qui génère un graphique circulaire
+ *
+ * @author Luana Martelli
+ */
 class GraphiqueCirculaire {
 
     /**

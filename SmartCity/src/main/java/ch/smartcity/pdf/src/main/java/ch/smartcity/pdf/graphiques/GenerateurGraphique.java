@@ -1,9 +1,3 @@
-/**
- * PROJET HEIG - VD SMARTCITY
- * Classe : GraphiqueEnBarres
- * <p>
- * Classe qui génère un graphique pour le document PDF
- */
 package ch.smartcity.pdf.graphiques;
 
 import org.jfree.chart.ChartUtilities;
@@ -13,6 +7,11 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Random;
 
+/**
+ * Classe qui génère un graphique pour le document PDF
+ *
+ * @author Luana Martelli
+ */
 public class GenerateurGraphique {
 
     public final static String CHEMIN_IMAGE = System.getProperty("user.home") + File.separator
