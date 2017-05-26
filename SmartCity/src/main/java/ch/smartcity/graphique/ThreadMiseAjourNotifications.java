@@ -33,7 +33,8 @@ public class ThreadMiseAjourNotifications extends TimerTask {
     @Override
     public void run() {
         liste.clear();
-        liste.addAll(Utils.refreshListAcess(Utils.previewEvenement(EvenementAccess.getEnAttente())));
+        liste.addAll(Utils.refreshListAcess(Utils.previewEvenement(EvenementAccess.getInstance()
+                .getEnAttente())));
 
         DefaultListModel model = new DefaultListModel();
 

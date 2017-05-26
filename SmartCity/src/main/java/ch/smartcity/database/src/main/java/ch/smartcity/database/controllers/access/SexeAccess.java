@@ -18,43 +18,48 @@ import java.util.logging.Logger;
 
 public class SexeAccess {
 
+    /**
+     * Utilisé pour accéder aux fichiers de propriétés
+     */
     private final ConfigurationManager configurationManager;
+
+    /**
+     * Utilisé pour journaliser les actions effectuées
+     */
     private final Logger logger;
+
+    /**
+     * Utilisé pour la connexion à la base de données
+     */
     private final Hibernate hibernate;
+
+    /**
+     * Utilisé pour des accès génériques à la base de données
+     */
+    private final DatabaseAccess databaseAccess;
 
     private SexeAccess() {
         configurationManager = ConfigurationManager.getInstance();
         logger = Logger.getLogger(getClass().getName());
         hibernate = Hibernate.getInstance();
+        databaseAccess = DatabaseAccess.getInstance();
     }
 
     public static SexeAccess getInstance() {
         return SingletonHolder.instance;
     }
 
-    private static ConfigurationManager getConfigurationManager() {
-        return getInstance().configurationManager;
-    }
-
-    private static Logger getLogger() {
-        return getInstance().logger;
-    }
-
-    private static Hibernate getHibernate() {
-        return getInstance().hibernate;
-    }
-
-    public static List<Sexe> get(String nomSexe) {
+    public List<Sexe> get(String nomSexe) {
         List<Sexe> sexeList = null;
 
         Session session = null;
         Transaction transaction = null;
 
         try {
-            session = getHibernate().openSession();
+            session = hibernate.getSession();
             transaction = session.beginTransaction();
 
-            CriteriaBuilder criteriaBuilder = getHibernate().getCriteriaBuilder();
+            CriteriaBuilder criteriaBuilder = hibernate.getCriteriaBuilder();
             CriteriaQuery<Sexe> criteriaQuery = criteriaBuilder
                     .createQuery(Sexe.class);
             Root<Sexe> sexeRoot = criteriaQuery.from(Sexe.class);
@@ -67,37 +72,37 @@ public class SexeAccess {
             }
 
             criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
-            sexeList = getHibernate().createQuery(criteriaQuery).getResultList();
+            sexeList = hibernate.createQuery(criteriaQuery).getResultList();
 
             transaction.commit();
         } catch (Exception e) {
-            DatabaseAccess.rollback(e, transaction);
+            databaseAccess.rollback(e, transaction);
         } finally {
-            DatabaseAccess.close(session);
+            databaseAccess.close(session);
         }
 
-        getLogger().info(String.format(
-                getConfigurationManager().getString("databaseAccess.results"),
+        logger.info(String.format(
+                configurationManager.getString("databaseAccess.results"),
                 sexeList != null ? sexeList.size() : 0,
                 Sexe.class.getSimpleName()));
 
         return sexeList;
     }
 
-    public static void save(String nomSexe) {
-        DatabaseAccess.save(new Sexe(nomSexe));
+    public void save(String nomSexe) {
+        databaseAccess.save(new Sexe(nomSexe));
     }
 
-    public static void update(Integer idSexe, String nomSexe) {
-        Sexe sexe = DatabaseAccess.get(Sexe.class, idSexe);
+    public void update(Integer idSexe, String nomSexe) {
+        Sexe sexe = databaseAccess.get(Sexe.class, idSexe);
 
         if (sexe != null) {
             setAll(sexe, nomSexe);
-            DatabaseAccess.update(sexe);
+            databaseAccess.update(sexe);
         }
     }
 
-    public static void update(String oldNomSexe, String newNomSexe) {
+    public void update(String oldNomSexe, String newNomSexe) {
         List<Sexe> sexeList = get(oldNomSexe);
 
         if (sexeList != null) {
@@ -105,15 +110,15 @@ public class SexeAccess {
                 setAll(sexe, newNomSexe);
             }
 
-            DatabaseAccess.update(sexeList);
+            databaseAccess.update(sexeList);
         }
     }
 
-    public static void delete(String nomSexe) {
-        DatabaseAccess.delete(get(nomSexe));
+    public void delete(String nomSexe) {
+        databaseAccess.delete(get(nomSexe));
     }
 
-    private static void setAll(Sexe sexe, String nomSexe) {
+    private void setAll(Sexe sexe, String nomSexe) {
         if (nomSexe != null) {
             sexe.setNomSexe(nomSexe);
         }

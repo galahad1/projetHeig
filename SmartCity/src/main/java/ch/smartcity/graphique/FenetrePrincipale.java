@@ -73,6 +73,8 @@ public class FenetrePrincipale {
     private JTextField textDescription = new JTextField();
     private JTextField textNotifications = new JTextField();
 
+    private EvenementAccess evenementAccess = EvenementAccess.getInstance();
+
     /**
      * Create the application.
      */
@@ -85,8 +87,8 @@ public class FenetrePrincipale {
      */
     private void initialize() {
         Timer timer = new Timer();
-        ThreadMiseAjourNotifications tache = new ThreadMiseAjourNotifications(Utils.previewEvenement(EvenementAccess
-                .getEnAttente()), listEvenementsEnAttente, lblNbrNotification);
+        ThreadMiseAjourNotifications tache = new ThreadMiseAjourNotifications(Utils.previewEvenement(
+                evenementAccess.getEnAttente()), listEvenementsEnAttente, lblNbrNotification);
 
         timer.scheduleAtFixedRate(tache, 2 * 60 * 100, 2 * 10 * 1000);
         tache.run();
@@ -334,7 +336,7 @@ public class FenetrePrincipale {
 
         chckbxAccidents.addActionListener(e -> {
             if (((AbstractButton) e.getSource()).isSelected()) {
-                listeAccidents = wrapperEvenement(EvenementAccess
+                listeAccidents = wrapperEvenement(evenementAccess
                         .getActif("accidents", dateSelectionne, Statut_.TRAITE));
                 allEvents.addAll(listeAccidents);
             } else {
@@ -345,7 +347,7 @@ public class FenetrePrincipale {
 
         chckbxTravaux.addActionListener(e -> {
             if (((AbstractButton) e.getSource()).isSelected()) {
-                listeTravaux = wrapperEvenement(EvenementAccess
+                listeTravaux = wrapperEvenement(evenementAccess
                         .getActif("travaux", dateSelectionne, Statut_.TRAITE));
                 allEvents.addAll(listeTravaux);
             } else {
@@ -356,7 +358,7 @@ public class FenetrePrincipale {
 
         chckbxManifestations.addActionListener(e -> {
             if (((AbstractButton) e.getSource()).isSelected()) {
-                listeManifestations = wrapperEvenement(EvenementAccess
+                listeManifestations = wrapperEvenement(evenementAccess
                         .getActif("manifestations", dateSelectionne, Statut_.TRAITE));
                 allEvents.addAll(listeManifestations);
             } else {
@@ -367,7 +369,7 @@ public class FenetrePrincipale {
 
         chckbxRenovation.addActionListener(e -> {
             if (((AbstractButton) e.getSource()).isSelected()) {
-                listeRenovations = wrapperEvenement(EvenementAccess
+                listeRenovations = wrapperEvenement(evenementAccess
                         .getActif("rénovations", dateSelectionne, Statut_.TRAITE));
                 allEvents.addAll(listeRenovations);
             } else {
@@ -378,7 +380,7 @@ public class FenetrePrincipale {
 
         chckbxConstruction.addActionListener(e -> {
             if (((AbstractButton) e.getSource()).isSelected()) {
-                listeConstructions = wrapperEvenement(EvenementAccess
+                listeConstructions = wrapperEvenement(evenementAccess
                         .getActif("constructions", dateSelectionne, Statut_.TRAITE));
                 allEvents.addAll(listeConstructions);
             } else {
@@ -389,7 +391,7 @@ public class FenetrePrincipale {
 
         chckboxDoleances.addActionListener(e -> {
             if (((AbstractButton) e.getSource()).isSelected()) {
-                listeDoleances = wrapperEvenement(EvenementAccess
+                listeDoleances = wrapperEvenement(evenementAccess
                         .getActif("doléances", dateSelectionne, Statut_.TRAITE));
                 allEvents.addAll(listeDoleances);
             } else {
@@ -430,7 +432,7 @@ public class FenetrePrincipale {
 
         if (chckbxAccidents.isSelected()) {
             allEvents.removeAll(listeAccidents);
-            listeAccidents = wrapperEvenement(EvenementAccess
+            listeAccidents = wrapperEvenement(evenementAccess
                     .getActif("accidents", dateSelectionne, Statut_.TRAITE));
             allEvents.addAll(listeAccidents);
             miseAJourAffichage();
@@ -438,7 +440,7 @@ public class FenetrePrincipale {
 
         if (chckbxTravaux.isSelected()) {
             allEvents.removeAll(listeTravaux);
-            listeTravaux = wrapperEvenement(EvenementAccess
+            listeTravaux = wrapperEvenement(evenementAccess
                     .getActif("travaux", dateSelectionne, Statut_.TRAITE));
             allEvents.addAll(listeTravaux);
             miseAJourAffichage();
@@ -446,7 +448,7 @@ public class FenetrePrincipale {
 
         if (chckbxManifestations.isSelected()) {
             allEvents.removeAll(listeManifestations);
-            listeManifestations = wrapperEvenement(EvenementAccess
+            listeManifestations = wrapperEvenement(evenementAccess
                     .getActif("manifestations", dateSelectionne, Statut_.TRAITE));
             allEvents.addAll(listeManifestations);
             miseAJourAffichage();
@@ -454,7 +456,7 @@ public class FenetrePrincipale {
 
         if (chckbxRenovation.isSelected()) {
             allEvents.removeAll(listeRenovations);
-            listeRenovations = wrapperEvenement(EvenementAccess
+            listeRenovations = wrapperEvenement(evenementAccess
                     .getActif("rénovations", dateSelectionne, Statut_.TRAITE));
             allEvents.addAll(listeRenovations);
             miseAJourAffichage();
@@ -462,7 +464,7 @@ public class FenetrePrincipale {
 
         if (chckbxConstruction.isSelected()) {
             allEvents.removeAll(listeConstructions);
-            listeConstructions = wrapperEvenement(EvenementAccess
+            listeConstructions = wrapperEvenement(evenementAccess
                     .getActif("constructions", dateSelectionne, Statut_.TRAITE));
             allEvents.addAll(listeConstructions);
             miseAJourAffichage();
@@ -470,7 +472,7 @@ public class FenetrePrincipale {
 
         if (chckboxDoleances.isSelected()) {
             allEvents.removeAll(listeDoleances);
-            listeDoleances = wrapperEvenement(EvenementAccess
+            listeDoleances = wrapperEvenement(evenementAccess
                     .getActif("doléances", dateSelectionne, Statut_.TRAITE));
             allEvents.addAll(listeDoleances);
             miseAJourAffichage();

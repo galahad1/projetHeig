@@ -18,43 +18,48 @@ import java.util.logging.Logger;
 
 public class TitreCivilAccess {
 
+    /**
+     * Utilisé pour accéder aux fichiers de propriétés
+     */
     private final ConfigurationManager configurationManager;
+
+    /**
+     * Utilisé pour journaliser les actions effectuées
+     */
     private final Logger logger;
+
+    /**
+     * Utilisé pour la connexion à la base de données
+     */
     private final Hibernate hibernate;
+
+    /**
+     * Utilisé pour des accès génériques à la base de données
+     */
+    private final DatabaseAccess databaseAccess;
 
     private TitreCivilAccess() {
         configurationManager = ConfigurationManager.getInstance();
         logger = Logger.getLogger(getClass().getName());
         hibernate = Hibernate.getInstance();
+        databaseAccess = DatabaseAccess.getInstance();
     }
 
     public static TitreCivilAccess getInstance() {
         return SingletonHolder.instance;
     }
 
-    private static ConfigurationManager getConfigurationManager() {
-        return getInstance().configurationManager;
-    }
-
-    private static Logger getLogger() {
-        return getInstance().logger;
-    }
-
-    private static Hibernate getHibernate() {
-        return getInstance().hibernate;
-    }
-
-    public static List<TitreCivil> get(String titre, String abreviation) {
+    public List<TitreCivil> get(String titre, String abreviation) {
         List<TitreCivil> titreCivilList = null;
 
         Session session = null;
         Transaction transaction = null;
 
         try {
-            session = getHibernate().openSession();
+            session = hibernate.getSession();
             transaction = session.beginTransaction();
 
-            CriteriaBuilder criteriaBuilder = getHibernate().getCriteriaBuilder();
+            CriteriaBuilder criteriaBuilder = hibernate.getCriteriaBuilder();
             CriteriaQuery<TitreCivil> criteriaQuery = criteriaBuilder
                     .createQuery(TitreCivil.class);
             Root<TitreCivil> titreCivilRoot = criteriaQuery.from(TitreCivil.class);
@@ -73,40 +78,40 @@ public class TitreCivilAccess {
             }
 
             criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
-            titreCivilList = getHibernate().createQuery(criteriaQuery).getResultList();
+            titreCivilList = hibernate.createQuery(criteriaQuery).getResultList();
 
             transaction.commit();
         } catch (Exception e) {
-            DatabaseAccess.rollback(e, transaction);
+            databaseAccess.rollback(e, transaction);
         } finally {
-            DatabaseAccess.close(session);
+            databaseAccess.close(session);
         }
 
-        getLogger().info(String.format(
-                getConfigurationManager().getString("databaseAccess.results"),
+        logger.info(String.format(
+                configurationManager.getString("databaseAccess.results"),
                 titreCivilList != null ? titreCivilList.size() : 0,
                 TitreCivil.class.getSimpleName()));
 
         return titreCivilList;
     }
 
-    public static void save(String titre, String abreviation) {
-        DatabaseAccess.save(new TitreCivil(titre, abreviation));
+    public void save(String titre, String abreviation) {
+        databaseAccess.save(new TitreCivil(titre, abreviation));
     }
 
-    public static void update(Integer idTitreCivil, String titre, String abreviation) {
-        TitreCivil titreCivil = DatabaseAccess.get(TitreCivil.class, idTitreCivil);
+    public void update(Integer idTitreCivil, String titre, String abreviation) {
+        TitreCivil titreCivil = databaseAccess.get(TitreCivil.class, idTitreCivil);
 
         if (titreCivil != null) {
             setAll(titreCivil, titre, abreviation);
-            DatabaseAccess.update(titreCivil);
+            databaseAccess.update(titreCivil);
         }
     }
 
-    public static void update(String oldTitre,
-                              String oldAbreviation,
-                              String newTitre,
-                              String newAbreviation) {
+    public void update(String oldTitre,
+                       String oldAbreviation,
+                       String newTitre,
+                       String newAbreviation) {
         List<TitreCivil> titreCivilList = get(oldTitre, oldAbreviation);
 
         if (titreCivilList != null) {
@@ -114,15 +119,15 @@ public class TitreCivilAccess {
                 setAll(titreCivil, newTitre, newAbreviation);
             }
 
-            DatabaseAccess.update(titreCivilList);
+            databaseAccess.update(titreCivilList);
         }
     }
 
-    public static void delete(String titre, String abreviation) {
-        DatabaseAccess.delete(get(titre, abreviation));
+    public void delete(String titre, String abreviation) {
+        databaseAccess.delete(get(titre, abreviation));
     }
 
-    private static void setAll(TitreCivil titreCivil, String titre, String abreviation) {
+    private void setAll(TitreCivil titreCivil, String titre, String abreviation) {
         if (titre != null) {
             titreCivil.setTitre(titre);
         }

@@ -18,47 +18,61 @@ import java.util.logging.Logger;
 
 public class PrioriteAccess {
 
+    /**
+     * Utilisé pour accéder aux fichiers de propriétés
+     */
     private final ConfigurationManager configurationManager;
+
+    /**
+     * Utilisé pour journaliser les actions effectuées
+     */
     private final Logger logger;
+
+    /**
+     * Utilisé pour la connexion à la base de données
+     */
     private final Hibernate hibernate;
+
+    /**
+     * Utilisé pour des accès génériques à la base de données
+     */
+    private final DatabaseAccess databaseAccess;
 
     private PrioriteAccess() {
         configurationManager = ConfigurationManager.getInstance();
         logger = Logger.getLogger(getClass().getName());
         hibernate = Hibernate.getInstance();
+        databaseAccess = DatabaseAccess.getInstance();
     }
 
+    /**
+     * Fournit l'unique instance de la classe (singleton)
+     *
+     * @return unique instance de la classe
+     */
     public static PrioriteAccess getInstance() {
         return SingletonHolder.instance;
     }
 
-    private static ConfigurationManager getConfigurationManager() {
-        return getInstance().configurationManager;
-    }
-
-    private static Logger getLogger() {
-        return getInstance().logger;
-    }
-
-    private static Hibernate getHibernate() {
-        return getInstance().hibernate;
-    }
-
-    public static List<Priorite> get(String nomPriorite, Integer niveau) {
+    public List<Priorite> get(String nomPriorite, Integer niveau) {
         List<Priorite> prioriteList = null;
 
         Session session = null;
         Transaction transaction = null;
 
         try {
-            session = getHibernate().openSession();
+            // Démarre une transaction pour la gestion d'erreur
+            session = hibernate.getSession();
             transaction = session.beginTransaction();
 
-            CriteriaBuilder criteriaBuilder = getHibernate().getCriteriaBuilder();
+            // Définit des critères de sélection pour la requête
+            CriteriaBuilder criteriaBuilder = hibernate.getCriteriaBuilder();
             CriteriaQuery<Priorite> criteriaQuery = criteriaBuilder.createQuery(Priorite.class);
             Root<Priorite> prioriteRoot = criteriaQuery.from(Priorite.class);
             List<Predicate> predicateList = new ArrayList<>();
 
+            // Définit seulement les critères de sélection pour la requête des paramètres non null
+            // et non vide
             if (nomPriorite != null && !nomPriorite.isEmpty()) {
                 predicateList.add(criteriaBuilder.equal(
                         prioriteRoot.get(Priorite_.nomPriorite),
@@ -72,56 +86,64 @@ public class PrioriteAccess {
             }
 
             criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
-            prioriteList = getHibernate().createQuery(criteriaQuery).getResultList();
+            prioriteList = hibernate.createQuery(criteriaQuery).getResultList();
 
             transaction.commit();
         } catch (Exception e) {
-            DatabaseAccess.rollback(e, transaction);
-        } finally {
-            DatabaseAccess.close(session);
+            databaseAccess.rollback(e, transaction);
         }
 
-        getLogger().info(String.format(
-                getConfigurationManager().getString("databaseAccess.results"),
+        databaseAccess.close(session);
+
+        // Journalise l'état de la transaction et le résultat
+        databaseAccess.transactionMessage(transaction);
+        logger.info(String.format(
+                configurationManager.getString("databaseAccess.results"),
                 prioriteList != null ? prioriteList.size() : 0,
                 Priorite.class.getSimpleName()));
 
         return prioriteList;
     }
 
-    public static void save(String nomPriorite, Integer numero) {
-        DatabaseAccess.save(new Priorite(nomPriorite, numero));
+    public void save(String nomPriorite, Integer numero) {
+        databaseAccess.save(new Priorite(nomPriorite, numero));
     }
 
-    public static void update(Integer idPriorite, String nomPriorite, Integer niveau) {
-        Priorite priorite = DatabaseAccess.get(Priorite.class, idPriorite);
+    public void update(Integer idPriorite, String nomPriorite, Integer niveau) {
+        Priorite priorite = databaseAccess.get(Priorite.class, idPriorite);
 
+        // Vérifie si la requête a abouti
         if (priorite != null) {
+
+            // Affecte les nouveaux attributs au priorité
             setAll(priorite, nomPriorite, niveau);
-            DatabaseAccess.update(priorite);
+            databaseAccess.update(priorite);
         }
     }
 
-    public static void update(String oldNomPriorite,
-                              Integer oldNiveau,
-                              String newNomPriorite,
-                              Integer newNiveau) {
+    public void update(String oldNomPriorite,
+                       Integer oldNiveau,
+                       String newNomPriorite,
+                       Integer newNiveau) {
         List<Priorite> prioriteList = get(oldNomPriorite, oldNiveau);
 
+        // Vérifie si la requête a abouti
         if (prioriteList != null) {
             for (Priorite priorite : prioriteList) {
+
+                // Affecte les nouveaux attributs aux priorités
                 setAll(priorite, newNomPriorite, newNiveau);
             }
 
-            DatabaseAccess.update(prioriteList);
+            databaseAccess.update(prioriteList);
         }
     }
 
-    public static void delete(String nomPriorite, Integer niveau) {
-        DatabaseAccess.delete(get(nomPriorite, niveau));
+    public void delete(String nomPriorite, Integer niveau) {
+        databaseAccess.delete(get(nomPriorite, niveau));
     }
 
-    private static void setAll(Priorite priorite, String nomPriorite, Integer niveau) {
+    private void setAll(Priorite priorite, String nomPriorite, Integer niveau) {
         if (nomPriorite != null) {
             priorite.setNomPriorite(nomPriorite);
         }
@@ -131,6 +153,9 @@ public class PrioriteAccess {
         }
     }
 
+    /**
+     * Utilisé pour créer un singleton de la classe
+     */
     private static class SingletonHolder {
         private static final PrioriteAccess instance = new PrioriteAccess();
     }
