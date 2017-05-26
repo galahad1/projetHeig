@@ -16,6 +16,7 @@ import java.util.List;
  * - Méthode pour voir une prévisualisation des événements
  * - Méthodes contrôlant la saisie des champs d'un formulaire
  * - Méthode rafraichissant la liste des événements en attente
+ *
  * @author Tano Iannetta
  * @author Wojciech Myszkorowsk
  */
@@ -27,6 +28,7 @@ final class Utils {
     /**
      * Recoit une liste d'événements afin d'en afficher une prévisualisation
      * comprenant moins de détails que l'evenement complet
+     *
      * @param liste liste d'evenement
      * @return liste des previews des evenements
      */
@@ -82,6 +84,7 @@ final class Utils {
 
     /**
      * Controle si le texte correspond à l'expression régulière
+     *
      * @param texte texte à contrôler
      * @param regex expression de contrôle
      * @return vrai si le texte est valide, faux sinon
@@ -92,7 +95,8 @@ final class Utils {
 
     /**
      * Contrôle si le texte ne dépasse pas la taille donnée
-     * @param texte texte à contôler
+     *
+     * @param texte     texte à contôler
      * @param taillemax taille maximum du texte
      * @return vrai si le texte ne dépasse pas la taille donnée, faux sinon
      */
@@ -103,9 +107,10 @@ final class Utils {
     /**
      * Controle si le texte ne depasse pas la taille donnée et s'il correspond
      * à l'expression régulière données
-     * @param texte texte à controler
+     *
+     * @param texte     texte à controler
      * @param tailleMax taille maximum du texte
-     * @param regex expression régulière de contrôle
+     * @param regex     expression régulière de contrôle
      * @return vrai si le texte est conforme aux restrctions, faux sinon
      */
     static boolean controleSaisie(String texte, int tailleMax, String regex) {

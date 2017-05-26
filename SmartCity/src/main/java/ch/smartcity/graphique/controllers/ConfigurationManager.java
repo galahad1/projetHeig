@@ -1,12 +1,12 @@
 package ch.smartcity.graphique.controllers;
 
-import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
 /**
  * Managaire de configuration permettant de charger les textes par rapport
  * au fichier de messageBundle.
+ *
  * @author Loan Lassalle
  * @author Tano Iannetta
  */
@@ -34,9 +34,7 @@ public class ConfigurationManager {
     }
 
     public String getString(String key) {
-        return new String(getResourceBundle().getString(key).getBytes(
-                StandardCharsets.ISO_8859_1),
-                StandardCharsets.UTF_8);
+        return getResourceBundle().getString(key);
     }
 
     private static class SingletonHolder {

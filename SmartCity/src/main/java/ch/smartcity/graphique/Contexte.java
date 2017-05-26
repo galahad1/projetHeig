@@ -3,6 +3,7 @@ package ch.smartcity.graphique;
 /**
  * Fournie des constantes correspondant aux contexte dans les quels la fenêtre
  * de modification peut être ouverte
+ *
  * @author Tano Iannetta
  */
 public class Contexte {

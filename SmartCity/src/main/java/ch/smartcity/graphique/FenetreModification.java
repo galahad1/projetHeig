@@ -5,6 +5,7 @@ import ch.smartcity.database.controllers.access.*;
 import ch.smartcity.database.models.*;
 import ch.smartcity.graphique.controllers.ConfigurationManager;
 import com.toedter.calendar.JCalendar;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -24,6 +25,7 @@ import java.util.List;
  * de la base de donnée.
  * Elle permet aussi de valider les événements en attente, ainsi que de les
  * modifier avant de les valider.
+ *
  * @author Tano Iannetta
  * @author Loan Lassalle
  */
@@ -33,11 +35,11 @@ class FenetreModification {
     private static final String REGEX_ALPHA_NUMERIQUE = "[a-zA-ZÀ-ÿ0-9 \\-']*";
     private static final String REGEX_NUMERIQUE = "[0-9]*";
     private static final String REGEX_LATITUDE =
-        "^[\\+-]?(?:90(?:(?:\\.0{1,6})?)|(?:[0-9]|[1-8][0-9])(?:(?:\\.[0-9]{1,6})?))$";
+            "^[\\+-]?(?:90(?:(?:\\.0{1,6})?)|(?:[0-9]|[1-8][0-9])(?:(?:\\.[0-9]{1,6})?))$";
     private static final String REGEX_LONGITUDE =
-        "^[\\+-]?(?:180(?:(?:\\.0{1,6})?)|(?:[0-9]|[1-9][0-9]|1[0-7][0-9])(?:(?:\\.[0-9]{1,6})?))$";
+            "^[\\+-]?(?:180(?:(?:\\.0{1,6})?)|(?:[0-9]|[1-9][0-9]|1[0-7][0-9])(?:(?:\\.[0-9]{1,6})?))$";
     private static final String REGEX_DATE =
-        "^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\d\\d$";
+            "^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\d\\d$";
 
     JFrame fenetre;
     private ConfigurationManager configurationManager = ConfigurationManager.getInstance();
@@ -68,6 +70,9 @@ class FenetreModification {
     private List<Evenement> evenementList;
     private Evenement evenementSelectionne = null;
 
+    /**
+     * Utilisé pour l'accès à la base de données
+     */
     private DatabaseAccess databaseAccess = DatabaseAccess.getInstance();
     private EvenementAccess evenementAccess = EvenementAccess.getInstance();
     private RubriqueEnfantAccess rubriqueEnfantAccess = RubriqueEnfantAccess.getInstance();
@@ -79,8 +84,9 @@ class FenetreModification {
 
     /**
      * Créer la fenêtre de modification des événements de la base de données
+     *
      * @param contexte définit si la fenêtre traite des événements en attente de validation
-     * ou des événements déja validés
+     *                 ou des événements déja validés
      * @param appelant fenêtre principale par la quelle la cette fenêtre est ouverte
      */
     FenetreModification(int contexte, FenetrePrincipale appelant) {
@@ -89,8 +95,9 @@ class FenetreModification {
 
     /**
      * Initialise la fenêtre de modification des événements de la base de données
-     * @param context définit si la fenêtre traite des événements en attente de validation
-     * ou des événements déja validés
+     *
+     * @param context  définit si la fenêtre traite des événements en attente de validation
+     *                 ou des événements déja validés
      * @param appelant fenêtre principale par la quelle la cette fenêtre est ouverte
      */
     private void initialize(int context, FenetrePrincipale appelant) {
@@ -261,12 +268,9 @@ class FenetreModification {
         JButton boutonValider = new JButton(configurationManager.getString("bouton.valider"));
         boutonValider.addActionListener(e -> {
             if (controleSaisie()) {
-
-                if (comboBoxEvenements.getSelectedIndex() == 0) // nouvel événement
-                {
+                if (comboBoxEvenements.getSelectedIndex() == 0) { // nouvel événement
                     ajouterEvenement();
-                } else // événement déjà exsistant
-                {
+                } else { // événement déjà exsistant
                     modifierEvenement();
                 }
 
@@ -291,7 +295,6 @@ class FenetreModification {
                         configurationManager.getString("popup.texteRefuser"),
                         configurationManager.getString("popup.titreRefuser"),
                         JOptionPane.DEFAULT_OPTION);
-
             }
         });
         boutonRefuser.setBounds(50, 470, 117, 25);
@@ -353,14 +356,12 @@ class FenetreModification {
         calendrier.getDayChooser().setAlwaysFireDayProperty(true);
         // appuis sur une date du calendrier
         calendrier.getDayChooser().addPropertyChangeListener("day", evt -> {
-
             Date valDate = calendrier.getDate();
             String date = dateFormat.format(valDate);
 
             // remplis le champs date debut si celui-ci n'est pas valide
             // sinon remplit la date de fin
-            if (!Utils.controlSaisie(textFieldDateDebut.getText(), REGEX_DATE)) // date debut
-            {
+            if (!Utils.controlSaisie(textFieldDateDebut.getText(), REGEX_DATE)) { // date debut
                 textFieldDateDebut.setText(date);
             } else if (!controlSaisieDateFin(textFieldDateFin.getText(), REGEX_DATE)) { // date fin
                 textFieldDateFin.setText(date);
@@ -377,8 +378,7 @@ class FenetreModification {
             @Override
             public void actionPerformed(ActionEvent e) {
                 int index = comboBoxEvenements.getSelectedIndex();
-                if (index != 0) // un evenement de la base de donnée
-                {
+                if (index != 0) { // un evenement de la base de donnée
                     if (context == Contexte.CONTEXTE_EN_ATTENTE) {
                         etatChamps(true); // deverouille les champs
                     }
@@ -395,6 +395,7 @@ class FenetreModification {
                     textFieldLongitude.setText(evenement.getLongitude().toString());
                     comboBoxRubrique.setSelectedIndex(evenement.getRubriqueEnfant()
                             .getIdRubriqueEnfant() - 1);
+
                     int i = getIndexNpa(evenement.getAdresse().getNpa());
                     comboBoxNpa.setSelectedIndex(i);
                     comboBoxPriorite.setSelectedIndex(evenement.getPriorite().getNiveau());
@@ -406,7 +407,6 @@ class FenetreModification {
                     date = dateFormat.format(c.getTime());
                     textFieldDateFin.setText(date);
                     textAreaDetails.setText(evenement.getDetails());
-
                 } else if (context == Contexte.CONTEXTE_EN_ATTENTE) {
                     // verouille les champs afin de forcer l utilisateur a chosir un événement
                     // qui est en attente
@@ -478,12 +478,12 @@ class FenetreModification {
 
     /**
      * Charge les previews des événements dans la liste déroulante
+     *
      * @param contexte définit si la fenêtre traite des événements en attente de validation
-     * ou des événements déja validés
+     *                 ou des événements déja validés
      */
     private void chargementListeEvenements(int contexte) {
         List<String> previews;
-
 
         if (contexte == Contexte.CONTEXTE_AJOUTER) { // ajout/modification
             evenementList = evenementAccess.getActif();
@@ -504,7 +504,6 @@ class FenetreModification {
      * Refuse l'événement et le supprime
      */
     private void refuserEvenement() {
-
         evenementSelectionne.setStatut(statutAccess.get(Statut_.REFUSE).get(0)); // statur refuser
         evenementAccess.update(evenementSelectionne); // met a jour l evenemnt avec le statut refuse
         databaseAccess.delete(evenementSelectionne); // change date de fin
@@ -545,7 +544,6 @@ class FenetreModification {
         } else {
             newAdresse = listNewAdresse.get(0);
         }
-
 
         RubriqueEnfant newRubrique =
                 rubriqueEnfantAccess.get("", nomEnfant).get(0);
@@ -607,12 +605,12 @@ class FenetreModification {
         }
 
         // sépare niveau et nom de la priorité
-        String[] elementsPriorite =
-                comboBoxPriorite.getSelectedItem().toString().split(" - ");
+        String[] elementsPriorite = comboBoxPriorite.getSelectedItem().toString()
+                .split(" - ");
 
         // controle si l evenement exsite deja
-        List<Evenement> evenementsExsistants = evenementAccess.get(nomEnfant,
-
+        List<Evenement> evenementsExsistants = evenementAccess.get(
+                nomEnfant,
                 null,
                 nomEvenement,
                 nomRue,
@@ -626,6 +624,7 @@ class FenetreModification {
                 elementsPriorite[1],
                 null,
                 null);
+
         if (evenementsExsistants == null || evenementsExsistants.isEmpty()) { // n'exsiste pas
             // ajoute l'événement
             evenementAccess.save(nomEnfant,
@@ -657,6 +656,7 @@ class FenetreModification {
 
     /**
      * Cette methode controle la saisie de tout les champs du formulaire
+     *
      * @return vrai si la saisie est correcte, faux sinon
      */
     private boolean controleSaisie() {
@@ -741,7 +741,7 @@ class FenetreModification {
         // controle date de debut
         if (!Utils.controlSaisie(textFieldDateDebut.getText(), REGEX_DATE)) {
             labelDateDebut.setForeground(Color.RED);
-            erreurSaisieTextPane.setText(erreurSaisieTextPane.getText()  + "\n"
+            erreurSaisieTextPane.setText(erreurSaisieTextPane.getText() + "\n"
                     + configurationManager.getString("erreur.date"));
             valide = false;
         }
@@ -774,6 +774,7 @@ class FenetreModification {
      * Controle si la saisie de la date de fin est au format correct
      * et si la date est postérieur à la date
      * d'aujourd'hui et à la date de début de l'événement
+     *
      * @param texte date à contrer
      * @param regex format de la date
      * @return vrai si la date de fin est valide, faux sinon
@@ -806,6 +807,7 @@ class FenetreModification {
 
     /**
      * verrouille ou déverrouille les champs du formulaire
+     *
      * @param v false pour verrouiller les champs et true pour les déverrouiller
      */
     private void etatChamps(boolean v) {
@@ -819,7 +821,6 @@ class FenetreModification {
         textFieldDateDebut.setEditable(v);
         textFieldDateFin.setEditable(v);
         textAreaDetails.setEditable(v);
-
     }
 
     /**
@@ -840,6 +841,7 @@ class FenetreModification {
 
     /**
      * Retourne l'événement sélectionné dans la liste déroulante
+     *
      * @return événement sélectionné
      */
     private Evenement getEvenementSelectionne() {
@@ -848,6 +850,7 @@ class FenetreModification {
 
     /**
      * Recupère l'événement sélectionné dans la liste déroulante
+     *
      * @param evenementSelectionne événement sélectionné de la liste déroulante
      */
     private void setEvenementSelectionne(Evenement evenementSelectionne) {

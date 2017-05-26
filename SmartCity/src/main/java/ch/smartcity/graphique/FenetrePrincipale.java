@@ -3,9 +3,9 @@ package ch.smartcity.graphique;
 import ch.smartcity.carte.Carte;
 import ch.smartcity.carte.Event;
 import ch.smartcity.carte.PointWGS84;
-import ch.smartcity.graphique.controllers.ConfigurationManager;
 import ch.smartcity.database.controllers.access.EvenementAccess;
 import ch.smartcity.database.models.Evenement;
+import ch.smartcity.graphique.controllers.ConfigurationManager;
 import ch.smartcity.pdf.GenerateurPDF;
 import com.toedter.calendar.JCalendar;
 
@@ -32,6 +32,7 @@ import java.util.Timer;
  * Affiche une prévisualisation des événements en attente.
  * Met a disposition des boutons permettant de modifier les événements de la base de données,
  * et de générer un pdf de statistiques
+ *
  * @author Tano Iannetta
  * @author Jérémie Zanone
  * @author Wojciech Myszkorowsk
@@ -39,10 +40,12 @@ import java.util.Timer;
  */
 public class FenetrePrincipale {
 
-    private ConfigurationManager configurationManager = ConfigurationManager.getInstance();
-
     private final JPanel panelCalendrier = new JPanel();
     private final JTextField textRubriques = new JTextField();
+    private final JPanel panelMenu = new JPanel();
+    private final JPanel panelLogo = new JPanel();
+    public JFrame fenetre = new JFrame();
+    private ConfigurationManager configurationManager = ConfigurationManager.getInstance();
     private final JCheckBox chckbxAccidents =
             new JCheckBox(configurationManager.getString("rubriqueEnfant.accidents"));
     private final JCheckBox chckbxTravaux =
@@ -63,17 +66,14 @@ public class FenetrePrincipale {
             new JLabel(configurationManager.getString("rubriqueParent.chantier"));
     private final JLabel labelDoleances =
             new JLabel(configurationManager.getString("rubriqueParent.doleances"));
-    private final JPanel panelMenu = new JPanel();
     private final JLabel lblNbrNotification =
             new JLabel(configurationManager.getString("entete.notifications"));
-    private final JPanel panelLogo = new JPanel();
-    public JFrame fenetre = new JFrame();
     private StringBuilder descriptionsEvents = new StringBuilder();
     private JPanel panelPrincipal = new JPanel();
     private JPanel panelCarte = new JPanel();
     private JPanel panelNotifications = new JPanel();
     private JButton btnAjouter =
-            new JButton(configurationManager.getString("bouton.ajouterModifier"));
+            new JButton("ééééé" + configurationManager.getString("bouton.ajouterModifier"));
     private JButton btnPdf =
             new JButton(configurationManager.getString("bouton.pdf"));
     private JButton btnEnAttente = new
@@ -103,6 +103,9 @@ public class FenetrePrincipale {
     private JTextField textDescription = new JTextField();
     private JTextField textNotifications = new JTextField();
 
+    /**
+     * Utilisé pourl'accès à la base de données
+     */
     private EvenementAccess evenementAccess = EvenementAccess.getInstance();
 
     /**
@@ -117,8 +120,10 @@ public class FenetrePrincipale {
      */
     private void initialize() {
         Timer timer = new Timer();
-        ThreadMiseAjourNotifications tache = new ThreadMiseAjourNotifications(Utils.previewEvenement(
-                evenementAccess.getEnAttente()), listEvenementsEnAttente, lblNbrNotification);
+        ThreadMiseAjourNotifications tache = new ThreadMiseAjourNotifications(
+                Utils.previewEvenement(evenementAccess.getEnAttente()),
+                listEvenementsEnAttente,
+                lblNbrNotification);
 
         timer.scheduleAtFixedRate(tache, 2 * 60 * 100, 2 * 10 * 1000);
         tache.run();
@@ -131,7 +136,10 @@ public class FenetrePrincipale {
                                 .addComponent(btnAjouter)
                                 .addGap(18)
                                 .addComponent(btnPdf)
-                                .addPreferredGap(ComponentPlacement.RELATED, 347, Short.MAX_VALUE)
+                                .addPreferredGap(
+                                        ComponentPlacement.RELATED,
+                                        347,
+                                        Short.MAX_VALUE)
                                 .addGroup(gl_panelMenu.createParallelGroup(Alignment.LEADING)
                                         .addComponent(lblNbrNotification)
                                         .addComponent(btnEnAttente))
@@ -142,7 +150,10 @@ public class FenetrePrincipale {
                 gl_panelMenu.createParallelGroup(Alignment.TRAILING)
                         .addGroup(gl_panelMenu.createSequentialGroup()
                                 .addContainerGap(13, Short.MAX_VALUE)
-                                .addComponent(lblNbrNotification, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE)
+                                .addComponent(lblNbrNotification,
+                                        GroupLayout.PREFERRED_SIZE,
+                                        25,
+                                        GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(ComponentPlacement.RELATED)
                                 .addGroup(gl_panelMenu.createParallelGroup(Alignment.BASELINE)
                                         .addComponent(btnAjouter)
@@ -155,6 +166,7 @@ public class FenetrePrincipale {
         fenetre.setTitle(configurationManager.getString("titre.application"));
         fenetre.setResizable(false);
         fenetre.setBounds(0, 0, 1900, 1000);
+
         //pop up de confirmation avant de quitter la fenetre
         fenetre.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         fenetre.addWindowListener(new WindowAdapter() {
@@ -293,7 +305,8 @@ public class FenetrePrincipale {
         });
 
         //LOGO PROGRAMME
-        URL imageIconURL = getClass().getClassLoader().getResource("ch/smartcity/graphique/logo.png");
+        URL imageIconURL = getClass().getClassLoader()
+                .getResource("ch/smartcity/graphique/logo.png");
         ImageIcon imageIcon = null;
 
         if (imageIconURL != null) {
@@ -474,7 +487,6 @@ public class FenetrePrincipale {
      * rubriques sélectionnées
      */
     void recuperationEvenements() {
-
         if (chckbxAccidents.isSelected()) {
             allEvents.removeAll(listeAccidents);
             listeAccidents = wrapperEvenement(evenementAccess
@@ -499,7 +511,7 @@ public class FenetrePrincipale {
             allEvents.removeAll(listeManifestations);
             listeManifestations = wrapperEvenement(evenementAccess
                     .getActif(configurationManager.getString(
-                    "database.rubriqueManifestations"), dateSelectionne));
+                            "database.rubriqueManifestations"), dateSelectionne));
             allEvents.addAll(listeManifestations);
             miseAJourAffichage();
         }
