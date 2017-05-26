@@ -138,6 +138,7 @@ public class FenetrePrincipale {
                     timer.purge();
                     tache.cancel();
                     fenetre.dispose();
+                    System.exit(0);
                 }
             }
         });
@@ -159,35 +160,28 @@ public class FenetrePrincipale {
             if (chckbxAccidents.isSelected()) {
                 eventName.add("accidents");
             }
-
             if (chckbxTravaux.isSelected()) {
                 eventName.add("travaux");
             }
-
             if (chckbxManifestations.isSelected()) {
                 eventName.add("manifestations");
             }
-
             if (chckbxRenovation.isSelected()) {
                 eventName.add("rénovations");
             }
-
             if (chckbxConstruction.isSelected()) {
                 eventName.add("constructions");
             }
-
             if (chckboxDoleances.isSelected()) {
                 eventName.add("doléances");
             }
-
+            /* Génération d'un PDF pour chaque filtre seléctionné */
             for (String s : eventName) {
                 try {
                     GenerateurPDF.cree(s, dateSelectionne);
                 } catch (Exception exception) {
-                    System.out.println(exception.getMessage());
-                    // popup erreur
+                    exception.printStackTrace();
                 }
-                System.out.println("PDF généré !");
             }
         });
         panelPrincipal.setBounds(0, 0, 1900, 1000);

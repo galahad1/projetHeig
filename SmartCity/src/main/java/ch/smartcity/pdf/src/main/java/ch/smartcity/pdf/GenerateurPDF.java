@@ -26,17 +26,32 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+/**
+ * Classe qui génère un PDF
+ *
+ * @author Luana Martelli
+ */
 public class GenerateurPDF {
 
-    private static String LIEU = "Lausanne";
+    private static final String LIEU = "Lausanne";
     private static URL LOGO;
 
+    /**
+     * Génère un PDF. Méthode appelée depuis l'extérieur
+     * @param nomEvenement nom de l'événement sélectionné
+     * @param date date de l'événement sélectionné
+     * @throws Exception si il y a un problème avec la génération de PDF
+     */
     public static void cree(String nomEvenement, Calendar date) throws Exception {
 
+       String d = new SimpleDateFormat("dd-MM-yyyy").format(date.getTime());
+
+        /* Le rapport sera stocké dans un dossier dans le répertoire utilisateur */
         String DEST = System.getProperty("user.home") + File.separator + "Documents" + File.separator
                 + "Smartcity" + File.separator + "PDF" + File.separator + "rapport_" + nomEvenement
-                + ".pdf";
+                + "_" + d + ".pdf";
 
+        /* Recherche du logo */
         try {
             LOGO = GenerateurPDF.class.getClassLoader()
                     .getResource("ch/smartcity/pdf/resources/logo.png");
@@ -45,7 +60,7 @@ public class GenerateurPDF {
             throw new ExceptionInInitializerError(e);
         }
 
-        /* Creation of a PDF */
+        /* Création du PDF */
         try {
             new GenerateurPDF().createPdf(DEST, nomEvenement, date);
             Desktop.getDesktop().open(new File(DEST).getParentFile());
@@ -57,12 +72,14 @@ public class GenerateurPDF {
     }
 
     /**
-     * Database method. Create a new PDF
-     *
-     * @param dest name of the destination's file
-     * @throws IOException
+     * Crée un document sous format PDF
+     * @param dest chemin de destination du PDF
+     * @param nomEvenement nom de l'événement sélectionné
+     * @param dateEvenement date de l'événement sélectionné
+     * @throws Exception si il y a un problème dans la génération du PDF
      */
-    public void createPdf(String dest, String nomEvenement, Calendar dateEvenement) throws Exception {
+    @SuppressWarnings( "deprecation" )
+    private void createPdf(String dest, String nomEvenement, Calendar dateEvenement) throws Exception {
         File file = new File(dest);
         file.getParentFile().mkdirs();
         file.createNewFile();
@@ -83,7 +100,7 @@ public class GenerateurPDF {
         Table page1 = new Table(1);
 
         /* EN-TÈTE */
-        /* Contains logo and name of project */
+        /* Contient l'image et le nom du projet */
         Image logo = new Image(ImageDataFactory.create(LOGO));
         logo.scaleAbsolute(110, 15);
 
@@ -102,11 +119,12 @@ public class GenerateurPDF {
         lieuDate.setTextAlignment(TextAlignment.RIGHT);
         page1.addCell(lieuDate);
 
-        List<Evenement> evenements = EvenementAccess.getInstance().get(nomEvenement, "", "", "",
+        /* Recherche de l'événment dans la base de données */
+        List<Evenement> evenements = EvenementAccess.get(nomEvenement, "", "", "",
                 "", "", null, null, null, null, "", "",
                 "", null);
 
-        /* Ajout des evenements du jour */
+        /* Recherche des événements du jour */
         List<Evenement> evenementAujourdhui = new ArrayList<>();
         int statParMois[] = new int[12];
         for (Evenement e : evenements) {
@@ -117,7 +135,6 @@ public class GenerateurPDF {
             ++statParMois[d.getTime().getMonth()];
         }
 
-
         /* TITRE */
         Cell titre = new Cell().add("Avis de " + nomEvenement);
         titre.setBorder(null);
@@ -127,32 +144,31 @@ public class GenerateurPDF {
         titre.setMarginBottom(25);
         page1.addCell(titre);
 
+        /* Cas ou la base de données est vide */
         if (evenementAujourdhui.size() == 0) {
-            Cell erreur = new Cell().add("Aucunes données pour cet événement ! ");
+            Cell erreur = new Cell().add("Aucunes données pour cet événement à cette date ! ");
             erreur.setBorder(null);
             page1.addCell(erreur);
-            document.add(page1);
-            document.close();
-            return;
-        }
-
-        SimpleDateFormat formatDate = new SimpleDateFormat("dd.MM.yyyy");
-        for (Evenement e : evenementAujourdhui) {
+        } else {
+            /* Tous les événements du jours et leurs détails sont ajoutés au document */
+            SimpleDateFormat formatDate = new SimpleDateFormat("dd.MM.yyyy");
+            for (Evenement e : evenementAujourdhui) {
 
             /* INFORMATIONS_1 */
-            Cell info1 = new Cell().add(e.getNomEvenement() + "\nDu "
-                    + formatDate.format(e.getDebut().getTime()) + " au " + formatDate.format(e.getFin().getTime()));
-            info1.setBorder(null);
-            info1.setFont(PdfFontFactory.createFont(FontConstants.TIMES_ITALIC));
-            info1.setMarginBottom(25);
-            page1.addCell(info1);
+                Cell info1 = new Cell().add(e.getNomEvenement() + "\nDu "
+                        + formatDate.format(e.getDebut().getTime()) + " au " + formatDate.format(e.getFin().getTime()));
+                info1.setBorder(null);
+                info1.setFont(PdfFontFactory.createFont(FontConstants.TIMES_ITALIC));
+                info1.setMarginBottom(25);
+                page1.addCell(info1);
 
             /* TEXTE_1 */
-            Cell texte1 = new Cell().add(e.getDetails());
-            texte1.setBorder(null);
-            texte1.setMarginBottom(25);
-            page1.addCell(texte1);
+                Cell texte1 = new Cell().add(e.getDetails());
+                texte1.setBorder(null);
+                texte1.setMarginBottom(25);
+                page1.addCell(texte1);
 
+            }
         }
 
         document.add(page1);
@@ -163,14 +179,13 @@ public class GenerateurPDF {
         Table page2 = new Table(1);
 
         /* STATISTIQUE */
-
         Cell information = new Cell().add("Statistiques des " + nomEvenement + " en ville de " + LIEU);
         information.setBorder(null);
         information.setFont(PdfFontFactory.createFont(FontConstants.TIMES_BOLD));
 
 
-        GenerateurGraphique graphe = new GenerateurGraphique(statParMois);
-        Image image = new Image(ImageDataFactory.create(graphe.CHEMIN_IMAGE));
+        new GenerateurGraphique(statParMois);
+        Image image = new Image(ImageDataFactory.create(GenerateurGraphique.CHEMIN_IMAGE));
         //image.setAutoScale(true);
         image.scaleAbsolute(350, 250);
         image.setMargins(25, 55, 15, 55);
@@ -189,22 +204,21 @@ public class GenerateurPDF {
             }
         }
 
-        int compteur = 0;
-
-
-        // FIXME faire en sorte que ce soit générique (enum ?)
+        int compteur;
+        /* Statistique selon la rubrique choisie */
         switch (nomEvenement) {
             case "accidents":
                 /* Nb accidents par rues principales */
-                String ruesPrincipales[] = {"Le Flon", "Maupas", "Ouchy", "Beaulieu"};
-                compteur = 0;
-                for (int i = 0; i < ruesPrincipales.length; ++i) {
+                String ruesPrincipales[] = {"flon", "malley", "ouchy", "beaulieu"};
+                for (String ruesPrincipale : ruesPrincipales) {
+                    compteur = 0;
                     for (Evenement e : evenements) {
-                        if (e.getAdresse().getRue().getNomRue().contains(ruesPrincipales[i])) {
+                        System.out.println(e.getNomEvenement());
+                        if (e.getNomEvenement().contains(ruesPrincipale)) {
                             ++compteur;
                         }
                     }
-                    Cell statsRues = new Cell().add("Nombre d'accident à " + ruesPrincipales[i] + " : " + compteur + "\n");
+                    Cell statsRues = new Cell().add("Nombre d'accidents à " + ruesPrincipale + " : " + compteur + "\n");
                     statsRues.setBorder(null);
                     page2.addCell(statsRues);
                 }
@@ -263,10 +277,7 @@ public class GenerateurPDF {
                 page2.addCell(statsComms);
         }
 
-
         document.add(page2);
-
-
         document.close();
     }
 }

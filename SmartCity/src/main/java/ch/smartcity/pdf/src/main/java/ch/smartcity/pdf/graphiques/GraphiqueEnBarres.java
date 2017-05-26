@@ -1,9 +1,3 @@
-/**
- * PROJET HEIG - VD SMARTCITY
- * Classe : GraphiqueEnBarres
- * <p>
- * Descriptif : Cette classe cree un graphique en barre. Toutes les informations sont extraites de la base de données
- */
 package ch.smartcity.pdf.graphiques;
 
 import ch.smartcity.pdf.donnees.Mois;
@@ -19,20 +13,19 @@ import org.jfree.data.general.DefaultPieDataset;
 
 import java.awt.*;
 
-public class GraphiqueEnBarres {
-
-    /* Constructeur privé */
-    private GraphiqueEnBarres() {
-    }
+/**
+ * Cette classe cree un graphique en barre. Toutes les informations sont extraites de la base de données
+ *
+ * @author Luana Martelli
+ */
+class GraphiqueEnBarres {
 
     /**
-     * Méthode principale
-     * Crée un graphique en barre
-     * Les données sont extraites de la base de données
-     *
-     * @return une instance représentant un graphique en barre
+     * Crée un graphique en barres
+     * @param stats les statistiques relatives au graphique
+     * @return un nouveau graphe
      */
-    public static JFreeChart cree(int[] stats) {
+    static JFreeChart cree(int[] stats) {
 
         DefaultCategoryDataset ds = new DefaultCategoryDataset();
 
@@ -65,5 +58,9 @@ public class GraphiqueEnBarres {
         render.setSeriesPaint(0, Color.BLUE);
 
         return chart;
+    }
+
+    /* Constructeur privé */
+    private GraphiqueEnBarres() {
     }
 }
