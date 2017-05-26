@@ -92,7 +92,7 @@ public class FenetrePrincipale {
         timer.scheduleAtFixedRate(tache, 2 * 60 * 100, 2 * 10 * 1000);
         tache.run();
         JList newListe = tache.getJliste();
-        JLabel lblNbrNotification = tache.getNombrePanel();
+        JLabel lblNbrNotification = tache.getPanelNotifications();
 
         gl_panelMenu.setHorizontalGroup(
                 gl_panelMenu.createParallelGroup(Alignment.TRAILING)

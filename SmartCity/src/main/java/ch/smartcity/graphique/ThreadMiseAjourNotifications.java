@@ -78,7 +78,13 @@ public class ThreadMiseAjourNotifications extends TimerTask {
         return notif;
     }
 
-    public JLabel getNombrePanel() {
+
+    /**
+     * retourne le panel qui contient la liste des notifications
+     *
+     * @return le panel avec les notifications
+     */
+    public JLabel getPanelNotifications() {
         return nbNotif;
     }
 }

@@ -69,6 +69,12 @@ final class Utils {
         return preview;
     }
 
+    /**
+     * Vide la liste passé en parametre et renvoie une nouvelle liste avec les données actuel de base de données
+     *
+     * @param liste liste des evenement
+     * @return une liste actuel des evenements
+     */
     static List<String> refreshListAcess(List<String> liste) {
         liste.clear();
         return Utils.previewEvenement(EvenementAccess.getInstance().getEnAttente());
