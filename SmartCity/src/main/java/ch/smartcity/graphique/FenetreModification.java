@@ -24,6 +24,8 @@ import java.util.List;
  * de la base de donnée.
  * Elle permet aussi de valider les événements en attente, ainsi que de les
  * modifier avant de les valider.
+ * @author Tano Iannetta
+ * @author Loan Lassalle
  */
 class FenetreModification {
 
@@ -489,7 +491,7 @@ class FenetreModification {
             previews.add(0, configurationManager.getString("liste.ajouter"));
         } else {  // en attente
             // recupere tout les evenements en attente
-            evenementList = evenementAccess.getEnAttente(); // recupere tout les evenements en attente
+            evenementList = evenementAccess.getEnAttente();
             previews = Utils.previewEvenement(evenementList); // previsualisation des evenements
             previews.add(0, configurationManager.getString("liste.selectionner"));
             etatChamps(false);
@@ -616,8 +618,9 @@ class FenetreModification {
             e1.printStackTrace();
         }
 
-        // sé pare niveau et nom de la priorité
-        String[] elementsPriorite = comboBoxPriorite.getSelectedItem().toString().split(" - ");
+        // sépare niveau et nom de la priorité
+        String[] elementsPriorite =
+                comboBoxPriorite.getSelectedItem().toString().split(" - ");
 
         // controle si l evenement exsite deja
         List<Evenement> evenementsExsistants = evenementAccess.get(nomEnfant,
