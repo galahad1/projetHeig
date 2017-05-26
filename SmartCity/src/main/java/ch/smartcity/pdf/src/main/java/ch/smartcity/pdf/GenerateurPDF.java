@@ -175,6 +175,12 @@ public class GenerateurPDF {
         document.add(new AreaBreak());
 
 
+        /* Cas où il n'y a pas d'événements dans la base de données */
+        if (evenements.size() == 0) {
+            document.close();
+            return;
+        }
+
         /* Deuième partie du PDF */
         Table page2 = new Table(1);
 
