@@ -1,7 +1,9 @@
 package ch.smartcity.graphique;
 
 /**
- * Created by tano on 16.05.17.
+ * Fournie des constantes correspondant aux contexte dans les quels la fenêtre
+ * de modification peut être ouverte
+ * @author Tano Iannetta
  */
 public class Contexte {
     public static final int CONTEXTE_AJOUTER = 0;
