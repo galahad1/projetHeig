@@ -1,5 +1,8 @@
 /**
- * Blabla
+ * PROJET HEIG - VD SMARTCITY
+ * Classe : GraphiqueEnBarres
+ * <p>
+ * Classe qui génère un graphique pour le document PDF
  */
 package ch.smartcity.pdf.graphiques;
 
@@ -18,8 +21,15 @@ public class GenerateurGraphique {
             + "Images" + File.separator + "image.png";
     private static final int NB_GRAPHES = 2;
 
+    /**
+     * Crée un grahique
+     * @param stats les statistiques du graphique
+     * @throws URISyntaxException si lors de la sauvegarde de l'image, il y a un problème
+     * @throws IOException si il y  a un problème lors de la génération de l'image dans un fichier
+     */
     public GenerateurGraphique(int[] stats) throws URISyntaxException, IOException {
 
+        /* Génère de manière aléatoire un graphique en barre ou un graphique circulaire */
         Random generateurGraphe = new Random();
         int i = generateurGraphe.nextInt(NB_GRAPHES);
 
