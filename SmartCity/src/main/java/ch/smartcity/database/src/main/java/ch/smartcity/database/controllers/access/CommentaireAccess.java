@@ -42,7 +42,7 @@ public class CommentaireAccess {
     private final DatabaseAccess databaseAccess;
 
     /**
-     * Utilisé pour stocker la valeur des attributs ci-dessous en fonction de la nullité des paramètres
+     * Utilisé pour définir les paramètres de la requête en fonction de la valeurs des paramètres
      * d'un commentaire
      */
     private String nomEvenement;
@@ -65,7 +65,7 @@ public class CommentaireAccess {
     }
 
     /**
-     * Obtient la liste des commentaires stockée au sein de la base de données en fonction des
+     * Obtient la liste des commentaires stockés au sein de la base de données en fonction des
      * paramètres
      * Chaque paramètre différent de null sera utilisé comme critère de recherche
      *
@@ -73,7 +73,7 @@ public class CommentaireAccess {
      * @param utilisateur utilisateur des commentaires à obtenir
      * @param commentaire commentaire texte des commentaires à obtenir
      * @param creation    date de création des commentaires à otbenir
-     * @return liste des commentaires stockée au sein de la base de données en fonction
+     * @return liste des commentaires stockés au sein de la base de données en fonction
      * des paramètres
      */
     public List<Commentaire> get(Evenement evenement,
@@ -81,14 +81,14 @@ public class CommentaireAccess {
                                  String commentaire,
                                  Calendar creation) {
 
-        // Définit nomEvenement et nomUtilisateur en fonction de la valeurs des paramètres
-        // evenement et utilisateur
+        // Définit les paramètres de la requête en fonction de la valeurs des paramètres du
+        // commentaire
         checkNull(evenement, utilisateur);
         return get(nomEvenement, nomUtilisateur, commentaire, creation);
     }
 
     /**
-     * Obtient la liste des commentaires stockée au sein de la base de données en fonction des
+     * Obtient la liste des commentaires stockés au sein de la base de données en fonction des
      * paramètres
      * Chaque paramètre différent de null sera utilisé comme critère de recherche
      *
@@ -96,7 +96,7 @@ public class CommentaireAccess {
      * @param nomUtilisateur nom de l'utilisateur des commentaires à obtenir
      * @param commentaire    commentaire texte des commentaires à obtenir
      * @param creation       date de création des commentaires à otbenir
-     * @return liste des commentaires stockée au sein de la base de données en fonction
+     * @return liste des commentaires stockés au sein de la base de données en fonction
      * des paramètres
      */
     public List<Commentaire> get(String nomEvenement,
@@ -144,12 +144,14 @@ public class CommentaireAccess {
 
             if (commentaire != null && !commentaire.isEmpty()) {
                 predicateList.add(criteriaBuilder.equal(
-                        commentaireRoot.get(Commentaire_.commentaire), commentaire.toLowerCase()));
+                        commentaireRoot.get(Commentaire_.commentaire),
+                        commentaire.toLowerCase()));
             }
 
             if (creation != null) {
                 predicateList.add(criteriaBuilder.greaterThanOrEqualTo(
-                        commentaireRoot.get(Commentaire_.creation), creation));
+                        commentaireRoot.get(Commentaire_.creation),
+                        creation));
             }
 
             criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
@@ -173,7 +175,7 @@ public class CommentaireAccess {
     }
 
     /**
-     * Stocke le commentaire définit par l'événement, l'utilisateur et le commentaire texte
+     * Stocke le commentaire définit par les paramètres
      *
      * @param evenement   événement du commentaire à stocker
      * @param utilisateur utilisateur du commentaire à stocker
@@ -184,7 +186,7 @@ public class CommentaireAccess {
     }
 
     /**
-     * Met à jour le commentaire correspondant à l'identifiant avec les paramètres fournis
+     * Met à jour le commentaire correspondant aux paramètres
      * Chaque paramètre de valeurs null ne se mettre pas à jour
      *
      * @param idCommentaire identifiant du commentaire à mettre à jour
@@ -208,8 +210,8 @@ public class CommentaireAccess {
     }
 
     /**
-     * Met à jour les commentaires avec les paramètres préfixés de new et correspondant aux
-     * paramètres préfixés de old
+     * Met à jour les commentairess correspondant aux paramètres préfixés de old en leur affectant
+     * les paramètres préfixés de new
      * Chaque paramètre préfixés de old différent de null sera utilisé comme critère de recherche
      * Chaque paramètre préfixés de new de valeurs null ne se mettre pas à jour
      *
@@ -259,8 +261,8 @@ public class CommentaireAccess {
                        String commentaire,
                        Calendar creation) {
 
-        // Définit nomEvenement et nomUtilisateur en fonction de la valeurs des paramètres evenement
-        // et utilisateur
+        // Définit les paramètres de la requête en fonction de la valeurs des paramètres du
+        // commentaire
         checkNull(evenement, utilisateur);
         delete(nomEvenement, nomUtilisateur, commentaire, creation);
     }
@@ -307,7 +309,7 @@ public class CommentaireAccess {
     }
 
     /**
-     * Définit nomEvenement et nomUtilisateur en fonction de la nullité des paramètres
+     * Définit les paramètres de la requête en fonction de la valeurs des paramètres du commentaire
      *
      * @param evenement   evenement à vérifier
      * @param utilisateur utilisateur à vérifier

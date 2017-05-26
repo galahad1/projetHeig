@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 /**
- * Fournit l'accès aux personnes de confiances de la base de données
+ * Fournit l'accès aux liens de confiances de la base de données
  *
  * @author Lassalle Loan
  * @since 25.03.2017
@@ -42,8 +42,8 @@ public class ConfianceAccess {
     private final DatabaseAccess databaseAccess;
 
     /**
-     * Utilisé pour stocker la valeur des attributs ci-dessous en fonction de la nullité des
-     * paramètres d'un lien de confiance
+     * Utilisé pour définir les paramètres de la requête en fonction de la valeurs des paramètres
+     * d'un lien de confiance
      */
     private String nomUtilisateur;
     private String nomRubriqueEnfant;
@@ -64,37 +64,36 @@ public class ConfianceAccess {
         return SingletonHolder.instance;
     }
 
-
     /**
-     * Obtient la liste des liens de confiance stockée au sein de la base de données en fonction des
+     * Obtient la liste des liens de confiance stockés au sein de la base de données en fonction des
      * paramètres
      * Chaque paramètre différent de null sera utilisé comme critère de recherche
      *
      * @param utilisateur    utilisateur des liens de confiance à obtenir
      * @param rubriqueEnfant rubrique enfant des liens de confiance à obtenir
      * @param creation       date de création des liens de confiance à obtenir
-     * @return liste des liens de confiance stockée au sein de la base de données en fonction des
+     * @return liste des liens de confiance stockés au sein de la base de données en fonction des
      * paramètres
      */
     public List<Confiance> get(Utilisateur utilisateur,
                                RubriqueEnfant rubriqueEnfant,
                                Calendar creation) {
 
-        // Définit nomUtilisateur et nomRubriqueEnfant en fonction de la valeurs des paramètres
-        // utilisateur et rubriqueEnfant
+        // Définit les paramètres de la requête en fonction de la valeurs des paramètres du
+        // lien de confiance
         checkNull(utilisateur, rubriqueEnfant);
         return get(nomUtilisateur, nomRubriqueEnfant, creation);
     }
 
     /**
-     * Obtient la liste des liens de confiance stockée au sein de la base de données en fonction des
+     * Obtient la liste des liens de confiance stockés au sein de la base de données en fonction des
      * paramètres
      * Chaque paramètre différent de null sera utilisé comme critère de recherche
      *
      * @param nomUtilisateur    nom de l'utilisateur des liens de confiance à obtenir
      * @param nomRubriqueEnfant nom de la rubrique enfant des liens de confiance à obtenir
      * @param creation          date de création des liens de confiance à obtenir
-     * @return liste des liens de confiance stockée au sein de la base de données en fonction des
+     * @return liste des liens de confiance stockés au sein de la base de données en fonction des
      * paramètres
      */
     public List<Confiance> get(String nomUtilisateur,
@@ -140,7 +139,8 @@ public class ConfianceAccess {
 
             if (creation != null) {
                 predicateList.add(criteriaBuilder.greaterThanOrEqualTo(
-                        confianceRoot.get(Confiance_.creation), creation));
+                        confianceRoot.get(Confiance_.creation),
+                        creation));
             }
 
             criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
@@ -164,7 +164,7 @@ public class ConfianceAccess {
     }
 
     /**
-     * Stocke le lien de confiance définit par l'utilisateur et la rubriqueEnfant
+     * Stocke le lien de confiance définit par les paramètres
      *
      * @param utilisateur    utilisateur du lien de confiance à stocker
      * @param rubriqueEnfant rubriqueEnfant du lien de confiance à stocker
@@ -174,7 +174,7 @@ public class ConfianceAccess {
     }
 
     /**
-     * Met à jour le lien de confiance correspondant à l'identifiant avec les paramètres fournis
+     * Met à jour le lien de confiance correspondant aux paramètres
      * Chaque paramètre de valeurs null ne se mettre pas à jour
      *
      * @param idConfiance    identifiant du lien de confiance à mettre à jour
@@ -196,8 +196,8 @@ public class ConfianceAccess {
     }
 
     /**
-     * Met à jour les liens de confiance avec les paramètres préfixés de new et correspondant aux
-     * paramètres préfixés de old
+     * Met à jour les liens de confiance correspondant aux paramètres préfixés de old en leur
+     * affectant les paramètres préfixés de new
      * Chaque paramètre préfixés de old différent de null sera utilisé comme critère de recherche
      * Chaque paramètre préfixés de new de valeurs null ne se mettre pas à jour
      *
@@ -238,8 +238,8 @@ public class ConfianceAccess {
                        RubriqueEnfant rubriqueEnfant,
                        Calendar creation) {
 
-        // Définit nomUtilisateur et nomRubriqueEnfant en fonction de la valeurs des paramètres
-        // utilisateur et rubriqueEnfant
+        // Définit les paramètres de la requête en fonction de la valeurs des paramètres du
+        // lien de confiance
         checkNull(utilisateur, rubriqueEnfant);
         delete(nomUtilisateur, nomRubriqueEnfant, creation);
     }
@@ -278,7 +278,8 @@ public class ConfianceAccess {
     }
 
     /**
-     * Définit nomUtilisateur et nomRubriqueEnfant en fonction de la nullité des paramètres
+     * Définit les paramètres de la requête en fonction de la valeurs des paramètres du
+     * lien de confiance
      *
      * @param utilisateur    utilisateur à vérifier
      * @param rubriqueEnfant rubrique enfant à vérifier

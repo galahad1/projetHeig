@@ -6,7 +6,6 @@ import ch.smartcity.carte.PointWGS84;
 import ch.smartcity.graphique.controllers.ConfigurationManager;
 import ch.smartcity.database.controllers.access.EvenementAccess;
 import ch.smartcity.database.models.Evenement;
-import ch.smartcity.database.models.Statut_;
 import ch.smartcity.pdf.GenerateurPDF;
 import com.toedter.calendar.JCalendar;
 
@@ -124,7 +123,7 @@ public class FenetrePrincipale {
         timer.scheduleAtFixedRate(tache, 2 * 60 * 100, 2 * 10 * 1000);
         tache.run();
         JList newListe = tache.getJliste();
-        JLabel lblNbrNotification = tache.getNombrePanel();
+        JLabel lblNbrNotification = tache.getPanelNotifications();
 
         gl_panelMenu.setHorizontalGroup(
                 gl_panelMenu.createParallelGroup(Alignment.TRAILING)
@@ -370,7 +369,9 @@ public class FenetrePrincipale {
         chckbxAccidents.addActionListener(e -> {
             if (((AbstractButton) e.getSource()).isSelected()) {
                 listeAccidents = wrapperEvenement(evenementAccess
-                        .getActif(configurationManager.getString("database.rubriqueAccidents"), dateSelectionne, Statut_.TRAITE));
+                        .getActif(configurationManager.getString("database.rubriqueAccidents"),
+                                dateSelectionne));
+
                 allEvents.addAll(listeAccidents);
             } else {
                 allEvents.removeAll(listeAccidents);
@@ -381,7 +382,9 @@ public class FenetrePrincipale {
         chckbxTravaux.addActionListener(e -> {
             if (((AbstractButton) e.getSource()).isSelected()) {
                 listeTravaux = wrapperEvenement(evenementAccess
-                        .getActif(configurationManager.getString("database.rubriqueTravaux"), dateSelectionne, Statut_.TRAITE));
+                        .getActif(configurationManager.getString("database.rubriqueTravaux"),
+                                dateSelectionne));
+
                 allEvents.addAll(listeTravaux);
             } else {
                 allEvents.removeAll(listeTravaux);
@@ -392,7 +395,10 @@ public class FenetrePrincipale {
         chckbxManifestations.addActionListener(e -> {
             if (((AbstractButton) e.getSource()).isSelected()) {
                 listeManifestations = wrapperEvenement(evenementAccess
-                        .getActif(configurationManager.getString("database.rubriqueManifestations"), dateSelectionne, Statut_.TRAITE));
+                        .getActif(configurationManager.getString(
+                                "database.rubriqueManifestations"),
+                                dateSelectionne));
+
                 allEvents.addAll(listeManifestations);
             } else {
                 allEvents.removeAll(listeManifestations);
@@ -403,7 +409,8 @@ public class FenetrePrincipale {
         chckbxRenovation.addActionListener(e -> {
             if (((AbstractButton) e.getSource()).isSelected()) {
                 listeRenovations = wrapperEvenement(evenementAccess
-                        .getActif(configurationManager.getString("database.rubriqueRenovations"), dateSelectionne, Statut_.TRAITE));
+                        .getActif(configurationManager.getString(
+                                "database.rubriqueRenovations"), dateSelectionne));
                 allEvents.addAll(listeRenovations);
             } else {
                 allEvents.removeAll(listeRenovations);
@@ -414,7 +421,8 @@ public class FenetrePrincipale {
         chckbxConstruction.addActionListener(e -> {
             if (((AbstractButton) e.getSource()).isSelected()) {
                 listeConstructions = wrapperEvenement(evenementAccess
-                        .getActif(configurationManager.getString("database.rubriqueConstructions"), dateSelectionne, Statut_.TRAITE));
+                        .getActif(configurationManager.getString(
+                                "database.rubriqueConstructions"), dateSelectionne));
                 allEvents.addAll(listeConstructions);
             } else {
                 allEvents.removeAll(listeConstructions);
@@ -425,7 +433,8 @@ public class FenetrePrincipale {
         chckboxDoleances.addActionListener(e -> {
             if (((AbstractButton) e.getSource()).isSelected()) {
                 listeDoleances = wrapperEvenement(evenementAccess
-                        .getActif(configurationManager.getString("database.rubriqueDoleances"), dateSelectionne, Statut_.TRAITE));
+                        .getActif(configurationManager.getString("database.rubriqueDoleances"),
+                                dateSelectionne));
                 allEvents.addAll(listeDoleances);
             } else {
                 allEvents.removeAll(listeDoleances);
@@ -470,7 +479,8 @@ public class FenetrePrincipale {
             allEvents.removeAll(listeAccidents);
             listeAccidents = wrapperEvenement(evenementAccess
                     .getActif(configurationManager.getString("database.rubriqueAccidents"),
-                            dateSelectionne, Statut_.TRAITE));
+                            dateSelectionne));
+
             allEvents.addAll(listeAccidents);
             miseAJourAffichage();
         }
@@ -479,7 +489,8 @@ public class FenetrePrincipale {
             allEvents.removeAll(listeTravaux);
             listeTravaux = wrapperEvenement(evenementAccess
                     .getActif(configurationManager.getString("database.rubriqueTravaux"),
-                            dateSelectionne, Statut_.TRAITE));
+                            dateSelectionne));
+
             allEvents.addAll(listeTravaux);
             miseAJourAffichage();
         }
@@ -488,8 +499,7 @@ public class FenetrePrincipale {
             allEvents.removeAll(listeManifestations);
             listeManifestations = wrapperEvenement(evenementAccess
                     .getActif(configurationManager.getString(
-                            "database.rubriqueManifestations"),
-                            dateSelectionne, Statut_.TRAITE));
+                    "database.rubriqueManifestations"), dateSelectionne));
             allEvents.addAll(listeManifestations);
             miseAJourAffichage();
         }
@@ -498,7 +508,7 @@ public class FenetrePrincipale {
             allEvents.removeAll(listeRenovations);
             listeRenovations = wrapperEvenement(evenementAccess
                     .getActif(configurationManager.getString("database.rubriqueRenovations"),
-                            dateSelectionne, Statut_.TRAITE));
+                            dateSelectionne));
             allEvents.addAll(listeRenovations);
             miseAJourAffichage();
         }
@@ -507,7 +517,8 @@ public class FenetrePrincipale {
             allEvents.removeAll(listeConstructions);
             listeConstructions = wrapperEvenement(evenementAccess
                     .getActif(configurationManager.getString("database.rubriqueConstructions"),
-                            dateSelectionne, Statut_.TRAITE));
+                            dateSelectionne));
+
             allEvents.addAll(listeConstructions);
             miseAJourAffichage();
         }
@@ -516,7 +527,8 @@ public class FenetrePrincipale {
             allEvents.removeAll(listeDoleances);
             listeDoleances = wrapperEvenement(evenementAccess
                     .getActif(configurationManager.getString("database.rubriqueDoleances"),
-                            dateSelectionne, Statut_.TRAITE));
+                            dateSelectionne));
+
             allEvents.addAll(listeDoleances);
             miseAJourAffichage();
         }

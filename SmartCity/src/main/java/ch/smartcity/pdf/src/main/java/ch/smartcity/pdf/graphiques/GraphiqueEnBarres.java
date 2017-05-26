@@ -20,8 +20,13 @@ import java.awt.*;
  */
 class GraphiqueEnBarres {
 
+    /* Constructeur privé */
+    private GraphiqueEnBarres() {
+    }
+
     /**
      * Crée un graphique en barres
+     *
      * @param stats les statistiques relatives au graphique
      * @return un nouveau graphe
      */
@@ -58,9 +63,5 @@ class GraphiqueEnBarres {
         render.setSeriesPaint(0, Color.BLUE);
 
         return chart;
-    }
-
-    /* Constructeur privé */
-    private GraphiqueEnBarres() {
     }
 }

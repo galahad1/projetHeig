@@ -16,6 +16,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+/**
+ * Fournit l'accès aux priorités de la base de données
+ *
+ * @author Lassalle Loan
+ * @since 25.03.2017
+ */
 public class PrioriteAccess {
 
     /**
@@ -54,6 +60,15 @@ public class PrioriteAccess {
         return SingletonHolder.instance;
     }
 
+    /**
+     * Obtient la liste des priorités stockées au sein de la base de données en fonction des
+     * paramètres
+     * Chaque paramètre différent de null sera utilisé comme critère de recherche
+     *
+     * @param nomPriorite nom des priorités à obtenir
+     * @param niveau      niveau des priorités à obtenir
+     * @return liste des priorités stockées au sein de la base de données en fonction des paramètres
+     */
     public List<Priorite> get(String nomPriorite, Integer niveau) {
         List<Priorite> prioriteList = null;
 
@@ -105,10 +120,23 @@ public class PrioriteAccess {
         return prioriteList;
     }
 
-    public void save(String nomPriorite, Integer numero) {
-        databaseAccess.save(new Priorite(nomPriorite, numero));
+    /**
+     * Stocke la priorité définit par les paramètres
+     *
+     * @param nomPriorite nom de la priorité à stocker
+     * @param niveau      niveau de la priorité à stocker
+     */
+    public void save(String nomPriorite, Integer niveau) {
+        databaseAccess.save(new Priorite(nomPriorite, niveau));
     }
 
+    /**
+     * Met à jour la priorité correspondant aux paramètres
+     *
+     * @param idPriorite  identifiant de la priorité à mettre à jour
+     * @param nomPriorite numéro de la priorité à mettre à jour
+     * @param niveau      niveau de la priorité à mettre à jour
+     */
     public void update(Integer idPriorite, String nomPriorite, Integer niveau) {
         Priorite priorite = databaseAccess.get(Priorite.class, idPriorite);
 
@@ -121,6 +149,17 @@ public class PrioriteAccess {
         }
     }
 
+    /**
+     * Met à jour les priorités correspondant aux paramètres préfixés de old en leur
+     * affectant les paramètres préfixés de new
+     * Chaque paramètre préfixés de old différent de null sera utilisé comme critère de recherche
+     * Chaque paramètre préfixés de new de valeurs null ne se mettre pas à jour
+     *
+     * @param oldNomPriorite ancien nom des priorités à mettre à jour
+     * @param oldNiveau      ancien niveau des priorités à mettre à jour
+     * @param newNomPriorite nouveau nom des priorités à mettre à jour
+     * @param newNiveau      nouveau niveau des priorités à mettre à jour
+     */
     public void update(String oldNomPriorite,
                        Integer oldNiveau,
                        String newNomPriorite,
@@ -139,10 +178,24 @@ public class PrioriteAccess {
         }
     }
 
+    /**
+     * Supprime les priorités correspondant aux paramètres
+     * Chaque paramètre différent de null sera utilisé comme critère de recherche
+     *
+     * @param nomPriorite nom des priorités à supprimer
+     * @param niveau      niveau des priorités à supprimer
+     */
     public void delete(String nomPriorite, Integer niveau) {
         databaseAccess.delete(get(nomPriorite, niveau));
     }
 
+    /**
+     * Affecte les paramètres de la priorité si ils ne sont pas null
+     *
+     * @param priorite    priorité dont il faut définir les paramètres
+     * @param nomPriorite nom de la priorité
+     * @param niveau      niveau de la priorité
+     */
     private void setAll(Priorite priorite, String nomPriorite, Integer niveau) {
         if (nomPriorite != null) {
             priorite.setNomPriorite(nomPriorite);

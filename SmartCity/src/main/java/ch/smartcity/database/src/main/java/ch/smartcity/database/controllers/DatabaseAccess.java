@@ -327,6 +327,23 @@ public class DatabaseAccess {
     }
 
     /**
+     * Journalise l'état de la transaction
+     *
+     * @param transaction transaction exécutée
+     */
+    public void transactionMessage(Transaction transaction) {
+        String key;
+
+        if (transaction != null) {
+            key = "databaseAccess.transactionCommitted";
+        } else {
+            key = "databaseAccess.transactionRollbacked";
+        }
+
+        logger.info(configurationManager.getString(key));
+    }
+
+    /**
      * Ferme la session de travail en cours
      *
      * @param session session de travail en cours
@@ -346,27 +363,10 @@ public class DatabaseAccess {
     /**
      * Ferme la connexion à la base de données
      *
-     * @throws HibernateException si la connexion n'a pas pu être fermé
+     * @throws Exception si la connexion n'a pas pu être fermé
      */
-    public void close() throws HibernateException {
+    public void close() throws Exception {
         hibernate.close();
-    }
-
-    /**
-     * Journalise l'état de la transaction
-     *
-     * @param transaction transaction exécutée
-     */
-    public void transactionMessage(Transaction transaction) {
-        String key;
-
-        if (transaction != null) {
-            key = "databaseAccess.transactionCommitted";
-        } else {
-            key = "databaseAccess.transactionRollbacked";
-        }
-
-        logger.info(configurationManager.getString(key));
     }
 
     /**

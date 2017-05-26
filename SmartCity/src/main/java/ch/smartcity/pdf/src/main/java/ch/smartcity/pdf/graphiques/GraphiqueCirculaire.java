@@ -17,12 +17,17 @@ import java.text.DecimalFormat;
  */
 class GraphiqueCirculaire {
 
+    /* Constructeur privé */
+    private GraphiqueCirculaire() {
+    }
+
     /**
      * Crée un graphique circulaire
+     *
      * @param stats les statistiques relatives au graphique
      * @return un nouveau graphe
      */
-    @SuppressWarnings( "deprecation" )
+    @SuppressWarnings("deprecation")
     static JFreeChart cree(int[] stats) {
 
         DefaultPieDataset pie = new DefaultPieDataset();
@@ -60,9 +65,5 @@ class GraphiqueCirculaire {
         plot.setSectionPaint(7, new Color(0x6F6FF2));
 
         return chart;
-    }
-
-    /* Constructeur privé */
-    private GraphiqueCirculaire() {
     }
 }

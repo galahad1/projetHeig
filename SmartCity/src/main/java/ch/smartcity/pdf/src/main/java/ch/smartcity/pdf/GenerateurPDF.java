@@ -38,13 +38,14 @@ public class GenerateurPDF {
 
     /**
      * Génère un PDF. Méthode appelée depuis l'extérieur
+     *
      * @param nomEvenement nom de l'événement sélectionné
-     * @param date date de l'événement sélectionné
+     * @param date         date de l'événement sélectionné
      * @throws Exception si il y a un problème avec la génération de PDF
      */
     public static void cree(String nomEvenement, Calendar date) throws Exception {
 
-       String d = new SimpleDateFormat("dd-MM-yyyy").format(date.getTime());
+        String d = new SimpleDateFormat("dd-MM-yyyy").format(date.getTime());
 
         /* Le rapport sera stocké dans un dossier dans le répertoire utilisateur */
         String DEST = System.getProperty("user.home") + File.separator + "Documents" + File.separator
@@ -73,13 +74,14 @@ public class GenerateurPDF {
 
     /**
      * Crée un document sous format PDF
-     * @param dest chemin de destination du PDF
-     * @param nomEvenement nom de l'événement sélectionné
+     *
+     * @param dest          chemin de destination du PDF
+     * @param nomRubriqueEnfant  nom de l'événement sélectionné
      * @param dateEvenement date de l'événement sélectionné
      * @throws Exception si il y a un problème dans la génération du PDF
      */
-    @SuppressWarnings( "deprecation" )
-    private void createPdf(String dest, String nomEvenement, Calendar dateEvenement) throws Exception {
+    @SuppressWarnings("deprecation")
+    private void createPdf(String dest, String nomRubriqueEnfant, Calendar dateEvenement) throws Exception {
         File file = new File(dest);
         file.getParentFile().mkdirs();
         file.createNewFile();
@@ -120,9 +122,7 @@ public class GenerateurPDF {
         page1.addCell(lieuDate);
 
         /* Recherche de l'événment dans la base de données */
-        List<Evenement> evenements = EvenementAccess.getInstance().get(nomEvenement, "", "", "",
-                "", "", null, null, null, null, "", "",
-                "", null);
+        List<Evenement> evenements = EvenementAccess.getInstance().get(nomRubriqueEnfant);
 
         /* Recherche des événements du jour */
         List<Evenement> evenementAujourdhui = new ArrayList<>();
@@ -136,7 +136,7 @@ public class GenerateurPDF {
         }
 
         /* TITRE */
-        Cell titre = new Cell().add("Avis de " + nomEvenement);
+        Cell titre = new Cell().add("Avis de " + nomRubriqueEnfant);
         titre.setBorder(null);
         titre.setFont(PdfFontFactory.createFont(FontConstants.TIMES_BOLD));
         titre.setFontSize(20);
@@ -175,11 +175,17 @@ public class GenerateurPDF {
         document.add(new AreaBreak());
 
 
+        /* Cas où il n'y a pas d'événements dans la base de données */
+        if (evenements.size() == 0) {
+            document.close();
+            return;
+        }
+
         /* Deuième partie du PDF */
         Table page2 = new Table(1);
 
         /* STATISTIQUE */
-        Cell information = new Cell().add("Statistiques des " + nomEvenement + " en ville de " + LIEU);
+        Cell information = new Cell().add("Statistiques des " + nomRubriqueEnfant + " en ville de " + LIEU);
         information.setBorder(null);
         information.setFont(PdfFontFactory.createFont(FontConstants.TIMES_BOLD));
 
@@ -206,7 +212,7 @@ public class GenerateurPDF {
 
         int compteur;
         /* Statistique selon la rubrique choisie */
-        switch (nomEvenement) {
+        switch (nomRubriqueEnfant) {
             case "accidents":
                 /* Nb accidents par rues principales */
                 String ruesPrincipales[] = {"flon", "malley", "ouchy", "beaulieu"};

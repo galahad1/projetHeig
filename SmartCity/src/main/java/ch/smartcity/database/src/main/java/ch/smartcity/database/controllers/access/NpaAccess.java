@@ -16,6 +16,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+/**
+ * Fournit l'accès aux npas de la base de données
+ *
+ * @author Lassalle Loan
+ * @since 25.03.2017
+ */
 public class NpaAccess {
 
     /**
@@ -54,6 +60,13 @@ public class NpaAccess {
         return SingletonHolder.instance;
     }
 
+    /**
+     * Obtient la liste des npas stockés au sein de la base de données en fonction des paramètres
+     * Chaque paramètre différent de null sera utilisé comme critère de recherche
+     *
+     * @param numeroNpa numéro des npas à obtenir
+     * @return liste des npas stockés au sein de la base de données en fonction des paramètres
+     */
     public List<Npa> get(String numeroNpa) {
         List<Npa> npaList = null;
 
@@ -98,10 +111,21 @@ public class NpaAccess {
         return npaList;
     }
 
+    /**
+     * Stocke le npa définit par les paramètres
+     *
+     * @param numeroNpa numéro du npa à stocker
+     */
     public void save(String numeroNpa) {
         databaseAccess.save(new Npa(numeroNpa));
     }
 
+    /**
+     * Met à jour le npa correspondant aux paramètres
+     *
+     * @param idNpa     identifiant du npa à mettre à jour
+     * @param numeroNpa numéro du npa à mettre à jour
+     */
     public void update(Integer idNpa, String numeroNpa) {
         Npa npa = databaseAccess.get(Npa.class, idNpa);
 
@@ -114,6 +138,15 @@ public class NpaAccess {
         }
     }
 
+    /**
+     * Met à jour les npas correspondant aux paramètres préfixés de old en leur
+     * affectant les paramètres préfixés de new
+     * Chaque paramètre préfixés de old différent de null sera utilisé comme critère de recherche
+     * Chaque paramètre préfixés de new de valeurs null ne se mettre pas à jour
+     *
+     * @param oldNumeroNpa ancien numéro des naps à mettre à jour
+     * @param newNumeroNpa nouveau numéro des naps à mettre à jour
+     */
     public void update(String oldNumeroNpa, String newNumeroNpa) {
         List<Npa> npaList = get(oldNumeroNpa);
 
@@ -129,10 +162,22 @@ public class NpaAccess {
         }
     }
 
+    /**
+     * Supprime les npas correspondant aux paramètres
+     * Chaque paramètre différent de null sera utilisé comme critère de recherche
+     *
+     * @param numeroNpa numéro des npas à supprimer
+     */
     public void delete(String numeroNpa) {
         databaseAccess.delete(get(numeroNpa));
     }
 
+    /**
+     * Affecte les paramètres du npa si ils ne sont pas null
+     *
+     * @param npa       npa dont il faut définir les paramètres
+     * @param numeroNpa numéro du npa
+     */
     private void setAll(Npa npa, String numeroNpa) {
         if (numeroNpa != null) {
             npa.setNumeroNpa(numeroNpa);

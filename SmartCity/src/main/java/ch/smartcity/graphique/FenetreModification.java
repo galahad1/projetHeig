@@ -506,20 +506,8 @@ class FenetreModification {
     private void refuserEvenement() {
 
         evenementSelectionne.setStatut(statutAccess.get(Statut_.REFUSE).get(0)); // statur refuser
-        evenementAccess.update(evenementSelectionne.getIdEvenement(),
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                evenementSelectionne.getStatut()); // met a jour l evenemnt avec le statut refuse
+        evenementAccess.update(evenementSelectionne); // met a jour l evenemnt avec le statut refuse
         databaseAccess.delete(evenementSelectionne); // change date de fin
-
     }
 
     /**
