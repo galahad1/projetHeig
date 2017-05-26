@@ -35,6 +35,7 @@ public final class Carte {
 
     /**
      * Permet de mettre à jour les informations des événements sur la carte
+     *
      * @param newEvenements listes des événements à afficher sur les tuiles
      */
     public void updateEvenement(ArrayList<Event> newEvenements) {
@@ -44,7 +45,6 @@ public final class Carte {
 
 
     /**
-     *
      * @return Le JComponent de la carte interactive
      */
     public JComponent createCenterPanel() {

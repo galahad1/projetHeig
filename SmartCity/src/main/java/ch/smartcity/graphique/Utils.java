@@ -1,9 +1,9 @@
 package ch.smartcity.graphique;
 
-import ch.smartcity.graphique.controllers.ConfigurationManager;
 import ch.smartcity.database.controllers.access.EvenementAccess;
 import ch.smartcity.database.models.Adresse;
 import ch.smartcity.database.models.Evenement;
+import ch.smartcity.graphique.controllers.ConfigurationManager;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -13,12 +13,8 @@ import java.util.List;
 
 final class Utils {
 
-    private static DateFormat dateFormat = new SimpleDateFormat(ConfigurationManager.getInstance().getString("date.format"));
-
-
-    private Utils() {
-    }
-
+    private static DateFormat dateFormat = new SimpleDateFormat(ConfigurationManager.getInstance()
+            .getString("date.format"));
 
     /**
      * Recoit une liste d'événement afin d'en afficher une prévisualisation
@@ -29,6 +25,7 @@ final class Utils {
      */
     static List<String> previewEvenement(List<Evenement> liste) {
         ArrayList<String> preview = new ArrayList<>();
+
         if (liste == null || liste.isEmpty()) {
             return preview;
         }
@@ -38,6 +35,7 @@ final class Utils {
             String str = "";
             str += e.getIdEvenement() + " / ";
             str += e.getNomEvenement() + " / ";
+
             // adresse
             Adresse a = e.getAdresse();
             str += a.getRue().getNomRue() + " " + a.getNumeroDeRue() + " / ";
@@ -49,21 +47,21 @@ final class Utils {
             String date = dateFormat.format(c.getTime());
             str += date + " / ";
             c = e.getFin();
+
             if (c == null) {
                 str += " null ";
             } else {
                 date = dateFormat.format(c.getTime());
                 str += date;
             }
+
             preview.add(str); // ajout a la liste
         }
         return preview;
     }
 
     static List<String> refreshListAcess(List<String> liste) {
-        for (int i = 0; i < liste.size(); i++) {
-            liste.remove(i);
-        }
+        liste.clear();
         return Utils.previewEvenement(EvenementAccess.getEnAttente());
     }
 
@@ -73,13 +71,8 @@ final class Utils {
      * @return
      * @brief
      */
-     static boolean controlSaisie(String texte, String regex) {
-
-        if (texte.isEmpty() || !texte.matches(regex)) {
-            return false;
-        }
-
-        return true;
+    static boolean controlSaisie(String texte, String regex) {
+        return !texte.isEmpty() && texte.matches(regex);
     }
 
     /**
@@ -88,9 +81,8 @@ final class Utils {
      * @return
      * @brief
      */
-     static boolean controlSaisie(String texte, int taillemax) {
-
-        return !(texte.isEmpty() || texte.length() > taillemax);
+    static boolean controlSaisie(String texte, int taillemax) {
+        return !texte.isEmpty() && texte.length() <= taillemax;
     }
 
     /**
@@ -100,13 +92,8 @@ final class Utils {
      * @return
      * @brief
      */
-     static boolean controleSaisie(String texte, int tailleMax, String regex) {
-
-        // controle taille
-        if (texte.length() > tailleMax || texte.isEmpty()) {
-            return false;
-        }
-        // controle lettres et chiffres
-        return texte.matches(regex);
+    static boolean controleSaisie(String texte, int tailleMax, String regex) {
+        // controle taille lettres et chiffres
+        return texte.length() <= tailleMax && !texte.isEmpty() && texte.matches(regex);
     }
 }

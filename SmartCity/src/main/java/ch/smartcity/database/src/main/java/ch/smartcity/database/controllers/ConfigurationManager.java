@@ -1,6 +1,7 @@
 package ch.smartcity.database.controllers;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.logging.LogManager;
@@ -37,7 +38,9 @@ public class ConfigurationManager {
     }
 
     public String getString(String key) {
-        return getResourceBundle().getString(key);
+        return new String(getResourceBundle().getString(key).getBytes(
+                StandardCharsets.ISO_8859_1),
+                StandardCharsets.UTF_8);
     }
 
     private static class SingletonHolder {

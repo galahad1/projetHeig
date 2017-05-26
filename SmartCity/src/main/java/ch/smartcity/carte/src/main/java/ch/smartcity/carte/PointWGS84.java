@@ -36,6 +36,7 @@ public final class PointWGS84 {
 
     /**
      * Permet de transformer un point WGS84 en point OSM spécifique a une tuile
+     *
      * @param zoom zoom voulu du point OSM
      * @return le point OSM
      */
