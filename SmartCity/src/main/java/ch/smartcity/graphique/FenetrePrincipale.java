@@ -136,6 +136,7 @@ public class FenetrePrincipale {
                     timer.purge();
                     tache.cancel();
                     fenetre.dispose();
+                    System.exit(0);
                 }
             }
         });
