@@ -9,15 +9,16 @@ import java.util.ArrayList;
 import static java.lang.Math.pow;
 
 /**
- * ! TODO
+ * Classe principale du module de la carte. Elle se charge de construire l'interface graphique qui sera
+ * integré à la fenêtre principale du programme
+ *
+ * @author Wojciech Myskorowski
+ * @author Jérémie Zanone
  */
 public final class Carte {
     private static final String URL_TUILE_OSM = "http://a.tile.openstreetmap.org/";
     private static final int ZOOM_INITIAL = 14;
-    //  nord sud / ouest est
     private static final PointWGS84 POSITION_INITIALE = new PointWGS84(46.545, 6.58);
-    private static final int LARGEUR_COMPOSANT = 1190;
-    private static final int HAUTEUR_COMPOSANT = 765;
     private final CarteTuilesComponent carteTuilesComponent;
     private Point positionSouris = new Point();
     private Point positionVue = new Point();
@@ -53,10 +54,13 @@ public final class Carte {
         PointOSM positionInitialeOSM = POSITION_INITIALE.toOSM(carteTuilesComponent.zoom());
         viewPort.setViewPosition(new Point(positionInitialeOSM.arrondiX(), positionInitialeOSM.arrondiY()));
 
+        final JPanel copyrightPanel = createCopyrightPanel();
+
         final JLayeredPane layeredPane = new JLayeredPane();
-        layeredPane.setPreferredSize(new Dimension(LARGEUR_COMPOSANT, HAUTEUR_COMPOSANT));
+        //  layeredPane.setPreferredSize(new Dimension(LARGEUR_COMPOSANT, HAUTEUR_COMPOSANT));
 
         layeredPane.add(viewPort, new Integer(0));
+        layeredPane.add(copyrightPanel, new Integer(1));
 
         // permet d'adapter la dimension du viewPort
         layeredPane.addComponentListener(new ComponentAdapter() {
@@ -64,7 +68,9 @@ public final class Carte {
             public void componentResized(ComponentEvent e) {
                 final Rectangle newBounds = layeredPane.getBounds();
                 viewPort.setBounds(newBounds);
+                copyrightPanel.setBounds(newBounds);
                 viewPort.revalidate();
+                copyrightPanel.revalidate();
             }
         });
 
@@ -106,5 +112,18 @@ public final class Carte {
         JPanel centerPanel = new JPanel(new BorderLayout());
         centerPanel.add(layeredPane);
         return centerPanel;
+    }
+
+    private JPanel createCopyrightPanel() {
+        JLabel copyrightLabel = new JLabel("© Les contributeurs d'OpenStreetMap", SwingConstants.CENTER);
+        copyrightLabel.setOpaque(true);
+        copyrightLabel.setForeground(new Color(1f, 1f, 1f, 0.6f));
+        copyrightLabel.setBackground(new Color(0f, 0f, 0f, 0.4f));
+        copyrightLabel.setBorder(BorderFactory.createEmptyBorder(3, 0, 5, 0));
+
+        JPanel copyrightPanel = new JPanel(new BorderLayout());
+        copyrightPanel.add(copyrightLabel, BorderLayout.PAGE_END);
+        copyrightPanel.setOpaque(false);
+        return copyrightPanel;
     }
 }
