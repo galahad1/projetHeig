@@ -120,7 +120,7 @@ public class GenerateurPDF {
         page1.addCell(lieuDate);
 
         /* Recherche de l'événment dans la base de données */
-        List<Evenement> evenements = EvenementAccess.get(nomEvenement, "", "", "",
+        List<Evenement> evenements = EvenementAccess.getInstance().get(nomEvenement, "", "", "",
                 "", "", null, null, null, null, "", "",
                 "", null);
 
