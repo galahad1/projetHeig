@@ -209,15 +209,16 @@ public class GenerateurPDF {
         switch (nomEvenement) {
             case "accidents":
                 /* Nb accidents par rues principales */
-                String ruesPrincipales[] = {"Le Flon", "Maupas", "Ouchy", "Beaulieu"};
-                compteur = 0;
+                String ruesPrincipales[] = {"flon", "malley", "ouchy", "beaulieu"};
                 for (String ruesPrincipale : ruesPrincipales) {
+                    compteur = 0;
                     for (Evenement e : evenements) {
-                        if (e.getAdresse().getRue().getNomRue().contains(ruesPrincipale)) {
+                        System.out.println(e.getNomEvenement());
+                        if (e.getNomEvenement().contains(ruesPrincipale)) {
                             ++compteur;
                         }
                     }
-                    Cell statsRues = new Cell().add("Nombre d'accident à " + ruesPrincipale + " : " + compteur + "\n");
+                    Cell statsRues = new Cell().add("Nombre d'accidents à " + ruesPrincipale + " : " + compteur + "\n");
                     statsRues.setBorder(null);
                     page2.addCell(statsRues);
                 }
