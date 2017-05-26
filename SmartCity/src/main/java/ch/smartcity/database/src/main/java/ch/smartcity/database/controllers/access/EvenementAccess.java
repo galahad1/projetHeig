@@ -119,22 +119,24 @@ public class EvenementAccess {
      * Obtient la liste des événements stockés au sein de la base de données en fonction des
      * paramètres
      *
-     * @param nomEvenement nom des événements à obtenir
+     * @param nomRubriqueEnfant nom de la rubrique enfant des événements à obtenir
      * @return liste des événements stockés au sein de la base de données en fonction des
      * paramètres
      */
-    public List<Evenement> get(String nomEvenement) {
-        return get(null,
-                null,
-                nomEvenement,
-                null,
+    public List<Evenement> get(String nomRubriqueEnfant) {
+        return get(nomRubriqueEnfant,
+                "",
+                "",
+                "",
+                "",
+                "",
                 null,
                 null,
                 null,
                 null,
                 "",
-                null,
-                null,
+                "",
+                "",
                 null);
     }
 
