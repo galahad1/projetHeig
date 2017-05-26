@@ -320,11 +320,11 @@ class FenetreModification {
         // détermine dans quel contexte la fenêtre est ouverte, pour afficher
         // les boutons en conséquence
         if (context == Contexte.CONTEXTE_AJOUTER) {
-            fenetre.setTitle(configurationManager.getString("graphique.titreModification"));
+            fenetre.setTitle(configurationManager.getString("titre.modification"));
             boutonRefuser.setVisible(false);
             boutonRefuser.setEnabled(false);
         } else { // en attente
-            fenetre.setTitle(configurationManager.getString("graphique.titreEnAttente"));
+            fenetre.setTitle(configurationManager.getString("titre.enAttente"));
             boutonSupprimer.setVisible(false);
             boutonSupprimer.setEnabled(false);
         }

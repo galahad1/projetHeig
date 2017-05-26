@@ -4,6 +4,12 @@ import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+/**
+ * Managaire de configuration permettant de charger les textes par rapport
+ * au fichier de messageBundle.
+ * @author Loan Lassalle
+ * @author Tano Iannetta
+ */
 public class ConfigurationManager {
 
     private final String messageBundlePropertiesFile =
