@@ -11,7 +11,6 @@ import org.jfree.chart.JFreeChart;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.Random;
 
 public class GenerateurGraphique {
@@ -24,10 +23,9 @@ public class GenerateurGraphique {
     /**
      * Crée un grahique
      * @param stats les statistiques du graphique
-     * @throws URISyntaxException si lors de la sauvegarde de l'image, il y a un problème
      * @throws IOException si il y  a un problème lors de la génération de l'image dans un fichier
      */
-    public GenerateurGraphique(int[] stats) throws URISyntaxException, IOException {
+    public GenerateurGraphique(int[] stats) throws IOException {
 
         /* Génère de manière aléatoire un graphique en barre ou un graphique circulaire */
         Random generateurGraphe = new Random();
@@ -44,6 +42,7 @@ public class GenerateurGraphique {
         File file = new File(CHEMIN_IMAGE);
         file.getParentFile().mkdirs();
         file.createNewFile();
+
         try {
             ChartUtilities.saveChartAsPNG(file, chart, 900, 700);
         } catch (Exception e) {

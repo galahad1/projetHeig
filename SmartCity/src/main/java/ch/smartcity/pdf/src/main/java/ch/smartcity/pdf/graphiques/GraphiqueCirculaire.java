@@ -23,6 +23,7 @@ class GraphiqueCirculaire {
      * @param stats les statistiques relatives au graphique
      * @return un nouveau graphe
      */
+    @SuppressWarnings( "deprecation" )
     static JFreeChart cree(int[] stats) {
 
         DefaultPieDataset pie = new DefaultPieDataset();
