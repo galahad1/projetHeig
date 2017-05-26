@@ -5,6 +5,12 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.io.Serializable;
 
+/**
+ * Modélise l'identifiant de la table commentaire au sein de la base de données
+ *
+ * @author Lassalle Loan
+ * @since 25.03.2017
+ */
 public class IdCommentaire implements Serializable {
 
     private Evenement evenement;

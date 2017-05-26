@@ -7,9 +7,18 @@ import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
 import java.util.Calendar;
 
+/**
+ * Modélise les attributs de la table statut de la base de données
+ *
+ * @author Lassalle Loan
+ * @since 25.03.2017
+ */
 @StaticMetamodel(Statut.class)
 public class Statut_ {
 
+    /**
+     * Utilisé pour avoir des valeurs par défaut de nom de statuts
+     */
     private static final ConfigurationManager CONFIGURATION_MANAGER =
             ConfigurationManager.getInstance();
     public static final String EN_ATTENTE = CONFIGURATION_MANAGER.getString("statut.enAttente");

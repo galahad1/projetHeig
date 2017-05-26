@@ -7,6 +7,12 @@ import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Set;
 
+/**
+ * Modélise un titre civil au sein de la base de données
+ *
+ * @author Lassalle Loan
+ * @since 25.03.2017
+ */
 public class TitreCivil implements Serializable {
 
     private Integer idTitreCivil;

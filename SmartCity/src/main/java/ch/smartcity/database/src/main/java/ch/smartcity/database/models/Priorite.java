@@ -7,6 +7,12 @@ import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Set;
 
+/**
+ * Modélise une priorité au sein de la base de données
+ *
+ * @author Lassalle Loan
+ * @since 25.03.2017
+ */
 public class Priorite implements Serializable {
 
     private Integer idPriorite;

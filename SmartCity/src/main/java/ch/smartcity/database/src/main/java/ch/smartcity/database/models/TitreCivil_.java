@@ -7,9 +7,18 @@ import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
 import java.util.Calendar;
 
+/**
+ * Modélise les attributs de la table titre civil de la base de données
+ *
+ * @author Lassalle Loan
+ * @since 25.03.2017
+ */
 @StaticMetamodel(TitreCivil.class)
 public class TitreCivil_ {
 
+    /**
+     * Utilisé pour avoir des valeurs par défaut de nom de titres civils
+     */
     private static final ConfigurationManager CONFIGURATION_MANAGER =
             ConfigurationManager.getInstance();
     public static final String MONSIEUR = CONFIGURATION_MANAGER

@@ -5,6 +5,12 @@ import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
 import java.util.Calendar;
 
+/**
+ * Modélise les attributs de la table npa de la base de données
+ *
+ * @author Lassalle Loan
+ * @since 25.03.2017
+ */
 @StaticMetamodel(Npa.class)
 public class Npa_ {
 

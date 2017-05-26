@@ -6,6 +6,12 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import java.io.Serializable;
 import java.util.Calendar;
 
+/**
+ * Modélise un commentaire au sein de la base de données
+ *
+ * @author Lassalle Loan
+ * @since 25.03.2017
+ */
 public class Commentaire implements Serializable {
 
     private IdCommentaire idCommentaire;
