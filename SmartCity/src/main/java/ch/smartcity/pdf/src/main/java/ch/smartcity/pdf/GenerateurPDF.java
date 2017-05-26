@@ -230,6 +230,7 @@ public class GenerateurPDF {
                 }
                 break;
             case "travaux":
+                String pluriel = "";
                 compteur = 0;
                 for (Evenement e : evenements) {
                     if (e.getFin().compareTo(dateEvenement) <= 0) {
@@ -249,7 +250,10 @@ public class GenerateurPDF {
 
                 long jours = moyenne / (24 * 60 * 60 * 1000);
 
-                Cell statsDuree = new Cell().add("En moyenne, les travaux durent " + jours + " jours.\n");
+                if (jours > 1) {
+                    pluriel = "s";
+                }
+                Cell statsDuree = new Cell().add("En moyenne, les travaux durent " + jours + " jour" + pluriel + ".\n");
                 statsDuree.setBorder(null);
                 page2.addCell(statsDuree);
 
@@ -257,6 +261,7 @@ public class GenerateurPDF {
             case "constructions":
             case "rénovations":
 
+                pluriel = "";
                 moyenne = 0;
                 for (Evenement e : evenements) {
                     moyenne += e.getFin().getTime().getTime() - e.getDebut().getTime().getTime();
@@ -266,19 +271,27 @@ public class GenerateurPDF {
 
                 jours = moyenne / (24 * 60 * 60 * 1000);
 
-                Cell statsDuree2 = new Cell().add("En moyenne, les travaux durent " + jours + " jours.\n");
+                if (jours > 1) {
+                    pluriel = "s";
+                }
+
+                Cell statsDuree2 = new Cell().add("En moyenne, les travaux durent " + jours + " jour" + pluriel + ".\n");
                 statsDuree2.setBorder(null);
                 page2.addCell(statsDuree2);
 
                 break;
             case "manifestations":
+                pluriel = "";
                 int nbCommentaires = 0;
                 for (Evenement e : evenementAujourdhui) {
                     nbCommentaires += e.getCommentaireSet().size();
                 }
 
+                if (nbCommentaires > 1) {
+                    pluriel = "s";
+                }
                 Cell statsComms = new Cell().add("Il y a eu " + nbCommentaires
-                        + " commentaires au sujet des manifestations d'ajourd'hui.\n");
+                        + " commentaire" + pluriel + " au sujet des manifestations d'aujourd'hui.\n");
                 statsComms.setBorder(null);
                 page2.addCell(statsComms);
         }
