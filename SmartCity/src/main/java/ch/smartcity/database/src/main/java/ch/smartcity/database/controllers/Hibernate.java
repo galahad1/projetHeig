@@ -11,13 +11,38 @@ import javax.persistence.criteria.CriteriaQuery;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * Gère la connexion et les requêtes effectuées auprès de la base de données
+ *
+ * @author Lassalle Loan
+ * @since 25.03.2017
+ */
 public class Hibernate {
 
+    /**
+     * Fichier de configuration pour l'accès à la base données
+     */
     private final String hibernateConfigurationXmlFile =
             "ch/smartcity/database/resources/hibernate/hibernate.cfg.xml";
+
+    /**
+     * Utilisé pour accéder aux fichiers de propriétés
+     */
     private final ConfigurationManager configurationManager;
+
+    /**
+     * Utilisé pour journaliser les actions effectuées
+     */
     private final Logger logger;
+
+    /**
+     * Utilisé pour créer une session de travail avec la base de données
+     */
     private final SessionFactory sessionFactory;
+
+    /**
+     * Utilisé pour accéder à la base de données
+     */
     private Session session;
 
     private Hibernate() {
@@ -34,73 +59,102 @@ public class Hibernate {
         }
     }
 
+    /**
+     * Fournit l'unique instance de la classe (singleton)
+     *
+     * @return unique instance de la classe
+     */
     public static Hibernate getInstance() {
         return SingletonHolder.instance;
     }
 
-    private static ConfigurationManager getConfigurationManager() {
-        return getInstance().configurationManager;
+    /**
+     * Fournit le créateur d'une session de travail avec la base de données
+     *
+     * @return créateur d'une session de travail avec la base de données
+     */
+    public SessionFactory getSessionFactory() {
+        return sessionFactory;
     }
 
-    private static Logger getLogger() {
-        return getInstance().logger;
-    }
-
-    public static SessionFactory getSessionFactory() {
-        return getInstance().sessionFactory;
-    }
-
-    public static Session getSession() {
-        return getInstance().session;
-    }
-
-    public static void setSession(Session session) {
-        getInstance().session = session;
-    }
-
-    public static Session openSession() {
-        if (getSession() == null || !getSession().isOpen()) {
-            setSession(getSessionFactory().openSession());
+    /**
+     * Fournit la session de travail en cours avec la base de données
+     *
+     * @return session de travail en cours avec la base de données
+     */
+    public Session getSession() {
+        if (session == null || !session.isOpen()) {
+            session = sessionFactory.openSession();
         }
 
-        return getSession();
+        return session;
     }
 
-    public static CriteriaBuilder getCriteriaBuilder() {
-        return getSessionFactory().getCriteriaBuilder();
+    /**
+     * Fournit le créateur de critères d'une requête
+     *
+     * @return créateur de critères d'une requête
+     */
+    public CriteriaBuilder getCriteriaBuilder() {
+        return sessionFactory.getCriteriaBuilder();
     }
 
-    public static <T> TypedQuery<T> createQuery(CriteriaQuery<T> tCriteriaQuery) {
-        return openSession().createQuery(tCriteriaQuery);
+    /**
+     * Crée une requête suivant les critères fournis
+     *
+     * @param tCriteriaQuery critères de la requête
+     * @param <T>            type d'objet à accéder lors de la requête
+     * @return requête suivant les critères fournis
+     */
+    public <T> TypedQuery<T> createQuery(CriteriaQuery<T> tCriteriaQuery) {
+        return getSession().createQuery(tCriteriaQuery);
     }
 
-    public static void closeSession() throws HibernateException {
-        if (getSession() != null && getSession().isOpen()) {
+    /**
+     * Ferme la session de travail avec la base de données
+     *
+     * @throws HibernateException si la session n'a pas pu être fermé
+     */
+    public void closeSession() throws HibernateException {
+        if (session != null && session.isOpen()) {
             try {
-                getSession().close();
+                session.close();
             } catch (Exception e) {
-                getLogger().log(Level.SEVERE, e.getMessage(), e);
+                logger.log(Level.SEVERE, e.getMessage(), e);
                 throw e;
             }
         }
     }
 
-    public static void closeSessionFactory() throws HibernateException {
-        if (getSessionFactory() != null && getSessionFactory().isOpen()) {
+    /**
+     * Ferme la création de session de travail avec la base de données
+     *
+     * @throws HibernateException si la sessionFactory n'a pas pu être fermé
+     */
+    public void closeSessionFactory() throws HibernateException {
+        if (sessionFactory != null && sessionFactory.isOpen()) {
             try {
-                getSessionFactory().close();
+                sessionFactory.close();
             } catch (Exception e) {
-                getLogger().log(Level.SEVERE, e.getMessage(), e);
+                logger.log(Level.SEVERE, e.getMessage(), e);
                 throw e;
             }
         }
     }
 
-    public static void close() throws HibernateException {
+    /**
+     * Ferme la connexion avec la base de données
+     *
+     * @throws HibernateException si la session ou la sessionFactory n'ont pas pu être fermé
+     */
+    public void close() throws HibernateException {
         closeSession();
         closeSessionFactory();
     }
 
+    /**
+     * Utilisé pour créer un singleton de la classe
+     */
     private static class SingletonHolder {
         private static final Hibernate instance = new Hibernate();
     }

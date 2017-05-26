@@ -62,7 +62,7 @@ final class Utils {
 
     static List<String> refreshListAcess(List<String> liste) {
         liste.clear();
-        return Utils.previewEvenement(EvenementAccess.getEnAttente());
+        return Utils.previewEvenement(EvenementAccess.getInstance().getEnAttente());
     }
 
     /**

@@ -18,43 +18,48 @@ import java.util.logging.Logger;
 
 public class RueAccess {
 
+    /**
+     * Utilisé pour accéder aux fichiers de propriétés
+     */
     private final ConfigurationManager configurationManager;
+
+    /**
+     * Utilisé pour journaliser les actions effectuées
+     */
     private final Logger logger;
+
+    /**
+     * Utilisé pour la connexion à la base de données
+     */
     private final Hibernate hibernate;
+
+    /**
+     * Utilisé pour des accès génériques à la base de données
+     */
+    private final DatabaseAccess databaseAccess;
 
     private RueAccess() {
         configurationManager = ConfigurationManager.getInstance();
         logger = Logger.getLogger(getClass().getName());
         hibernate = Hibernate.getInstance();
+        databaseAccess = DatabaseAccess.getInstance();
     }
 
     public static RueAccess getInstance() {
         return SingletonHolder.instance;
     }
 
-    private static ConfigurationManager getConfigurationManager() {
-        return getInstance().configurationManager;
-    }
-
-    private static Logger getLogger() {
-        return getInstance().logger;
-    }
-
-    private static Hibernate getHibernate() {
-        return getInstance().hibernate;
-    }
-
-    public static List<Rue> get(String nomRue) {
+    public List<Rue> get(String nomRue) {
         List<Rue> rueList = null;
 
         Session session = null;
         Transaction transaction = null;
 
         try {
-            session = getHibernate().openSession();
+            session = hibernate.getSession();
             transaction = session.beginTransaction();
 
-            CriteriaBuilder criteriaBuilder = getHibernate().getCriteriaBuilder();
+            CriteriaBuilder criteriaBuilder = hibernate.getCriteriaBuilder();
             CriteriaQuery<Rue> criteriaQuery = criteriaBuilder
                     .createQuery(Rue.class);
             Root<Rue> rueRoot = criteriaQuery.from(Rue.class);
@@ -67,37 +72,37 @@ public class RueAccess {
             }
 
             criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
-            rueList = getHibernate().createQuery(criteriaQuery).getResultList();
+            rueList = hibernate.createQuery(criteriaQuery).getResultList();
 
             transaction.commit();
         } catch (Exception e) {
-            DatabaseAccess.rollback(e, transaction);
+            databaseAccess.rollback(e, transaction);
         } finally {
-            DatabaseAccess.close(session);
+            databaseAccess.close(session);
         }
 
-        getLogger().info(String.format(
-                getConfigurationManager().getString("databaseAccess.results"),
+        logger.info(String.format(
+                configurationManager.getString("databaseAccess.results"),
                 rueList != null ? rueList.size() : 0,
                 Rue.class.getSimpleName()));
 
         return rueList;
     }
 
-    public static void save(String nomRue) {
-        DatabaseAccess.save(new Rue(nomRue));
+    public void save(String nomRue) {
+        databaseAccess.save(new Rue(nomRue));
     }
 
-    public static void update(Integer idRue, String nomRue) {
-        Rue rue = DatabaseAccess.get(Rue.class, idRue);
+    public void update(Integer idRue, String nomRue) {
+        Rue rue = databaseAccess.get(Rue.class, idRue);
 
         if (rue != null) {
             setAll(rue, nomRue);
-            DatabaseAccess.update(rue);
+            databaseAccess.update(rue);
         }
     }
 
-    public static void update(String oldNomRue, String newNomRue) {
+    public void update(String oldNomRue, String newNomRue) {
         List<Rue> rueList = get(oldNomRue);
 
         if (rueList != null) {
@@ -105,15 +110,15 @@ public class RueAccess {
                 setAll(rue, newNomRue);
             }
 
-            DatabaseAccess.update(rueList);
+            databaseAccess.update(rueList);
         }
     }
 
-    public static void delete(String nomRue) {
-        DatabaseAccess.delete(get(nomRue));
+    public void delete(String nomRue) {
+        databaseAccess.delete(get(nomRue));
     }
 
-    private static void setAll(Rue rue, String nomRue) {
+    private void setAll(Rue rue, String nomRue) {
         if (nomRue != null) {
             rue.setNomRue(nomRue);
         }

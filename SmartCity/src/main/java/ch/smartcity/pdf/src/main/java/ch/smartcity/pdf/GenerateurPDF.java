@@ -102,7 +102,7 @@ public class GenerateurPDF {
         lieuDate.setTextAlignment(TextAlignment.RIGHT);
         page1.addCell(lieuDate);
 
-        List<Evenement> evenements = EvenementAccess.get(nomEvenement, "", "", "",
+        List<Evenement> evenements = EvenementAccess.getInstance().get(nomEvenement, "", "", "",
                 "", "", null, null, null, null, "", "",
                 "", null);
 

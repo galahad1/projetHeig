@@ -18,105 +18,130 @@ import java.util.logging.Logger;
 
 public class NpaAccess {
 
+    /**
+     * Utilisé pour accéder aux fichiers de propriétés
+     */
     private final ConfigurationManager configurationManager;
+
+    /**
+     * Utilisé pour journaliser les actions effectuées
+     */
     private final Logger logger;
+
+    /**
+     * Utilisé pour la connexion à la base de données
+     */
     private final Hibernate hibernate;
+
+    /**
+     * Utilisé pour des accès génériques à la base de données
+     */
+    private final DatabaseAccess databaseAccess;
 
     private NpaAccess() {
         configurationManager = ConfigurationManager.getInstance();
         logger = Logger.getLogger(getClass().getName());
         hibernate = Hibernate.getInstance();
+        databaseAccess = DatabaseAccess.getInstance();
     }
 
+    /**
+     * Fournit l'unique instance de la classe (singleton)
+     *
+     * @return unique instance de la classe
+     */
     public static NpaAccess getInstance() {
         return SingletonHolder.instance;
     }
 
-    private static ConfigurationManager getConfigurationManager() {
-        return getInstance().configurationManager;
-    }
-
-    private static Logger getLogger() {
-        return getInstance().logger;
-    }
-
-    private static Hibernate getHibernate() {
-        return getInstance().hibernate;
-    }
-
-    public static List<Npa> get(String numeroNpa) {
+    public List<Npa> get(String numeroNpa) {
         List<Npa> npaList = null;
 
         Session session = null;
         Transaction transaction = null;
 
         try {
-            session = getHibernate().openSession();
+            // Démarre une transaction pour la gestion d'erreur
+            session = hibernate.getSession();
             transaction = session.beginTransaction();
 
-            CriteriaBuilder criteriaBuilder = getHibernate().getCriteriaBuilder();
+            // Définit des critères de sélection pour la requête
+            CriteriaBuilder criteriaBuilder = hibernate.getCriteriaBuilder();
             CriteriaQuery<Npa> criteriaQuery = criteriaBuilder.createQuery(Npa.class);
             Root<Npa> npaRoot = criteriaQuery.from(Npa.class);
             List<Predicate> predicateList = new ArrayList<>();
 
+            // Définit seulement les critères de sélection pour la requête des paramètres non null
+            // et non vide
             if (numeroNpa != null && !numeroNpa.isEmpty()) {
                 predicateList.add(criteriaBuilder.equal(
                         npaRoot.get(Npa_.numeroNpa), numeroNpa.toLowerCase()));
             }
 
             criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
-            npaList = getHibernate().createQuery(criteriaQuery).getResultList();
+            npaList = hibernate.createQuery(criteriaQuery).getResultList();
 
             transaction.commit();
         } catch (Exception e) {
-            DatabaseAccess.rollback(e, transaction);
-        } finally {
-            DatabaseAccess.close(session);
+            databaseAccess.rollback(e, transaction);
         }
 
-        getLogger().info(String.format(
-                getConfigurationManager().getString("databaseAccess.results"),
+        databaseAccess.close(session);
+
+        // Journalise l'état de la transaction et le résultat
+        databaseAccess.transactionMessage(transaction);
+        logger.info(String.format(
+                configurationManager.getString("databaseAccess.results"),
                 npaList != null ? npaList.size() : 0,
                 Npa.class.getSimpleName()));
 
         return npaList;
     }
 
-    public static void save(String numeroNpa) {
-        DatabaseAccess.save(new Npa(numeroNpa));
+    public void save(String numeroNpa) {
+        databaseAccess.save(new Npa(numeroNpa));
     }
 
-    public static void update(Integer idNpa, String numeroNpa) {
-        Npa npa = DatabaseAccess.get(Npa.class, idNpa);
+    public void update(Integer idNpa, String numeroNpa) {
+        Npa npa = databaseAccess.get(Npa.class, idNpa);
 
+        // Vérifie si la requête a abouti
         if (npa != null) {
+
+            // Affecte les nouveaux attributs au npa
             setAll(npa, numeroNpa);
-            DatabaseAccess.update(npa);
+            databaseAccess.update(npa);
         }
     }
 
-    public static void update(String oldNumeroNpa, String newNumeroNpa) {
+    public void update(String oldNumeroNpa, String newNumeroNpa) {
         List<Npa> npaList = get(oldNumeroNpa);
 
+        // Vérifie si la requête a abouti
         if (npaList != null) {
+
+            // Affecte les nouveaux attributs aux npas
             for (Npa npa : npaList) {
                 setAll(npa, newNumeroNpa);
             }
 
-            DatabaseAccess.update(npaList);
+            databaseAccess.update(npaList);
         }
     }
 
-    public static void delete(String numeroNpa) {
-        DatabaseAccess.delete(get(numeroNpa));
+    public void delete(String numeroNpa) {
+        databaseAccess.delete(get(numeroNpa));
     }
 
-    private static void setAll(Npa npa, String numeroNpa) {
+    private void setAll(Npa npa, String numeroNpa) {
         if (numeroNpa != null) {
             npa.setNumeroNpa(numeroNpa);
         }
     }
 
+    /**
+     * Utilisé pour créer un singleton de la classe
+     */
     private static class SingletonHolder {
         private static final NpaAccess instance = new NpaAccess();
     }

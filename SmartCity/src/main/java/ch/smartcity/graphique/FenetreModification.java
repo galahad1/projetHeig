@@ -59,6 +59,15 @@ class FenetreModification {
     private List<Evenement> evenementList;
     private Evenement evenementSelectionne = null;
 
+    private DatabaseAccess databaseAccess = DatabaseAccess.getInstance();
+    private EvenementAccess evenementAccess = EvenementAccess.getInstance();
+    private RubriqueEnfantAccess rubriqueEnfantAccess = RubriqueEnfantAccess.getInstance();
+    private AdresseAccess adresseAccess = AdresseAccess.getInstance();
+    private NpaAccess npaAccess = NpaAccess.getInstance();
+    private RueAccess rueAccess = RueAccess.getInstance();
+    private PrioriteAccess prioriteAccess = PrioriteAccess.getInstance();
+    private StatutAccess statutAccess = StatutAccess.getInstance();
+
     /**
      * Create the application.
      */
@@ -149,7 +158,7 @@ class FenetreModification {
         panelAjoutEvenement.add(labelNumRue);
 
         comboBoxNpa = new JComboBox<>();
-        List<Npa> listNpa = DatabaseAccess.get(Npa.class);
+        List<Npa> listNpa = databaseAccess.get(Npa.class);
 
         String[] npas = new String[listNpa.size()];
         for (int i = 0; i < npas.length; i++) {
@@ -166,7 +175,7 @@ class FenetreModification {
 
         comboBoxPriorite = new JComboBox<>();
 
-        List<Priorite> listPriorite = DatabaseAccess.get(Priorite.class);
+        List<Priorite> listPriorite = databaseAccess.get(Priorite.class);
         String[] priorites = new String[listPriorite.size()];
         for (int i = 0; i < priorites.length; i++) {
             priorites[i] = listPriorite.get(i).toString();
@@ -177,7 +186,7 @@ class FenetreModification {
         panelAjoutEvenement.add(comboBoxPriorite);
 
         comboBoxRubrique = new JComboBox<>();
-        List<RubriqueEnfant> listRubriqueEnfant = DatabaseAccess.get(RubriqueEnfant.class);
+        List<RubriqueEnfant> listRubriqueEnfant = databaseAccess.get(RubriqueEnfant.class);
 
         String[] rubriques = new String[listRubriqueEnfant.size()];
         for (int i = 0; i < rubriques.length; i++) {
@@ -263,7 +272,7 @@ class FenetreModification {
         JButton boutonSupprimer = new JButton("Supprimer");
         boutonSupprimer.addActionListener(e -> {
             if (evenementSelectionne != null && comboBoxEvenements.getSelectedIndex() != 0) {
-                DatabaseAccess.delete(evenementSelectionne); // supprime de la base de donnée
+                databaseAccess.delete(evenementSelectionne); // supprime de la base de donnée
                 chargementListeEvenements(context); // mise a jour de la liste
                 videChamps();
 
@@ -438,13 +447,13 @@ class FenetreModification {
         List<String> previews;
 
         if (context == Contexte.CONTEXTE_AJOUTER) { // ajout/modification
-            evenementList = EvenementAccess.getActif();
+            evenementList = evenementAccess.getActif();
 
             previews = Utils.previewEvenement(evenementList); // previsualisation des evenements
 
             previews.add(0, "Ajouter un événement");
         } else {  // en attente
-            evenementList = EvenementAccess.getEnAttente(); // recupere tout les evenements en attente
+            evenementList = evenementAccess.getEnAttente(); // recupere tout les evenements en attente
 
             previews = Utils.previewEvenement(evenementList); // previsualisation des evenements
 
@@ -459,9 +468,9 @@ class FenetreModification {
      * Refuse l'evenement et supprimer l'evenement
      */
     private void refuserEvenement() {
-        evenementSelectionne.setStatut(StatutAccess.get(Statut_.REFUSE).get(0)); // statur refuser
+        evenementSelectionne.setStatut(statutAccess.get(Statut_.REFUSE).get(0)); // statur refuser
 
-        EvenementAccess.update(evenementSelectionne.getIdEvenement(),
+        evenementAccess.update(evenementSelectionne.getIdEvenement(),
                 null,
                 null,
                 null,
@@ -473,7 +482,7 @@ class FenetreModification {
                 null,
                 null,
                 evenementSelectionne.getStatut()); // met a jour l evenemnt avec le statut refuse
-        DatabaseAccess.delete(evenementSelectionne); // change date de fin
+        databaseAccess.delete(evenementSelectionne); // change date de fin
     }
 
     private void modifierEvenement() {
@@ -491,10 +500,10 @@ class FenetreModification {
         // voir tout les champs qui ont ete modifier
         Evenement evenementBase = getEvenementSelectionne();
 
-        Npa newNpa = NpaAccess.get(npa).get(0);
+        Npa newNpa = npaAccess.get(npa).get(0);
 
         Rue newRue;
-        List<Rue> listNewRue = RueAccess.get(nomRue);
+        List<Rue> listNewRue = rueAccess.get(nomRue);
         System.out.println(listNewRue);
         if (listNewRue == null || listNewRue.isEmpty()) {
             newRue = new Rue(nomRue);
@@ -503,7 +512,7 @@ class FenetreModification {
         }
 
         Adresse newAdresse;
-        List<Adresse> listNewAdresse = AdresseAccess.get(newRue, numeroRue, newNpa);
+        List<Adresse> listNewAdresse = adresseAccess.get(newRue, numeroRue, newNpa);
         System.out.println(listNewAdresse);
         if (listNewAdresse == null || listNewAdresse.isEmpty()) {
             newAdresse = new Adresse(newRue, numeroRue, newNpa);
@@ -511,12 +520,12 @@ class FenetreModification {
             newAdresse = listNewAdresse.get(0);
         }
 
-        RubriqueEnfant newRubrique = RubriqueEnfantAccess.get("", nomEnfant).get(0);
-        Statut newStatut = StatutAccess.get(Statut_.TRAITE).get(0);
+        RubriqueEnfant newRubrique = rubriqueEnfantAccess.get("", nomEnfant).get(0);
+        Statut newStatut = statutAccess.get(Statut_.TRAITE).get(0);
 
         // separe niveau et nom de la priorité
         String[] elementsPriorite = comboBoxPriorite.getSelectedItem().toString().split(" - ");
-        Priorite newPriorite = PrioriteAccess.get(
+        Priorite newPriorite = prioriteAccess.get(
                 elementsPriorite[1],
                 Integer.valueOf(elementsPriorite[0])).get(0);
 
@@ -527,7 +536,7 @@ class FenetreModification {
             e1.printStackTrace();
         }
 
-        EvenementAccess.update(evenementBase.getIdEvenement(),
+        evenementAccess.update(evenementBase.getIdEvenement(),
                 newRubrique,
                 null,
                 nomEvenement,
@@ -569,7 +578,7 @@ class FenetreModification {
 
         // controle si l evenement exsite deja
 
-        List<Evenement> evenementsExsistants = EvenementAccess.get(nomEnfant,
+        List<Evenement> evenementsExsistants = evenementAccess.get(nomEnfant,
                 null,
                 nomEvenement,
                 nomRue,
@@ -584,7 +593,7 @@ class FenetreModification {
                 null,
                 null);
         if (evenementsExsistants == null || evenementsExsistants.isEmpty()) { // n'exsiste pas
-            EvenementAccess.save(nomEnfant,
+            evenementAccess.save(nomEnfant,
                     1,
                     nomEvenement,
                     nomRue,

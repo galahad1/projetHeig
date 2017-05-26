@@ -15,54 +15,59 @@ import java.util.logging.Logger;
 
 public class UtilisateurAccess {
 
-    private static String titre;
-    private static String abreviation;
-    private static String nomSexe;
-    private static String nomPriorite;
-    private static String nomRue;
-    private static String numeroDeRue;
-    private static String numeroNpa;
-
+    /**
+     * Utilisé pour accéder aux fichiers de propriétés
+     */
     private final ConfigurationManager configurationManager;
+
+    /**
+     * Utilisé pour journaliser les actions effectuées
+     */
     private final Logger logger;
+
+    /**
+     * Utilisé pour la connexion à la base de données
+     */
     private final Hibernate hibernate;
+
+    /**
+     * Utilisé pour des accès génériques à la base de données
+     */
+    private final DatabaseAccess databaseAccess;
+
+    private String titre;
+    private String abreviation;
+    private String nomSexe;
+    private String nomPriorite;
+    private String nomRue;
+    private String numeroDeRue;
+    private String numeroNpa;
 
     private UtilisateurAccess() {
         configurationManager = ConfigurationManager.getInstance();
         logger = Logger.getLogger(getClass().getName());
         hibernate = Hibernate.getInstance();
+        databaseAccess = DatabaseAccess.getInstance();
     }
 
     public static UtilisateurAccess getInstance() {
         return SingletonHolder.instance;
     }
 
-    private static ConfigurationManager getConfigurationManager() {
-        return getInstance().configurationManager;
-    }
-
-    private static Logger getLogger() {
-        return getInstance().logger;
-    }
-
-    private static Hibernate getHibernate() {
-        return getInstance().hibernate;
-    }
-
-    public static List<Utilisateur> get(Boolean personnePhysique,
-                                        String avs,
-                                        TitreCivil titreCivil,
-                                        String nomUtilisateur,
-                                        String prenom,
-                                        Calendar dateDeNaissance,
-                                        Sexe sexe,
-                                        Nationalite nationalite,
-                                        Adresse adresse,
-                                        String email,
-                                        String pseudo,
-                                        String motDePasse,
-                                        String sel,
-                                        Calendar creation) {
+    public List<Utilisateur> get(Boolean personnePhysique,
+                                 String avs,
+                                 TitreCivil titreCivil,
+                                 String nomUtilisateur,
+                                 String prenom,
+                                 Calendar dateDeNaissance,
+                                 Sexe sexe,
+                                 Nationalite nationalite,
+                                 Adresse adresse,
+                                 String email,
+                                 String pseudo,
+                                 String motDePasse,
+                                 String sel,
+                                 Calendar creation) {
         checkNull(titreCivil, sexe, nationalite, adresse);
         return get(personnePhysique,
                 avs,
@@ -84,33 +89,33 @@ public class UtilisateurAccess {
     }
 
 
-    public static List<Utilisateur> get(Boolean personnePhysique,
-                                        String avs,
-                                        String titre,
-                                        String abreviation,
-                                        String nomUtilisateur,
-                                        String prenom,
-                                        Calendar dateDeNaissance,
-                                        String nomSexe,
-                                        String nomNationalite,
-                                        String nomRue,
-                                        String numeroDeRue,
-                                        String numeroNpa,
-                                        String email,
-                                        String pseudo,
-                                        String motDePasse,
-                                        String sel,
-                                        Calendar creation) {
+    public List<Utilisateur> get(Boolean personnePhysique,
+                                 String avs,
+                                 String titre,
+                                 String abreviation,
+                                 String nomUtilisateur,
+                                 String prenom,
+                                 Calendar dateDeNaissance,
+                                 String nomSexe,
+                                 String nomNationalite,
+                                 String nomRue,
+                                 String numeroDeRue,
+                                 String numeroNpa,
+                                 String email,
+                                 String pseudo,
+                                 String motDePasse,
+                                 String sel,
+                                 Calendar creation) {
         List<Utilisateur> utilisateurList = null;
 
         Session session = null;
         Transaction transaction = null;
 
         try {
-            session = getHibernate().openSession();
+            session = hibernate.getSession();
             transaction = session.beginTransaction();
 
-            CriteriaBuilder criteriaBuilder = getHibernate().getCriteriaBuilder();
+            CriteriaBuilder criteriaBuilder = hibernate.getCriteriaBuilder();
             CriteriaQuery<Utilisateur> criteriaQuery = criteriaBuilder
                     .createQuery(Utilisateur.class);
             Root<Utilisateur> utilisateurRoot = criteriaQuery.from(Utilisateur.class);
@@ -231,31 +236,31 @@ public class UtilisateurAccess {
             }
 
             criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
-            utilisateurList = getHibernate().createQuery(criteriaQuery).getResultList();
+            utilisateurList = hibernate.createQuery(criteriaQuery).getResultList();
 
             transaction.commit();
         } catch (Exception e) {
-            DatabaseAccess.rollback(e, transaction);
+            databaseAccess.rollback(e, transaction);
         } finally {
-            DatabaseAccess.close(session);
+            databaseAccess.close(session);
         }
 
-        getLogger().info(String.format(
-                getConfigurationManager().getString("databaseAccess.results"),
+        logger.info(String.format(
+                configurationManager.getString("databaseAccess.results"),
                 utilisateurList != null ? utilisateurList.size() : 0,
                 Utilisateur.class.getSimpleName()));
 
         return utilisateurList;
     }
 
-    public static void save(TitreCivil titreCivil,
-                            String nomUtilisateur,
-                            Adresse adresse,
-                            String email,
-                            String pseudo,
-                            String motDePasse,
-                            String sel) {
-        DatabaseAccess.save(new Utilisateur(
+    public void save(TitreCivil titreCivil,
+                     String nomUtilisateur,
+                     Adresse adresse,
+                     String email,
+                     String pseudo,
+                     String motDePasse,
+                     String sel) {
+        databaseAccess.save(new Utilisateur(
                 titreCivil,
                 nomUtilisateur,
                 adresse,
@@ -265,20 +270,20 @@ public class UtilisateurAccess {
                 sel));
     }
 
-    public static void save(Boolean personnePhysique,
-                            String avs,
-                            TitreCivil titreCivil,
-                            String nomUtilisateur,
-                            String prenom,
-                            Calendar dateDeNaissance,
-                            Sexe sexe,
-                            Nationalite nationalite,
-                            Adresse adresse,
-                            String email,
-                            String pseudo,
-                            String motDePasse,
-                            String sel) {
-        DatabaseAccess.save(new Utilisateur(
+    public void save(Boolean personnePhysique,
+                     String avs,
+                     TitreCivil titreCivil,
+                     String nomUtilisateur,
+                     String prenom,
+                     Calendar dateDeNaissance,
+                     Sexe sexe,
+                     Nationalite nationalite,
+                     Adresse adresse,
+                     String email,
+                     String pseudo,
+                     String motDePasse,
+                     String sel) {
+        databaseAccess.save(new Utilisateur(
                 personnePhysique,
                 avs,
                 titreCivil,
@@ -294,21 +299,21 @@ public class UtilisateurAccess {
                 sel));
     }
 
-    public static void update(Integer idUtilisateur,
-                              Boolean personnePhysique,
-                              String avs,
-                              TitreCivil titreCivil,
-                              String nomUtilisateur,
-                              String prenom,
-                              Calendar dateDeNaissance,
-                              Sexe sexe,
-                              Adresse adresse,
-                              Nationalite nationalite,
-                              String email,
-                              String pseudo,
-                              String motDePasse,
-                              String sel) {
-        Utilisateur utilisateur = DatabaseAccess.get(Utilisateur.class, idUtilisateur);
+    public void update(Integer idUtilisateur,
+                       Boolean personnePhysique,
+                       String avs,
+                       TitreCivil titreCivil,
+                       String nomUtilisateur,
+                       String prenom,
+                       Calendar dateDeNaissance,
+                       Sexe sexe,
+                       Adresse adresse,
+                       Nationalite nationalite,
+                       String email,
+                       String pseudo,
+                       String motDePasse,
+                       String sel) {
+        Utilisateur utilisateur = databaseAccess.get(Utilisateur.class, idUtilisateur);
 
         if (utilisateur != null) {
             setAll(utilisateur,
@@ -325,37 +330,37 @@ public class UtilisateurAccess {
                     pseudo,
                     motDePasse,
                     sel);
-            DatabaseAccess.update(utilisateur);
+            databaseAccess.update(utilisateur);
         }
     }
 
-    public static void update(Boolean oldPersonnePhysique,
-                              String oldAvs,
-                              TitreCivil oldTitreCivil,
-                              String oldNomUtilisateur,
-                              String oldPrenom,
-                              Calendar oldDateDeNaissance,
-                              Sexe oldSexe,
-                              Nationalite oldNationalite,
-                              Adresse oldAdresse,
-                              String oldEmail,
-                              String oldPseudo,
-                              String oldMotDePasse,
-                              String oldSel,
-                              Calendar creation,
-                              Boolean newPersonnePhysique,
-                              String newAvs,
-                              TitreCivil newTitreCivil,
-                              String newNomUtilisateur,
-                              String newPrenom,
-                              Calendar newDateDeNaissance,
-                              Sexe newSexe,
-                              Nationalite newNationalite,
-                              Adresse newAdresse,
-                              String newEmail,
-                              String newPseudo,
-                              String newMotDePasse,
-                              String newSel) {
+    public void update(Boolean oldPersonnePhysique,
+                       String oldAvs,
+                       TitreCivil oldTitreCivil,
+                       String oldNomUtilisateur,
+                       String oldPrenom,
+                       Calendar oldDateDeNaissance,
+                       Sexe oldSexe,
+                       Nationalite oldNationalite,
+                       Adresse oldAdresse,
+                       String oldEmail,
+                       String oldPseudo,
+                       String oldMotDePasse,
+                       String oldSel,
+                       Calendar creation,
+                       Boolean newPersonnePhysique,
+                       String newAvs,
+                       TitreCivil newTitreCivil,
+                       String newNomUtilisateur,
+                       String newPrenom,
+                       Calendar newDateDeNaissance,
+                       Sexe newSexe,
+                       Nationalite newNationalite,
+                       Adresse newAdresse,
+                       String newEmail,
+                       String newPseudo,
+                       String newMotDePasse,
+                       String newSel) {
         List<Utilisateur> utilisateurList = get(
                 oldPersonnePhysique,
                 oldAvs,
@@ -388,25 +393,25 @@ public class UtilisateurAccess {
                         newPseudo,
                         newMotDePasse,
                         newSel);
-                DatabaseAccess.update(utilisateurList);
+                databaseAccess.update(utilisateurList);
             }
         }
     }
 
-    public static void delete(Boolean personnePhysique,
-                              String avs,
-                              TitreCivil titreCivil,
-                              String nomUtilisateur,
-                              String prenom,
-                              Calendar dateDeNaissance,
-                              Sexe sexe,
-                              Nationalite nationalite,
-                              Adresse adresse,
-                              String email,
-                              String pseudo,
-                              String motDePasse,
-                              String sel,
-                              Calendar creation) {
+    public void delete(Boolean personnePhysique,
+                       String avs,
+                       TitreCivil titreCivil,
+                       String nomUtilisateur,
+                       String prenom,
+                       Calendar dateDeNaissance,
+                       Sexe sexe,
+                       Nationalite nationalite,
+                       Adresse adresse,
+                       String email,
+                       String pseudo,
+                       String motDePasse,
+                       String sel,
+                       Calendar creation) {
         checkNull(titreCivil, sexe, nationalite, adresse);
         delete(personnePhysique,
                 avs,
@@ -427,24 +432,24 @@ public class UtilisateurAccess {
                 creation);
     }
 
-    public static void delete(Boolean personnePhysique,
-                              String avs,
-                              String titre,
-                              String abreviation,
-                              String nomUtilisateur,
-                              String prenom,
-                              Calendar dateDeNaissance,
-                              String nomSexe,
-                              String nomNationalite,
-                              String nomRue,
-                              String numeroDeRue,
-                              String numeroNpa,
-                              String email,
-                              String pseudo,
-                              String motDePasse,
-                              String sel,
-                              Calendar creation) {
-        DatabaseAccess.delete(get(
+    public void delete(Boolean personnePhysique,
+                       String avs,
+                       String titre,
+                       String abreviation,
+                       String nomUtilisateur,
+                       String prenom,
+                       Calendar dateDeNaissance,
+                       String nomSexe,
+                       String nomNationalite,
+                       String nomRue,
+                       String numeroDeRue,
+                       String numeroNpa,
+                       String email,
+                       String pseudo,
+                       String motDePasse,
+                       String sel,
+                       Calendar creation) {
+        databaseAccess.delete(get(
                 personnePhysique,
                 avs,
                 titre,
@@ -464,19 +469,19 @@ public class UtilisateurAccess {
                 creation));
     }
 
-    public static void save(String avs,
-                            TitreCivil titreCivil,
-                            String nomUtilisateur,
-                            String prenom,
-                            Calendar dateDeNaissance,
-                            Sexe sexe,
-                            Nationalite nationalite,
-                            Adresse adresse,
-                            String email,
-                            String pseudo,
-                            String motDePasse,
-                            String sel) {
-        DatabaseAccess.save(new Utilisateur(true,
+    public void save(String avs,
+                     TitreCivil titreCivil,
+                     String nomUtilisateur,
+                     String prenom,
+                     Calendar dateDeNaissance,
+                     Sexe sexe,
+                     Nationalite nationalite,
+                     Adresse adresse,
+                     String email,
+                     String pseudo,
+                     String motDePasse,
+                     String sel) {
+        databaseAccess.save(new Utilisateur(true,
                 avs,
                 titreCivil,
                 nomUtilisateur,
@@ -491,20 +496,20 @@ public class UtilisateurAccess {
                 sel));
     }
 
-    private static void setAll(Utilisateur utilisateur,
-                               Boolean personnePhysique,
-                               String avs,
-                               TitreCivil titreCivil,
-                               String nomUtilisateur,
-                               String prenom,
-                               Calendar dateDeNaissance,
-                               Sexe sexe,
-                               Nationalite nationalite,
-                               Adresse adresse,
-                               String email,
-                               String pseudo,
-                               String motDePasse,
-                               String sel) {
+    private void setAll(Utilisateur utilisateur,
+                        Boolean personnePhysique,
+                        String avs,
+                        TitreCivil titreCivil,
+                        String nomUtilisateur,
+                        String prenom,
+                        Calendar dateDeNaissance,
+                        Sexe sexe,
+                        Nationalite nationalite,
+                        Adresse adresse,
+                        String email,
+                        String pseudo,
+                        String motDePasse,
+                        String sel) {
         if (personnePhysique != null) {
             utilisateur.setPersonnePhysique(personnePhysique);
         }
@@ -558,10 +563,10 @@ public class UtilisateurAccess {
         }
     }
 
-    private static void checkNull(TitreCivil titreCivil,
-                                  Sexe sexe,
-                                  Nationalite nationalite,
-                                  Adresse adresse) {
+    private void checkNull(TitreCivil titreCivil,
+                           Sexe sexe,
+                           Nationalite nationalite,
+                           Adresse adresse) {
         titre = titreCivil != null ? titreCivil.getTitre() : null;
         abreviation = titreCivil != null ? titreCivil.getAbreviation() : null;
         nomSexe = sexe != null ? sexe.getNomSexe() : null;

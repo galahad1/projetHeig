@@ -18,43 +18,48 @@ import java.util.logging.Logger;
 
 public class StatutAccess {
 
+    /**
+     * Utilisé pour accéder aux fichiers de propriétés
+     */
     private final ConfigurationManager configurationManager;
+
+    /**
+     * Utilisé pour journaliser les actions effectuées
+     */
     private final Logger logger;
+
+    /**
+     * Utilisé pour la connexion à la base de données
+     */
     private final Hibernate hibernate;
+
+    /**
+     * Utilisé pour des accès génériques à la base de données
+     */
+    private final DatabaseAccess databaseAccess;
 
     private StatutAccess() {
         configurationManager = ConfigurationManager.getInstance();
         logger = Logger.getLogger(getClass().getName());
         hibernate = Hibernate.getInstance();
+        databaseAccess = DatabaseAccess.getInstance();
     }
 
     public static StatutAccess getInstance() {
         return SingletonHolder.instance;
     }
 
-    private static ConfigurationManager getConfigurationManager() {
-        return getInstance().configurationManager;
-    }
-
-    private static Logger getLogger() {
-        return getInstance().logger;
-    }
-
-    private static Hibernate getHibernate() {
-        return getInstance().hibernate;
-    }
-
-    public static List<Statut> get(String nomStatut) {
+    public List<Statut> get(String nomStatut) {
         List<Statut> statutList = null;
 
         Session session = null;
         Transaction transaction = null;
 
         try {
-            session = getHibernate().openSession();
+            session = hibernate.getSession();
             transaction = session.beginTransaction();
 
-            CriteriaBuilder criteriaBuilder = getHibernate().getCriteriaBuilder();
+            CriteriaBuilder criteriaBuilder = hibernate.getCriteriaBuilder();
             CriteriaQuery<Statut> criteriaQuery = criteriaBuilder
                     .createQuery(Statut.class);
             Root<Statut> statutRoot = criteriaQuery.from(Statut.class);
@@ -67,37 +72,37 @@ public class StatutAccess {
             }
 
             criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
-            statutList = getHibernate().createQuery(criteriaQuery).getResultList();
+            statutList = hibernate.createQuery(criteriaQuery).getResultList();
 
             transaction.commit();
         } catch (Exception e) {
-            DatabaseAccess.rollback(e, transaction);
+            databaseAccess.rollback(e, transaction);
         } finally {
-            DatabaseAccess.close(session);
+            databaseAccess.close(session);
         }
 
-        getLogger().info(String.format(
-                getConfigurationManager().getString("databaseAccess.results"),
+        logger.info(String.format(
+                configurationManager.getString("databaseAccess.results"),
                 statutList != null ? statutList.size() : 0,
                 Statut.class.getSimpleName()));
 
         return statutList;
     }
 
-    public static void save(String nomStatut) {
-        DatabaseAccess.save(new Statut(nomStatut));
+    public void save(String nomStatut) {
+        databaseAccess.save(new Statut(nomStatut));
     }
 
-    public static void update(Integer idStatut, String nomStatut) {
-        Statut statut = DatabaseAccess.get(Statut.class, idStatut);
+    public void update(Integer idStatut, String nomStatut) {
+        Statut statut = databaseAccess.get(Statut.class, idStatut);
 
         if (statut != null) {
             setAll(statut, nomStatut);
-            DatabaseAccess.update(statut);
+            databaseAccess.update(statut);
         }
     }
 
-    public static void update(String oldNomStatut, String newNomStatut) {
+    public void update(String oldNomStatut, String newNomStatut) {
         List<Statut> statutList = get(oldNomStatut);
 
         if (statutList != null) {
@@ -105,15 +110,15 @@ public class StatutAccess {
                 setAll(statut, newNomStatut);
             }
 
-            DatabaseAccess.update(statutList);
+            databaseAccess.update(statutList);
         }
     }
 
-    public static void delete(String nomStatut) {
-        DatabaseAccess.delete(get(nomStatut));
+    public void delete(String nomStatut) {
+        databaseAccess.delete(get(nomStatut));
     }
 
-    private static void setAll(Statut statut, String nomStatut) {
+    private void setAll(Statut statut, String nomStatut) {
         if (nomStatut != null) {
             statut.setNomStatut(nomStatut);
         }

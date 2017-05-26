@@ -12,60 +12,105 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+/**
+ * Fournit l'accès aux adresses de la base de données
+ *
+ * @author Lassalle Loan
+ * @since 25.03.2017
+ */
 public class AdresseAccess {
 
-    private static String nomRue;
-    private static String numeroNpa;
-
+    /**
+     * Utilisé pour accéder aux fichiers de propriétés
+     */
     private final ConfigurationManager configurationManager;
+
+    /**
+     * Utilisé pour journaliser les actions effectuées
+     */
     private final Logger logger;
+
+    /**
+     * Utilisé pour la connexion à la base de données
+     */
     private final Hibernate hibernate;
+
+    /**
+     * Utilisé pour des accès génériques à la base de données
+     */
+    private final DatabaseAccess databaseAccess;
+
+    /**
+     * Utilisé pour stocker la valeur des attributs ci-dessous en fonction de la nullité des paramètres
+     * d'une adresse
+     */
+    private String nomRue;
+    private String numeroNpa;
 
     private AdresseAccess() {
         configurationManager = ConfigurationManager.getInstance();
         logger = Logger.getLogger(getClass().getName());
         hibernate = Hibernate.getInstance();
+        databaseAccess = DatabaseAccess.getInstance();
     }
 
+    /**
+     * Fournit l'unique instance de la classe (singleton)
+     *
+     * @return unique instance de la classe
+     */
     public static AdresseAccess getInstance() {
         return SingletonHolder.instance;
     }
 
-    private static ConfigurationManager getConfigurationManager() {
-        return getInstance().configurationManager;
-    }
+    /**
+     * Obtient la liste des adresses stockée au sein de la base de données en fonction des paramètres
+     * Chaque paramètre différent de null sera utilisé comme critère de recherche
+     *
+     * @param rue         rue des adresses à obtenir
+     * @param numeroDeRue numéro de la rue des adresses à obtenir
+     * @param npa         npa des adresses à obtenir
+     * @return liste des adresses stockées au sein de la base de données en fonction des paramètres
+     */
+    public List<Adresse> get(Rue rue, String numeroDeRue, Npa npa) {
 
-    private static Logger getLogger() {
-        return getInstance().logger;
-    }
-
-    private static Hibernate getHibernate() {
-        return getInstance().hibernate;
-    }
-
-    public static List<Adresse> get(Rue rue, String numeroDeRue, Npa npa) {
+        // Définit nomRue et numeroNpa en fonction de la valeurs des paramètres rue et npa
         checkNull(rue, npa);
         return get(nomRue, numeroDeRue, numeroNpa);
     }
 
-    public static List<Adresse> get(String nomRue, String numeroDeRue, String numeroNpa) {
+    /**
+     * Obtient la liste des adresses stockée au sein de la base de données en fonction des paramètres
+     * Chaque paramètre différent de null sera utilisé comme critère de recherche
+     *
+     * @param nomRue      nom de la rue des adresses à obtenir
+     * @param numeroDeRue numéro de la rue des adresses à obtenir
+     * @param numeroNpa   numéro npa des adresses à obtenir
+     * @return liste des adresses stockées au sein de la base de données en fonction des paramètres
+     */
+    public List<Adresse> get(String nomRue, String numeroDeRue, String numeroNpa) {
         List<Adresse> adresseList = null;
 
         Session session = null;
         Transaction transaction = null;
 
         try {
-            session = getHibernate().openSession();
+            // Démarre une transaction pour la gestion d'erreur
+            session = hibernate.getSession();
             transaction = session.beginTransaction();
 
-            CriteriaBuilder criteriaBuilder = getHibernate().getCriteriaBuilder();
+            // Définit des critères de sélection pour la requête
+            CriteriaBuilder criteriaBuilder = hibernate.getCriteriaBuilder();
             CriteriaQuery<Adresse> criteriaQuery = criteriaBuilder.createQuery(Adresse.class);
 
+            // Liaison avec différentes tables
             Root<Adresse> adresseRoot = criteriaQuery.from(Adresse.class);
             Join<Adresse, Rue> adresseRueJoin = adresseRoot.join(Adresse_.rue);
             Join<Adresse, Npa> adresseNpaJoin = adresseRoot.join(Adresse_.npa);
             List<Predicate> predicateList = new ArrayList<>();
 
+            // Définit seulement les critères de sélection pour la requête des paramètres non null
+            // et non vide
             if (nomRue != null && !nomRue.isEmpty()) {
                 predicateList.add(criteriaBuilder.equal(
                         adresseRueJoin.get(Rue_.nomRue),
@@ -85,63 +130,126 @@ public class AdresseAccess {
             }
 
             criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
-            adresseList = getHibernate().createQuery(criteriaQuery).getResultList();
+            adresseList = hibernate.createQuery(criteriaQuery).getResultList();
 
             transaction.commit();
         } catch (Exception e) {
-            DatabaseAccess.rollback(e, transaction);
-        } finally {
-            DatabaseAccess.close(session);
+            databaseAccess.rollback(e, transaction);
         }
 
-        getLogger().info(String.format(
-                getConfigurationManager().getString("databaseAccess.results"),
+        databaseAccess.close(session);
+
+        // Journalise l'état de la transaction et le résultat
+        databaseAccess.transactionMessage(transaction);
+        logger.info(String.format(
+                configurationManager.getString("databaseAccess.results"),
                 adresseList != null ? adresseList.size() : 0,
                 Adresse.class.getSimpleName()));
 
         return adresseList;
     }
 
-    public static void save(Rue rue, String numeroDeRue, Npa npa) {
-        DatabaseAccess.save(new Adresse(rue, numeroDeRue, npa));
+    /**
+     * Stocke l'adresse définit à la rue, au numéro de rue et au npa fournis
+     *
+     * @param rue         rue de l'adresse à stocker
+     * @param numeroDeRue numéro de rue de l'adresse à stocker
+     * @param npa         npa de l'adresse à stocker
+     */
+    public void save(Rue rue, String numeroDeRue, Npa npa) {
+        databaseAccess.save(new Adresse(rue, numeroDeRue, npa));
     }
 
-    public static void update(Integer idAdresse, Rue rue, String numeroDeRue, Npa npa) {
-        Adresse adresse = DatabaseAccess.get(Adresse.class, idAdresse);
+    /**
+     * Met à jour l'adresse correspondant à l'identifiant avec les paramètres fournis
+     * Chaque paramètre de valeurs null ne se mettre pas à jour
+     *
+     * @param idAdresse   identifiant de l'adresse à mettre à jour
+     * @param rue         nouvelle rue de l'adresse à mettre à jour
+     * @param numeroDeRue nouveau numéro de rue de l'adresse à mettre à jour
+     * @param npa         nouveau npa de l'adresse à mettre à jour
+     */
+    public void update(Integer idAdresse, Rue rue, String numeroDeRue, Npa npa) {
+        Adresse adresse = databaseAccess.get(Adresse.class, idAdresse);
 
+        // Vérifie si la requête a abouti
         if (adresse != null) {
+
+            // Affecte les nouveaux attributs à l'adresse
             setAll(adresse, rue, numeroDeRue, npa);
-            DatabaseAccess.update(adresse);
+            databaseAccess.update(adresse);
         }
     }
 
-    public static void update(Rue oldRue,
-                              String oldNumeroDeRue,
-                              Npa oldNpa,
-                              Rue newRue,
-                              String newNumeroDeRue,
-                              Npa newNpa) {
+    /**
+     * Met à jour les adresses avec les paramètres préfixés de new et correspondant aux paramètres
+     * préfixés de old
+     * Chaque paramètre préfixés de old différent de null sera utilisé comme critère de recherche
+     * Chaque paramètre préfixés de new de valeurs null ne se mettre pas à jour
+     *
+     * @param oldRue         ancienne rue des adresses à mettre à jour
+     * @param oldNumeroDeRue ancien numéro de rue des adresses à mettre à jour
+     * @param oldNpa         ancien npa des adresses à mettre à jour
+     * @param newRue         nouvelle rue des adresses à mettre à jour
+     * @param newNumeroDeRue nouveau numéro de rue des adresses à mettre à jour
+     * @param newNpa         nouveau npa des adresses à mettre à jour
+     */
+    public void update(Rue oldRue,
+                       String oldNumeroDeRue,
+                       Npa oldNpa,
+                       Rue newRue,
+                       String newNumeroDeRue,
+                       Npa newNpa) {
         List<Adresse> adresseList = get(oldRue, oldNumeroDeRue, oldNpa);
 
+        // Vérifie si la requête a abouti
         if (adresseList != null) {
+
+            // Affecte les nouveaux attributs aux adresses
             for (Adresse adresse : adresseList) {
                 setAll(adresse, newRue, newNumeroDeRue, newNpa);
             }
 
-            DatabaseAccess.update(adresseList);
+            databaseAccess.update(adresseList);
         }
     }
 
-    public static void delete(Rue rue, String numeroDeRue, Npa npa) {
+    /**
+     * Supprime les adresses correspondant aux paramètres
+     * Chaque paramètre différent de null sera utilisé comme critère de recherche
+     *
+     * @param rue         rue de des adresses à supprimer
+     * @param numeroDeRue numéro de rue des adresses à supprimer
+     * @param npa         npa des adresses à supprimer
+     */
+    public void delete(Rue rue, String numeroDeRue, Npa npa) {
+
+        // Définit nomRue et numeroNpa en fonction de la valeurs des paramètres rue et npa
         checkNull(rue, npa);
         delete(nomRue, numeroDeRue, numeroNpa);
     }
 
-    public static void delete(String nomRue, String numeroDeRue, String numeroNpa) {
-        DatabaseAccess.delete(get(nomRue, numeroDeRue, numeroNpa));
+    /**
+     * Supprime les adresses correspondant aux paramètres
+     * Chaque paramètre différent de null sera utilisé comme critère de recherche
+     *
+     * @param nomRue      nom de la rue des adresses à supprimer
+     * @param numeroDeRue numéro de rue des adresses à supprimer
+     * @param numeroNpa   numéro npa des adresses à supprimer
+     */
+    public void delete(String nomRue, String numeroDeRue, String numeroNpa) {
+        databaseAccess.delete(get(nomRue, numeroDeRue, numeroNpa));
     }
 
-    private static void setAll(Adresse adresse, Rue rue, String numeroDeRue, Npa npa) {
+    /**
+     * Affecte les paramètres à l'adresse si ils ne sont pas null
+     *
+     * @param adresse     adresse dont il faut définir les paramètres
+     * @param rue         rue de l'adresse
+     * @param numeroDeRue numéro de rue de l'adresse
+     * @param npa         npa de l'adresse
+     */
+    private void setAll(Adresse adresse, Rue rue, String numeroDeRue, Npa npa) {
         if (rue != null) {
             adresse.setRue(rue);
         }
@@ -155,11 +263,20 @@ public class AdresseAccess {
         }
     }
 
-    private static void checkNull(Rue rue, Npa npa) {
+    /**
+     * Définit nomRue et numeroNpa en fonction de la nullité des paramètres
+     *
+     * @param rue rue à vérifier
+     * @param npa npa à vérifier
+     */
+    private void checkNull(Rue rue, Npa npa) {
         nomRue = rue != null ? rue.getNomRue() : null;
         numeroNpa = npa != null ? npa.getNumeroNpa() : null;
     }
 
+    /**
+     * Utilisé pour créer un singleton de la classe
+     */
     private static class SingletonHolder {
         private static final AdresseAccess instance = new AdresseAccess();
     }
