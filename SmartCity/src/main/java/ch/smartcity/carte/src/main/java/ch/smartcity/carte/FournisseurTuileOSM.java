@@ -15,7 +15,7 @@ import java.net.URL;
  */
 public final class FournisseurTuileOSM implements FournisseurTuile {
     private static final String ERROR_TILE_PNG_FILE =
-            "ch/smartcity/carte/resources/image/error-tile.png";
+            "ch/smartcity/carte/resources/image/tuile_erreur.png";
     final String serveurTuileURL;
 
     /**
