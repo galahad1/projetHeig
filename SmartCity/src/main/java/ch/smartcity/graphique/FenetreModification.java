@@ -50,8 +50,8 @@ class FenetreModification {
     private JLabel labelDateDebut;
     private JLabel labelDateFin;
     private JLabel labelDetails;
-    private JPanel panelErreurSaisie;
-    private JTextPane ErreurSaisiePane;
+    private JScrollPane scrollPaneErreurSaisie;
+    private JTextPane erreurSaisieTextPane;
     private JComboBox<String> comboBoxNpa;
     private JComboBox<String> comboBoxRubrique;
     private List<Evenement> evenementList;
@@ -284,16 +284,19 @@ class FenetreModification {
         boutonSupprimer.setBounds(213, 412, 117, 25);
         panelAjoutEvenement.add(boutonSupprimer);
 
-        panelErreurSaisie = new JPanel();
-        panelErreurSaisie.setBounds(734, 12, 436, 237);
-        panelAjoutEvenement.add(panelErreurSaisie);
-        panelErreurSaisie.setLayout(new CardLayout(0, 0));
+        scrollPaneErreurSaisie = new JScrollPane();
+        scrollPaneErreurSaisie.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrollPaneErreurSaisie.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        scrollPaneErreurSaisie.setBounds(734, 12, 436, 237);
+        panelAjoutEvenement.add(scrollPaneErreurSaisie);
+        //panelErreurSaisie.setLayout(new CardLayout(0, 0));
 
-        ErreurSaisiePane = new JTextPane();
-        ErreurSaisiePane.setEditable(false);
-        panelErreurSaisie.add(ErreurSaisiePane, "name_2674233502760");
-        panelErreurSaisie.setEnabled(false);
-        panelErreurSaisie.setVisible(false);
+        erreurSaisieTextPane = new JTextPane();
+        erreurSaisieTextPane.setEditable(false);
+        //scrollPaneErreurSaisie.add(erreurSaisieTextPane);
+        scrollPaneErreurSaisie.setViewportView(erreurSaisieTextPane);
+        scrollPaneErreurSaisie.setEnabled(false);
+        scrollPaneErreurSaisie.setVisible(false);
 
 
         panelModification.add(comboBoxEvenements);
@@ -610,7 +613,7 @@ class FenetreModification {
     private boolean controleSaisie() {
 
         // nettoyage labels rubriques et messages d'erreur de saisie
-        ErreurSaisiePane.setText(configurationManager.getString("erreur.saisie")); // entete des messages d'erreurs de saisie
+        erreurSaisieTextPane.setText(configurationManager.getString("erreur.saisie")); // entete des messages d'erreurs de saisie
 
         labelNom.setForeground(Color.BLACK);
         labelRue.setForeground(Color.BLACK);
@@ -627,7 +630,7 @@ class FenetreModification {
         if (!Utils.controleSaisie(textFieldNom.getText(), Integer.valueOf(configurationManager.getString("tailleMax.nom")), REGEX_ALPHA_NUMERIQUE)) {
             // saisie incorrect, affichage du nom de la rubrique en rouge
             labelNom.setForeground(Color.RED);
-            ErreurSaisiePane.setText(ErreurSaisiePane.getText() + configurationManager.getString("erreur.nom"));
+            erreurSaisieTextPane.setText(erreurSaisieTextPane.getText() + configurationManager.getString("erreur.nom"));
 
 
             valide = false;
@@ -637,49 +640,49 @@ class FenetreModification {
         if (!Utils.controleSaisie(textFieldRue.getText(),  Integer.valueOf(configurationManager.getString("tailleMax.rue")), REGEX_ALPHA_NUMERIQUE)) {
             // saisie incorrect
             labelRue.setForeground(Color.RED);
-            ErreurSaisiePane.setText(ErreurSaisiePane.getText() + configurationManager.getString("erreur.rue"));
+            erreurSaisieTextPane.setText(erreurSaisieTextPane.getText() + configurationManager.getString("erreur.rue"));
             valide = false;
         }
 
         //controle numero rue
         if (!Utils.controleSaisie(textFieldNumRue.getText(), Integer.valueOf(configurationManager.getString("tailleMax.numeroRue")), REGEX_NUMERIQUE)) {
             labelNumRue.setForeground(Color.RED);
-            ErreurSaisiePane.setText(ErreurSaisiePane.getText() + configurationManager.getString("erreur.numeroRue"));
+            erreurSaisieTextPane.setText(erreurSaisieTextPane.getText() + configurationManager.getString("erreur.numeroRue"));
             valide = false;
         }
 
         // controle latitude
         if (!Utils.controlSaisie(textFieldLatitude.getText(), REGEX_LATITUDE)) {
             labelLatitude.setForeground(Color.RED);
-            ErreurSaisiePane.setText(ErreurSaisiePane.getText() + configurationManager.getString("erreur.latitude"));
+            erreurSaisieTextPane.setText(erreurSaisieTextPane.getText() + configurationManager.getString("erreur.latitude"));
             valide = false;
         }
 
         // controle longitude
         if (!Utils.controlSaisie(textFieldLongitude.getText(), REGEX_LONGITUDE)) {
             labelLongitude.setForeground(Color.RED);
-            ErreurSaisiePane.setText(ErreurSaisiePane.getText() + configurationManager.getString("erreur.longitude"));
+            erreurSaisieTextPane.setText(erreurSaisieTextPane.getText() + configurationManager.getString("erreur.longitude"));
             valide = false;
         }
 
         // controle details
         if (!Utils.controlSaisie(textAreaDetails.getText(), Integer.valueOf(configurationManager.getString("tailleMax.details")))) {
             labelDetails.setForeground(Color.RED);
-            ErreurSaisiePane.setText(ErreurSaisiePane.getText() + configurationManager.getString("erreur.details"));
+            erreurSaisieTextPane.setText(erreurSaisieTextPane.getText() + configurationManager.getString("erreur.details"));
             valide = false;
         }
 
         // controle date de debut
         if (!Utils.controlSaisie(textFieldDateDebut.getText(), REGEX_DATE)) {
             labelDateDebut.setForeground(Color.RED);
-            ErreurSaisiePane.setText(ErreurSaisiePane.getText() + configurationManager.getString("erreur.date"));
+            erreurSaisieTextPane.setText(erreurSaisieTextPane.getText() + configurationManager.getString("erreur.date"));
             valide = false;
         }
 
         // controle date de fin
         if (!controlSaisieDateFin(textFieldDateFin.getText(), REGEX_DATE)) {
             labelDateFin.setForeground(Color.RED);
-            ErreurSaisiePane.setText(ErreurSaisiePane.getText() + configurationManager.getString("erreur.date"));
+            erreurSaisieTextPane.setText(erreurSaisieTextPane.getText() + configurationManager.getString("erreur.date"));
             valide = false;
         }
 
@@ -687,17 +690,17 @@ class FenetreModification {
         if (valide) // saisie valide fermeture du panel de mauvaise saisie
         {
 
-            ErreurSaisiePane.setEnabled(false);
-            //ErreurSaisiePane.setText(ENTETE_ERREUR_SAISIE); // nettoye les messages d'erreurs
+            erreurSaisieTextPane.setEnabled(false);
+            //erreurSaisieTextPane.setText(ENTETE_ERREUR_SAISIE); // nettoye les messages d'erreurs
 
-            panelErreurSaisie.setVisible(false);
-            panelErreurSaisie.setEnabled(false);
+            scrollPaneErreurSaisie.setVisible(false);
+            scrollPaneErreurSaisie.setEnabled(false);
 
         } else {
-            ErreurSaisiePane.setEnabled(true);
-            ErreurSaisiePane.setVisible(true);
-            panelErreurSaisie.setVisible(true);
-            panelErreurSaisie.setEnabled(true);
+            erreurSaisieTextPane.setEnabled(true);
+            erreurSaisieTextPane.setVisible(true);
+            scrollPaneErreurSaisie.setVisible(true);
+            scrollPaneErreurSaisie.setEnabled(true);
         }
 
         return valide;
