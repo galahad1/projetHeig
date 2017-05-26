@@ -5,7 +5,6 @@ import ch.smartcity.database.controllers.access.*;
 import ch.smartcity.database.models.*;
 import ch.smartcity.graphique.controllers.ConfigurationManager;
 import com.toedter.calendar.JCalendar;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -19,17 +18,27 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * La fenêtre de modification est ouverte lors de l'appuis d'un bouton de la fenêtre principale.
+ * Cette fenêtre fourni un formulaire qui permet d'ajouter ou de modifier un événement
+ * de la base de donnée.
+ * Elle permet aussi de valider les événements en attente, ainsi que de les
+ * modifier avant de les valider.
+ * @author Tano Iannetta
+ * @author Loan Lassalle
+ */
 class FenetreModification {
 
     // controle des caractères de la saisie
     private static final String REGEX_ALPHA_NUMERIQUE = "[a-zA-ZÀ-ÿ0-9 \\-']*";
     private static final String REGEX_NUMERIQUE = "[0-9]*";
     private static final String REGEX_LATITUDE =
-            "^[\\+-]?(?:90(?:(?:\\.0{1,6})?)|(?:[0-9]|[1-8][0-9])(?:(?:\\.[0-9]{1,6})?))$";
+        "^[\\+-]?(?:90(?:(?:\\.0{1,6})?)|(?:[0-9]|[1-8][0-9])(?:(?:\\.[0-9]{1,6})?))$";
     private static final String REGEX_LONGITUDE =
-            "^[\\+-]?(?:180(?:(?:\\.0{1,6})?)|(?:[0-9]|[1-9][0-9]|1[0-7][0-9])(?:(?:\\.[0-9]{1,6})?))$";
+        "^[\\+-]?(?:180(?:(?:\\.0{1,6})?)|(?:[0-9]|[1-9][0-9]|1[0-7][0-9])(?:(?:\\.[0-9]{1,6})?))$";
     private static final String REGEX_DATE =
-            "^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\d\\d$";
+        "^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\d\\d$";
+
     JFrame fenetre;
     private ConfigurationManager configurationManager = ConfigurationManager.getInstance();
     private DateFormat dateFormat = new SimpleDateFormat(configurationManager
@@ -69,14 +78,20 @@ class FenetreModification {
     private StatutAccess statutAccess = StatutAccess.getInstance();
 
     /**
-     * Create the application.
+     * Créer la fenêtre de modification des événements de la base de données
+     * @param contexte définit si la fenêtre traite des événements en attente de validation
+     * ou des événements déja validés
+     * @param appelant fenêtre principale par la quelle la cette fenêtre est ouverte
      */
     FenetreModification(int contexte, FenetrePrincipale appelant) {
         initialize(contexte, appelant);
     }
 
     /**
-     * Initialize the contents of the frame.
+     * Initialise la fenêtre de modification des événements de la base de données
+     * @param context définit si la fenêtre traite des événements en attente de validation
+     * ou des événements déja validés
+     * @param appelant fenêtre principale par la quelle la cette fenêtre est ouverte
      */
     private void initialize(int context, FenetrePrincipale appelant) {
         fenetre = new JFrame();
@@ -93,17 +108,15 @@ class FenetreModification {
         });
 
         JPanel panelModification = new JPanel();
-        panelModification.setForeground(Color.LIGHT_GRAY);
         fenetre.getContentPane().add(panelModification, BorderLayout.CENTER);
         panelModification.setLayout(null);
 
         comboBoxEvenements = new JComboBox<>();
         comboBoxEvenements.setMaximumRowCount(16);
-
         comboBoxEvenements.setBounds(61, 46, 701, 41);
+        panelModification.add(comboBoxEvenements);
 
         JPanel panelAjoutEvenement = new JPanel();
-        panelAjoutEvenement.setForeground(Color.LIGHT_GRAY);
         panelAjoutEvenement.setBounds(12, 207, 1170, 552);
         panelModification.add(panelAjoutEvenement);
         panelAjoutEvenement.setLayout(null);
@@ -112,10 +125,6 @@ class FenetreModification {
         textFieldNom.setBounds(147, 12, 183, 37);
         panelAjoutEvenement.add(textFieldNom);
         textFieldNom.setColumns(10);
-
-        labelNom = new JLabel("Nom");
-        labelNom.setBounds(59, 23, 70, 15);
-        panelAjoutEvenement.add(labelNom);
 
         textFieldRue = new JTextField();
         textFieldRue.setColumns(10);
@@ -137,97 +146,105 @@ class FenetreModification {
         textFieldLongitude.setBounds(147, 316, 183, 37);
         panelAjoutEvenement.add(textFieldLongitude);
 
-        labelLatitude = new JLabel("Latitude");
-        labelLatitude.setBounds(59, 268, 70, 15);
+        labelLatitude = new JLabel(configurationManager.getString("label.latitude"));
+        labelLatitude.setBounds(50, 268, 70, 15);
         panelAjoutEvenement.add(labelLatitude);
 
-        JLabel labelRubrique = new JLabel("Rubrique");
-        labelRubrique.setBounds(59, 84, 70, 15);
+        JLabel labelRubrique = new JLabel(configurationManager.getString("label.rubrique"));
+        labelRubrique.setBounds(50, 84, 80, 15);
         panelAjoutEvenement.add(labelRubrique);
 
-        labelLongitude = new JLabel("longitude");
-        labelLongitude.setBounds(59, 327, 70, 15);
+        labelNom = new JLabel(configurationManager.getString("label.nom"));
+        labelNom.setBounds(50, 23, 80, 15);
+        panelAjoutEvenement.add(labelNom);
+
+        labelLongitude = new JLabel(configurationManager.getString("label.longitude"));
+        labelLongitude.setBounds(50, 327, 80, 15);
         panelAjoutEvenement.add(labelLongitude);
 
-        labelRue = new JLabel("Rue");
-        labelRue.setBounds(59, 150, 70, 15);
+        labelRue = new JLabel(configurationManager.getString("label.rue"));
+        labelRue.setBounds(50, 150, 80, 15);
         panelAjoutEvenement.add(labelRue);
 
-        labelNumRue = new JLabel("N°Rue");
-        labelNumRue.setBounds(59, 210, 70, 15);
+        labelNumRue = new JLabel(configurationManager.getString("label.numRue"));
+        labelNumRue.setBounds(50, 210, 80, 15);
         panelAjoutEvenement.add(labelNumRue);
 
         comboBoxNpa = new JComboBox<>();
+
+        // liste déroulante des npa possibles de la base de données
         List<Npa> listNpa = databaseAccess.get(Npa.class);
 
         String[] npas = new String[listNpa.size()];
         for (int i = 0; i < npas.length; i++) {
             npas[i] = listNpa.get(i).toString();
         }
-
         comboBoxNpa.setModel(new DefaultComboBoxModel<>(npas));
         comboBoxNpa.setBounds(539, 12, 183, 37);
         panelAjoutEvenement.add(comboBoxNpa);
 
-        JLabel labelNpa = new JLabel("NPA");
+        JLabel labelNpa = new JLabel(configurationManager.getString("label.npa"));
         labelNpa.setBounds(442, 23, 70, 15);
         panelAjoutEvenement.add(labelNpa);
 
         comboBoxPriorite = new JComboBox<>();
 
+        // liste déroulante des priorités possibles de la base de données
         List<Priorite> listPriorite = databaseAccess.get(Priorite.class);
+
         String[] priorites = new String[listPriorite.size()];
         for (int i = 0; i < priorites.length; i++) {
             priorites[i] = listPriorite.get(i).toString();
         }
-
         comboBoxPriorite.setModel(new DefaultComboBoxModel<>(priorites));
         comboBoxPriorite.setBounds(539, 79, 183, 37);
         panelAjoutEvenement.add(comboBoxPriorite);
 
-        comboBoxRubrique = new JComboBox<>();
-        List<RubriqueEnfant> listRubriqueEnfant = databaseAccess.get(RubriqueEnfant.class);
+        JLabel labelPriorite = new JLabel(configurationManager.getString("label.priorite"));
+        labelPriorite.setBounds(442, 84, 70, 15);
+        panelAjoutEvenement.add(labelPriorite);
 
+        comboBoxRubrique = new JComboBox<>();
+
+        // liste déroulante des rubriques possibles de la base de données
+        List<RubriqueEnfant> listRubriqueEnfant = databaseAccess.get(RubriqueEnfant.class);
         String[] rubriques = new String[listRubriqueEnfant.size()];
         for (int i = 0; i < rubriques.length; i++) {
             rubriques[i] = listRubriqueEnfant.get(i).toString();
         }
         comboBoxRubrique.setModel(new DefaultComboBoxModel<>(rubriques));
-
         comboBoxRubrique.setBounds(147, 79, 183, 37);
         panelAjoutEvenement.add(comboBoxRubrique);
 
-        JLabel labelPriorite = new JLabel("Priorité");
-        labelPriorite.setBounds(442, 84, 70, 15);
-        panelAjoutEvenement.add(labelPriorite);
-
         textFieldDateDebut = new JTextField();
-        textFieldDateDebut.setText("jj/mm/aaaa");
+        textFieldDateDebut.setText(configurationManager.getString("date.format"));
         textFieldDateDebut.setColumns(10);
         textFieldDateDebut.setBounds(539, 138, 183, 37);
         panelAjoutEvenement.add(textFieldDateDebut);
 
-        labelDateDebut = new JLabel("Date Début");
+        labelDateDebut = new JLabel(configurationManager.getString("label.dateDebut"));
         labelDateDebut.setBounds(442, 150, 81, 15);
         panelAjoutEvenement.add(labelDateDebut);
 
         textFieldDateFin = new JTextField();
-        textFieldDateFin.setText("jj/mm/aaaa");
+        textFieldDateFin.setText(configurationManager.getString("date.format"));
         textFieldDateFin.setColumns(10);
         textFieldDateFin.setBounds(539, 199, 183, 37);
         panelAjoutEvenement.add(textFieldDateFin);
 
-        labelDateFin = new JLabel("Date Fin");
+        labelDateFin = new JLabel(configurationManager.getString("label.dateFin"));
         labelDateFin.setBounds(442, 210, 81, 15);
         panelAjoutEvenement.add(labelDateFin);
 
-        labelDetails = new JLabel("détails");
+        labelDetails = new JLabel(configurationManager.getString("label.details"));
         labelDetails.setBounds(453, 385, 70, 15);
         panelAjoutEvenement.add(labelDetails);
 
         JScrollPane scrollPaneDetails = new JScrollPane();
-        scrollPaneDetails.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-        scrollPaneDetails.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPaneDetails.setVerticalScrollBarPolicy(
+                ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+        scrollPaneDetails.setHorizontalScrollBarPolicy(
+                ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPaneDetails.setBounds(539, 257, 631, 295);
         panelAjoutEvenement.add(scrollPaneDetails);
 
@@ -235,41 +252,54 @@ class FenetreModification {
         textAreaDetails.setLineWrap(true);
         scrollPaneDetails.setViewportView(textAreaDetails);
 
-        JButton boutonValider = new JButton("Valider");
+        JButton btnFermer = new JButton(configurationManager.getString("bouton.fermer"));
+        // ferme la fenetre lorsque le bouton est appuie
+        btnFermer.addActionListener(e -> fenetre.dispose());
+        btnFermer.setBounds(12, 12, 117, 25);
+        panelModification.add(btnFermer);
+
+        JButton boutonValider = new JButton(configurationManager.getString("bouton.valider"));
         boutonValider.addActionListener(e -> {
             if (controleSaisie()) {
-                System.out.println("Evenement valide");
 
-                if (comboBoxEvenements.getSelectedIndex() == 0) // nouvel evenement
+                if (comboBoxEvenements.getSelectedIndex() == 0) // nouvel événement
                 {
                     ajouterEvenement();
-                } else // evenement deja exsistant
+                } else // événement déjà exsistant
                 {
                     modifierEvenement();
                 }
 
                 chargementListeEvenements(context); // mise a jour de la liste
                 videChamps();
-                // mise a jour de la liste des evenements de la fenetre appelante
+                // mise a jour de la liste des événements de la fenêtre appelante
                 appelant.recuperationEvenements();
             }
         });
-        boutonValider.setBounds(59, 412, 117, 25);
+        boutonValider.setBounds(50, 412, 117, 25);
         panelAjoutEvenement.add(boutonValider);
 
-        JButton boutonRefuser = new JButton("Refuser");
+        JButton boutonRefuser = new JButton(configurationManager.getString("bouton.refuser"));
         boutonRefuser.addActionListener(e -> {
             if (comboBoxEvenements.getSelectedIndex() != 0) {
-                // statut en refuser et change date de fin pour etre en etat supprimmer
+                // statut en refuser et change date de fin pour etre en etat supprimé
                 refuserEvenement();
                 chargementListeEvenements(context); // mise a jour de la liste
                 videChamps();
+
+                JOptionPane.showConfirmDialog(null,
+                        configurationManager.getString("popup.texteRefuser"),
+                        configurationManager.getString("popup.titreRefuser"),
+                        JOptionPane.DEFAULT_OPTION);
+
             }
         });
-        boutonRefuser.setBounds(59, 470, 117, 25);
+        boutonRefuser.setBounds(50, 470, 117, 25);
         panelAjoutEvenement.add(boutonRefuser);
 
-        JButton boutonSupprimer = new JButton("Supprimer");
+        JButton boutonSupprimer = new JButton(
+                configurationManager.getString("bouton.supprimer"));
+
         boutonSupprimer.addActionListener(e -> {
             if (evenementSelectionne != null && comboBoxEvenements.getSelectedIndex() != 0) {
                 databaseAccess.delete(evenementSelectionne); // supprime de la base de donnée
@@ -277,29 +307,41 @@ class FenetreModification {
                 videChamps();
 
                 JOptionPane.showConfirmDialog(null,
-                        "Evenement supprimé avec succès", "Evénement supprimé",
+                        configurationManager.getString("popup.texteSupprimer"),
+                        configurationManager.getString("popup.titreSupprimer"),
                         JOptionPane.DEFAULT_OPTION);
+                // mise à jour de la liste des événements de la fenêtre appelante
                 appelant.recuperationEvenements();
             }
         });
         boutonSupprimer.setBounds(213, 412, 117, 25);
         panelAjoutEvenement.add(boutonSupprimer);
 
+        // détermine dans quel contexte la fenêtre est ouverte, pour afficher
+        // les boutons en conséquence
+        if (context == Contexte.CONTEXTE_AJOUTER) {
+            fenetre.setTitle(configurationManager.getString("graphique.titreModification"));
+            boutonRefuser.setVisible(false);
+            boutonRefuser.setEnabled(false);
+        } else { // en attente
+            fenetre.setTitle(configurationManager.getString("graphique.titreEnAttente"));
+            boutonSupprimer.setVisible(false);
+            boutonSupprimer.setEnabled(false);
+        }
+
         scrollPaneErreurSaisie = new JScrollPane();
-        scrollPaneErreurSaisie.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-        scrollPaneErreurSaisie.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        scrollPaneErreurSaisie.setVerticalScrollBarPolicy(
+                ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrollPaneErreurSaisie.setHorizontalScrollBarPolicy(
+                ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         scrollPaneErreurSaisie.setBounds(734, 12, 436, 237);
         panelAjoutEvenement.add(scrollPaneErreurSaisie);
-        //panelErreurSaisie.setLayout(new CardLayout(0, 0));
 
         erreurSaisieTextPane = new JTextPane();
         erreurSaisieTextPane.setEditable(false);
-        //scrollPaneErreurSaisie.add(erreurSaisieTextPane);
         scrollPaneErreurSaisie.setViewportView(erreurSaisieTextPane);
         scrollPaneErreurSaisie.setEnabled(false);
         scrollPaneErreurSaisie.setVisible(false);
-
-        panelModification.add(comboBoxEvenements);
 
         JPanel panelCalendrier = new JPanel();
         panelCalendrier.setBackground(Color.DARK_GRAY);
@@ -309,11 +351,14 @@ class FenetreModification {
 
         final JCalendar calendrier = new JCalendar();
         calendrier.getDayChooser().setAlwaysFireDayProperty(true);
+        // appuis sur une date du calendrier
         calendrier.getDayChooser().addPropertyChangeListener("day", evt -> {
+
             Date valDate = calendrier.getDate();
             String date = dateFormat.format(valDate);
 
-            // remplis le champs date debut si celui-ci n'est pas valide, sinon remplit la date de fin
+            // remplis le champs date debut si celui-ci n'est pas valide
+            // sinon remplit la date de fin
             if (!Utils.controlSaisie(textFieldDateDebut.getText(), REGEX_DATE)) // date debut
             {
                 textFieldDateDebut.setText(date);
@@ -324,7 +369,7 @@ class FenetreModification {
 
         panelCalendrier.add(calendrier, "name_15195119934482");
 
-        // init liste des evenements
+        // initialise la liste des evenements
         chargementListeEvenements(context);
 
         // lorsque l'on choisi un evenement dans la liste, on remplis les champs
@@ -363,7 +408,7 @@ class FenetreModification {
                     textAreaDetails.setText(evenement.getDetails());
 
                 } else if (context == Contexte.CONTEXTE_EN_ATTENTE) {
-                    // verouille les champs afin de forcer l utilisateur a modifier un evenement
+                    // verouille les champs afin de forcer l utilisateur a chosir un événement
                     // qui est en attente
                     etatChamps(false); // verouille les champs
                     videChamps();
@@ -372,6 +417,12 @@ class FenetreModification {
                 }
             }
 
+            /**
+             * En fonction de l'NPA de l'événement, retourne le bon index pour setter
+             * la liste déroulante de NPA sur la fenêtre
+             * @param npa npa de l'événement
+             * @return index de l'NPA de l'événement
+             */
             private int getIndexNpa(Npa npa) {
                 String n = npa.getNumeroNpa();
                 int index;
@@ -423,44 +474,26 @@ class FenetreModification {
             }
         });
 
-        JButton btnFermer = new JButton("Fermer");
-        // ferme la fenetre lorsque le bouton est appuie
-        btnFermer.addActionListener(e -> fenetre.dispose());
-        btnFermer.setBounds(12, 12, 117, 25);
-        panelModification.add(btnFermer);
-
-        if (context == Contexte.CONTEXTE_AJOUTER) {
-            fenetre.setTitle(configurationManager.getString("graphique.titreModification"));
-            boutonRefuser.setVisible(false);
-            boutonRefuser.setEnabled(false);
-        } else { // en attente
-            fenetre.setTitle(configurationManager.getString("graphique.titreEnAttente"));
-            boutonSupprimer.setVisible(false);
-            boutonSupprimer.setEnabled(false);
-        }
-
     } // fin initialize
 
     /**
-     * charge les evenements dans la liste ainsi que les preview
-     *
-     * @param context
+     * Charge les previews des événements dans la liste déroulante
+     * @param contexte définit si la fenêtre traite des événements en attente de validation
+     * ou des événements déja validés
      */
-    private void chargementListeEvenements(int context) {
+    private void chargementListeEvenements(int contexte) {
         List<String> previews;
 
-        if (context == Contexte.CONTEXTE_AJOUTER) { // ajout/modification
+
+        if (contexte == Contexte.CONTEXTE_AJOUTER) { // ajout/modification
             evenementList = evenementAccess.getActif();
-
             previews = Utils.previewEvenement(evenementList); // previsualisation des evenements
-
-            previews.add(0, "Ajouter un événement");
+            previews.add(0, configurationManager.getString("liste.ajouter"));
         } else {  // en attente
-            evenementList = evenementAccess.getEnAttente(); // recupere tout les evenements en attente
-
+            // recupere tout les evenements en attente
+            evenementList = evenementAccess.getEnAttente();
             previews = Utils.previewEvenement(evenementList); // previsualisation des evenements
-
-            previews.add(0, "Selectionner");
+            previews.add(0, configurationManager.getString("liste.selectionner"));
             etatChamps(false);
         }
 
@@ -468,14 +501,30 @@ class FenetreModification {
     }
 
     /**
-     * Refuse l'evenement et supprimer l'evenement
+     * Refuse l'événement et le supprime
      */
     private void refuserEvenement() {
+
         evenementSelectionne.setStatut(statutAccess.get(Statut_.REFUSE).get(0)); // statur refuser
-        evenementAccess.update(evenementSelectionne); // met a jour l evenemnt avec le statut refuse
+        evenementAccess.update(evenementSelectionne.getIdEvenement(),
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                evenementSelectionne.getStatut()); // met a jour l evenemnt avec le statut refuse
         databaseAccess.delete(evenementSelectionne); // change date de fin
+
     }
 
+    /**
+     * Modifie l'événement en fonction des nouvelles valeurs des champs du formulaire
+     */
     private void modifierEvenement() {
         String nomEnfant = comboBoxRubrique.getSelectedItem().toString();
         String nomEvenement = textFieldNom.getText();
@@ -488,14 +537,12 @@ class FenetreModification {
         Calendar calFin = Calendar.getInstance();
         String details = textAreaDetails.getText();
 
-        // voir tout les champs qui ont ete modifier
         Evenement evenementBase = getEvenementSelectionne();
 
         Npa newNpa = npaAccess.get(npa).get(0);
 
         Rue newRue;
         List<Rue> listNewRue = rueAccess.get(nomRue);
-        System.out.println(listNewRue);
         if (listNewRue == null || listNewRue.isEmpty()) {
             newRue = new Rue(nomRue);
         } else {
@@ -504,18 +551,21 @@ class FenetreModification {
 
         Adresse newAdresse;
         List<Adresse> listNewAdresse = adresseAccess.get(newRue, numeroRue, newNpa);
-        System.out.println(listNewAdresse);
+
         if (listNewAdresse == null || listNewAdresse.isEmpty()) {
             newAdresse = new Adresse(newRue, numeroRue, newNpa);
         } else {
             newAdresse = listNewAdresse.get(0);
         }
 
-        RubriqueEnfant newRubrique = rubriqueEnfantAccess.get("", nomEnfant).get(0);
+
+        RubriqueEnfant newRubrique =
+                rubriqueEnfantAccess.get("", nomEnfant).get(0);
         Statut newStatut = statutAccess.get(Statut_.TRAITE).get(0);
 
         // separe niveau et nom de la priorité
-        String[] elementsPriorite = comboBoxPriorite.getSelectedItem().toString().split(" - ");
+        String[] elementsPriorite =
+                comboBoxPriorite.getSelectedItem().toString().split(" - ");
         Priorite newPriorite = prioriteAccess.get(
                 elementsPriorite[1],
                 Integer.valueOf(elementsPriorite[0])).get(0);
@@ -541,10 +591,14 @@ class FenetreModification {
                 newStatut);
 
         JOptionPane.showConfirmDialog(null,
-                "Evenement modifié avec succès", "Evénement modifié",
+                configurationManager.getString("popup.texteModifier"),
+                configurationManager.getString("popup.titreModifier"),
                 JOptionPane.DEFAULT_OPTION);
     }
 
+    /**
+     * Ajoute l'événement à la base de donées en fonction des champs du formulaire
+     */
     private void ajouterEvenement() {
         String nomEnfant = comboBoxRubrique.getSelectedItem().toString();
         String nomEvenement = textFieldNom.getText();
@@ -564,12 +618,13 @@ class FenetreModification {
             e1.printStackTrace();
         }
 
-        // separe niveau et nom de la priorité
-        String[] elementsPriorite = comboBoxPriorite.getSelectedItem().toString().split(" - ");
+        // sépare niveau et nom de la priorité
+        String[] elementsPriorite =
+                comboBoxPriorite.getSelectedItem().toString().split(" - ");
 
         // controle si l evenement exsite deja
-
         List<Evenement> evenementsExsistants = evenementAccess.get(nomEnfant,
+
                 null,
                 nomEvenement,
                 nomRue,
@@ -584,6 +639,7 @@ class FenetreModification {
                 null,
                 null);
         if (evenementsExsistants == null || evenementsExsistants.isEmpty()) { // n'exsiste pas
+            // ajoute l'événement
             evenementAccess.save(nomEnfant,
                     1,
                     nomEvenement,
@@ -598,28 +654,27 @@ class FenetreModification {
                     elementsPriorite[1],
                     Integer.valueOf(elementsPriorite[0]),
                     Statut_.TRAITE);
-            System.out.println("evenement ajouté");
+
             JOptionPane.showConfirmDialog(null,
-                    "Evenement ajouté avec succès", "Evénement ajouté",
+                    configurationManager.getString("popup.texteAjouter"),
+                    configurationManager.getString("popup.titreAjouter"),
                     JOptionPane.DEFAULT_OPTION);
         } else {
             JOptionPane.showConfirmDialog(null,
-                    "Evenement déjà dans la base de donnée", "Evénement présent",
+                    configurationManager.getString("popup.textePresent"),
+                    configurationManager.getString("popup.titrePresent"),
                     JOptionPane.DEFAULT_OPTION);
         }
     }
 
     /**
-     * Cette methode controle la saisie de tout les champs de la fenetre lors de l'appuis du bouton valider
-     *
+     * Cette methode controle la saisie de tout les champs du formulaire
      * @return vrai si la saisie est correcte, faux sinon
      */
     private boolean controleSaisie() {
 
-        // nettoyage labels rubriques et messages d'erreur de saisie
-        erreurSaisieTextPane.setText(configurationManager.getString("erreur.saisie")); // entete des messages d'erreurs de saisie
-
-
+        // nettoyage labels des rubriques et des messages d'erreur de saisie
+        erreurSaisieTextPane.setText(configurationManager.getString("erreur.saisie"));
         labelNom.setForeground(Color.BLACK);
         labelRue.setForeground(Color.BLACK);
         labelNumRue.setForeground(Color.BLACK);
@@ -639,9 +694,8 @@ class FenetreModification {
 
             // saisie incorrect, affichage du nom de la rubrique en rouge
             labelNom.setForeground(Color.RED);
-            erreurSaisieTextPane.setText(erreurSaisieTextPane.getText() + "\n" + configurationManager.getString("erreur.nom"));
-
-
+            erreurSaisieTextPane.setText(erreurSaisieTextPane.getText() + "\n"
+                    + configurationManager.getString("erreur.nom"));
             valide = false;
         }
 
@@ -653,8 +707,8 @@ class FenetreModification {
 
             // saisie incorrect
             labelRue.setForeground(Color.RED);
-            erreurSaisieTextPane.setText(erreurSaisieTextPane.getText() + "\n" + configurationManager.getString("erreur.rue"));
-
+            erreurSaisieTextPane.setText(erreurSaisieTextPane.getText() + "\n"
+                    + configurationManager.getString("erreur.rue"));
             valide = false;
         }
 
@@ -665,24 +719,24 @@ class FenetreModification {
                 REGEX_NUMERIQUE)) {
 
             labelNumRue.setForeground(Color.RED);
-            erreurSaisieTextPane.setText(erreurSaisieTextPane.getText() + "\n" + configurationManager.getString("erreur.numeroRue"));
-
+            erreurSaisieTextPane.setText(erreurSaisieTextPane.getText() + "\n"
+                    + configurationManager.getString("erreur.numeroRue"));
             valide = false;
         }
 
         // controle latitude
         if (!Utils.controlSaisie(textFieldLatitude.getText(), REGEX_LATITUDE)) {
             labelLatitude.setForeground(Color.RED);
-            erreurSaisieTextPane.setText(erreurSaisieTextPane.getText() + "\n" + configurationManager.getString("erreur.latitude"));
+            erreurSaisieTextPane.setText(erreurSaisieTextPane.getText() + "\n"
+                    + configurationManager.getString("erreur.latitude"));
             valide = false;
         }
 
         // controle longitude
         if (!Utils.controlSaisie(textFieldLongitude.getText(), REGEX_LONGITUDE)) {
             labelLongitude.setForeground(Color.RED);
-            erreurSaisieTextPane.setText(erreurSaisieTextPane.getText() + "\n" + configurationManager.getString("erreur.longitude"));
-
-
+            erreurSaisieTextPane.setText(erreurSaisieTextPane.getText() + "\n"
+                    + configurationManager.getString("erreur.longitude"));
             valide = false;
         }
 
@@ -691,36 +745,34 @@ class FenetreModification {
                 textAreaDetails.getText(),
                 Integer.valueOf(configurationManager.getString("tailleMax.details")))) {
             labelDetails.setForeground(Color.RED);
-            erreurSaisieTextPane.setText(erreurSaisieTextPane.getText() + "\n" + configurationManager.getString("erreur.details"));
-
+            erreurSaisieTextPane.setText(erreurSaisieTextPane.getText() + "\n"
+                    + configurationManager.getString("erreur.details"));
             valide = false;
         }
 
         // controle date de debut
         if (!Utils.controlSaisie(textFieldDateDebut.getText(), REGEX_DATE)) {
             labelDateDebut.setForeground(Color.RED);
-            erreurSaisieTextPane.setText(erreurSaisieTextPane.getText() + "\n" + configurationManager.getString("erreur.date"));
-
+            erreurSaisieTextPane.setText(erreurSaisieTextPane.getText()  + "\n"
+                    + configurationManager.getString("erreur.date"));
             valide = false;
         }
 
         // controle date de fin
         if (!controlSaisieDateFin(textFieldDateFin.getText(), REGEX_DATE)) {
             labelDateFin.setForeground(Color.RED);
-            erreurSaisieTextPane.setText(erreurSaisieTextPane.getText() + "\n" + configurationManager.getString("erreur.date"));
-
+            erreurSaisieTextPane.setText(erreurSaisieTextPane.getText() + "\n"
+                    + configurationManager.getString("erreur.date"));
             valide = false;
         }
 
         if (valide) // saisie valide fermeture du panel de mauvaise saisie
         {
-
             erreurSaisieTextPane.setEnabled(false);
-            //erreurSaisieTextPane.setText(ENTETE_ERREUR_SAISIE); // nettoye les messages d'erreurs
             scrollPaneErreurSaisie.setVisible(false);
             scrollPaneErreurSaisie.setEnabled(false);
 
-        } else {
+        } else { // affichages des erreurs de saisie
             erreurSaisieTextPane.setEnabled(true);
             erreurSaisieTextPane.setVisible(true);
             scrollPaneErreurSaisie.setVisible(true);
@@ -731,10 +783,12 @@ class FenetreModification {
     }
 
     /**
-     * @param texte
-     * @param regex
-     * @return
-     * @brief
+     * Controle si la saisie de la date de fin est au format correct
+     * et si la date est postérieur à la date
+     * d'aujourd'hui et à la date de début de l'événement
+     * @param texte date à contrer
+     * @param regex format de la date
+     * @return vrai si la date de fin est valide, faux sinon
      */
     private boolean controlSaisieDateFin(String texte, String regex) {
 
@@ -747,6 +801,7 @@ class FenetreModification {
             return false;
         }
 
+        // controle si la date de fin est postérieur à aujourd'hui et a la date de début
         Date dateAujourdhui = new Date();
         Date dateDebut = null;
         Date dateFin = null;
@@ -757,28 +812,31 @@ class FenetreModification {
             e.printStackTrace();
         }
 
-        return dateFin != null
-                && dateDebut != null
-                && !(dateFin.before(dateAujourdhui)
-                || dateFin.before(dateDebut)
-                || dateFin.equals(dateDebut));
+        return dateFin != null && dateDebut != null && !(dateFin.before(dateAujourdhui)
+                || dateFin.before(dateDebut) || dateFin.equals(dateDebut));
     }
 
-    private void etatChamps(boolean b) {
-        textFieldNom.setEditable(b);
-        textFieldRue.setEditable(b);
-        textFieldNumRue.setEditable(b);
-        textFieldLatitude.setEditable(b);
-        textFieldLongitude.setEditable(b);
-        comboBoxNpa.setEditable(b);
-        comboBoxPriorite.setEditable(b);
-        ;
-        textFieldDateDebut.setEditable(b);
-        textFieldDateFin.setEditable(b);
-        textAreaDetails.setEditable(b);
+    /**
+     * verrouille ou déverrouille les champs du formulaire
+     * @param v false pour verrouiller les champs et true pour les déverrouiller
+     */
+    private void etatChamps(boolean v) {
+        textFieldNom.setEditable(v);
+        textFieldRue.setEditable(v);
+        textFieldNumRue.setEditable(v);
+        textFieldLatitude.setEditable(v);
+        textFieldLongitude.setEditable(v);
+        comboBoxNpa.setEditable(v);
+        comboBoxPriorite.setEditable(v);
+        textFieldDateDebut.setEditable(v);
+        textFieldDateFin.setEditable(v);
+        textAreaDetails.setEditable(v);
 
     }
 
+    /**
+     * Vide les champs du formulaire
+     */
     private void videChamps() {
         textFieldNom.setText("");
         textFieldRue.setText("");
@@ -787,15 +845,23 @@ class FenetreModification {
         textFieldLongitude.setText("");
         comboBoxNpa.setSelectedIndex(0);
         comboBoxPriorite.setSelectedIndex(0);
-        textFieldDateDebut.setText("jj/mm/aaaa");
-        textFieldDateFin.setText("jj/mm/aaaa");
+        textFieldDateDebut.setText(configurationManager.getString("date.format"));
+        textFieldDateFin.setText(configurationManager.getString("date.format"));
         textAreaDetails.setText("");
     }
 
+    /**
+     * Retourne l'événement sélectionné dans la liste déroulante
+     * @return événement sélectionné
+     */
     private Evenement getEvenementSelectionne() {
         return evenementSelectionne;
     }
 
+    /**
+     * Recupère l'événement sélectionné dans la liste déroulante
+     * @param evenementSelectionne événement sélectionné de la liste déroulante
+     */
     private void setEvenementSelectionne(Evenement evenementSelectionne) {
         this.evenementSelectionne = evenementSelectionne;
     }
