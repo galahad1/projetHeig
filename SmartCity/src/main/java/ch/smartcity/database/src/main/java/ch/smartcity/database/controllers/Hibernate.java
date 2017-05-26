@@ -1,6 +1,5 @@
 package ch.smartcity.database.controllers;
 
-import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
@@ -113,43 +112,45 @@ public class Hibernate {
     /**
      * Ferme la session de travail avec la base de données
      *
-     * @throws HibernateException si la session n'a pas pu être fermé
+     * @throws Exception si la session n'a pas pu être fermé
      */
-    public void closeSession() throws HibernateException {
-        if (session != null && session.isOpen()) {
-            try {
-                session.close();
-            } catch (Exception e) {
-                logger.log(Level.SEVERE, e.getMessage(), e);
-                throw e;
-            }
-        }
+    public void closeSession() throws Exception {
+        close(session);
     }
 
     /**
      * Ferme la création de session de travail avec la base de données
      *
-     * @throws HibernateException si la sessionFactory n'a pas pu être fermé
+     * @throws Exception si la sessionFactory n'a pas pu être fermé
      */
-    public void closeSessionFactory() throws HibernateException {
-        if (sessionFactory != null && sessionFactory.isOpen()) {
-            try {
-                sessionFactory.close();
-            } catch (Exception e) {
-                logger.log(Level.SEVERE, e.getMessage(), e);
-                throw e;
-            }
-        }
+    public void closeSessionFactory() throws Exception {
+        close(sessionFactory);
     }
 
     /**
      * Ferme la connexion avec la base de données
      *
-     * @throws HibernateException si la session ou la sessionFactory n'ont pas pu être fermé
+     * @throws Exception si la session ou la sessionFactory n'ont pas pu être fermé
      */
-    public void close() throws HibernateException {
+    public void close() throws Exception {
         closeSession();
         closeSessionFactory();
+    }
+
+    /**
+     * Ferme un autoCloseable
+     *
+     * @throws Exception si la sessionFactory n'a pas pu être fermé
+     */
+    private void close(AutoCloseable autoCloseable) throws Exception {
+        if (autoCloseable != null) {
+            try {
+                autoCloseable.close();
+            } catch (Exception e) {
+                logger.log(Level.SEVERE, e.getMessage(), e);
+                throw e;
+            }
+        }
     }
 
     /**

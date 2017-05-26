@@ -38,13 +38,14 @@ public class GenerateurPDF {
 
     /**
      * Génère un PDF. Méthode appelée depuis l'extérieur
+     *
      * @param nomEvenement nom de l'événement sélectionné
-     * @param date date de l'événement sélectionné
+     * @param date         date de l'événement sélectionné
      * @throws Exception si il y a un problème avec la génération de PDF
      */
     public static void cree(String nomEvenement, Calendar date) throws Exception {
 
-       String d = new SimpleDateFormat("dd-MM-yyyy").format(date.getTime());
+        String d = new SimpleDateFormat("dd-MM-yyyy").format(date.getTime());
 
         /* Le rapport sera stocké dans un dossier dans le répertoire utilisateur */
         String DEST = System.getProperty("user.home") + File.separator + "Documents" + File.separator
@@ -73,12 +74,13 @@ public class GenerateurPDF {
 
     /**
      * Crée un document sous format PDF
-     * @param dest chemin de destination du PDF
-     * @param nomEvenement nom de l'événement sélectionné
+     *
+     * @param dest          chemin de destination du PDF
+     * @param nomEvenement  nom de l'événement sélectionné
      * @param dateEvenement date de l'événement sélectionné
      * @throws Exception si il y a un problème dans la génération du PDF
      */
-    @SuppressWarnings( "deprecation" )
+    @SuppressWarnings("deprecation")
     private void createPdf(String dest, String nomEvenement, Calendar dateEvenement) throws Exception {
         File file = new File(dest);
         file.getParentFile().mkdirs();
@@ -120,9 +122,7 @@ public class GenerateurPDF {
         page1.addCell(lieuDate);
 
         /* Recherche de l'événment dans la base de données */
-        List<Evenement> evenements = EvenementAccess.getInstance().get(nomEvenement, "", "", "",
-                "", "", null, null, null, null, "", "",
-                "", null);
+        List<Evenement> evenements = EvenementAccess.getInstance().get(nomEvenement);
 
         /* Recherche des événements du jour */
         List<Evenement> evenementAujourdhui = new ArrayList<>();

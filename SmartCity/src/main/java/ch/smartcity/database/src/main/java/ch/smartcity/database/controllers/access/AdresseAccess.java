@@ -41,8 +41,8 @@ public class AdresseAccess {
     private final DatabaseAccess databaseAccess;
 
     /**
-     * Utilisé pour stocker la valeur des attributs ci-dessous en fonction de la nullité des paramètres
-     * d'une adresse
+     * Utilisé pour définir les paramètres de la requête en fonction de la valeurs des paramètres de
+     * l'adresse
      */
     private String nomRue;
     private String numeroNpa;
@@ -64,7 +64,8 @@ public class AdresseAccess {
     }
 
     /**
-     * Obtient la liste des adresses stockée au sein de la base de données en fonction des paramètres
+     * Obtient la liste des adresses stockées au sein de la base de données en fonction des
+     * paramètres
      * Chaque paramètre différent de null sera utilisé comme critère de recherche
      *
      * @param rue         rue des adresses à obtenir
@@ -74,13 +75,15 @@ public class AdresseAccess {
      */
     public List<Adresse> get(Rue rue, String numeroDeRue, Npa npa) {
 
-        // Définit nomRue et numeroNpa en fonction de la valeurs des paramètres rue et npa
+        // Définit les paramètres de la requête en fonction de la valeurs des paramètres de
+        // l'adresse
         checkNull(rue, npa);
         return get(nomRue, numeroDeRue, numeroNpa);
     }
 
     /**
-     * Obtient la liste des adresses stockée au sein de la base de données en fonction des paramètres
+     * Obtient la liste des adresses stockées au sein de la base de données en fonction des
+     * paramètres
      * Chaque paramètre différent de null sera utilisé comme critère de recherche
      *
      * @param nomRue      nom de la rue des adresses à obtenir
@@ -150,7 +153,7 @@ public class AdresseAccess {
     }
 
     /**
-     * Stocke l'adresse définit à la rue, au numéro de rue et au npa fournis
+     * Stocke l'adresse définit par les paramètres
      *
      * @param rue         rue de l'adresse à stocker
      * @param numeroDeRue numéro de rue de l'adresse à stocker
@@ -161,7 +164,7 @@ public class AdresseAccess {
     }
 
     /**
-     * Met à jour l'adresse correspondant à l'identifiant avec les paramètres fournis
+     * Met à jour l'adresse correspondant aux paramètres
      * Chaque paramètre de valeurs null ne se mettre pas à jour
      *
      * @param idAdresse   identifiant de l'adresse à mettre à jour
@@ -182,8 +185,8 @@ public class AdresseAccess {
     }
 
     /**
-     * Met à jour les adresses avec les paramètres préfixés de new et correspondant aux paramètres
-     * préfixés de old
+     * Met à jour les adresses correspondant aux paramètres préfixés de old en leur affectant les
+     * paramètres préfixés de new
      * Chaque paramètre préfixés de old différent de null sera utilisé comme critère de recherche
      * Chaque paramètre préfixés de new de valeurs null ne se mettre pas à jour
      *
@@ -224,7 +227,8 @@ public class AdresseAccess {
      */
     public void delete(Rue rue, String numeroDeRue, Npa npa) {
 
-        // Définit nomRue et numeroNpa en fonction de la valeurs des paramètres rue et npa
+        // Définit les paramètres de la requête en fonction de la valeurs des paramètres de
+        // l'adresse
         checkNull(rue, npa);
         delete(nomRue, numeroDeRue, numeroNpa);
     }
@@ -264,7 +268,7 @@ public class AdresseAccess {
     }
 
     /**
-     * Définit nomRue et numeroNpa en fonction de la nullité des paramètres
+     * Définit les paramètres de la requête en fonction de la valeurs des paramètres de l'adresse
      *
      * @param rue rue à vérifier
      * @param npa npa à vérifier

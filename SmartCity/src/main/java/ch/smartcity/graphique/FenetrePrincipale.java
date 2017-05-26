@@ -5,7 +5,6 @@ import ch.smartcity.carte.Event;
 import ch.smartcity.carte.PointWGS84;
 import ch.smartcity.database.controllers.access.EvenementAccess;
 import ch.smartcity.database.models.Evenement;
-import ch.smartcity.database.models.Statut_;
 import ch.smartcity.pdf.GenerateurPDF;
 import com.toedter.calendar.JCalendar;
 
@@ -337,7 +336,7 @@ public class FenetrePrincipale {
         chckbxAccidents.addActionListener(e -> {
             if (((AbstractButton) e.getSource()).isSelected()) {
                 listeAccidents = wrapperEvenement(evenementAccess
-                        .getActif("accidents", dateSelectionne, Statut_.TRAITE));
+                        .getActif("accidents", dateSelectionne));
                 allEvents.addAll(listeAccidents);
             } else {
                 allEvents.removeAll(listeAccidents);
@@ -348,7 +347,7 @@ public class FenetrePrincipale {
         chckbxTravaux.addActionListener(e -> {
             if (((AbstractButton) e.getSource()).isSelected()) {
                 listeTravaux = wrapperEvenement(evenementAccess
-                        .getActif("travaux", dateSelectionne, Statut_.TRAITE));
+                        .getActif("travaux", dateSelectionne));
                 allEvents.addAll(listeTravaux);
             } else {
                 allEvents.removeAll(listeTravaux);
@@ -359,7 +358,7 @@ public class FenetrePrincipale {
         chckbxManifestations.addActionListener(e -> {
             if (((AbstractButton) e.getSource()).isSelected()) {
                 listeManifestations = wrapperEvenement(evenementAccess
-                        .getActif("manifestations", dateSelectionne, Statut_.TRAITE));
+                        .getActif("manifestations", dateSelectionne));
                 allEvents.addAll(listeManifestations);
             } else {
                 allEvents.removeAll(listeManifestations);
@@ -370,7 +369,7 @@ public class FenetrePrincipale {
         chckbxRenovation.addActionListener(e -> {
             if (((AbstractButton) e.getSource()).isSelected()) {
                 listeRenovations = wrapperEvenement(evenementAccess
-                        .getActif("rénovations", dateSelectionne, Statut_.TRAITE));
+                        .getActif("rénovations", dateSelectionne));
                 allEvents.addAll(listeRenovations);
             } else {
                 allEvents.removeAll(listeRenovations);
@@ -381,7 +380,7 @@ public class FenetrePrincipale {
         chckbxConstruction.addActionListener(e -> {
             if (((AbstractButton) e.getSource()).isSelected()) {
                 listeConstructions = wrapperEvenement(evenementAccess
-                        .getActif("constructions", dateSelectionne, Statut_.TRAITE));
+                        .getActif("constructions", dateSelectionne));
                 allEvents.addAll(listeConstructions);
             } else {
                 allEvents.removeAll(listeConstructions);
@@ -392,7 +391,7 @@ public class FenetrePrincipale {
         chckboxDoleances.addActionListener(e -> {
             if (((AbstractButton) e.getSource()).isSelected()) {
                 listeDoleances = wrapperEvenement(evenementAccess
-                        .getActif("doléances", dateSelectionne, Statut_.TRAITE));
+                        .getActif("doléances", dateSelectionne));
                 allEvents.addAll(listeDoleances);
             } else {
                 allEvents.removeAll(listeDoleances);
@@ -433,7 +432,7 @@ public class FenetrePrincipale {
         if (chckbxAccidents.isSelected()) {
             allEvents.removeAll(listeAccidents);
             listeAccidents = wrapperEvenement(evenementAccess
-                    .getActif("accidents", dateSelectionne, Statut_.TRAITE));
+                    .getActif("accidents", dateSelectionne));
             allEvents.addAll(listeAccidents);
             miseAJourAffichage();
         }
@@ -441,7 +440,7 @@ public class FenetrePrincipale {
         if (chckbxTravaux.isSelected()) {
             allEvents.removeAll(listeTravaux);
             listeTravaux = wrapperEvenement(evenementAccess
-                    .getActif("travaux", dateSelectionne, Statut_.TRAITE));
+                    .getActif("travaux", dateSelectionne));
             allEvents.addAll(listeTravaux);
             miseAJourAffichage();
         }
@@ -449,7 +448,7 @@ public class FenetrePrincipale {
         if (chckbxManifestations.isSelected()) {
             allEvents.removeAll(listeManifestations);
             listeManifestations = wrapperEvenement(evenementAccess
-                    .getActif("manifestations", dateSelectionne, Statut_.TRAITE));
+                    .getActif("manifestations", dateSelectionne));
             allEvents.addAll(listeManifestations);
             miseAJourAffichage();
         }
@@ -457,7 +456,7 @@ public class FenetrePrincipale {
         if (chckbxRenovation.isSelected()) {
             allEvents.removeAll(listeRenovations);
             listeRenovations = wrapperEvenement(evenementAccess
-                    .getActif("rénovations", dateSelectionne, Statut_.TRAITE));
+                    .getActif("rénovations", dateSelectionne));
             allEvents.addAll(listeRenovations);
             miseAJourAffichage();
         }
@@ -465,7 +464,7 @@ public class FenetrePrincipale {
         if (chckbxConstruction.isSelected()) {
             allEvents.removeAll(listeConstructions);
             listeConstructions = wrapperEvenement(evenementAccess
-                    .getActif("constructions", dateSelectionne, Statut_.TRAITE));
+                    .getActif("constructions", dateSelectionne));
             allEvents.addAll(listeConstructions);
             miseAJourAffichage();
         }
@@ -473,7 +472,7 @@ public class FenetrePrincipale {
         if (chckboxDoleances.isSelected()) {
             allEvents.removeAll(listeDoleances);
             listeDoleances = wrapperEvenement(evenementAccess
-                    .getActif("doléances", dateSelectionne, Statut_.TRAITE));
+                    .getActif("doléances", dateSelectionne));
             allEvents.addAll(listeDoleances);
             miseAJourAffichage();
         }

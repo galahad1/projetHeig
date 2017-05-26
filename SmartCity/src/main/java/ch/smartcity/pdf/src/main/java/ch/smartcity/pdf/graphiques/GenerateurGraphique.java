@@ -21,6 +21,7 @@ public class GenerateurGraphique {
 
     /**
      * Crée un grahique
+     *
      * @param stats les statistiques du graphique
      * @throws IOException si il y  a un problème lors de la génération de l'image dans un fichier
      */

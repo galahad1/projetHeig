@@ -16,6 +16,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+/**
+ * Fournit l'accès aux nationalités de la base de données
+ *
+ * @author Lassalle Loan
+ * @since 25.03.2017
+ */
 public class NationaliteAccess {
 
     /**
@@ -54,6 +60,15 @@ public class NationaliteAccess {
         return SingletonHolder.instance;
     }
 
+    /**
+     * Obtient la liste des nationalités stockées au sein de la base de données en fonction des
+     * paramètres
+     * Chaque paramètre différent de null sera utilisé comme critère de recherche
+     *
+     * @param nomNationalite nom des nationalités à obtenir
+     * @return liste des nationalités stockées au sein de la base de données en fonction des
+     * paramètres
+     */
     public List<Nationalite> get(String nomNationalite) {
         List<Nationalite> nationaliteList = null;
 
@@ -99,10 +114,21 @@ public class NationaliteAccess {
         return nationaliteList;
     }
 
+    /**
+     * Stocke la nationalité définit par les paramètres
+     *
+     * @param nomNationalite nom de la nationalité à stocker
+     */
     public void save(String nomNationalite) {
         databaseAccess.save(new Nationalite(nomNationalite));
     }
 
+    /**
+     * Met à jour la nationalité correspondant aux paramètres
+     *
+     * @param idNationalite  identifiant de la nationalité à mettre à jour
+     * @param nomNationalite nom de la nationalité à mettre à jour
+     */
     public void update(Integer idNationalite, String nomNationalite) {
         Nationalite nationalite = databaseAccess.get(Nationalite.class, idNationalite);
 
@@ -115,6 +141,15 @@ public class NationaliteAccess {
         }
     }
 
+    /**
+     * Met à jour les nationalités correspondant aux paramètres préfixés de old en leur
+     * affectant les paramètres préfixés de new
+     * Chaque paramètre préfixés de old différent de null sera utilisé comme critère de recherche
+     * Chaque paramètre préfixés de new de valeurs null ne se mettre pas à jour
+     *
+     * @param oldNomNationalite ancien nom des nationalités à mettre à jour
+     * @param newNomNationalite nouveau nom des nationalités à mettre à jour
+     */
     public void update(String oldNomNationalite, String newNomNationalite) {
         List<Nationalite> nationaliteList = get(oldNomNationalite);
 
@@ -130,10 +165,22 @@ public class NationaliteAccess {
         }
     }
 
+    /**
+     * Supprime les nationalités correspondant aux paramètres
+     * Chaque paramètre différent de null sera utilisé comme critère de recherche
+     *
+     * @param nomNationalite nom des nationalités à supprimer
+     */
     public void delete(String nomNationalite) {
         databaseAccess.delete(get(nomNationalite));
     }
 
+    /**
+     * Affecte les paramètres de la nationalité si ils ne sont pas null
+     *
+     * @param nationalite    nationalité dont il faut définir les paramètres
+     * @param nomNationalite nom de la nationalité
+     */
     private void setAll(Nationalite nationalite, String nomNationalite) {
         if (nomNationalite != null) {
             nationalite.setNomNationalite(nomNationalite);

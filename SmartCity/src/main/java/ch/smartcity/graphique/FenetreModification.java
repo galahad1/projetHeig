@@ -472,19 +472,7 @@ class FenetreModification {
      */
     private void refuserEvenement() {
         evenementSelectionne.setStatut(statutAccess.get(Statut_.REFUSE).get(0)); // statur refuser
-
-        evenementAccess.update(evenementSelectionne.getIdEvenement(),
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                evenementSelectionne.getStatut()); // met a jour l evenemnt avec le statut refuse
+        evenementAccess.update(evenementSelectionne); // met a jour l evenemnt avec le statut refuse
         databaseAccess.delete(evenementSelectionne); // change date de fin
     }
 
@@ -711,7 +699,7 @@ class FenetreModification {
         // controle date de debut
         if (!Utils.controlSaisie(textFieldDateDebut.getText(), REGEX_DATE)) {
             labelDateDebut.setForeground(Color.RED);
-            erreurSaisieTextPane.setText(erreurSaisieTextPane.getText()  + "\n"+ configurationManager.getString("erreur.date"));
+            erreurSaisieTextPane.setText(erreurSaisieTextPane.getText() + "\n" + configurationManager.getString("erreur.date"));
 
             valide = false;
         }
@@ -719,7 +707,7 @@ class FenetreModification {
         // controle date de fin
         if (!controlSaisieDateFin(textFieldDateFin.getText(), REGEX_DATE)) {
             labelDateFin.setForeground(Color.RED);
-            erreurSaisieTextPane.setText(erreurSaisieTextPane.getText()  + "\n"+ configurationManager.getString("erreur.date"));
+            erreurSaisieTextPane.setText(erreurSaisieTextPane.getText() + "\n" + configurationManager.getString("erreur.date"));
 
             valide = false;
         }
