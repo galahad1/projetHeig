@@ -19,6 +19,9 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+/**
+ *
+ */
 class FenetreModification {
 
     // controle des caractères de la saisie
@@ -433,14 +436,14 @@ class FenetreModification {
     } // fin initialize
 
     /**
-     * charge les evenements dans la liste ainsi que les preview
-     *
-     * @param context
+     * Charge les previews des événements dans la liste déroulante
+     * @param contexte définit si la fenêtre traite des événements en attente de validation
+     * ou des événements déja validés
      */
-    private void chargementListeEvenements(int context) {
+    private void chargementListeEvenements(int contexte) {
         List<String> previews;
 
-        if (context == Contexte.CONTEXTE_AJOUTER) { // ajout/modification
+        if (contexte == Contexte.CONTEXTE_AJOUTER) { // ajout/modification
             evenementList = EvenementAccess.getActif();
 
             previews = Utils.previewEvenement(evenementList); // previsualisation des evenements
@@ -710,7 +713,7 @@ class FenetreModification {
         // controle date de fin
         if (!controlSaisieDateFin(textFieldDateFin.getText(), REGEX_DATE)) {
             labelDateFin.setForeground(Color.RED);
-            erreurSaisieTextPane.setText(erreurSaisieTextPane.getText()  + "\n"+ configurationManager.getString("erreur.date"));
+            erreurSaisieTextPane.setText(erreurSaisieTextPane.getText() + "\n"+ configurationManager.getString("erreur.date"));
 
             valide = false;
         }
@@ -734,10 +737,11 @@ class FenetreModification {
     }
 
     /**
-     * @param texte
-     * @param regex
-     * @return
-     * @brief
+     * Controle si la saisie de la date de fin est au format correct, et si la date est postérieur à la date
+     * d'aujourd'hui et à la date de début de l'événement
+     * @param texte date à contrer
+     * @param regex format de la date
+     * @return vrai si la date de fin est valide, faux sinon
      */
     private boolean controlSaisieDateFin(String texte, String regex) {
 
@@ -775,7 +779,6 @@ class FenetreModification {
         textFieldLongitude.setEditable(b);
         comboBoxNpa.setEditable(b);
         comboBoxPriorite.setEditable(b);
-        ;
         textFieldDateDebut.setEditable(b);
         textFieldDateFin.setEditable(b);
         textAreaDetails.setEditable(b);
