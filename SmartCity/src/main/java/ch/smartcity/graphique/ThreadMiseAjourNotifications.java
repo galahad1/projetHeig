@@ -18,7 +18,7 @@ import static java.util.Collections.shuffle;
 
 public class ThreadMiseAjourNotifications extends TimerTask {
 
-    private static final int MAX_ELEMENT = 9;
+    private static final int MAX_ELEMENT = 7;
 
     private List<String> liste;
     private JList notif;
