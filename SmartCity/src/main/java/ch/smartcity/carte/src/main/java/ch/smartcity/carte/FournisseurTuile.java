@@ -7,6 +7,7 @@ package ch.smartcity.carte;
  * @author Jérémie Zanone
  */
 public interface FournisseurTuile {
+
     /**
      * Fournit la tuile de coordonnées données
      *

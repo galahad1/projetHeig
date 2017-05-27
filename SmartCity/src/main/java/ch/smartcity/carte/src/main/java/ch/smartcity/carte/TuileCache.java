@@ -10,6 +10,7 @@ import java.util.Map;
  * @author Jérémie Zanone
  */
 public final class TuileCache {
+
     private static final int TAILLE_MAX = 1000; // nombre de tuiles en cache
     private LinkedHashMap<Long, Tuile> cache = new LinkedHashMap<Long, Tuile>() {
         private static final long serialVersionUID = 1L;
@@ -48,7 +49,6 @@ public final class TuileCache {
     public Tuile get(int zoom, int x, int y) {
         return cache.get(getCleCoordonnee(zoom, x, y));
     }
-
 
     /**
      * Permet de retrouver la clé de la tuile selon les coordonées et le zoom

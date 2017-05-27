@@ -25,6 +25,4 @@ public final class Utils {
     public static double asinh(double x) {
         return log(x + sqrt(1 + pow(x, 2)));
     }
-
-
 }

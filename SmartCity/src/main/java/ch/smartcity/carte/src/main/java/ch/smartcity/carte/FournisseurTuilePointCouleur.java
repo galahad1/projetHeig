@@ -13,12 +13,12 @@ import java.util.ArrayList;
  * @author Jérémie Zanone
  */
 public final class FournisseurTuilePointCouleur implements FournisseurTuile {
+
     public final static int TAILLE_TUILE = 256;
 
     private ArrayList<Event> evenements;
     private Color[] couleur = {Color.RED, Color.ORANGE, Color.YELLOW, Color.GREEN, Color.CYAN, Color.BLUE,
             Color.MAGENTA};
-
 
     /**
      * Crée un fournisseur de tuile isochrone avec l'arbre des trajets, la table
@@ -32,6 +32,7 @@ public final class FournisseurTuilePointCouleur implements FournisseurTuile {
 
     @Override
     public Tuile getTuile(int zoom, int x, int y) {
+
         // création d'une tuile
         BufferedImage image = new BufferedImage(TAILLE_TUILE, TAILLE_TUILE, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g = image.createGraphics();
@@ -69,5 +70,4 @@ public final class FournisseurTuilePointCouleur implements FournisseurTuile {
 
         return new Tuile(zoom, x, y, image);
     }
-
 }

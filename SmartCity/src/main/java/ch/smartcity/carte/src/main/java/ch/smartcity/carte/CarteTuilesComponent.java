@@ -91,11 +91,8 @@ public final class CarteTuilesComponent extends JComponent {
                     int tuilePosY = y / TAILLE_TUILE;
                     Tuile tuile = fournisseurTuile.getTuile(zoom, tuilePosX, tuilePosY);
                     g0.drawImage(tuile.image(), x, y, null);
-
                 }
             }
         }
-
     }
-
 }

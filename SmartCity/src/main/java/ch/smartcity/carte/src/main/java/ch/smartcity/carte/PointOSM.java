@@ -3,15 +3,14 @@ package ch.smartcity.carte;
 import static java.lang.Math.pow;
 import static java.lang.Math.round;
 
-
 /**
  * Modélise un point dans le systéme de coordonnées OSM.
  *
  * @author Wojciech Myskorowski
  * @author Jérémie Zanone
  */
-
 public final class PointOSM {
+
     private final int zoom;
     private final double x;
     private final double y;
@@ -31,7 +30,6 @@ public final class PointOSM {
         this.zoom = zoom;
         this.x = x;
         this.y = y;
-
     }
 
     /**
@@ -39,7 +37,6 @@ public final class PointOSM {
      * @return retourne la taille de l'image de la carte du monde au niveau de zoom donné.
      * @throws IllegalArgumentException Si le zoom est négatif.
      */
-
     public static int maxXY(int zoom) {
         if (zoom < 0)
             throw new IllegalArgumentException();
@@ -52,7 +49,6 @@ public final class PointOSM {
      *
      * @return la coordonnée x du point.
      */
-
     public double x() {
         return x;
     }
@@ -62,7 +58,6 @@ public final class PointOSM {
      *
      * @return la coordonnée y du point.
      */
-
     public double y() {
         return y;
     }
@@ -72,7 +67,6 @@ public final class PointOSM {
      *
      * @return l'entier le plus proche de la coordonnée x du point.
      */
-
     public int arrondiX() {
         return (int) round(x);
     }
@@ -82,10 +76,7 @@ public final class PointOSM {
      *
      * @return l'entier le plus proche de la coordonnée y du point.
      */
-
     public int arrondiY() {
         return (int) round(y);
     }
-
-
 }

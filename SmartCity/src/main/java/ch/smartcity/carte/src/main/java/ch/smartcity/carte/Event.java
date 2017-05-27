@@ -12,6 +12,7 @@ import java.util.Calendar;
  * @author Jérémie Zanone
  */
 public final class Event {
+
     private int id;
     private String priorite;
     private String nom;
@@ -47,7 +48,6 @@ public final class Event {
         this.position = position;
         this.categorie = categorie;
     }
-
 
     public String getNom() {
         return nom;

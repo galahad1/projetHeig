@@ -11,6 +11,7 @@ import java.awt.image.WritableRaster;
  * @author Jérémie Zanone
  */
 public final class Tuile {
+
     private final int zoom;
     private final int x;
     private final int y;
@@ -37,7 +38,6 @@ public final class Tuile {
         this.image = new BufferedImage(cm, raster, cm.isAlphaPremultiplied(), null);
     }
 
-
     /**
      * Retourne l'image correspondant à la tuile
      *
@@ -46,6 +46,4 @@ public final class Tuile {
     public BufferedImage image() {
         return image;
     }
-
-
 }

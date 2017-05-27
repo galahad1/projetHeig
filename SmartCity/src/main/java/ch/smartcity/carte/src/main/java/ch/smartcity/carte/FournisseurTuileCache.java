@@ -32,5 +32,4 @@ public final class FournisseurTuileCache implements FournisseurTuile {
         tuileCache.put(zoom, x, y, nouvelleTuile);
         return nouvelleTuile;
     }
-
 }

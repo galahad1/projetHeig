@@ -9,28 +9,32 @@ import java.util.ArrayList;
 import static java.lang.Math.pow;
 
 /**
- * Classe principale du module de la carte. Elle se charge de construire l'interface graphique qui sera
- * integré à la fenêtre principale du programme
+ * Classe principale du module de la carte. Elle se charge de construire l'interface graphique
+ * qui sera integré à la fenêtre principale du programme
  *
  * @author Wojciech Myskorowski
  * @author Jérémie Zanone
  */
 public final class Carte {
+
     private static final String URL_TUILE_OSM = "http://a.tile.openstreetmap.org/";
     private static final int ZOOM_INITIAL = 14;
-    private static final PointWGS84 POSITION_INITIALE = new PointWGS84(46.545, 6.58);
+    private static final PointWGS84 POSITION_INITIALE =
+            new PointWGS84(46.545, 6.58);
     private final CarteTuilesComponent carteTuilesComponent;
     private Point positionSouris = new Point();
     private Point positionVue = new Point();
 
     /**
-     * Constructeur de la carte qui initialise le Jcomponent de la carte et lui ajoute un fournisseur de tuile OSM
+     * Constructeur de la carte qui initialise le Jcomponent de la carte et lui ajoute un
+     * fournisseur de tuile OSM
      *
      * @throws IOException
      */
     public Carte() throws IOException {
         carteTuilesComponent = new CarteTuilesComponent(ZOOM_INITIAL);
-        FournisseurTuile fournisseurTuileOSM = new FournisseurTuileCache(new FournisseurTuileOSM(URL_TUILE_OSM));
+        FournisseurTuile fournisseurTuileOSM =
+                new FournisseurTuileCache(new FournisseurTuileOSM(URL_TUILE_OSM));
         carteTuilesComponent.ajoutFournisseurTuile(fournisseurTuileOSM);
     }
 
@@ -40,10 +44,10 @@ public final class Carte {
      * @param newEvenements listes des événements à afficher sur les tuiles
      */
     public void updateEvenement(ArrayList<Event> newEvenements) {
-        FournisseurTuilePointCouleur newFournisseurTuilePointCouleur = new FournisseurTuilePointCouleur(newEvenements);
+        FournisseurTuilePointCouleur newFournisseurTuilePointCouleur =
+                new FournisseurTuilePointCouleur(newEvenements);
         carteTuilesComponent.ajoutFournisseurTuile(newFournisseurTuilePointCouleur);
     }
-
 
     /**
      * @return Le JComponent de la carte interactive
@@ -52,7 +56,9 @@ public final class Carte {
         final JViewport viewPort = new JViewport();
         viewPort.setView(carteTuilesComponent);
         PointOSM positionInitialeOSM = POSITION_INITIALE.toOSM(carteTuilesComponent.zoom());
-        viewPort.setViewPosition(new Point(positionInitialeOSM.arrondiX(), positionInitialeOSM.arrondiY()));
+        viewPort.setViewPosition(new Point(
+                positionInitialeOSM.arrondiX(),
+                positionInitialeOSM.arrondiY()));
 
         final JPanel copyrightPanel = createCopyrightPanel();
 
@@ -101,7 +107,8 @@ public final class Carte {
                 int newZoom = carteTuilesComponent.zoom() - rotationRoulette;
                 if (carteTuilesComponent.setZoom(newZoom)) {
                     Point lPPos = e.getPoint();
-                    Point position = SwingUtilities.convertPoint(e.getComponent(), lPPos, carteTuilesComponent);
+                    Point position = SwingUtilities
+                            .convertPoint(e.getComponent(), lPPos, carteTuilesComponent);
                     int x = (int) (position.x / pow(2, rotationRoulette)) - lPPos.x;
                     int y = (int) (position.y / pow(2, rotationRoulette)) - lPPos.y;
                     viewPort.setViewPosition(new Point(x, y));
@@ -115,7 +122,9 @@ public final class Carte {
     }
 
     private JPanel createCopyrightPanel() {
-        JLabel copyrightLabel = new JLabel("© Les contributeurs d'OpenStreetMap", SwingConstants.CENTER);
+        JLabel copyrightLabel = new JLabel(
+                "© Les contributeurs d'OpenStreetMap",
+                SwingConstants.CENTER);
         copyrightLabel.setOpaque(true);
         copyrightLabel.setForeground(new Color(1f, 1f, 1f, 0.6f));
         copyrightLabel.setBackground(new Color(0f, 0f, 0f, 0.4f));

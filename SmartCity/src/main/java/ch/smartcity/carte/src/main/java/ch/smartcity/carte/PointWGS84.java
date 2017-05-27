@@ -1,18 +1,17 @@
 package ch.smartcity.carte;
+
+import static java.lang.Math.*;
+
 /**
  * Modélise un point dans le systéme de coordonnées WGS 84.
  *
  * @author Wojciech Myskorowski
  * @author Jérémie Zanone
  */
-
-import static java.lang.Math.*;
-
 public final class PointWGS84 {
 
     private final double latitude;    // degrés décimaux
     private final double longitude;   // degrés décimaux
-
 
     /**
      * Construit un point WGS84 grâce aux degrés decémiaux des coordonnées.
@@ -28,7 +27,6 @@ public final class PointWGS84 {
 
         if (longitude < -180 || longitude > 180)
             throw new IllegalArgumentException();
-
 
         this.longitude = Math.toRadians(longitude);
         this.latitude = Math.toRadians(latitude);
@@ -48,5 +46,4 @@ public final class PointWGS84 {
         double y = (s / (2 * PI)) * (PI - Utils.asinh(tan(latitude)));
         return new PointOSM(zoom, x, y);
     }
-
 }
