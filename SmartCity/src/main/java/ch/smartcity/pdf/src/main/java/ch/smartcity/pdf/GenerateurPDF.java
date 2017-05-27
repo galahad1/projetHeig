@@ -79,9 +79,9 @@ public class GenerateurPDF {
     /**
      * Crée un document sous format PDF
      *
-     * @param dest          chemin de destination du PDF
-     * @param nomRubriqueEnfant  nom de l'événement sélectionné
-     * @param dateEvenement date de l'événement sélectionné
+     * @param dest              chemin de destination du PDF
+     * @param nomRubriqueEnfant nom de l'événement sélectionné
+     * @param dateEvenement     date de l'événement sélectionné
      * @throws Exception si il y a un problème dans la génération du PDF
      */
     @SuppressWarnings("deprecation")
