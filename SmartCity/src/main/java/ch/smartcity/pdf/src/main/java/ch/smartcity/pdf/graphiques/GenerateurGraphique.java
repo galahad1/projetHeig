@@ -17,8 +17,9 @@ import java.util.logging.Logger;
  */
 public class GenerateurGraphique {
 
-    public final static String CHEMIN_IMAGE = System.getProperty("user.home") + File.separator
-            + "Documents" + File.separator + "Smartcity" + File.separator
+    public final static String CHEMIN_IMAGE =
+            System.getProperty("user.home") + File.separator
+                    + "Smartcity" + File.separator
             + "Images" + File.separator + "image.png";
     /**
      * Utilisé pour journaliser les actions effectuées

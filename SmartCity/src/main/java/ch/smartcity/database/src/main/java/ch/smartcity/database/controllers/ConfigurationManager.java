@@ -1,5 +1,6 @@
 package ch.smartcity.database.controllers;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Locale;
@@ -27,12 +28,24 @@ public class ConfigurationManager {
             "ch/smartcity/database/resources/logging.properties";
 
     /**
+     * Dossier de destination pour les fichiers de log
+     */
+    private final String loggingFileDestination =
+            System.getProperty("user.home") + File.separator
+                    + "Smartcity" + File.separator
+                    + "Logs" + File.separator;
+
+    /**
      * Utilisé pour obtenir des messages dans la langue correspondante au système courant
      */
     private ResourceBundle resourceBundle;
 
     private ConfigurationManager() {
         resourceBundle = ResourceBundle.getBundle(messageBundlePropertiesFile, Locale.getDefault());
+
+        // Création de l'arborescence de dossier pour contenir les logs
+        File file = new File(loggingFileDestination);
+        file.mkdirs();
 
         try {
             // Définit les propriétés du logger
