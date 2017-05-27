@@ -73,7 +73,7 @@ public class FenetrePrincipale {
     private JPanel panelCarte = new JPanel();
     private JPanel panelNotifications = new JPanel();
     private JButton btnAjouter =
-            new JButton("ééééé" + configurationManager.getString("bouton.ajouterModifier"));
+            new JButton(configurationManager.getString("bouton.ajouterModifier"));
     private JButton btnPdf =
             new JButton(configurationManager.getString("bouton.pdf"));
     private JButton btnEnAttente = new
@@ -201,27 +201,33 @@ public class FenetrePrincipale {
         });
 
         btnPdf.addActionListener(e -> {
-            List<String> eventName = new ArrayList<>();
+            List<String> nomRubriqueEnfantList = new ArrayList<>();
             if (chckbxAccidents.isSelected()) {
-                eventName.add(configurationManager.getString("database.rubriqueAccidents"));
+                nomRubriqueEnfantList.add(configurationManager
+                        .getString("database.rubriqueAccidents"));
             }
             if (chckbxTravaux.isSelected()) {
-                eventName.add(configurationManager.getString("database.rubriqueTravaux"));
+                nomRubriqueEnfantList.add(configurationManager
+                        .getString("database.rubriqueTravaux"));
             }
             if (chckbxManifestations.isSelected()) {
-                eventName.add(configurationManager.getString("database.rubriqueManifestations"));
+                nomRubriqueEnfantList.add(configurationManager
+                        .getString("database.rubriqueManifestations"));
             }
             if (chckbxRenovation.isSelected()) {
-                eventName.add(configurationManager.getString("database.rubriqueRenovations"));
+                nomRubriqueEnfantList.add(configurationManager
+                        .getString("database.rubriqueRenovations"));
             }
             if (chckbxConstruction.isSelected()) {
-                eventName.add(configurationManager.getString("database.rubriqueConstructions"));
+                nomRubriqueEnfantList.add(configurationManager
+                        .getString("database.rubriqueConstructions"));
             }
             if (chckboxDoleances.isSelected()) {
-                eventName.add(configurationManager.getString("database.rubriqueDoleances"));
+                nomRubriqueEnfantList.add(configurationManager
+                        .getString("database.rubriqueDoleances"));
             }
             /* Génération d'un PDF pour chaque filtre seléctionné */
-            for (String s : eventName) {
+            for (String s : nomRubriqueEnfantList) {
                 try {
                     GenerateurPDF.cree(s, dateSelectionne);
                 } catch (Exception exception) {

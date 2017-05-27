@@ -1,11 +1,14 @@
 package ch.smartcity.pdf.graphiques;
 
+import ch.smartcity.pdf.GenerateurPDF;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Classe qui génère un graphique pour le document PDF
@@ -17,6 +20,10 @@ public class GenerateurGraphique {
     public final static String CHEMIN_IMAGE = System.getProperty("user.home") + File.separator
             + "Documents" + File.separator + "Smartcity" + File.separator
             + "Images" + File.separator + "image.png";
+    /**
+     * Utilisé pour journaliser les actions effectuées
+     */
+    private static final Logger LOGGER = Logger.getLogger(GenerateurPDF.class.getName());
     private static final int NB_GRAPHES = 2;
 
     /**
@@ -45,11 +52,13 @@ public class GenerateurGraphique {
 
         try {
             ChartUtilities.saveChartAsPNG(file, chart, 900, 700);
+            LOGGER.info("Success of generation of chart "
+                    + CHEMIN_IMAGE.substring(CHEMIN_IMAGE.lastIndexOf(File.separator) + 1));
         } catch (Exception e) {
-            System.out.println("Error while loading chart !");
+            LOGGER.severe("Error while loading chart !");
+            LOGGER.log(Level.SEVERE, e.getMessage(), e);
+            throw e;
         }
-
     }
-
 }
 
