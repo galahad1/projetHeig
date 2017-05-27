@@ -380,9 +380,8 @@ public class FenetrePrincipale {
         textRubriques.setColumns(6);
         textRubriques.setBackground(Color.LIGHT_GRAY);
 
-        //panelLogo.setBackground(Color.GRAY);
+        //mise en place du logo smartcity
         panelLogo.setBounds(5, 5, 695, 114);
-
         panelPrincipal.add(panelLogo);
 
         chckbxAccidents.addActionListener(e -> {
