@@ -50,14 +50,14 @@ public class GenerateurPDF {
      * @throws Exception si il y a un problème avec la génération de PDF
      */
     public static void cree(String nomEvenement, Calendar date) throws Exception {
-        String d = new SimpleDateFormat("dd-MM-yyyy").format(date.getTime());
+        String d = new SimpleDateFormat("yyyy-MM-dd").format(date.getTime());
 
         /* Le rapport sera stocké dans un dossier dans le répertoire utilisateur */
         String DEST = System.getProperty("user.home") + File.separator
                 + "Documents" + File.separator
                 + "Smartcity" + File.separator
                 + "PDF" + File.separator
-                + "rapport_" + nomEvenement + "_" + d + ".pdf";
+                + d + "_rapport_" + nomEvenement + ".pdf";
 
         /* Recherche du logo */
         LOGO = GenerateurPDF.class.getClassLoader()
@@ -153,7 +153,7 @@ public class GenerateurPDF {
 
         /* Cas ou la base de données est vide */
         if (evenementAujourdhui.size() == 0) {
-            Cell erreur = new Cell().add("Aucunes données pour cet événement à cette date !");
+            Cell erreur = new Cell().add("Aucunes données pour cette rubrique à cette date !");
             erreur.setBorder(null);
             page1.addCell(erreur);
         } else {
@@ -181,7 +181,7 @@ public class GenerateurPDF {
         document.add(page1);
 
         /* Cas où il n'y a pas d'événements dans la base de données */
-        if (evenementAujourdhui.size() == 0) {
+        if (evenements.size() == 0) {
             document.close();
             return;
         }
@@ -210,9 +210,9 @@ public class GenerateurPDF {
         calStat.set(Calendar.DAY_OF_YEAR, 1);
         calStat.set(Calendar.YEAR, Calendar.getInstance().get(Calendar.YEAR));
 
-        for (Evenement e : evenementAujourdhui) {
+        for (Evenement e : evenements) {
             if (e.getDebut().compareTo(calStat) == -1) {
-                evenementAujourdhui.remove(e);
+                evenements.remove(e);
             }
         }
 
@@ -224,7 +224,7 @@ public class GenerateurPDF {
                 String ruesPrincipales[] = {"flon", "malley", "ouchy", "beaulieu"};
                 for (String ruesPrincipale : ruesPrincipales) {
                     compteur = 0;
-                    for (Evenement e : evenementAujourdhui) {
+                    for (Evenement e : evenements) {
                         if (e.getNomEvenement().contains(ruesPrincipale)) {
                             ++compteur;
                         }
@@ -237,7 +237,7 @@ public class GenerateurPDF {
                 break;
             case "travaux":
                 compteur = 0;
-                for (Evenement e : evenementAujourdhui) {
+                for (Evenement e : evenements) {
                     if (e.getFin().compareTo(dateEvenement) <= 0) {
                         ++compteur;
                     }
@@ -248,11 +248,11 @@ public class GenerateurPDF {
                 page2.addCell(statsTravaux);
 
                 long moyenne = 0;
-                for (Evenement e : evenementAujourdhui) {
+                for (Evenement e : evenements) {
                     moyenne += e.getFin().getTime().getTime() - e.getDebut().getTime().getTime();
                 }
 
-                moyenne /= evenementAujourdhui.size();
+                moyenne /= evenements.size();
 
                 long jours = moyenne / (24 * 60 * 60 * 1000);
 
@@ -264,11 +264,11 @@ public class GenerateurPDF {
             case "constructions":
             case "rénovations":
                 moyenne = 0;
-                for (Evenement e : evenementAujourdhui) {
+                for (Evenement e : evenements) {
                     moyenne += e.getFin().getTime().getTime() - e.getDebut().getTime().getTime();
                 }
 
-                moyenne /= evenementAujourdhui.size();
+                moyenne /= evenements.size();
 
                 jours = moyenne / (24 * 60 * 60 * 1000);
 
