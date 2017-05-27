@@ -44,8 +44,15 @@ class GraphiqueEnBarres {
         }
 
         /* Création graphique du diagramme */
-        JFreeChart chart = ChartFactory.createBarChart("", "", "", ds,
-                PlotOrientation.VERTICAL, false, false, false);
+        JFreeChart chart = ChartFactory.createBarChart(
+                "",
+                "",
+                "",
+                ds,
+                PlotOrientation.VERTICAL,
+                false,
+                false,
+                false);
         CategoryPlot p = chart.getCategoryPlot();
         p.setRangeGridlinePaint(Color.WHITE);
         p.setRangeGridlinesVisible(false);

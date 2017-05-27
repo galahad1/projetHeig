@@ -38,7 +38,12 @@ class GraphiqueCirculaire {
                 pie.setValue(Mois.values()[i], stats[i]);
         }
 
-        JFreeChart chart = ChartFactory.createPieChart("", pie, false, false, false);
+        JFreeChart chart = ChartFactory.createPieChart(
+                "",
+                pie,
+                false,
+                false,
+                false);
         PiePlot plot = (PiePlot) chart.getPlot();
         plot.setBackgroundPaint(null);
 
