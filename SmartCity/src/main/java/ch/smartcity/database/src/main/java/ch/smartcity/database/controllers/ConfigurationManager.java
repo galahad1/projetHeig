@@ -32,7 +32,7 @@ public class ConfigurationManager {
      */
     private final String loggingFileDestination =
             System.getProperty("user.home") + File.separator
-                    + "Smartcity" + File.separator
+                    + "SmartCity" + File.separator
                     + "Logs" + File.separator;
 
     /**

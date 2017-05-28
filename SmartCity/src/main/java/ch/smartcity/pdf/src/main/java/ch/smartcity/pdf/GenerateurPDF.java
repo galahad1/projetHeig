@@ -54,7 +54,7 @@ public class GenerateurPDF {
 
         /* Le rapport sera stocké dans un dossier dans le répertoire utilisateur */
         String DEST = System.getProperty("user.home") + File.separator
-                + "Smartcity" + File.separator
+                + "SmartCity" + File.separator
                 + "PDF" + File.separator
                 + d + "_rapport_" + nomEvenement + ".pdf";
 

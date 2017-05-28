@@ -19,7 +19,7 @@ public class GenerateurGraphique {
 
     public final static String CHEMIN_IMAGE =
             System.getProperty("user.home") + File.separator
-                    + "Smartcity" + File.separator
+                    + "SmartCity" + File.separator
                     + "Images" + File.separator + "image.png";
     /**
      * Utilisé pour journaliser les actions effectuées
