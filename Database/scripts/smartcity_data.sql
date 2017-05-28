@@ -166,9 +166,9 @@ INSERT INTO `smartcity`.`Evenement`
 (2,1,'Port de Vidy',1,46.51174,6.60628,CURRENT_DATE() + INTERVAL 6 MONTH,CURRENT_DATE() + INTERVAL 11 MONTH,'Agrandissement du port de Vidy',4,2),
 (2,1,'Déforestation',1,46.5353,6.62736,NULL,NULL,'Déforestation pour faire de la places',2,2),
 (2,1,'Stade olympique',1,46.53318,6.62434,CURRENT_DATE() - INTERVAL 2 MONTH,CURRENT_DATE() - INTERVAL 1 MONTH,'Construction d\'un toit',1,2),
-(2,1,'Travaux de pavement',1,46.5223,6.63057,CURRENT_DATE() + INTERVAL 3 DAY,CURRENT_DATE() + INTERVAL 6 DAY,'Construction d\'un chemin pavé',3,1),
 
 -- Travaux en attentes
+(2,1,'Travaux de pavement',1,46.5223,6.63057,CURRENT_DATE() + INTERVAL 3 DAY,CURRENT_DATE() + INTERVAL 6 DAY,'Construction d\'un chemin pavé',3,1),
 (2,1,'Piste d\'attérissage',1,46.54784,6.61767,CURRENT_DATE() + INTERVAL 4 MONTH,CURRENT_DATE() + INTERVAL 12 MONTH,'Construction d\'une piste d\'attérissage pour l\'A380',1,1),
 (2,1,'Station de vélos de prêt',1,46.51391,6.65409,CURRENT_DATE() + INTERVAL 4 WEEK,CURRENT_DATE() + INTERVAL 8 WEEK,'Agrandissement de la station de vélos de prêt',1,1),
 
@@ -211,7 +211,7 @@ INSERT INTO `smartcity`.`Evenement`
 (5,1,'Site de minage Bitcoin',1,46.52634,6.63606,NULL,NULL,'Construction d\'un batiment pour le minage de bitcoin',2,2),
 
 -- Constructions en attentes
-(5,1,'Usine Teslas',1,46.51662,6.60171,CURRENT_DATE() + INTERVAL 10 DAY,CURRENT_DATE() + INTERVAL 20 DAY,'Construction d\'une usine de batterie pour l\'entreprise Tesla',2,1),
+(5,1,'Usine Tesla',1,46.51662,6.60171,CURRENT_DATE() + INTERVAL 10 DAY,CURRENT_DATE() + INTERVAL 20 DAY,'Construction d\'une usine de batterie pour l\'entreprise Tesla',2,1),
 (5,1,'Site de lancement de fusée Falcon 9',1,46.51129,6.61522,CURRENT_DATE() + INTERVAL 1 MONTH,CURRENT_DATE() + INTERVAL 2 YEAR,'Construction d\'un site de lancement de fusée Falcon 9 et Falcon Heavy',2,1),
 
 -- Doléances traitées
