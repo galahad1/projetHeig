@@ -2,8 +2,7 @@ package ch.smartcity.carte;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedList;
 
 /**
  * Représente un composant Swing capable d'afficher une carte en tuiles
@@ -16,22 +15,24 @@ public final class CarteTuilesComponent extends JComponent {
 
     private static final long serialVersionUID = 1L;
     private static final int TAILLE_TUILE = 256;
+    private static final int MAX_ZOOM = 19;
+    private static final int MIN_ZOOM = 12;
     private int zoom;
-    private List<FournisseurTuile> fournisseurTuiles;
+    private LinkedList<FournisseurTuile> fournisseurTuiles;
 
     /**
      * Crée un composant Swing capable d'afficher une carte en tuiles
      *
      * @param zoom Le niveau de zoom de la carte
-     * @throws IllegalArgumentException Léve l'exeption si le niveau de zoom est inférieur à 10 ou
-     *                                  supérieur à 19.
+     * @throws IllegalArgumentException Léve l'exeption si le niveau de zoom est inférieur
+     *                                  à MIN_ZOOM ou supérieur à MAX_ZOOM.
      */
     CarteTuilesComponent(int zoom) {
-        if (zoom < 10 || zoom > 19) {
+        if (zoom < MIN_ZOOM || zoom > MAX_ZOOM) {
             throw new IllegalArgumentException();
         }
         this.zoom = zoom;
-        fournisseurTuiles = new ArrayList<>();
+        fournisseurTuiles = new LinkedList<>();
     }
 
     public int zoom() {
@@ -42,11 +43,10 @@ public final class CarteTuilesComponent extends JComponent {
      * Modifie le niveau de zoom de la carte
      *
      * @param zoom Le nouveau niveau de zoom de la carte
-     * @throws IllegalArgumentException Léve l'exeption si le niveau de zoom est inférieur é 10 ou
-     *                                  supérieur é 19.
+     * @return vrai si le zoom est dans la limite possible définie par MAX_ZOOM et MIN_ZOOM
      */
     public boolean setZoom(int zoom) {
-        if (zoom >= 10 && zoom <= 19) {
+        if (zoom >= MIN_ZOOM && zoom <= MAX_ZOOM) {
             this.zoom = zoom;
             repaint();
             return true;
@@ -55,12 +55,16 @@ public final class CarteTuilesComponent extends JComponent {
     }
 
     /**
-     * Ajoute un nouveau fournisseur de tuiles é la liste des fournisseurs de la
-     * carte
+     * Ajoute un nouveau fournisseur de tuiles à la liste des fournisseurs de la
+     * carte. Fait en sorte de n'avoir qu'un fournisseurTuilePointCouleur
      *
      * @param fournisseurTuile Un nouveau fournisseur de tuiles de la carte
      */
     public void ajoutFournisseurTuile(FournisseurTuile fournisseurTuile) {
+        // s'il y a déjà un fournisseurTuilePointCouleur on l'enleve
+        if (fournisseurTuiles.size() == 2) {
+            fournisseurTuiles.pollLast();
+        }
         fournisseurTuiles.add(fournisseurTuile);
         repaint();
     }
