@@ -121,12 +121,10 @@ public class FenetrePrincipale {
     private void initialize() {
         Timer timer = new Timer();
         ThreadMiseAjourNotifications tache = new ThreadMiseAjourNotifications(
-                Utils.previewEvenement(evenementAccess.getEnAttente()),
                 listEvenementsEnAttente,
                 lblNbrNotification);
 
-        timer.scheduleAtFixedRate(tache, 2 * 60 * 100, 2 * 10 * 1000);
-        tache.run();
+        timer.scheduleAtFixedRate(tache, 0, 60 * 1000);
         JList newListe = tache.getJliste();
         JLabel lblNbrNotification = tache.getPanelNotifications();
 

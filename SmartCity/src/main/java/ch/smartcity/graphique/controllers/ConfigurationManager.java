@@ -4,7 +4,7 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 /**
- * Managaire de configuration permettant de charger les textes par rapport
+ * Manageur de configuration permettant de charger les textes par rapport
  * au fichier de messageBundle.
  *
  * @author Loan Lassalle
@@ -35,6 +35,15 @@ public class ConfigurationManager {
 
     public String getString(String key) {
         return getResourceBundle().getString(key);
+    }
+
+    public void c3p0Logging() {
+        System.setProperty(
+                "com.mchange.v2.log.FallbackMLog.DEFAULT_CUTOFF_LEVEL",
+                getString("com.mchange.v2.log.FallbackMLog.DEFAULT_CUTOFF_LEVEL"));
+        System.setProperty(
+                "com.mchange.v2.log.MLog",
+                getString("com.mchange.v2.log.MLog"));
     }
 
     private static class SingletonHolder {
