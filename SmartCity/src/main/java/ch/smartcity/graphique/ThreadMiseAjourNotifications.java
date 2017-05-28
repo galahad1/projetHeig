@@ -4,6 +4,7 @@ import ch.smartcity.database.controllers.access.EvenementAccess;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.TimerTask;
 
@@ -24,8 +25,8 @@ public class ThreadMiseAjourNotifications extends TimerTask {
     private JList notif;
     private JLabel nbNotif;
 
-    public ThreadMiseAjourNotifications(List<String> liste, JList notif, JLabel nbNotif) {
-        this.liste = liste;
+    public ThreadMiseAjourNotifications(JList notif, JLabel nbNotif) {
+        this.liste = new ArrayList<>();
         this.notif = notif;
         this.nbNotif = nbNotif;
     }
@@ -33,8 +34,7 @@ public class ThreadMiseAjourNotifications extends TimerTask {
     @Override
     public void run() {
         liste.clear();
-        liste.addAll(Utils.refreshListAcess(Utils.previewEvenement(EvenementAccess.getInstance()
-                .getEnAttente())));
+        liste.addAll(Utils.previewEvenement(EvenementAccess.getInstance().getEnAttente()));
 
         DefaultListModel model = new DefaultListModel();
 

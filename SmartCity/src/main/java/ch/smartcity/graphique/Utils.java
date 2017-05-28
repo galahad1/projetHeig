@@ -1,6 +1,5 @@
 package ch.smartcity.graphique;
 
-import ch.smartcity.database.controllers.access.EvenementAccess;
 import ch.smartcity.database.models.Adresse;
 import ch.smartcity.database.models.Evenement;
 import ch.smartcity.graphique.controllers.ConfigurationManager;
@@ -69,17 +68,6 @@ final class Utils {
             preview.add(str); // ajout a la liste
         }
         return preview;
-    }
-
-    /**
-     * Vide la liste passé en parametre et renvoie une nouvelle liste avec les données actuel de base de données
-     *
-     * @param liste liste des evenement
-     * @return une liste actuel des evenements
-     */
-    static List<String> refreshListAcess(List<String> liste) {
-        liste.clear();
-        return Utils.previewEvenement(EvenementAccess.getInstance().getEnAttente());
     }
 
     /**
