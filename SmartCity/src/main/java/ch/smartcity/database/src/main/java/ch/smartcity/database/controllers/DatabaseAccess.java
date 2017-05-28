@@ -60,22 +60,22 @@ public class DatabaseAccess {
     public <T> T get(Class<T> tClass, Integer id) {
         T t = null;
 
-        Session session = null;
         Transaction transaction = null;
 
         try {
+            Session session;
+
             // Démarre une transaction pour la gestion d'erreur
-            session = hibernate.getSession();
-            transaction = session.beginTransaction();
+            synchronized (session = hibernate.getSession()) {
+                transaction = session.beginTransaction();
 
-            t = session.get(tClass, id);
+                t = session.get(tClass, id);
 
-            transaction.commit();
+                transaction.commit();
+            }
         } catch (Exception e) {
             rollback(e, transaction);
         }
-
-        close(session);
 
         // Journalise l'état de la transaction et le résultat
         transactionMessage(transaction);
@@ -97,26 +97,26 @@ public class DatabaseAccess {
     public <T> List<T> get(Class<T> tClass) {
         List<T> tList = null;
 
-        Session session = null;
         Transaction transaction = null;
 
         try {
+            Session session;
+
             // Démarre une transaction pour la gestion d'erreur
-            session = hibernate.getSession();
-            transaction = session.beginTransaction();
+            synchronized (session = hibernate.getSession()) {
+                transaction = session.beginTransaction();
 
-            // Définit des critères de sélection pour la requête
-            CriteriaBuilder criteriaBuilder = hibernate.getCriteriaBuilder();
-            CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(tClass);
-            criteriaQuery.from(tClass);
-            tList = hibernate.createQuery(criteriaQuery).getResultList();
+                // Définit des critères de sélection pour la requête
+                CriteriaBuilder criteriaBuilder = hibernate.getCriteriaBuilder();
+                CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(tClass);
+                criteriaQuery.from(tClass);
+                tList = hibernate.createQuery(criteriaQuery).getResultList();
 
-            transaction.commit();
+                transaction.commit();
+            }
         } catch (Exception e) {
             rollback(e, transaction);
         }
-
-        close(session);
 
         // Journalise l'état de la transaction et le résultat
         transactionMessage(transaction);
@@ -135,22 +135,22 @@ public class DatabaseAccess {
      * @param <T> type de l'objet à stocker correspondant à une table de la base de données
      */
     public <T> void save(T t) {
-        Session session = null;
         Transaction transaction = null;
 
         try {
+            Session session;
+
             // Démarre une transaction pour la gestion d'erreur
-            session = hibernate.getSession();
-            transaction = session.beginTransaction();
+            synchronized (session = hibernate.getSession()) {
+                transaction = session.beginTransaction();
 
-            session.save(t);
+                session.save(t);
 
-            transaction.commit();
+                transaction.commit();
+            }
         } catch (Exception e) {
             rollback(e, transaction);
         }
-
-        close(session);
 
         // Journalise l'état de la transaction
         transactionMessage(transaction);
@@ -163,24 +163,24 @@ public class DatabaseAccess {
      * @param <T>   type des objets à stocker correspondant à une table de la base de données
      */
     public <T> void save(List<T> tList) {
-        Session session = null;
         Transaction transaction = null;
 
         try {
+            Session session;
+
             // Démarre une transaction pour la gestion d'erreur
-            session = hibernate.getSession();
-            transaction = session.beginTransaction();
+            synchronized (session = hibernate.getSession()) {
+                transaction = session.beginTransaction();
 
-            for (T t : tList) {
-                session.save(t);
+                for (T t : tList) {
+                    session.save(t);
+                }
+
+                transaction.commit();
             }
-
-            transaction.commit();
         } catch (Exception e) {
             rollback(e, transaction);
         }
-
-        close(session);
 
         // Journalise l'état de la transaction et le résultat
         transactionMessage(transaction);
@@ -193,22 +193,22 @@ public class DatabaseAccess {
      * @param <T> type de l'objet à mettre à jour correspondant à une table de la base de données
      */
     public <T> void update(T t) {
-        Session session = null;
         Transaction transaction = null;
 
         try {
+            Session session;
+
             // Démarre une transaction pour la gestion d'erreur
-            session = hibernate.getSession();
-            transaction = session.beginTransaction();
+            synchronized (session = hibernate.getSession()) {
+                transaction = session.beginTransaction();
 
-            session.update(t);
+                session.update(t);
 
-            transaction.commit();
+                transaction.commit();
+            }
         } catch (Exception e) {
             rollback(e, transaction);
         }
-
-        close(session);
 
         // Journalise l'état de la transaction et le résultat
         transactionMessage(transaction);
@@ -221,24 +221,24 @@ public class DatabaseAccess {
      * @param <T>   type des objets à mettre à jour correspondant à une table de la base de données
      */
     public <T> void update(List<T> tList) {
-        Session session = null;
         Transaction transaction = null;
 
         try {
+            Session session;
+
             // Démarre une transaction pour la gestion d'erreur
-            session = hibernate.getSession();
-            transaction = session.beginTransaction();
+            synchronized (session = hibernate.getSession()) {
+                transaction = session.beginTransaction();
 
-            for (T t : tList) {
-                session.update(t);
+                for (T t : tList) {
+                    session.update(t);
+                }
+
+                transaction.commit();
             }
-
-            transaction.commit();
         } catch (Exception e) {
             rollback(e, transaction);
         }
-
-        close(session);
 
         // Journalise l'état de la transaction et le résultat
         transactionMessage(transaction);
@@ -262,22 +262,22 @@ public class DatabaseAccess {
      * @param <T> type de l'objet à supprimer correspondant à une table de la base de données
      */
     public <T> void delete(T t) {
-        Session session = null;
         Transaction transaction = null;
 
         try {
+            Session session;
+
             // Démarre une transaction pour la gestion d'erreur
-            session = hibernate.getSession();
-            transaction = session.beginTransaction();
+            synchronized (session = hibernate.getSession()) {
+                transaction = session.beginTransaction();
 
-            session.delete(t);
+                session.delete(t);
 
-            transaction.commit();
+                transaction.commit();
+            }
         } catch (Exception e) {
             rollback(e, transaction);
         }
-
-        close(session);
 
         // Journalise l'état de la transaction et le résultat
         transactionMessage(transaction);
@@ -290,24 +290,24 @@ public class DatabaseAccess {
      * @param <T>   type des objets à supprimer correspondant à une table de la base de données
      */
     public <T> void delete(List<T> tList) {
-        Session session = null;
         Transaction transaction = null;
 
         try {
+            Session session;
+
             // Démarre une transaction pour la gestion d'erreur
-            session = hibernate.getSession();
-            transaction = session.beginTransaction();
+            synchronized (session = hibernate.getSession()) {
+                transaction = session.beginTransaction();
 
-            for (T t : tList) {
-                session.delete(t);
+                for (T t : tList) {
+                    session.delete(t);
+                }
+
+                transaction.commit();
             }
-
-            transaction.commit();
         } catch (Exception e) {
             rollback(e, transaction);
         }
-
-        close(session);
 
         // Journalise l'état de la transaction et le résultat
         transactionMessage(transaction);

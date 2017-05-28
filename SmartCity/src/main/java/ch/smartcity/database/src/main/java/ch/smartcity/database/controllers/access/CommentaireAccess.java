@@ -105,64 +105,64 @@ public class CommentaireAccess {
                                  Calendar creation) {
         List<Commentaire> commentaireList = null;
 
-        Session session = null;
         Transaction transaction = null;
 
         try {
+            Session session;
+
             // Démarre une transaction pour la gestion d'erreur
-            session = hibernate.getSession();
-            transaction = session.beginTransaction();
+            synchronized (session = hibernate.getSession()) {
+                transaction = session.beginTransaction();
 
-            // Définit des critères de sélection pour la requête
-            CriteriaBuilder criteriaBuilder = hibernate.getCriteriaBuilder();
-            CriteriaQuery<Commentaire> criteriaQuery = criteriaBuilder
-                    .createQuery(Commentaire.class);
+                // Définit des critères de sélection pour la requête
+                CriteriaBuilder criteriaBuilder = hibernate.getCriteriaBuilder();
+                CriteriaQuery<Commentaire> criteriaQuery = criteriaBuilder
+                        .createQuery(Commentaire.class);
 
-            // Liaison avec différentes tables
-            Root<Commentaire> commentaireRoot = criteriaQuery.from(Commentaire.class);
-            Join<Commentaire, IdCommentaire> commentaireIdCommentaireJoin =
-                    commentaireRoot.join(Commentaire_.idCommentaire);
-            Join<IdCommentaire, Evenement> idCommentaireEvenementJoin =
-                    commentaireIdCommentaireJoin.join(IdCommentaire_.evenement);
-            Join<IdCommentaire, Utilisateur> idCommentaireUtilisateurJoin =
-                    commentaireIdCommentaireJoin.join(IdCommentaire_.utilisateur);
-            List<Predicate> predicateList = new ArrayList<>();
+                // Liaison avec différentes tables
+                Root<Commentaire> commentaireRoot = criteriaQuery.from(Commentaire.class);
+                Join<Commentaire, IdCommentaire> commentaireIdCommentaireJoin =
+                        commentaireRoot.join(Commentaire_.idCommentaire);
+                Join<IdCommentaire, Evenement> idCommentaireEvenementJoin =
+                        commentaireIdCommentaireJoin.join(IdCommentaire_.evenement);
+                Join<IdCommentaire, Utilisateur> idCommentaireUtilisateurJoin =
+                        commentaireIdCommentaireJoin.join(IdCommentaire_.utilisateur);
+                List<Predicate> predicateList = new ArrayList<>();
 
-            // Définit seulement les critères de sélection pour la requête des paramètres non null
-            // et non vide
-            if (nomEvenement != null && !nomEvenement.isEmpty()) {
-                predicateList.add(criteriaBuilder.equal(
-                        idCommentaireEvenementJoin.get(Evenement_.nomEvenement),
-                        nomEvenement.toLowerCase()));
+                // Définit seulement les critères de sélection pour la requête des paramètres non null
+                // et non vide
+                if (nomEvenement != null && !nomEvenement.isEmpty()) {
+                    predicateList.add(criteriaBuilder.equal(
+                            idCommentaireEvenementJoin.get(Evenement_.nomEvenement),
+                            nomEvenement.toLowerCase()));
+                }
+
+                if (nomUtilisateur != null && !nomUtilisateur.isEmpty()) {
+                    predicateList.add(criteriaBuilder.equal(
+                            idCommentaireUtilisateurJoin.get(Utilisateur_.nomUtilisateur),
+                            nomUtilisateur.toLowerCase()));
+                }
+
+                if (commentaire != null && !commentaire.isEmpty()) {
+                    predicateList.add(criteriaBuilder.equal(
+                            commentaireRoot.get(Commentaire_.commentaire),
+                            commentaire.toLowerCase()));
+                }
+
+                if (creation != null) {
+                    predicateList.add(criteriaBuilder.greaterThanOrEqualTo(
+                            commentaireRoot.get(Commentaire_.creation),
+                            creation));
+                }
+
+                criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
+                commentaireList = hibernate.createQuery(criteriaQuery).getResultList();
+
+                transaction.commit();
             }
-
-            if (nomUtilisateur != null && !nomUtilisateur.isEmpty()) {
-                predicateList.add(criteriaBuilder.equal(
-                        idCommentaireUtilisateurJoin.get(Utilisateur_.nomUtilisateur),
-                        nomUtilisateur.toLowerCase()));
-            }
-
-            if (commentaire != null && !commentaire.isEmpty()) {
-                predicateList.add(criteriaBuilder.equal(
-                        commentaireRoot.get(Commentaire_.commentaire),
-                        commentaire.toLowerCase()));
-            }
-
-            if (creation != null) {
-                predicateList.add(criteriaBuilder.greaterThanOrEqualTo(
-                        commentaireRoot.get(Commentaire_.creation),
-                        creation));
-            }
-
-            criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
-            commentaireList = hibernate.createQuery(criteriaQuery).getResultList();
-
-            transaction.commit();
         } catch (Exception e) {
             databaseAccess.rollback(e, transaction);
         }
-
-        databaseAccess.close(session);
 
         // Journalise l'état de la transaction et le résultat
         databaseAccess.transactionMessage(transaction);

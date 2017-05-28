@@ -70,36 +70,36 @@ public class NpaAccess {
     public List<Npa> get(String numeroNpa) {
         List<Npa> npaList = null;
 
-        Session session = null;
         Transaction transaction = null;
 
         try {
+            Session session;
+
             // Démarre une transaction pour la gestion d'erreur
-            session = hibernate.getSession();
-            transaction = session.beginTransaction();
+            synchronized (session = hibernate.getSession()) {
+                transaction = session.beginTransaction();
 
-            // Définit des critères de sélection pour la requête
-            CriteriaBuilder criteriaBuilder = hibernate.getCriteriaBuilder();
-            CriteriaQuery<Npa> criteriaQuery = criteriaBuilder.createQuery(Npa.class);
-            Root<Npa> npaRoot = criteriaQuery.from(Npa.class);
-            List<Predicate> predicateList = new ArrayList<>();
+                // Définit des critères de sélection pour la requête
+                CriteriaBuilder criteriaBuilder = hibernate.getCriteriaBuilder();
+                CriteriaQuery<Npa> criteriaQuery = criteriaBuilder.createQuery(Npa.class);
+                Root<Npa> npaRoot = criteriaQuery.from(Npa.class);
+                List<Predicate> predicateList = new ArrayList<>();
 
-            // Définit seulement les critères de sélection pour la requête des paramètres non null
-            // et non vide
-            if (numeroNpa != null && !numeroNpa.isEmpty()) {
-                predicateList.add(criteriaBuilder.equal(
-                        npaRoot.get(Npa_.numeroNpa), numeroNpa.toLowerCase()));
+                // Définit seulement les critères de sélection pour la requête des paramètres non null
+                // et non vide
+                if (numeroNpa != null && !numeroNpa.isEmpty()) {
+                    predicateList.add(criteriaBuilder.equal(
+                            npaRoot.get(Npa_.numeroNpa), numeroNpa.toLowerCase()));
+                }
+
+                criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
+                npaList = hibernate.createQuery(criteriaQuery).getResultList();
+
+                transaction.commit();
             }
-
-            criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
-            npaList = hibernate.createQuery(criteriaQuery).getResultList();
-
-            transaction.commit();
         } catch (Exception e) {
             databaseAccess.rollback(e, transaction);
         }
-
-        databaseAccess.close(session);
 
         // Journalise l'état de la transaction et le résultat
         databaseAccess.transactionMessage(transaction);

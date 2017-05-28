@@ -89,48 +89,48 @@ public class RubriqueEnfantAccess {
     public List<RubriqueEnfant> get(String nomRubriqueParent, String nomRubriqueEnfant) {
         List<RubriqueEnfant> rubriqueEnfantList = null;
 
-        Session session = null;
         Transaction transaction = null;
 
         try {
+            Session session;
+
             // Démarre une transaction pour la gestion d'erreur
-            session = hibernate.getSession();
-            transaction = session.beginTransaction();
+            synchronized (session = hibernate.getSession()) {
+                transaction = session.beginTransaction();
 
-            // Définit des critères de sélection pour la requête
-            CriteriaBuilder criteriaBuilder = hibernate.getCriteriaBuilder();
-            CriteriaQuery<RubriqueEnfant> criteriaQuery = criteriaBuilder
-                    .createQuery(RubriqueEnfant.class);
+                // Définit des critères de sélection pour la requête
+                CriteriaBuilder criteriaBuilder = hibernate.getCriteriaBuilder();
+                CriteriaQuery<RubriqueEnfant> criteriaQuery = criteriaBuilder
+                        .createQuery(RubriqueEnfant.class);
 
-            // Liaison avec différentes tables
-            Root<RubriqueEnfant> rubriqueEnfantRoot = criteriaQuery.from(RubriqueEnfant.class);
-            Join<RubriqueEnfant, RubriqueParent> rubriqueEnfantRubriqueParentJoin =
-                    rubriqueEnfantRoot.join(RubriqueEnfant_.rubriqueParent);
-            List<Predicate> predicateList = new ArrayList<>();
+                // Liaison avec différentes tables
+                Root<RubriqueEnfant> rubriqueEnfantRoot = criteriaQuery.from(RubriqueEnfant.class);
+                Join<RubriqueEnfant, RubriqueParent> rubriqueEnfantRubriqueParentJoin =
+                        rubriqueEnfantRoot.join(RubriqueEnfant_.rubriqueParent);
+                List<Predicate> predicateList = new ArrayList<>();
 
-            // Définit seulement les critères de sélection pour la requête des paramètres non null
-            // et non vide
-            if (nomRubriqueParent != null && !nomRubriqueParent.isEmpty()) {
-                predicateList.add(criteriaBuilder.equal(rubriqueEnfantRubriqueParentJoin.get(
-                        RubriqueParent_.nomRubriqueParent),
-                        nomRubriqueParent.toLowerCase()));
+                // Définit seulement les critères de sélection pour la requête des paramètres non null
+                // et non vide
+                if (nomRubriqueParent != null && !nomRubriqueParent.isEmpty()) {
+                    predicateList.add(criteriaBuilder.equal(rubriqueEnfantRubriqueParentJoin.get(
+                            RubriqueParent_.nomRubriqueParent),
+                            nomRubriqueParent.toLowerCase()));
+                }
+
+                if (nomRubriqueEnfant != null && !nomRubriqueEnfant.isEmpty()) {
+                    predicateList.add(criteriaBuilder.equal(rubriqueEnfantRoot.get(
+                            RubriqueEnfant_.nomRubriqueEnfant),
+                            nomRubriqueEnfant.toLowerCase()));
+                }
+
+                criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
+                rubriqueEnfantList = hibernate.createQuery(criteriaQuery).getResultList();
+
+                transaction.commit();
             }
-
-            if (nomRubriqueEnfant != null && !nomRubriqueEnfant.isEmpty()) {
-                predicateList.add(criteriaBuilder.equal(rubriqueEnfantRoot.get(
-                        RubriqueEnfant_.nomRubriqueEnfant),
-                        nomRubriqueEnfant.toLowerCase()));
-            }
-
-            criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
-            rubriqueEnfantList = hibernate.createQuery(criteriaQuery).getResultList();
-
-            transaction.commit();
         } catch (Exception e) {
             databaseAccess.rollback(e, transaction);
         }
-
-        databaseAccess.close(session);
 
         // Journalise l'état de la transaction et le résultat
         databaseAccess.transactionMessage(transaction);

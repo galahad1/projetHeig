@@ -73,44 +73,44 @@ public class TitreCivilAccess {
     public List<TitreCivil> get(String titre, String abreviation) {
         List<TitreCivil> titreCivilList = null;
 
-        Session session = null;
         Transaction transaction = null;
 
         try {
+            Session session;
+
             // Démarre une transaction pour la gestion d'erreur
-            session = hibernate.getSession();
-            transaction = session.beginTransaction();
+            synchronized (session = hibernate.getSession()) {
+                transaction = session.beginTransaction();
 
-            // Définit des critères de sélection pour la requête
-            CriteriaBuilder criteriaBuilder = hibernate.getCriteriaBuilder();
-            CriteriaQuery<TitreCivil> criteriaQuery = criteriaBuilder
-                    .createQuery(TitreCivil.class);
-            Root<TitreCivil> titreCivilRoot = criteriaQuery.from(TitreCivil.class);
-            List<Predicate> predicateList = new ArrayList<>();
+                // Définit des critères de sélection pour la requête
+                CriteriaBuilder criteriaBuilder = hibernate.getCriteriaBuilder();
+                CriteriaQuery<TitreCivil> criteriaQuery = criteriaBuilder
+                        .createQuery(TitreCivil.class);
+                Root<TitreCivil> titreCivilRoot = criteriaQuery.from(TitreCivil.class);
+                List<Predicate> predicateList = new ArrayList<>();
 
-            // Définit seulement les critères de sélection pour la requête des paramètres non null
-            // et non vide
-            if (titre != null && !titre.isEmpty()) {
-                predicateList.add(criteriaBuilder.equal(titreCivilRoot.get(
-                        TitreCivil_.titre),
-                        titre.toLowerCase()));
+                // Définit seulement les critères de sélection pour la requête des paramètres non null
+                // et non vide
+                if (titre != null && !titre.isEmpty()) {
+                    predicateList.add(criteriaBuilder.equal(titreCivilRoot.get(
+                            TitreCivil_.titre),
+                            titre.toLowerCase()));
+                }
+
+                if (abreviation != null && !abreviation.isEmpty()) {
+                    predicateList.add(criteriaBuilder.equal(titreCivilRoot.get(
+                            TitreCivil_.abreviation),
+                            abreviation.toLowerCase()));
+                }
+
+                criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
+                titreCivilList = hibernate.createQuery(criteriaQuery).getResultList();
+
+                transaction.commit();
             }
-
-            if (abreviation != null && !abreviation.isEmpty()) {
-                predicateList.add(criteriaBuilder.equal(titreCivilRoot.get(
-                        TitreCivil_.abreviation),
-                        abreviation.toLowerCase()));
-            }
-
-            criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
-            titreCivilList = hibernate.createQuery(criteriaQuery).getResultList();
-
-            transaction.commit();
         } catch (Exception e) {
             databaseAccess.rollback(e, transaction);
         }
-
-        databaseAccess.close(session);
 
         // Journalise l'état de la transaction et le résultat
         databaseAccess.transactionMessage(transaction);

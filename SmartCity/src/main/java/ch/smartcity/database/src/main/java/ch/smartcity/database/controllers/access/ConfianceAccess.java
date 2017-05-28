@@ -101,57 +101,57 @@ public class ConfianceAccess {
                                Calendar creation) {
         List<Confiance> confianceList = null;
 
-        Session session = null;
         Transaction transaction = null;
 
         try {
+            Session session;
+
             // Démarre une transaction pour la gestion d'erreur
-            session = hibernate.getSession();
-            transaction = session.beginTransaction();
+            synchronized (session = hibernate.getSession()) {
+                transaction = session.beginTransaction();
 
-            // Définit des critères de sélection pour la requête
-            CriteriaBuilder criteriaBuilder = hibernate.getCriteriaBuilder();
-            CriteriaQuery<Confiance> criteriaQuery = criteriaBuilder.createQuery(Confiance.class);
+                // Définit des critères de sélection pour la requête
+                CriteriaBuilder criteriaBuilder = hibernate.getCriteriaBuilder();
+                CriteriaQuery<Confiance> criteriaQuery = criteriaBuilder.createQuery(Confiance.class);
 
-            // Liaison avec différentes tables
-            Root<Confiance> confianceRoot = criteriaQuery.from(Confiance.class);
-            Join<Confiance, IdConfiance> confianceIdConfianceJoin =
-                    confianceRoot.join(Confiance_.idConfiance);
-            Join<IdConfiance, Utilisateur> idConfianceUtilisateurJoin =
-                    confianceIdConfianceJoin.join(IdConfiance_.utilisateur);
-            Join<IdConfiance, RubriqueEnfant> idConfianceRubriqueEnfantJoin =
-                    confianceIdConfianceJoin.join(IdConfiance_.rubriqueEnfant);
-            List<Predicate> predicateList = new ArrayList<>();
+                // Liaison avec différentes tables
+                Root<Confiance> confianceRoot = criteriaQuery.from(Confiance.class);
+                Join<Confiance, IdConfiance> confianceIdConfianceJoin =
+                        confianceRoot.join(Confiance_.idConfiance);
+                Join<IdConfiance, Utilisateur> idConfianceUtilisateurJoin =
+                        confianceIdConfianceJoin.join(IdConfiance_.utilisateur);
+                Join<IdConfiance, RubriqueEnfant> idConfianceRubriqueEnfantJoin =
+                        confianceIdConfianceJoin.join(IdConfiance_.rubriqueEnfant);
+                List<Predicate> predicateList = new ArrayList<>();
 
-            // Définit seulement les critères de sélection pour la requête des paramètres non null
-            // et non vide
-            if (nomUtilisateur != null && !nomUtilisateur.isEmpty()) {
-                predicateList.add(criteriaBuilder.equal(
-                        idConfianceUtilisateurJoin.get(Utilisateur_.nomUtilisateur),
-                        nomUtilisateur.toLowerCase()));
+                // Définit seulement les critères de sélection pour la requête des paramètres non null
+                // et non vide
+                if (nomUtilisateur != null && !nomUtilisateur.isEmpty()) {
+                    predicateList.add(criteriaBuilder.equal(
+                            idConfianceUtilisateurJoin.get(Utilisateur_.nomUtilisateur),
+                            nomUtilisateur.toLowerCase()));
+                }
+
+                if (nomRubriqueEnfant != null && !nomRubriqueEnfant.isEmpty()) {
+                    predicateList.add(criteriaBuilder.equal(
+                            idConfianceRubriqueEnfantJoin.get(RubriqueEnfant_.nomRubriqueEnfant),
+                            nomRubriqueEnfant.toLowerCase()));
+                }
+
+                if (creation != null) {
+                    predicateList.add(criteriaBuilder.greaterThanOrEqualTo(
+                            confianceRoot.get(Confiance_.creation),
+                            creation));
+                }
+
+                criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
+                confianceList = hibernate.createQuery(criteriaQuery).getResultList();
+
+                transaction.commit();
             }
-
-            if (nomRubriqueEnfant != null && !nomRubriqueEnfant.isEmpty()) {
-                predicateList.add(criteriaBuilder.equal(
-                        idConfianceRubriqueEnfantJoin.get(RubriqueEnfant_.nomRubriqueEnfant),
-                        nomRubriqueEnfant.toLowerCase()));
-            }
-
-            if (creation != null) {
-                predicateList.add(criteriaBuilder.greaterThanOrEqualTo(
-                        confianceRoot.get(Confiance_.creation),
-                        creation));
-            }
-
-            criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
-            confianceList = hibernate.createQuery(criteriaQuery).getResultList();
-
-            transaction.commit();
         } catch (Exception e) {
             databaseAccess.rollback(e, transaction);
         }
-
-        databaseAccess.close(session);
 
         // Journalise l'état de la transaction et le résultat
         databaseAccess.transactionMessage(transaction);

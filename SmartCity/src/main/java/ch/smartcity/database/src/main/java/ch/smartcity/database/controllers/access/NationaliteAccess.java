@@ -72,37 +72,37 @@ public class NationaliteAccess {
     public List<Nationalite> get(String nomNationalite) {
         List<Nationalite> nationaliteList = null;
 
-        Session session = null;
         Transaction transaction = null;
 
         try {
+            Session session;
+
             // Démarre une transaction pour la gestion d'erreur
-            session = hibernate.getSession();
-            transaction = session.beginTransaction();
+            synchronized (session = hibernate.getSession()) {
+                transaction = session.beginTransaction();
 
-            // Définit des critères de sélection pour la requête
-            CriteriaBuilder criteriaBuilder = hibernate.getCriteriaBuilder();
-            CriteriaQuery<Nationalite> criteriaQuery = criteriaBuilder.createQuery(Nationalite.class);
-            Root<Nationalite> nationaliteRoot = criteriaQuery.from(Nationalite.class);
-            List<Predicate> predicateList = new ArrayList<>();
+                // Définit des critères de sélection pour la requête
+                CriteriaBuilder criteriaBuilder = hibernate.getCriteriaBuilder();
+                CriteriaQuery<Nationalite> criteriaQuery = criteriaBuilder.createQuery(Nationalite.class);
+                Root<Nationalite> nationaliteRoot = criteriaQuery.from(Nationalite.class);
+                List<Predicate> predicateList = new ArrayList<>();
 
-            // Définit seulement les critères de sélection pour la requête des paramètres non null
-            // et non vide
-            if (nomNationalite != null && !nomNationalite.isEmpty()) {
-                predicateList.add(criteriaBuilder.equal(
-                        nationaliteRoot.get(Nationalite_.nomNationalite),
-                        nomNationalite.toLowerCase()));
+                // Définit seulement les critères de sélection pour la requête des paramètres non null
+                // et non vide
+                if (nomNationalite != null && !nomNationalite.isEmpty()) {
+                    predicateList.add(criteriaBuilder.equal(
+                            nationaliteRoot.get(Nationalite_.nomNationalite),
+                            nomNationalite.toLowerCase()));
+                }
+
+                criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
+                nationaliteList = hibernate.createQuery(criteriaQuery).getResultList();
+
+                transaction.commit();
             }
-
-            criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
-            nationaliteList = hibernate.createQuery(criteriaQuery).getResultList();
-
-            transaction.commit();
         } catch (Exception e) {
             databaseAccess.rollback(e, transaction);
         }
-
-        databaseAccess.close(session);
 
         // Journalise l'état de la transaction et le résultat
         databaseAccess.transactionMessage(transaction);

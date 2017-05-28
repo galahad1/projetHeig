@@ -70,38 +70,38 @@ public class RueAccess {
     public List<Rue> get(String nomRue) {
         List<Rue> rueList = null;
 
-        Session session = null;
         Transaction transaction = null;
 
         try {
+            Session session;
+
             // Démarre une transaction pour la gestion d'erreur
-            session = hibernate.getSession();
-            transaction = session.beginTransaction();
+            synchronized (session = hibernate.getSession()) {
+                transaction = session.beginTransaction();
 
-            // Définit des critères de sélection pour la requête
-            CriteriaBuilder criteriaBuilder = hibernate.getCriteriaBuilder();
-            CriteriaQuery<Rue> criteriaQuery = criteriaBuilder
-                    .createQuery(Rue.class);
-            Root<Rue> rueRoot = criteriaQuery.from(Rue.class);
-            List<Predicate> predicateList = new ArrayList<>();
+                // Définit des critères de sélection pour la requête
+                CriteriaBuilder criteriaBuilder = hibernate.getCriteriaBuilder();
+                CriteriaQuery<Rue> criteriaQuery = criteriaBuilder
+                        .createQuery(Rue.class);
+                Root<Rue> rueRoot = criteriaQuery.from(Rue.class);
+                List<Predicate> predicateList = new ArrayList<>();
 
-            // Définit seulement les critères de sélection pour la requête des paramètres non null
-            // et non vide
-            if (nomRue != null && !nomRue.isEmpty()) {
-                predicateList.add(criteriaBuilder.equal(rueRoot.get(
-                        Rue_.nomRue),
-                        nomRue.toLowerCase()));
+                // Définit seulement les critères de sélection pour la requête des paramètres non null
+                // et non vide
+                if (nomRue != null && !nomRue.isEmpty()) {
+                    predicateList.add(criteriaBuilder.equal(rueRoot.get(
+                            Rue_.nomRue),
+                            nomRue.toLowerCase()));
+                }
+
+                criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
+                rueList = hibernate.createQuery(criteriaQuery).getResultList();
+
+                transaction.commit();
             }
-
-            criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
-            rueList = hibernate.createQuery(criteriaQuery).getResultList();
-
-            transaction.commit();
         } catch (Exception e) {
             databaseAccess.rollback(e, transaction);
         }
-
-        databaseAccess.close(session);
 
         // Journalise l'état de la transaction et le résultat
         databaseAccess.transactionMessage(transaction);

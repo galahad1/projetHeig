@@ -169,148 +169,148 @@ public class UtilisateurAccess {
                                  Calendar creation) {
         List<Utilisateur> utilisateurList = null;
 
-        Session session = null;
         Transaction transaction = null;
 
         try {
+            Session session;
+
             // Démarre une transaction pour la gestion d'erreur
-            session = hibernate.getSession();
-            transaction = session.beginTransaction();
+            synchronized (session = hibernate.getSession()) {
+                transaction = session.beginTransaction();
 
-            // Définit des critères de sélection pour la requête
-            CriteriaBuilder criteriaBuilder = hibernate.getCriteriaBuilder();
-            CriteriaQuery<Utilisateur> criteriaQuery = criteriaBuilder
-                    .createQuery(Utilisateur.class);
+                // Définit des critères de sélection pour la requête
+                CriteriaBuilder criteriaBuilder = hibernate.getCriteriaBuilder();
+                CriteriaQuery<Utilisateur> criteriaQuery = criteriaBuilder
+                        .createQuery(Utilisateur.class);
 
-            // Liaison avec différentes tables
-            Root<Utilisateur> utilisateurRoot = criteriaQuery.from(Utilisateur.class);
-            Join<Utilisateur, TitreCivil> utilisateurTitreCivilJoin =
-                    utilisateurRoot.join(Utilisateur_.titreCivil);
-            Join<Utilisateur, Sexe> utilisateurSexeJoin =
-                    utilisateurRoot.join(Utilisateur_.sexe);
-            Join<Utilisateur, Nationalite> utilisateurNationaliteJoin =
-                    utilisateurRoot.join(Utilisateur_.nationalite);
-            Join<Utilisateur, Adresse> utilisateurAdresseJoin =
-                    utilisateurRoot.join(Utilisateur_.adresse);
-            Join<Adresse, Rue> adresseRueJoin =
-                    utilisateurAdresseJoin.join(Adresse_.rue);
-            Join<Adresse, Npa> adresseNpaJoin =
-                    utilisateurAdresseJoin.join(Adresse_.npa);
-            List<Predicate> predicateList = new ArrayList<>();
+                // Liaison avec différentes tables
+                Root<Utilisateur> utilisateurRoot = criteriaQuery.from(Utilisateur.class);
+                Join<Utilisateur, TitreCivil> utilisateurTitreCivilJoin =
+                        utilisateurRoot.join(Utilisateur_.titreCivil);
+                Join<Utilisateur, Sexe> utilisateurSexeJoin =
+                        utilisateurRoot.join(Utilisateur_.sexe);
+                Join<Utilisateur, Nationalite> utilisateurNationaliteJoin =
+                        utilisateurRoot.join(Utilisateur_.nationalite);
+                Join<Utilisateur, Adresse> utilisateurAdresseJoin =
+                        utilisateurRoot.join(Utilisateur_.adresse);
+                Join<Adresse, Rue> adresseRueJoin =
+                        utilisateurAdresseJoin.join(Adresse_.rue);
+                Join<Adresse, Npa> adresseNpaJoin =
+                        utilisateurAdresseJoin.join(Adresse_.npa);
+                List<Predicate> predicateList = new ArrayList<>();
 
-            // Définit seulement les critères de sélection pour la requête des paramètres non null
-            // et non vide
-            if (personnePhysique != null) {
-                predicateList.add(criteriaBuilder.equal(
-                        utilisateurRoot.get(Utilisateur_.personnePhysique),
-                        personnePhysique));
+                // Définit seulement les critères de sélection pour la requête des paramètres non null
+                // et non vide
+                if (personnePhysique != null) {
+                    predicateList.add(criteriaBuilder.equal(
+                            utilisateurRoot.get(Utilisateur_.personnePhysique),
+                            personnePhysique));
+                }
+
+                if (avs != null && !avs.isEmpty()) {
+                    predicateList.add(criteriaBuilder.equal(
+                            utilisateurRoot.get(Utilisateur_.avs),
+                            avs));
+                }
+
+                if (titre != null && !titre.isEmpty()) {
+                    predicateList.add(criteriaBuilder.equal(
+                            utilisateurTitreCivilJoin.get(TitreCivil_.titre),
+                            titre.toLowerCase()));
+                }
+
+                if (abreviation != null && !abreviation.isEmpty()) {
+                    predicateList.add(criteriaBuilder.equal(
+                            utilisateurTitreCivilJoin.get(TitreCivil_.abreviation),
+                            abreviation.toLowerCase()));
+                }
+
+                if (nomUtilisateur != null && !nomUtilisateur.isEmpty()) {
+                    predicateList.add(criteriaBuilder.equal(
+                            utilisateurRoot.get(Utilisateur_.nomUtilisateur),
+                            nomUtilisateur.toLowerCase()));
+                }
+
+                if (prenom != null && !prenom.isEmpty()) {
+                    predicateList.add(criteriaBuilder.equal(
+                            utilisateurRoot.get(Utilisateur_.prenom),
+                            prenom.toLowerCase()));
+                }
+
+                if (dateDeNaissance != null) {
+                    predicateList.add(criteriaBuilder.greaterThanOrEqualTo(
+                            utilisateurRoot.get(Utilisateur_.dateDeNaissance),
+                            dateDeNaissance));
+                }
+
+                if (nomSexe != null && !nomSexe.isEmpty()) {
+                    predicateList.add(criteriaBuilder.equal(
+                            utilisateurSexeJoin.get(Sexe_.nomSexe),
+                            nomSexe.toLowerCase()));
+                }
+
+                if (nomNationalite != null && !nomNationalite.isEmpty()) {
+                    predicateList.add(criteriaBuilder.equal(
+                            utilisateurNationaliteJoin.get(Nationalite_.nomNationalite),
+                            nomNationalite.toLowerCase()));
+                }
+
+                if (nomRue != null && !nomRue.isEmpty()) {
+                    predicateList.add(criteriaBuilder.equal(
+                            adresseRueJoin.get(Rue_.nomRue),
+                            nomRue.toLowerCase()));
+                }
+
+                if (numeroDeRue != null && !numeroDeRue.isEmpty()) {
+                    predicateList.add(criteriaBuilder.equal(
+                            utilisateurAdresseJoin.get(Adresse_.numeroDeRue),
+                            numeroDeRue.toLowerCase()));
+                }
+
+                if (numeroNpa != null && !numeroNpa.isEmpty()) {
+                    predicateList.add(criteriaBuilder.equal(
+                            adresseNpaJoin.get(Npa_.numeroNpa),
+                            numeroNpa.toLowerCase()));
+                }
+
+                if (email != null && !email.isEmpty()) {
+                    predicateList.add(criteriaBuilder.equal(
+                            utilisateurRoot.get(Utilisateur_.email),
+                            email.toLowerCase()));
+                }
+
+                if (pseudo != null && !pseudo.isEmpty()) {
+                    predicateList.add(criteriaBuilder.equal(
+                            utilisateurRoot.get(Utilisateur_.pseudo),
+                            pseudo.toLowerCase()));
+                }
+
+                if (motDePasse != null && !motDePasse.isEmpty()) {
+                    predicateList.add(criteriaBuilder.equal(
+                            utilisateurRoot.get(Utilisateur_.motDePasse),
+                            motDePasse.toLowerCase()));
+                }
+
+                if (sel != null && !sel.isEmpty()) {
+                    predicateList.add(criteriaBuilder.equal(
+                            utilisateurRoot.get(Utilisateur_.sel),
+                            sel.toLowerCase()));
+                }
+
+                if (creation != null) {
+                    predicateList.add(criteriaBuilder.greaterThanOrEqualTo(
+                            utilisateurRoot.get(Utilisateur_.creation),
+                            creation));
+                }
+
+                criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
+                utilisateurList = hibernate.createQuery(criteriaQuery).getResultList();
+
+                transaction.commit();
             }
-
-            if (avs != null && !avs.isEmpty()) {
-                predicateList.add(criteriaBuilder.equal(
-                        utilisateurRoot.get(Utilisateur_.avs),
-                        avs));
-            }
-
-            if (titre != null && !titre.isEmpty()) {
-                predicateList.add(criteriaBuilder.equal(
-                        utilisateurTitreCivilJoin.get(TitreCivil_.titre),
-                        titre.toLowerCase()));
-            }
-
-            if (abreviation != null && !abreviation.isEmpty()) {
-                predicateList.add(criteriaBuilder.equal(
-                        utilisateurTitreCivilJoin.get(TitreCivil_.abreviation),
-                        abreviation.toLowerCase()));
-            }
-
-            if (nomUtilisateur != null && !nomUtilisateur.isEmpty()) {
-                predicateList.add(criteriaBuilder.equal(
-                        utilisateurRoot.get(Utilisateur_.nomUtilisateur),
-                        nomUtilisateur.toLowerCase()));
-            }
-
-            if (prenom != null && !prenom.isEmpty()) {
-                predicateList.add(criteriaBuilder.equal(
-                        utilisateurRoot.get(Utilisateur_.prenom),
-                        prenom.toLowerCase()));
-            }
-
-            if (dateDeNaissance != null) {
-                predicateList.add(criteriaBuilder.greaterThanOrEqualTo(
-                        utilisateurRoot.get(Utilisateur_.dateDeNaissance),
-                        dateDeNaissance));
-            }
-
-            if (nomSexe != null && !nomSexe.isEmpty()) {
-                predicateList.add(criteriaBuilder.equal(
-                        utilisateurSexeJoin.get(Sexe_.nomSexe),
-                        nomSexe.toLowerCase()));
-            }
-
-            if (nomNationalite != null && !nomNationalite.isEmpty()) {
-                predicateList.add(criteriaBuilder.equal(
-                        utilisateurNationaliteJoin.get(Nationalite_.nomNationalite),
-                        nomNationalite.toLowerCase()));
-            }
-
-            if (nomRue != null && !nomRue.isEmpty()) {
-                predicateList.add(criteriaBuilder.equal(
-                        adresseRueJoin.get(Rue_.nomRue),
-                        nomRue.toLowerCase()));
-            }
-
-            if (numeroDeRue != null && !numeroDeRue.isEmpty()) {
-                predicateList.add(criteriaBuilder.equal(
-                        utilisateurAdresseJoin.get(Adresse_.numeroDeRue),
-                        numeroDeRue.toLowerCase()));
-            }
-
-            if (numeroNpa != null && !numeroNpa.isEmpty()) {
-                predicateList.add(criteriaBuilder.equal(
-                        adresseNpaJoin.get(Npa_.numeroNpa),
-                        numeroNpa.toLowerCase()));
-            }
-
-            if (email != null && !email.isEmpty()) {
-                predicateList.add(criteriaBuilder.equal(
-                        utilisateurRoot.get(Utilisateur_.email),
-                        email.toLowerCase()));
-            }
-
-            if (pseudo != null && !pseudo.isEmpty()) {
-                predicateList.add(criteriaBuilder.equal(
-                        utilisateurRoot.get(Utilisateur_.pseudo),
-                        pseudo.toLowerCase()));
-            }
-
-            if (motDePasse != null && !motDePasse.isEmpty()) {
-                predicateList.add(criteriaBuilder.equal(
-                        utilisateurRoot.get(Utilisateur_.motDePasse),
-                        motDePasse.toLowerCase()));
-            }
-
-            if (sel != null && !sel.isEmpty()) {
-                predicateList.add(criteriaBuilder.equal(
-                        utilisateurRoot.get(Utilisateur_.sel),
-                        sel.toLowerCase()));
-            }
-
-            if (creation != null) {
-                predicateList.add(criteriaBuilder.greaterThanOrEqualTo(
-                        utilisateurRoot.get(Utilisateur_.creation),
-                        creation));
-            }
-
-            criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
-            utilisateurList = hibernate.createQuery(criteriaQuery).getResultList();
-
-            transaction.commit();
         } catch (Exception e) {
             databaseAccess.rollback(e, transaction);
         }
-
-        databaseAccess.close(session);
 
         // Journalise l'état de la transaction et le résultat
         databaseAccess.transactionMessage(transaction);

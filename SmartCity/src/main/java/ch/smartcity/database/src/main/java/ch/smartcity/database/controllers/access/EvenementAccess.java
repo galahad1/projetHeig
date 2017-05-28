@@ -288,132 +288,132 @@ public class EvenementAccess {
                                Calendar creation) {
         List<Evenement> evenementList = null;
 
-        Session session = null;
         Transaction transaction = null;
 
         try {
+            Session session;
+
             // Démarre une transaction pour la gestion d'erreur
-            session = hibernate.getSession();
-            transaction = session.beginTransaction();
+            synchronized (session = hibernate.getSession()) {
+                transaction = session.beginTransaction();
 
-            // Définit des critères de sélection pour la requête
-            CriteriaBuilder criteriaBuilder = hibernate.getCriteriaBuilder();
-            CriteriaQuery<Evenement> criteriaQuery = criteriaBuilder.createQuery(Evenement.class);
+                // Définit des critères de sélection pour la requête
+                CriteriaBuilder criteriaBuilder = hibernate.getCriteriaBuilder();
+                CriteriaQuery<Evenement> criteriaQuery = criteriaBuilder.createQuery(Evenement.class);
 
-            // Liaison avec différentes tables
-            Root<Evenement> evenementRoot = criteriaQuery.from(Evenement.class);
-            Join<Evenement, RubriqueEnfant> evenementRubriqueEnfantJoin =
-                    evenementRoot.join(Evenement_.rubriqueEnfant);
-            Join<Evenement, Utilisateur> evenementUtilisateurJoin =
-                    evenementRoot.join(Evenement_.utilisateur);
-            Join<Evenement, Adresse> evenementAdresseJoin =
-                    evenementRoot.join(Evenement_.adresse);
-            Join<Adresse, Rue> adresseRueJoin =
-                    evenementAdresseJoin.join(Adresse_.rue);
-            Join<Adresse, Npa> adresseNpaJoin =
-                    evenementAdresseJoin.join(Adresse_.npa);
-            Join<Evenement, Priorite> evenementPrioriteJoin =
-                    evenementRoot.join(Evenement_.priorite);
-            Join<Evenement, Statut> evenementStatutJoin =
-                    evenementRoot.join(Evenement_.statut);
-            List<Predicate> predicateList = new ArrayList<>();
+                // Liaison avec différentes tables
+                Root<Evenement> evenementRoot = criteriaQuery.from(Evenement.class);
+                Join<Evenement, RubriqueEnfant> evenementRubriqueEnfantJoin =
+                        evenementRoot.join(Evenement_.rubriqueEnfant);
+                Join<Evenement, Utilisateur> evenementUtilisateurJoin =
+                        evenementRoot.join(Evenement_.utilisateur);
+                Join<Evenement, Adresse> evenementAdresseJoin =
+                        evenementRoot.join(Evenement_.adresse);
+                Join<Adresse, Rue> adresseRueJoin =
+                        evenementAdresseJoin.join(Adresse_.rue);
+                Join<Adresse, Npa> adresseNpaJoin =
+                        evenementAdresseJoin.join(Adresse_.npa);
+                Join<Evenement, Priorite> evenementPrioriteJoin =
+                        evenementRoot.join(Evenement_.priorite);
+                Join<Evenement, Statut> evenementStatutJoin =
+                        evenementRoot.join(Evenement_.statut);
+                List<Predicate> predicateList = new ArrayList<>();
 
-            // Définit seulement les critères de sélection pour la requête des paramètres non null
-            // et non vide
-            if (nomRubriqueEnfant != null && !nomRubriqueEnfant.isEmpty()) {
-                predicateList.add(criteriaBuilder.equal(
-                        evenementRubriqueEnfantJoin.get(RubriqueEnfant_.nomRubriqueEnfant),
-                        nomRubriqueEnfant.toLowerCase()));
+                // Définit seulement les critères de sélection pour la requête des paramètres non null
+                // et non vide
+                if (nomRubriqueEnfant != null && !nomRubriqueEnfant.isEmpty()) {
+                    predicateList.add(criteriaBuilder.equal(
+                            evenementRubriqueEnfantJoin.get(RubriqueEnfant_.nomRubriqueEnfant),
+                            nomRubriqueEnfant.toLowerCase()));
+                }
+
+                if (nomUtilisateur != null && !nomUtilisateur.isEmpty()) {
+                    predicateList.add(criteriaBuilder.equal(
+                            evenementUtilisateurJoin.get(Utilisateur_.nomUtilisateur),
+                            nomUtilisateur.toLowerCase()));
+                }
+
+                if (nomEvenement != null && !nomEvenement.isEmpty()) {
+                    predicateList.add(criteriaBuilder.equal(
+                            evenementRoot.get(Evenement_.nomEvenement),
+                            nomEvenement.toLowerCase()));
+                }
+
+                if (nomRue != null && !nomRue.isEmpty()) {
+                    predicateList.add(criteriaBuilder.equal(
+                            adresseRueJoin.get(Rue_.nomRue),
+                            nomRue.toLowerCase()));
+                }
+
+                if (numeroDeRue != null && !numeroDeRue.isEmpty()) {
+                    predicateList.add(criteriaBuilder.equal(
+                            evenementAdresseJoin.get(Adresse_.numeroDeRue),
+                            numeroDeRue.toLowerCase()));
+                }
+
+                if (numeroNpa != null && !numeroNpa.isEmpty()) {
+                    predicateList.add(criteriaBuilder.equal(
+                            adresseNpaJoin.get(Npa_.numeroNpa),
+                            numeroNpa.toLowerCase()));
+                }
+
+                if (latitude != null) {
+                    predicateList.add(criteriaBuilder.equal(
+                            evenementRoot.get(Evenement_.latitude),
+                            latitude));
+                }
+
+                if (longitude != null) {
+                    predicateList.add(criteriaBuilder.equal(
+                            evenementRoot.get(Evenement_.longitude),
+                            longitude));
+                }
+
+                if (debut != null) {
+                    setMinimumTime(debut);
+                    predicateList.add(criteriaBuilder.lessThanOrEqualTo(
+                            evenementRoot.get(Evenement_.debut),
+                            debut));
+                }
+
+                if (fin != null) {
+                    setMinimumTime(fin);
+                    predicateList.add(criteriaBuilder.greaterThanOrEqualTo(
+                            evenementRoot.get(Evenement_.fin),
+                            fin));
+                }
+
+                if (details != null && !details.isEmpty()) {
+                    predicateList.add(criteriaBuilder.equal(
+                            evenementRoot.get(Evenement_.details),
+                            details.toLowerCase()));
+                }
+
+                if (nomPriorite != null && !nomPriorite.isEmpty()) {
+                    predicateList.add(criteriaBuilder.equal(
+                            evenementPrioriteJoin.get(Priorite_.nomPriorite),
+                            nomPriorite.toLowerCase()));
+                }
+
+                if (nomStatut != null && !nomStatut.isEmpty()) {
+                    predicateList.add(criteriaBuilder.equal(
+                            evenementStatutJoin.get(Statut_.nomStatut),
+                            nomStatut.toLowerCase()));
+                }
+
+                if (creation != null) {
+                    predicateList.add(criteriaBuilder.greaterThanOrEqualTo(
+                            evenementRoot.get(Evenement_.creation), creation));
+                }
+
+                criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
+                evenementList = hibernate.createQuery(criteriaQuery).getResultList();
+
+                transaction.commit();
             }
-
-            if (nomUtilisateur != null && !nomUtilisateur.isEmpty()) {
-                predicateList.add(criteriaBuilder.equal(
-                        evenementUtilisateurJoin.get(Utilisateur_.nomUtilisateur),
-                        nomUtilisateur.toLowerCase()));
-            }
-
-            if (nomEvenement != null && !nomEvenement.isEmpty()) {
-                predicateList.add(criteriaBuilder.equal(
-                        evenementRoot.get(Evenement_.nomEvenement),
-                        nomEvenement.toLowerCase()));
-            }
-
-            if (nomRue != null && !nomRue.isEmpty()) {
-                predicateList.add(criteriaBuilder.equal(
-                        adresseRueJoin.get(Rue_.nomRue),
-                        nomRue.toLowerCase()));
-            }
-
-            if (numeroDeRue != null && !numeroDeRue.isEmpty()) {
-                predicateList.add(criteriaBuilder.equal(
-                        evenementAdresseJoin.get(Adresse_.numeroDeRue),
-                        numeroDeRue.toLowerCase()));
-            }
-
-            if (numeroNpa != null && !numeroNpa.isEmpty()) {
-                predicateList.add(criteriaBuilder.equal(
-                        adresseNpaJoin.get(Npa_.numeroNpa),
-                        numeroNpa.toLowerCase()));
-            }
-
-            if (latitude != null) {
-                predicateList.add(criteriaBuilder.equal(
-                        evenementRoot.get(Evenement_.latitude),
-                        latitude));
-            }
-
-            if (longitude != null) {
-                predicateList.add(criteriaBuilder.equal(
-                        evenementRoot.get(Evenement_.longitude),
-                        longitude));
-            }
-
-            if (debut != null) {
-                setMinimumTime(debut);
-                predicateList.add(criteriaBuilder.lessThanOrEqualTo(
-                        evenementRoot.get(Evenement_.debut),
-                        debut));
-            }
-
-            if (fin != null) {
-                setMinimumTime(fin);
-                predicateList.add(criteriaBuilder.greaterThanOrEqualTo(
-                        evenementRoot.get(Evenement_.fin),
-                        fin));
-            }
-
-            if (details != null && !details.isEmpty()) {
-                predicateList.add(criteriaBuilder.equal(
-                        evenementRoot.get(Evenement_.details),
-                        details.toLowerCase()));
-            }
-
-            if (nomPriorite != null && !nomPriorite.isEmpty()) {
-                predicateList.add(criteriaBuilder.equal(
-                        evenementPrioriteJoin.get(Priorite_.nomPriorite),
-                        nomPriorite.toLowerCase()));
-            }
-
-            if (nomStatut != null && !nomStatut.isEmpty()) {
-                predicateList.add(criteriaBuilder.equal(
-                        evenementStatutJoin.get(Statut_.nomStatut),
-                        nomStatut.toLowerCase()));
-            }
-
-            if (creation != null) {
-                predicateList.add(criteriaBuilder.greaterThanOrEqualTo(
-                        evenementRoot.get(Evenement_.creation), creation));
-            }
-
-            criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
-            evenementList = hibernate.createQuery(criteriaQuery).getResultList();
-
-            transaction.commit();
         } catch (Exception e) {
             databaseAccess.rollback(e, transaction);
         }
-
-        databaseAccess.close(session);
 
         // Journalise l'état de la transaction et le résultat
         databaseAccess.transactionMessage(transaction);

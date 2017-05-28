@@ -72,38 +72,38 @@ public class RubriqueParentAccess {
     public List<RubriqueParent> get(String nomRubriqueParent) {
         List<RubriqueParent> rubriqueParentList = null;
 
-        Session session = null;
         Transaction transaction = null;
 
         try {
+            Session session;
+
             // Démarre une transaction pour la gestion d'erreur
-            session = hibernate.getSession();
-            transaction = session.beginTransaction();
+            synchronized (session = hibernate.getSession()) {
+                transaction = session.beginTransaction();
 
-            // Définit des critères de sélection pour la requête
-            CriteriaBuilder criteriaBuilder = hibernate.getCriteriaBuilder();
-            CriteriaQuery<RubriqueParent> criteriaQuery = criteriaBuilder
-                    .createQuery(RubriqueParent.class);
-            Root<RubriqueParent> rubriqueParentRoot = criteriaQuery.from(RubriqueParent.class);
-            List<Predicate> predicateList = new ArrayList<>();
+                // Définit des critères de sélection pour la requête
+                CriteriaBuilder criteriaBuilder = hibernate.getCriteriaBuilder();
+                CriteriaQuery<RubriqueParent> criteriaQuery = criteriaBuilder
+                        .createQuery(RubriqueParent.class);
+                Root<RubriqueParent> rubriqueParentRoot = criteriaQuery.from(RubriqueParent.class);
+                List<Predicate> predicateList = new ArrayList<>();
 
-            // Définit seulement les critères de sélection pour la requête des paramètres non null
-            // et non vide
-            if (nomRubriqueParent != null && !nomRubriqueParent.isEmpty()) {
-                predicateList.add(criteriaBuilder.equal(rubriqueParentRoot.get(
-                        RubriqueParent_.nomRubriqueParent),
-                        nomRubriqueParent.toLowerCase()));
+                // Définit seulement les critères de sélection pour la requête des paramètres non null
+                // et non vide
+                if (nomRubriqueParent != null && !nomRubriqueParent.isEmpty()) {
+                    predicateList.add(criteriaBuilder.equal(rubriqueParentRoot.get(
+                            RubriqueParent_.nomRubriqueParent),
+                            nomRubriqueParent.toLowerCase()));
+                }
+
+                criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
+                rubriqueParentList = hibernate.createQuery(criteriaQuery).getResultList();
+
+                transaction.commit();
             }
-
-            criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
-            rubriqueParentList = hibernate.createQuery(criteriaQuery).getResultList();
-
-            transaction.commit();
         } catch (Exception e) {
             databaseAccess.rollback(e, transaction);
         }
-
-        databaseAccess.close(session);
 
         // Journalise l'état de la transaction et le résultat
         databaseAccess.transactionMessage(transaction);

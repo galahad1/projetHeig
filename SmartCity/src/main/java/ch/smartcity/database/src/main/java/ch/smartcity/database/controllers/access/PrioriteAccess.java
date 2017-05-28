@@ -72,43 +72,43 @@ public class PrioriteAccess {
     public List<Priorite> get(String nomPriorite, Integer niveau) {
         List<Priorite> prioriteList = null;
 
-        Session session = null;
         Transaction transaction = null;
 
         try {
+            Session session;
+
             // Démarre une transaction pour la gestion d'erreur
-            session = hibernate.getSession();
-            transaction = session.beginTransaction();
+            synchronized (session = hibernate.getSession()) {
+                transaction = session.beginTransaction();
 
-            // Définit des critères de sélection pour la requête
-            CriteriaBuilder criteriaBuilder = hibernate.getCriteriaBuilder();
-            CriteriaQuery<Priorite> criteriaQuery = criteriaBuilder.createQuery(Priorite.class);
-            Root<Priorite> prioriteRoot = criteriaQuery.from(Priorite.class);
-            List<Predicate> predicateList = new ArrayList<>();
+                // Définit des critères de sélection pour la requête
+                CriteriaBuilder criteriaBuilder = hibernate.getCriteriaBuilder();
+                CriteriaQuery<Priorite> criteriaQuery = criteriaBuilder.createQuery(Priorite.class);
+                Root<Priorite> prioriteRoot = criteriaQuery.from(Priorite.class);
+                List<Predicate> predicateList = new ArrayList<>();
 
-            // Définit seulement les critères de sélection pour la requête des paramètres non null
-            // et non vide
-            if (nomPriorite != null && !nomPriorite.isEmpty()) {
-                predicateList.add(criteriaBuilder.equal(
-                        prioriteRoot.get(Priorite_.nomPriorite),
-                        nomPriorite.toLowerCase()));
+                // Définit seulement les critères de sélection pour la requête des paramètres non null
+                // et non vide
+                if (nomPriorite != null && !nomPriorite.isEmpty()) {
+                    predicateList.add(criteriaBuilder.equal(
+                            prioriteRoot.get(Priorite_.nomPriorite),
+                            nomPriorite.toLowerCase()));
+                }
+
+                if (niveau != null) {
+                    predicateList.add(criteriaBuilder.equal(
+                            prioriteRoot.get(Priorite_.niveau),
+                            niveau));
+                }
+
+                criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
+                prioriteList = hibernate.createQuery(criteriaQuery).getResultList();
+
+                transaction.commit();
             }
-
-            if (niveau != null) {
-                predicateList.add(criteriaBuilder.equal(
-                        prioriteRoot.get(Priorite_.niveau),
-                        niveau));
-            }
-
-            criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
-            prioriteList = hibernate.createQuery(criteriaQuery).getResultList();
-
-            transaction.commit();
         } catch (Exception e) {
             databaseAccess.rollback(e, transaction);
         }
-
-        databaseAccess.close(session);
 
         // Journalise l'état de la transaction et le résultat
         databaseAccess.transactionMessage(transaction);

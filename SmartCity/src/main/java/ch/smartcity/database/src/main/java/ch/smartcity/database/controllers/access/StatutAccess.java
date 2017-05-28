@@ -70,38 +70,38 @@ public class StatutAccess {
     public List<Statut> get(String nomStatut) {
         List<Statut> statutList = null;
 
-        Session session = null;
         Transaction transaction = null;
 
         try {
+            Session session;
+
             // Démarre une transaction pour la gestion d'erreur
-            session = hibernate.getSession();
-            transaction = session.beginTransaction();
+            synchronized (session = hibernate.getSession()) {
+                transaction = session.beginTransaction();
 
-            // Définit des critères de sélection pour la requête
-            CriteriaBuilder criteriaBuilder = hibernate.getCriteriaBuilder();
-            CriteriaQuery<Statut> criteriaQuery = criteriaBuilder
-                    .createQuery(Statut.class);
-            Root<Statut> statutRoot = criteriaQuery.from(Statut.class);
-            List<Predicate> predicateList = new ArrayList<>();
+                // Définit des critères de sélection pour la requête
+                CriteriaBuilder criteriaBuilder = hibernate.getCriteriaBuilder();
+                CriteriaQuery<Statut> criteriaQuery = criteriaBuilder
+                        .createQuery(Statut.class);
+                Root<Statut> statutRoot = criteriaQuery.from(Statut.class);
+                List<Predicate> predicateList = new ArrayList<>();
 
-            // Définit seulement les critères de sélection pour la requête des paramètres non null
-            // et non vide
-            if (nomStatut != null && !nomStatut.isEmpty()) {
-                predicateList.add(criteriaBuilder.equal(statutRoot.get(
-                        Statut_.nomStatut),
-                        nomStatut.toLowerCase()));
+                // Définit seulement les critères de sélection pour la requête des paramètres non null
+                // et non vide
+                if (nomStatut != null && !nomStatut.isEmpty()) {
+                    predicateList.add(criteriaBuilder.equal(statutRoot.get(
+                            Statut_.nomStatut),
+                            nomStatut.toLowerCase()));
+                }
+
+                criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
+                statutList = hibernate.createQuery(criteriaQuery).getResultList();
+
+                transaction.commit();
             }
-
-            criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
-            statutList = hibernate.createQuery(criteriaQuery).getResultList();
-
-            transaction.commit();
         } catch (Exception e) {
             databaseAccess.rollback(e, transaction);
         }
-
-        databaseAccess.close(session);
 
         // Journalise l'état de la transaction et le résultat
         databaseAccess.transactionMessage(transaction);
