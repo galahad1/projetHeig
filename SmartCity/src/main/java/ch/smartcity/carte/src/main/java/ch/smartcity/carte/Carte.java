@@ -29,7 +29,7 @@ public final class Carte {
      * Constructeur de la carte qui initialise le Jcomponent de la carte et lui ajoute un
      * fournisseur de tuile OSM
      *
-     * @throws IOException
+     * @throws IOException si la carte n'a pas pu se construire à cause du niveau de zoom
      */
     public Carte() throws IOException {
         carteTuilesComponent = new CarteTuilesComponent(ZOOM_INITIAL);
@@ -63,12 +63,12 @@ public final class Carte {
         final JPanel copyrightPanel = createCopyrightPanel();
 
         final JLayeredPane layeredPane = new JLayeredPane();
-        //  layeredPane.setPreferredSize(new Dimension(LARGEUR_COMPOSANT, HAUTEUR_COMPOSANT));
 
         layeredPane.add(viewPort, new Integer(0));
         layeredPane.add(copyrightPanel, new Integer(1));
 
-        // permet d'adapter la dimension du viewPort
+        // permet d'adapter les dimension à la taille du panel prévu pour
+        // la carte dans la fenêtre principale
         layeredPane.addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
