@@ -179,7 +179,7 @@ public class ConfianceAccess {
      *
      * @param idConfiance    identifiant du lien de confiance à mettre à jour
      * @param utilisateur    utilisateur du lien de confiance à mettre à jour
-     * @param rubriqueEnfant événement du lien de confiance à mettre à jour
+     * @param rubriqueEnfant évènement du lien de confiance à mettre à jour
      */
     public void update(Integer idConfiance,
                        Utilisateur utilisateur,
@@ -202,7 +202,7 @@ public class ConfianceAccess {
      * Chaque paramètre préfixés de new de valeurs null ne se mettre pas à jour
      *
      * @param oldUtilisateur    ancien utilisateur des liens de confiance à mettre à jour
-     * @param oldRubriqueEnfant ancien événement des liens de confiance à mettre à jour
+     * @param oldRubriqueEnfant ancien évènement des liens de confiance à mettre à jour
      * @param creation          date de création des liens de confiance à mettre à jour
      * @param newUtilisateur    nouvel utilisateur des liens de confiance à mettre à jour
      * @param newRubriqueEnfant nouvelle rubrique enfant des liens de confiance à mettre à jour

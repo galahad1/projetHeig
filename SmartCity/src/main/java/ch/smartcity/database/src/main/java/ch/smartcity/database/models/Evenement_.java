@@ -6,7 +6,7 @@ import javax.persistence.metamodel.StaticMetamodel;
 import java.util.Calendar;
 
 /**
- * Modélise les attributs de la table événement de la base de données
+ * Modélise les attributs de la table évènement de la base de données
  *
  * @author Lassalle Loan
  * @since 25.03.2017

@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 /**
- * Fournit l'accès aux événements de la base de données
+ * Fournit l'accès aux évènements de la base de données
  *
  * @author Lassalle Loan
  * @since 25.03.2017
@@ -43,7 +43,7 @@ public class EvenementAccess {
 
     /**
      * Utilisé pour définir les paramètres de la requête en fonction de la valeurs des paramètres
-     * d'un événement
+     * d'un évènement
      */
     private String nomRubriqueEnfant;
     private String nomUtilisateur;
@@ -70,57 +70,57 @@ public class EvenementAccess {
     }
 
     /**
-     * Obtient la liste des événements actif, c'est à dire, les événements possédant le statut
+     * Obtient la liste des évènements actif, c'est à dire, les évènements possédant le statut
      * Statut_.TRAITE et une date de fin inférieure ou égale à la date courante
      *
-     * @return liste des événements actif en fonction des paramètres de sélection
+     * @return liste des évènements actif en fonction des paramètres de sélection
      */
     public List<Evenement> getActif() {
         return get(null, null, Calendar.getInstance(), Statut_.TRAITE);
     }
 
     /**
-     * Obtient la liste des événements actif, c'est à dire, les événements possédant un nom de la
+     * Obtient la liste des évènements actif, c'est à dire, les évènements possédant un nom de la
      * rubrique enfant fournit, une date de fin inférieure ou égale à la date fournit et le statut
      * Statut_.TRAITE
      *
-     * @param nomRubriqueEnfant nom de la rubrique enfant des événements à obtenir
-     * @param date              date de référence des événements à obtenir
-     * @return liste des événements actif en fonction des paramètres de sélection
+     * @param nomRubriqueEnfant nom de la rubrique enfant des évènements à obtenir
+     * @param date              date de référence des évènements à obtenir
+     * @return liste des évènements actif en fonction des paramètres de sélection
      */
     public List<Evenement> getActif(String nomRubriqueEnfant, Calendar date) {
         return get(nomRubriqueEnfant, date, date, Statut_.TRAITE);
     }
 
     /**
-     * Obtient la liste des événements attente, c'est à dire, les événements possédant le statut
+     * Obtient la liste des évènements attente, c'est à dire, les évènements possédant le statut
      * Statut_.EN_ATTENTE et une date de fin inférieure ou égale à la date courante
      *
-     * @return liste des événements en attente en fonction des paramètres de sélection
+     * @return liste des évènements en attente en fonction des paramètres de sélection
      */
     public List<Evenement> getEnAttente() {
         return get(null, null, Calendar.getInstance(), Statut_.EN_ATTENTE);
     }
 
     /**
-     * Obtient la liste des événements en attente, c'est à dire, les événements possédant un nom de la
+     * Obtient la liste des évènements en attente, c'est à dire, les évènements possédant un nom de la
      * rubrique enfant fournit, une date de fin inférieure ou égale à la date fournit et le statut
      * Statut_.EN_ATTENTE
      *
-     * @param nomRubriqueEnfant nom de la rubrique enfant des événements à obtenir
-     * @param date              date de référence des événements à obtenir
-     * @return liste des événements en attente en fonction des paramètres de sélection
+     * @param nomRubriqueEnfant nom de la rubrique enfant des évènements à obtenir
+     * @param date              date de référence des évènements à obtenir
+     * @return liste des évènements en attente en fonction des paramètres de sélection
      */
     public List<Evenement> getEnAttente(String nomRubriqueEnfant, Calendar date) {
         return get(nomRubriqueEnfant, date, date, Statut_.EN_ATTENTE);
     }
 
     /**
-     * Obtient la liste des événements stockés au sein de la base de données en fonction des
+     * Obtient la liste des évènements stockés au sein de la base de données en fonction des
      * paramètres
      *
-     * @param nomRubriqueEnfant nom de la rubrique enfant des événements à obtenir
-     * @return liste des événements stockés au sein de la base de données en fonction des
+     * @param nomRubriqueEnfant nom de la rubrique enfant des évènements à obtenir
+     * @return liste des évènements stockés au sein de la base de données en fonction des
      * paramètres
      */
     public List<Evenement> get(String nomRubriqueEnfant) {
@@ -141,14 +141,14 @@ public class EvenementAccess {
     }
 
     /**
-     * Obtient la liste des événements stockés au sein de la base de données en fonction des
+     * Obtient la liste des évènements stockés au sein de la base de données en fonction des
      * paramètres
      *
-     * @param nomRubriqueEnfant nom de la rubrique enfant des événements à obtenir
-     * @param debut             date de début des événements à obtenir
-     * @param fin               date de fin des événements à obtenir
-     * @param nomStatut         nom du statut des événements à obtenir
-     * @return la liste des événements en fonction des paramètres de sélection
+     * @param nomRubriqueEnfant nom de la rubrique enfant des évènements à obtenir
+     * @param debut             date de début des évènements à obtenir
+     * @param fin               date de fin des évènements à obtenir
+     * @param nomStatut         nom du statut des évènements à obtenir
+     * @return la liste des évènements en fonction des paramètres de sélection
      */
     public List<Evenement> get(String nomRubriqueEnfant,
                                Calendar debut,
@@ -177,7 +177,7 @@ public class EvenementAccess {
 
             if (success) {
 
-                // Obtient l'événement correspondant au paramètres de sélection
+                // Obtient l'évènement correspondant au paramètres de sélection
                 evenementList = get(
                         rubriqueEnfant,
                         null,
@@ -201,23 +201,23 @@ public class EvenementAccess {
     }
 
     /**
-     * Obtient la liste des événements stockés au sein de la base de données en fonction des
+     * Obtient la liste des évènements stockés au sein de la base de données en fonction des
      * paramètres
      * Chaque paramètre différent de null sera utilisé comme critère de recherche
      *
-     * @param rubriqueEnfant rubrique enfant des événements à obtenir
-     * @param utilisateur    utilisateur des événements à obtenir
-     * @param nomEvenement   nom d'événement des événements à obtenir
-     * @param adresse        adresse des événements à obtenir
-     * @param latitude       latitude des événements à obtenir
-     * @param longitude      longitude des événements à obtenir
-     * @param debut          date de début des événements à obtenir
-     * @param fin            date de fin des événements à obtenir
-     * @param details        détails des événements à obtenir
-     * @param priorite       priorité des événements à obtenir
-     * @param statut         statut des événements à obtenir
-     * @param creation       date de création des événements à obtenir
-     * @return liste des événements stockés au sein de la base de données en fonction des paramètres
+     * @param rubriqueEnfant rubrique enfant des évènements à obtenir
+     * @param utilisateur    utilisateur des évènements à obtenir
+     * @param nomEvenement   nom d'évènement des évènements à obtenir
+     * @param adresse        adresse des évènements à obtenir
+     * @param latitude       latitude des évènements à obtenir
+     * @param longitude      longitude des évènements à obtenir
+     * @param debut          date de début des évènements à obtenir
+     * @param fin            date de fin des évènements à obtenir
+     * @param details        détails des évènements à obtenir
+     * @param priorite       priorité des évènements à obtenir
+     * @param statut         statut des évènements à obtenir
+     * @param creation       date de création des évènements à obtenir
+     * @return liste des évènements stockés au sein de la base de données en fonction des paramètres
      */
     public List<Evenement> get(RubriqueEnfant rubriqueEnfant,
                                Utilisateur utilisateur,
@@ -233,7 +233,7 @@ public class EvenementAccess {
                                Calendar creation) {
 
         // Définit les paramètres de la requête en fonction de la valeurs des paramètres de
-        // l'événement
+        // l'évènement
         checkNull(rubriqueEnfant, utilisateur, adresse, priorite, statut);
         return get(nomRubriqueEnfant,
                 nomUtilisateur,
@@ -252,25 +252,25 @@ public class EvenementAccess {
     }
 
     /**
-     * Obtient la liste des événements stockés au sein de la base de données en fonction des
+     * Obtient la liste des évènements stockés au sein de la base de données en fonction des
      * paramètres
      * Chaque paramètre différent de null sera utilisé comme critère de recherche
      *
-     * @param nomRubriqueEnfant nom de la rubrique enfant des événements à obtenir
-     * @param nomUtilisateur    nom de l'utilisateur des événements à obtenir
-     * @param nomEvenement      nom d'événement des événements à obtenir
-     * @param nomRue            nom de la rue de l'adresse des événements à obtenir
-     * @param numeroDeRue       numéro de rue de l'adresse des événements à obtenir
-     * @param numeroNpa         numéro npa de l'adresse des événements à obtenir
-     * @param latitude          latitude des événements à obtenir
-     * @param longitude         longitude des événements à obtenir
-     * @param debut             date de début des événements à obtenir
-     * @param fin               date de fin des événements à obtenir
-     * @param details           détails des événements à obtenir
-     * @param nomPriorite       nom de la priorité des événements à obtenir
-     * @param nomStatut         nom du statut des événements à obtenir
-     * @param creation          date de création des événements à obtenir
-     * @return liste des événements stockés au sein de la base de données en fonction des paramètres
+     * @param nomRubriqueEnfant nom de la rubrique enfant des évènements à obtenir
+     * @param nomUtilisateur    nom de l'utilisateur des évènements à obtenir
+     * @param nomEvenement      nom d'évènement des évènements à obtenir
+     * @param nomRue            nom de la rue de l'adresse des évènements à obtenir
+     * @param numeroDeRue       numéro de rue de l'adresse des évènements à obtenir
+     * @param numeroNpa         numéro npa de l'adresse des évènements à obtenir
+     * @param latitude          latitude des évènements à obtenir
+     * @param longitude         longitude des évènements à obtenir
+     * @param debut             date de début des évènements à obtenir
+     * @param fin               date de fin des évènements à obtenir
+     * @param details           détails des évènements à obtenir
+     * @param nomPriorite       nom de la priorité des évènements à obtenir
+     * @param nomStatut         nom du statut des évènements à obtenir
+     * @param creation          date de création des évènements à obtenir
+     * @return liste des évènements stockés au sein de la base de données en fonction des paramètres
      */
     public List<Evenement> get(String nomRubriqueEnfant,
                                String nomUtilisateur,
@@ -426,21 +426,21 @@ public class EvenementAccess {
     }
 
     /**
-     * Stocke l'événement définit par les paramètres
+     * Stocke l'évènement définit par les paramètres
      *
-     * @param nomRubriqueEnfant nom de la rubrique enfant de l'événement à stocker
-     * @param idUtilisateur     identifiant de l'utilisateur de l'événement à stocker
-     * @param nomEvenement      nom d'événement de l'événement à stocker
-     * @param nomRue            nom de la rue de l'adresse de l'événement à stocker
-     * @param numeroDeRue       numéro de rue de l'adresse de l'événement à stocker
-     * @param numeroNpa         numéro npa de l'adresse de l'événement à stocker
-     * @param latitude          latitude de l'événement à stocker
-     * @param longitude         longitude de l'événement à stocker
-     * @param debut             date de début de l'événement à stocker
-     * @param fin               date de fin de l'événement à stocker
-     * @param details           détails de l'événement à stocker
-     * @param nomPriorite       nom de la priorité de l'événement à stocker
-     * @param nomStatut         nom du statut de l'événement à stocker
+     * @param nomRubriqueEnfant nom de la rubrique enfant de l'évènement à stocker
+     * @param idUtilisateur     identifiant de l'utilisateur de l'évènement à stocker
+     * @param nomEvenement      nom d'évènement de l'évènement à stocker
+     * @param nomRue            nom de la rue de l'adresse de l'évènement à stocker
+     * @param numeroDeRue       numéro de rue de l'adresse de l'évènement à stocker
+     * @param numeroNpa         numéro npa de l'adresse de l'évènement à stocker
+     * @param latitude          latitude de l'évènement à stocker
+     * @param longitude         longitude de l'évènement à stocker
+     * @param debut             date de début de l'évènement à stocker
+     * @param fin               date de fin de l'évènement à stocker
+     * @param details           détails de l'évènement à stocker
+     * @param nomPriorite       nom de la priorité de l'évènement à stocker
+     * @param nomStatut         nom du statut de l'évènement à stocker
      */
     public void save(String nomRubriqueEnfant,
                      Integer idUtilisateur,
@@ -558,14 +558,14 @@ public class EvenementAccess {
     }
 
     /**
-     * Stocke l'événement définit par les paramètres
+     * Stocke l'évènement définit par les paramètres
      *
-     * @param rubriqueEnfant rubrique enfant de l'événement à stocker
-     * @param utilisateur    utilisateur de l'événement à stocker
-     * @param nomEvenement   nom d'événement de l'événement à stocker
-     * @param debut          date de début de l'événement à stocker
-     * @param priorite       priorité de l'événement à stocker
-     * @param statut         statut de l'événement à stocker
+     * @param rubriqueEnfant rubrique enfant de l'évènement à stocker
+     * @param utilisateur    utilisateur de l'évènement à stocker
+     * @param nomEvenement   nom d'évènement de l'évènement à stocker
+     * @param debut          date de début de l'évènement à stocker
+     * @param priorite       priorité de l'évènement à stocker
+     * @param statut         statut de l'évènement à stocker
      */
     public void save(RubriqueEnfant rubriqueEnfant,
                      Utilisateur utilisateur,
@@ -583,19 +583,19 @@ public class EvenementAccess {
     }
 
     /**
-     * Stocke l'événement définit par les paramètres
+     * Stocke l'évènement définit par les paramètres
      *
-     * @param rubriqueEnfant rubrique enfant de l'événement à stocker
-     * @param utilisateur    utilisateur de l'événement à stocker
-     * @param nomEvenement   nom d'événement de l'événement à stocker
-     * @param adresse        adresse de l'événement à stocker
-     * @param latitude       latitude de l'événement à stocker
-     * @param longitude      longitude de l'événement à stocker
-     * @param debut          date de début de l'événement à stocker
-     * @param fin            date de fin de l'événement à stocker
-     * @param details        détails de l'événement à stocker
-     * @param priorite       priorité de l'événement à stocker
-     * @param statut         statut de l'événement à stocker
+     * @param rubriqueEnfant rubrique enfant de l'évènement à stocker
+     * @param utilisateur    utilisateur de l'évènement à stocker
+     * @param nomEvenement   nom d'évènement de l'évènement à stocker
+     * @param adresse        adresse de l'évènement à stocker
+     * @param latitude       latitude de l'évènement à stocker
+     * @param longitude      longitude de l'évènement à stocker
+     * @param debut          date de début de l'évènement à stocker
+     * @param fin            date de fin de l'évènement à stocker
+     * @param details        détails de l'évènement à stocker
+     * @param priorite       priorité de l'évènement à stocker
+     * @param statut         statut de l'évènement à stocker
      */
     public void save(RubriqueEnfant rubriqueEnfant,
                      Utilisateur utilisateur,
@@ -623,9 +623,9 @@ public class EvenementAccess {
     }
 
     /**
-     * Met à jour l'événement correspondant aux paramètres
+     * Met à jour l'évènement correspondant aux paramètres
      *
-     * @param evenement événement à mettre à jour
+     * @param evenement évènement à mettre à jour
      */
     public void update(Evenement evenement) {
         update(evenement.getIdEvenement(),
@@ -643,21 +643,21 @@ public class EvenementAccess {
     }
 
     /**
-     * Met à jour l'événement correspondant aux paramètres
+     * Met à jour l'évènement correspondant aux paramètres
      * Chaque paramètre de valeurs null ne se mettre pas à jour
      *
-     * @param idEvenement    identifiant de l'événement à mettre à jour
-     * @param rubriqueEnfant rubrique enfant des événements à mettre à jour
-     * @param utilisateur    utilisateur des événements à mettre à jour
-     * @param nomEvenement   nom d'événement des événements à mettre à jour
-     * @param adresse        adresse des événements à mettre à jour
-     * @param latitude       latitude des événements à mettre à jour
-     * @param longitude      longitude des événements à mettre à jour
-     * @param debut          date de début des événements à mettre à jour
-     * @param fin            date de fin des événements à mettre à jour
-     * @param details        détails des événements à mettre à jour
-     * @param priorite       priorité des événements à mettre à jour
-     * @param statut         statut des événements à mettre à jour
+     * @param idEvenement    identifiant de l'évènement à mettre à jour
+     * @param rubriqueEnfant rubrique enfant des évènements à mettre à jour
+     * @param utilisateur    utilisateur des évènements à mettre à jour
+     * @param nomEvenement   nom d'évènement des évènements à mettre à jour
+     * @param adresse        adresse des évènements à mettre à jour
+     * @param latitude       latitude des évènements à mettre à jour
+     * @param longitude      longitude des évènements à mettre à jour
+     * @param debut          date de début des évènements à mettre à jour
+     * @param fin            date de fin des évènements à mettre à jour
+     * @param details        détails des évènements à mettre à jour
+     * @param priorite       priorité des évènements à mettre à jour
+     * @param statut         statut des évènements à mettre à jour
      */
     public void update(Integer idEvenement,
                        RubriqueEnfant rubriqueEnfant,
@@ -676,7 +676,7 @@ public class EvenementAccess {
         // Vérifie si la requête a abouti
         if (evenement != null) {
 
-            // Affecte les nouveaux attributs à l'événement
+            // Affecte les nouveaux attributs à l'évènement
             setAll(evenement,
                     rubriqueEnfant,
                     utilisateur,
@@ -694,34 +694,34 @@ public class EvenementAccess {
     }
 
     /**
-     * Met à jour les événements correspondant aux paramètres préfixés de old en leur
+     * Met à jour les évènements correspondant aux paramètres préfixés de old en leur
      * affectant les paramètres préfixés de new
      * Chaque paramètre préfixés de old différent de null sera utilisé comme critère de recherche
      * Chaque paramètre préfixés de new de valeurs null ne se mettre pas à jour
      *
-     * @param oldRubriqueEnfant ancienne rubrique enfant des événements à mettre à jour
-     * @param oldUtilisateur    ancien nom d'utilisateur des événements à mettre à jour
-     * @param oldNomEvenement   ancien nom d'événement des événements à mettre à jour
-     * @param oldAdresse        ancienne adresse des événements à mettre à jour
-     * @param oldLatitude       ancienne latitude des événements à mettre à jour
-     * @param oldLongitude      ancienne longitude des événements à mettre à jour
-     * @param oldDebut          ancienne date de début des événements à mettre à jour
-     * @param oldFin            ancienne date de fin des événements à mettre à jour
-     * @param oldDetails        ancien détails des événements à mettre à jour
-     * @param oldPriorite       ancienne priorité des événements à mettre à jour
-     * @param oldStatut         ancien statut des événements à mettre à jour
-     * @param creation          ancienne date de création des événements à mettre à jour
-     * @param newRubriqueEnfant nouvelle rubrique enfant des événements à mettre à jour
-     * @param newUtilisateur    nouveau nom d'utilisateur des événements à mettre à jour
-     * @param newNomEvenement   nouveau nom d'événement des événements à mettre à jour
-     * @param newAdresse        nouvelle adresse des événements à mettre à jour
-     * @param newLatitude       nouvelle latitude des événements à mettre à jour
-     * @param newLongitude      nouvelle longitude des événements à mettre à jour
-     * @param newDebut          nouvelle date de début des événements à mettre à jour
-     * @param newFin            nouvelle date de fin des événements à mettre à jour
-     * @param newDetails        nouveaux détails des événements à mettre à jour
-     * @param newPriorite       nouvelle priorité des événements à mettre à jour
-     * @param newStatut         nouveau statut des événements à mettre à jour
+     * @param oldRubriqueEnfant ancienne rubrique enfant des évènements à mettre à jour
+     * @param oldUtilisateur    ancien nom d'utilisateur des évènements à mettre à jour
+     * @param oldNomEvenement   ancien nom d'évènement des évènements à mettre à jour
+     * @param oldAdresse        ancienne adresse des évènements à mettre à jour
+     * @param oldLatitude       ancienne latitude des évènements à mettre à jour
+     * @param oldLongitude      ancienne longitude des évènements à mettre à jour
+     * @param oldDebut          ancienne date de début des évènements à mettre à jour
+     * @param oldFin            ancienne date de fin des évènements à mettre à jour
+     * @param oldDetails        ancien détails des évènements à mettre à jour
+     * @param oldPriorite       ancienne priorité des évènements à mettre à jour
+     * @param oldStatut         ancien statut des évènements à mettre à jour
+     * @param creation          ancienne date de création des évènements à mettre à jour
+     * @param newRubriqueEnfant nouvelle rubrique enfant des évènements à mettre à jour
+     * @param newUtilisateur    nouveau nom d'utilisateur des évènements à mettre à jour
+     * @param newNomEvenement   nouveau nom d'évènement des évènements à mettre à jour
+     * @param newAdresse        nouvelle adresse des évènements à mettre à jour
+     * @param newLatitude       nouvelle latitude des évènements à mettre à jour
+     * @param newLongitude      nouvelle longitude des évènements à mettre à jour
+     * @param newDebut          nouvelle date de début des évènements à mettre à jour
+     * @param newFin            nouvelle date de fin des évènements à mettre à jour
+     * @param newDetails        nouveaux détails des évènements à mettre à jour
+     * @param newPriorite       nouvelle priorité des évènements à mettre à jour
+     * @param newStatut         nouveau statut des évènements à mettre à jour
      */
     public void update(RubriqueEnfant oldRubriqueEnfant,
                        Utilisateur oldUtilisateur,
@@ -763,7 +763,7 @@ public class EvenementAccess {
         // Vérifie si la requête a abouti
         if (evenementList != null) {
 
-            // Affecte les nouveaux attributs aux événements
+            // Affecte les nouveaux attributs aux évènements
             for (Evenement evenement : evenementList) {
                 setAll(evenement,
                         newRubriqueEnfant,
@@ -784,9 +784,9 @@ public class EvenementAccess {
     }
 
     /**
-     * Supprime l'événement en paramètres, c'est à dire, ne sera plus visible comme actif
+     * Supprime l'évènement en paramètres, c'est à dire, ne sera plus visible comme actif
      *
-     * @param evenement événement à supprimer
+     * @param evenement évènement à supprimer
      */
     public void delete(Evenement evenement) {
         Calendar calendar = Calendar.getInstance();
@@ -796,21 +796,21 @@ public class EvenementAccess {
     }
 
     /**
-     * Supprime les événements correspondant aux paramètres
+     * Supprime les évènements correspondant aux paramètres
      * Chaque paramètre différent de null sera utilisé comme critère de recherche
      *
-     * @param rubriqueEnfant rubrique enfant des événements à supprimer
-     * @param utilisateur    utilisateur des événements à supprimer
-     * @param nomEvenement   nom des événement des événements à supprimer
-     * @param adresse        adresse des événements à supprimer
-     * @param latitude       latitude des événements à supprimer
-     * @param longitude      longitude des événements à supprimer
-     * @param debut          date de début des événements à supprimer
-     * @param fin            date de fin des événements à supprimer
-     * @param details        détails des événements à supprimer
-     * @param priorite       nom de la priorité des événements à supprimer
-     * @param statut         nom du statut des événements à supprimer
-     * @param creation       date de création des événements à supprimer
+     * @param rubriqueEnfant rubrique enfant des évènements à supprimer
+     * @param utilisateur    utilisateur des évènements à supprimer
+     * @param nomEvenement   nom des évènement des évènements à supprimer
+     * @param adresse        adresse des évènements à supprimer
+     * @param latitude       latitude des évènements à supprimer
+     * @param longitude      longitude des évènements à supprimer
+     * @param debut          date de début des évènements à supprimer
+     * @param fin            date de fin des évènements à supprimer
+     * @param details        détails des évènements à supprimer
+     * @param priorite       nom de la priorité des évènements à supprimer
+     * @param statut         nom du statut des évènements à supprimer
+     * @param creation       date de création des évènements à supprimer
      */
     public void delete(RubriqueEnfant rubriqueEnfant,
                        Utilisateur utilisateur,
@@ -827,7 +827,7 @@ public class EvenementAccess {
 
 
         // Définit les paramètres de la requête en fonction de la valeurs des paramètres de
-        // l'événement
+        // l'évènement
         checkNull(rubriqueEnfant, utilisateur, adresse, priorite, statut);
         delete(nomRubriqueEnfant,
                 nomUtilisateur,
@@ -846,22 +846,22 @@ public class EvenementAccess {
     }
 
     /**
-     * Supprime les événements correspondant aux paramètres
+     * Supprime les évènements correspondant aux paramètres
      * Chaque paramètre différent de null sera utilisé comme critère de recherche
      *
-     * @param nomRubriqueEnfant nom de la rubrique enfant des événements à supprimer
-     * @param nomUtilisateur    nom de l'utilisateur des événements à supprimer
-     * @param nomEvenement      nom des événements à supprimer
-     * @param nomRue            nom de la rue de l'adresse des événements à supprimer
-     * @param numeroDeRue       numéro de rue de l'adresse des événements à supprimer
-     * @param numeroNpa         numéro npa de l'adresse des événements à supprimer
-     * @param latitude          latitude des événements à supprimer
-     * @param longitude         longitude des événements à supprimer
-     * @param debut             date de début des événements à supprimer
-     * @param fin               date de fin des événements à supprimer
-     * @param details           détails des événements à supprimer
-     * @param nomPriorite       nom de la priorité des événements à supprimer
-     * @param nomStatut         nom du statut des événements à supprimer
+     * @param nomRubriqueEnfant nom de la rubrique enfant des évènements à supprimer
+     * @param nomUtilisateur    nom de l'utilisateur des évènements à supprimer
+     * @param nomEvenement      nom des évènements à supprimer
+     * @param nomRue            nom de la rue de l'adresse des évènements à supprimer
+     * @param numeroDeRue       numéro de rue de l'adresse des évènements à supprimer
+     * @param numeroNpa         numéro npa de l'adresse des évènements à supprimer
+     * @param latitude          latitude des évènements à supprimer
+     * @param longitude         longitude des évènements à supprimer
+     * @param debut             date de début des évènements à supprimer
+     * @param fin               date de fin des évènements à supprimer
+     * @param details           détails des évènements à supprimer
+     * @param nomPriorite       nom de la priorité des évènements à supprimer
+     * @param nomStatut         nom du statut des évènements à supprimer
      */
     public void delete(String nomRubriqueEnfant,
                        String nomUtilisateur,
@@ -895,20 +895,20 @@ public class EvenementAccess {
     }
 
     /**
-     * Affecte les paramètres de l'événement si ils ne sont pas null
+     * Affecte les paramètres de l'évènement si ils ne sont pas null
      *
-     * @param evenement      événement dont il faut définir les paramètres
-     * @param rubriqueEnfant rubrique enfant de l'événement
-     * @param utilisateur    utilisateur de l'événement
-     * @param nomEvenement   nom de l'événement
-     * @param adresse        adresse de l'événement
-     * @param latitude       latitude de l'événement
-     * @param longitude      longitude de l'événement
-     * @param debut          date début de l'événement
-     * @param fin            date de fin de l'événement
-     * @param details        détails de l'événement
-     * @param priorite       priorite de l'événement
-     * @param statut         statut de l'événement
+     * @param evenement      évènement dont il faut définir les paramètres
+     * @param rubriqueEnfant rubrique enfant de l'évènement
+     * @param utilisateur    utilisateur de l'évènement
+     * @param nomEvenement   nom de l'évènement
+     * @param adresse        adresse de l'évènement
+     * @param latitude       latitude de l'évènement
+     * @param longitude      longitude de l'évènement
+     * @param debut          date début de l'évènement
+     * @param fin            date de fin de l'évènement
+     * @param details        détails de l'évènement
+     * @param priorite       priorite de l'évènement
+     * @param statut         statut de l'évènement
      */
     private void setAll(Evenement evenement,
                         RubriqueEnfant rubriqueEnfant,
@@ -968,7 +968,7 @@ public class EvenementAccess {
     }
 
     /**
-     * Définit les paramètres de la requête en fonction de la valeurs des paramètres de l'événement
+     * Définit les paramètres de la requête en fonction de la valeurs des paramètres de l'évènement
      *
      * @param rubriqueEnfant rubrique enfant à vérifier
      * @param utilisateur    utilisateur à vérifier

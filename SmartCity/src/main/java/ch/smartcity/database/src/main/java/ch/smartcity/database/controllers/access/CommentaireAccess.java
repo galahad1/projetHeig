@@ -69,7 +69,7 @@ public class CommentaireAccess {
      * paramètres
      * Chaque paramètre différent de null sera utilisé comme critère de recherche
      *
-     * @param evenement   événement des commentaires à obtenir
+     * @param evenement   évènement des commentaires à obtenir
      * @param utilisateur utilisateur des commentaires à obtenir
      * @param commentaire commentaire texte des commentaires à obtenir
      * @param creation    date de création des commentaires à otbenir
@@ -92,7 +92,7 @@ public class CommentaireAccess {
      * paramètres
      * Chaque paramètre différent de null sera utilisé comme critère de recherche
      *
-     * @param nomEvenement   nom de l'événement des commentaires à obtenir
+     * @param nomEvenement   nom de l'évènement des commentaires à obtenir
      * @param nomUtilisateur nom de l'utilisateur des commentaires à obtenir
      * @param commentaire    commentaire texte des commentaires à obtenir
      * @param creation       date de création des commentaires à otbenir
@@ -177,7 +177,7 @@ public class CommentaireAccess {
     /**
      * Stocke le commentaire définit par les paramètres
      *
-     * @param evenement   événement du commentaire à stocker
+     * @param evenement   évènement du commentaire à stocker
      * @param utilisateur utilisateur du commentaire à stocker
      * @param commentaire commentaire texte du commentaire à stocker
      */
@@ -190,7 +190,7 @@ public class CommentaireAccess {
      * Chaque paramètre de valeurs null ne se mettre pas à jour
      *
      * @param idCommentaire identifiant du commentaire à mettre à jour
-     * @param evenement     événement du commentaire à mettre à jour
+     * @param evenement     évènement du commentaire à mettre à jour
      * @param utilisateur   utilisateur du commentaire à mettre à jour
      * @param commentaire   commentaire texte du commentaire à mettre à jour
      */
@@ -215,11 +215,11 @@ public class CommentaireAccess {
      * Chaque paramètre préfixés de old différent de null sera utilisé comme critère de recherche
      * Chaque paramètre préfixés de new de valeurs null ne se mettre pas à jour
      *
-     * @param oldEvenement   ancien événement des commentaires à mettre à jour
+     * @param oldEvenement   ancien évènement des commentaires à mettre à jour
      * @param oldUtilisateur ancien utilisateur des commentaires à mettre à jour
      * @param oldCommentaire ancien commentaire texte des commentaires à mettre à jour
      * @param creation       date de création des commentaires à mettre à jour
-     * @param newEvenement   nouveau événement des commentaires à mettre à jour
+     * @param newEvenement   nouveau évènement des commentaires à mettre à jour
      * @param newUtilisateur nouveau utilisateur des commentaires à mettre à jour
      * @param newCommentaire nouveau commentaire texte des commentaires à mettre à jour
      */
@@ -251,7 +251,7 @@ public class CommentaireAccess {
      * Supprime les commentaires correspondant aux paramètres
      * Chaque paramètre différent de null sera utilisé comme critère de recherche
      *
-     * @param evenement   événement des commentaires à supprimer
+     * @param evenement   évènement des commentaires à supprimer
      * @param utilisateur utilisateur des commentaires à supprimer
      * @param commentaire commentaire texte des commentaires à supprimer
      * @param creation    date de création des commentaires à supprimer
@@ -271,7 +271,7 @@ public class CommentaireAccess {
      * Supprime les commentaires correspondant aux paramètres
      * Chaque paramètre différent de null sera utilisé comme critère de recherche
      *
-     * @param nomEvenement   nom de l'événement des commentaires à supprimer
+     * @param nomEvenement   nom de l'évènement des commentaires à supprimer
      * @param nomUtilisateur nom de l'utilisateur des commentaires à supprimer
      * @param commentaire    commentaire texte des commentaires à supprimer
      * @param creation       date de création des commentaires à supprimer
@@ -287,7 +287,7 @@ public class CommentaireAccess {
      * Affecte les paramètres au commentaire si ils ne sont pas null
      *
      * @param commentaire    commentaire dont il faut définir les paramètres
-     * @param evenement      événement du commenaire
+     * @param evenement      évènement du commenaire
      * @param utilisateur    utilisateur du commenaire
      * @param strCommentaire commentaire texte du commenaire
      */

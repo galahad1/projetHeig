@@ -8,7 +8,7 @@ import java.util.Calendar;
 import java.util.Set;
 
 /**
- * Modélise un événement au sein de la base de données
+ * Modélise un évènement au sein de la base de données
  *
  * @author Lassalle Loan
  * @since 25.03.2017
@@ -167,7 +167,7 @@ public class Evenement implements Serializable {
     }
 
     public void setDetails(String details) {
-        this.details = details.toLowerCase();
+        this.details = details != null ? details.toLowerCase() : null;
     }
 
     public Priorite getPriorite() {
