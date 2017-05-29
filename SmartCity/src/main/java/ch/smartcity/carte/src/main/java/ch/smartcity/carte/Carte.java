@@ -3,7 +3,6 @@ package ch.smartcity.carte;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.IOException;
 import java.util.ArrayList;
 
 import static java.lang.Math.pow;
@@ -29,9 +28,9 @@ public final class Carte {
      * Constructeur de la carte qui initialise le Jcomponent de la carte et lui ajoute un
      * fournisseur de tuile OSM
      *
-     * @throws IOException si la carte n'a pas pu se construire à cause du niveau de zoom
+     * @throws IllegalArgumentException si la carte n'a pas pu se construire à cause du niveau de zoom
      */
-    public Carte() throws IOException {
+    public Carte() throws IllegalArgumentException {
         carteTuilesComponent = new CarteTuilesComponent(ZOOM_INITIAL);
         FournisseurTuile fournisseurTuileOSM =
                 new FournisseurTuileCache(new FournisseurTuileOSM(URL_TUILE_OSM));
