@@ -56,9 +56,9 @@ public final class TuileCache {
      * chiffres pour la coordonnée x et autant pour la coordonnées y
      * pour en faire une clé du HashMap
      *
-     * @param zoom
-     * @param x
-     * @param y
+     * @param zoom Niveau de zoom de la carte pour la tuile
+     * @param x    Coordonnée x de la tuile
+     * @param y    Coordonnée y de la tuile
      * @return La clé du Hashmap pour retrouvé la tuile
      */
     private long getCleCoordonnee(int zoom, int x, int y) {

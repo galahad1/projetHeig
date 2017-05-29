@@ -15,7 +15,6 @@ import javax.swing.LayoutStyle.ComponentPlacement;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 import java.util.List;
@@ -251,7 +250,7 @@ public class FenetrePrincipale {
             try {
                 carte = new Carte();
                 panelCarte.add(carte.createCenterPanel());
-            } catch (IOException e) {
+            } catch (IllegalArgumentException e) {
                 e.printStackTrace();
             }
         }).start();

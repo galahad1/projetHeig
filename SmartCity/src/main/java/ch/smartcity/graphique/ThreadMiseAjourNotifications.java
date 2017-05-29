@@ -61,15 +61,6 @@ public class ThreadMiseAjourNotifications extends TimerTask {
     }
 
     /**
-     * retourne la liste des notification
-     *
-     * @return liste des notifcations
-     */
-    public List<String> getListe() {
-        return liste;
-    }
-
-    /**
      * retourne la Jlist des notifcations
      *
      * @return une Jlist

@@ -15,10 +15,10 @@ import java.util.ArrayList;
 public final class FournisseurTuilePointCouleur implements FournisseurTuile {
 
     public final static int TAILLE_TUILE = 256;
-
-    private ArrayList<Event> evenements;
-    private Color[] couleur = {Color.RED, Color.ORANGE, Color.YELLOW, Color.GREEN, Color.CYAN, Color.BLUE,
+    private final static Color[] COULEURS = {Color.RED, Color.ORANGE, Color.YELLOW, Color.GREEN, Color.CYAN, Color.BLUE,
             Color.MAGENTA};
+    private final ArrayList<Event> evenements;
+
 
     /**
      * Crée un fournisseur de tuile isochrone avec l'arbre des trajets, la table
@@ -40,7 +40,7 @@ public final class FournisseurTuilePointCouleur implements FournisseurTuile {
         String nomAffichage;
         int rayon = 5;
         for (Event e : evenements) {
-            g.setColor(couleur[e.getCategorie()]);
+            g.setColor(COULEURS[e.getCategorie()]);
             Ellipse2D ellipse = new Ellipse2D.Double(e.getPosition().toOSM(zoom).x() - TAILLE_TUILE * x - rayon,
                     e.getPosition().toOSM(zoom).y() - TAILLE_TUILE * y - rayon, rayon * 2, rayon * 2);
             g.fill(ellipse);
@@ -50,7 +50,7 @@ public final class FournisseurTuilePointCouleur implements FournisseurTuile {
             g.draw(ellipse);
 
             g.setColor(Color.white);
-            g.setFont(new Font(Font.SERIF, 1, 17));
+            g.setFont(new Font(Font.SERIF, Font.BOLD, 17));
 
             nomAffichage = e.getId() + ": " + e.getNom();
             // permet d'avoir un bord blanc autour de l'écriture
