@@ -290,15 +290,15 @@ public class GenerateurPDF {
                 statsComms.setBorder(null);
                 page2.addCell(statsComms);
                 break;
-            case "doléances" :
+            case "doléances":
                 compteur = 0;
                 for (Evenement e : evenements) {
                     if (e.getDebut().getTime().getMonth() == Calendar.getInstance().getTime().getMonth()) {
                         ++compteur;
                     }
                 }
-                Cell doleance = new Cell().add("Il y a eu " + compteur + " doléance"+ (compteur > 1 ? "s" : "")
-                        +" ce mois-ci.");
+                Cell doleance = new Cell().add("Il y a eu " + compteur + " doléance" + (compteur > 1 ? "s" : "")
+                        + " ce mois-ci.");
                 doleance.setBorder(null);
                 page2.addCell(doleance);
                 break;
