@@ -52,7 +52,7 @@ public class GenerateurGraphique {
         file.createNewFile();
 
         try {
-            ChartUtilities.saveChartAsPNG(file, chart, 900, 700);
+            ChartUtilities.saveChartAsPNG(file, chart, 700, 500);
             LOGGER.info("Success of generation of chart "
                     + CHEMIN_IMAGE.substring(CHEMIN_IMAGE.lastIndexOf(File.separator) + 1));
         } catch (Exception e) {

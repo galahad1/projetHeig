@@ -105,6 +105,7 @@ public class GenerateurPDF {
 
         /* Première partie du PDF */
         Table page1 = new Table(1);
+        page1.setFixedLayout();
 
         /* EN-TÈTE */
         /* Contient l'image et le nom du projet */
@@ -189,6 +190,8 @@ public class GenerateurPDF {
 
         /* Deuième partie du PDF */
         Table page2 = new Table(1);
+        //page2.setFixedLayout();
+        page2.setWidthPercent(100);
 
         /* STATISTIQUE */
         Cell information = new Cell().add("Statistiques des " + nomRubriqueEnfant
@@ -200,8 +203,8 @@ public class GenerateurPDF {
         Image image = new Image(ImageDataFactory.create(GenerateurGraphique.CHEMIN_IMAGE));
         //image.setAutoScale(true);
         image.scaleAbsolute(350, 250);
-        image.setMargins(25, 55, 15, 55);
-        information.add(image);
+        image.setMargins(25, 35, 15, 35);
+        information.add(image.setWidthPercent(100));
         page2.addCell(information);
 
         /* Recherche du nombre d'événements depuis le début de l'année */
@@ -271,7 +274,7 @@ public class GenerateurPDF {
 
                 jours = moyenne / (24 * 60 * 60 * 1000);
 
-                Cell statsDuree2 = new Cell().add("En moyenne, les travaux durent " + jours
+                Cell statsDuree2 = new Cell().add("En moyenne, les chantiers durent " + jours
                         + " jour" + (jours > 1 ? "s" : "") + ".\n");
                 statsDuree2.setBorder(null);
                 page2.addCell(statsDuree2);
@@ -287,7 +290,18 @@ public class GenerateurPDF {
                         + " au sujet des manifestations d'aujourd'hui.\n");
                 statsComms.setBorder(null);
                 page2.addCell(statsComms);
-
+                break;
+            case "doléances" :
+                compteur = 0;
+                for (Evenement e : evenements) {
+                    if (e.getDebut().getTime().getMonth() == Calendar.getInstance().getTime().getMonth()) {
+                        ++compteur;
+                    }
+                }
+                Cell doleance = new Cell().add("Il y a eu " + compteur + " doléance"+ (compteur > 1 ? "s" : "")
+                        +" ce mois-ci.");
+                doleance.setBorder(null);
+                page2.addCell(doleance);
                 break;
         }
 
