@@ -36,25 +36,5 @@
             <artifactId>Database</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
-        <dependency>
-            <groupId>ch.smartcity</groupId>
-            <artifactId>Database</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>ch.smartcity</groupId>
-            <artifactId>Database</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>ch.smartcity</groupId>
-            <artifactId>Database</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>ch.smartcity</groupId>
-            <artifactId>Database</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
     </dependencies>
 </project>
