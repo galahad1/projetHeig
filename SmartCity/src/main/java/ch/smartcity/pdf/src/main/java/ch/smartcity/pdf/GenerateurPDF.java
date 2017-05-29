@@ -190,7 +190,6 @@ public class GenerateurPDF {
 
         /* Deuième partie du PDF */
         Table page2 = new Table(1);
-        //page2.setFixedLayout();
         page2.setWidthPercent(100);
 
         /* STATISTIQUE */
