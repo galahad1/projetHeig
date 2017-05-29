@@ -2,7 +2,7 @@
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
         "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 
-<hibernate-mapping catalog="smartcity" package="ch.database.models">
+<hibernate-mapping catalog="smartcity" package="ch.smartcity.database.models">
     <class name="ch.smartcity.database.models.Statut" dynamic-update="true">
         <id name="idStatut">
             <generator class="native"/>
