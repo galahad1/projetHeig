@@ -12,7 +12,7 @@ Contenu du dossier
 3. `smartcity_data.sql` : le script pour uniquement la partie peuplement de la base de données.  
 4. `smartcity_schema.sql` : le script pour uniquement la partie création de la base de données.  
 
-Instalation  
+Installation  
 ---------------  
 1. Configurer la base de données :  
 	* Exécutez le script MySQL `smartcity_schema_data.sql` pour créer et peupler la base de données.
