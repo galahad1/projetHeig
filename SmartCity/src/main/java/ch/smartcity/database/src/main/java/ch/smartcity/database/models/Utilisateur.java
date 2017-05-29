@@ -123,7 +123,7 @@ public class Utilisateur implements Serializable {
         this.idUtilisateur = idUtilisateur;
     }
 
-    public Boolean isPersonnePhysique() {
+    public Boolean getPersonnePhysique() {
         return personnePhysique;
     }
 
