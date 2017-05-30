@@ -7,8 +7,10 @@ import org.hibernate.cfg.Configuration;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.prefs.Preferences;
 
 /**
  * Gère la connexion et les requêtes effectuées auprès de la base de données
