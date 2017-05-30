@@ -1,0 +1,19 @@
+# IntelliJ
+.idea/
+*.iml
+*.iws
+
+# class
+*.class
+
+# swap
+*.swp
+
+#targets
+SmartCity/src/main/java/ch/smartcity/carte/target/
+SmartCity/src/main/java/ch/smartcity/database/target/
+SmartCity/src/main/java/ch/smartcity/pdf/target/
+SmartCity/target/
+
+# logs
+*.log

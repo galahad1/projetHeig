@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping catalog="smartcity" package="ch.smartcity.database.models">
+    <class name="ch.smartcity.database.models.Adresse" dynamic-update="true">
+        <id name="idAdresse">
+            <generator class="native"/>
+        </id>
+        <many-to-one name="rue"
+                     column="idRue"
+                     class="ch.smartcity.database.models.Rue"
+                     cascade="persist,merge,save-update"
+                     not-null="true"/>
+        <property name="numeroDeRue" not-null="true"/>
+        <many-to-one name="npa"
+                     column="idNpa"
+                     class="ch.smartcity.database.models.Npa"
+                     cascade="persist,merge,save-update"
+                     not-null="true"/>
+        <property name="derniereMiseAJour" not-null="true" generated="always"/>
+        <set name="utilisateurSet" table="Utilisateur" inverse="true" lazy="true">
+            <key column="idAdresse" not-null="true"/>
+            <one-to-many class="ch.smartcity.database.models.Utilisateur"/>
+        </set>
+        <set name="evenementSet" table="Evenement" inverse="true" lazy="true">
+            <key column="idAdresse"/>
+            <one-to-many class="ch.smartcity.database.models.Evenement"/>
+        </set>
+    </class>
+</hibernate-mapping>
